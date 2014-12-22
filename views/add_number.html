@@ -1,0 +1,44 @@
+<div class="dialog_popup add_number_popup">
+	<form class="form-inline">
+		<div class="popup_field">
+			<input type="radio" id="number_type_1" name="number_type" value="your_numbers" checked="checked"></input>
+			<label for="number_type_1">{{ i18n.oldCallflows.available_numbers }}</label>
+
+			<div class="list_numbers_content">
+				<select id="list_numbers">
+					{{#each phoneNumbers}}
+						<option value="{{ this.phoneNumber }}">{{ this.phoneNumber }}</option>
+					{{/each}}
+				</select>
+
+				<ul class="nav pull-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle buy-dropdown monster-link" data-toggle="dropdown" data-target="#">
+							<i class="icon-shopping-cart icon-green icon-large"></i>
+							{{ i18n.callflows.buyNumbers }}
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a class="buy-link" data-type="regular" href="#">{{ i18n.callflows.buyLocal }}</a></li>
+							<li><a class="buy-link" data-type="tollfree" href="#">{{ i18n.callflows.buyTollfree }}</a></li>
+							<li><a class="buy-link" data-type="vanity" href="#">{{ i18n.callflows.buyVanity }}</a></li>
+						</ul>
+					</li>
+				</ul>
+				
+			</div>
+		</div>
+
+		<div class="popup_field">
+			<input type="radio" id="number_type_2" name="number_type" value="extension"></input>
+			<label for="number_type_2">{{ i18n.oldCallflows.extension }}</label>
+
+			<div class="extensions_content">
+				<input id="add_number_text" placeholder="2001" type="text" name="number" id="number"/>
+			</div>
+		</div>
+
+		<div class="buttons">
+			<button class="btn btn-primary add_number">{{ i18n.oldCallflows.add }}</button>
+		</div>
+	</form>
+</div>

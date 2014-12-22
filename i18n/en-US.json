@@ -1,7 +1,11 @@
 {
 	"callflows": {
 		"addCallflow": "Add Callfow",
-		"searchDatabase": "Search Database"
+		"searchDatabase": "Search Database",
+		"buyNumbers": "Buy Numbers",
+		"buyLocal": "Local",
+		"buyTollfree": "Toll-Free",
+		"buyVanity": "Vanity"
 	},
 	"oldCallflows": {
 		"call_forwarding_cat": "Call Forwarding",
@@ -24,7 +28,7 @@
 		"popup_title": "Edit Callflow Name",
 		"add_number": "Add number",
 		"add_a_number": "Add a number",
-		"available_numbers": "Available Numbers",
+		"available_numbers": "Spare Numbers",
 		"extension": "Extension",
 		"add": "Add",
 		"no_phone_numbers": "No Phone Numbers",

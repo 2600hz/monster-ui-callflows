@@ -1,6 +1,33 @@
-<div>
-	<div class="number_row">
-		{{#if numbers.[1]}}
+<div class="number_row">
+	{{debug}}
+	{{#if numbers.[1]}}
+		<div class="number_column first" data-number="{{numbers.[0]}}">
+			{{#compare numbers.[0] "===" "no_match"}}
+				{{ i18n.oldCallflows.catch_all }}
+			{{else}}
+				{{#compare numbers.[0] "===" ""}}
+					{{ i18n.oldCallflows.no_number }}
+				{{else}}
+					{{ numbers.[0] }}
+				{{/compare}}
+			{{/compare}}
+			<span class="delete"/>
+		</div>
+
+		<div class="number_column second" data-number="{{numbers.[1]}}">
+			{{#compare numbers.[1] "===" "no_match"}}
+				{{ i18n.oldCallflows.catch_all }}
+			{{else }}
+				{{#compare numbers.[1] "===" ""}}
+					{{ i18n.oldCallflows.no_number }}
+				{{else}}
+					{{ numbers.[1] }}
+				{{/compare}}
+			{{/compare}}
+			<span class="delete"/>
+		</div>
+	{{else}}
+		{{#if numbers.[0]}}
 			<div class="number_column first" data-number="{{numbers.[0]}}">
 				{{#compare numbers.[0] "===" "no_match"}}
 					{{ i18n.oldCallflows.catch_all }}
@@ -13,38 +40,10 @@
 				{{/compare}}
 				<span class="delete"/>
 			</div>
-
-			<div class="number_column second" data-number="{{numbers.[1]}}">
-				{{#compare numbers.[1] "===" "no_match"}}
-					{{ i18n.oldCallflows.catch_all }}
-				{{else }}
-					{{#compare numbers.[1] "===" ""}}
-						{{ i18n.oldCallflows.no_number }}
-					{{else}}
-						{{ numbers.[1] }}
-					{{/compare}}
-				{{/compare}}
-				<span class="delete"/>
-			</div>
+			<div class="number_column empty second">{{ i18n.oldCallflows.click_to_add_number }}</div>
 		{{else}}
-			{{#if numbers.[0]}}
-				<div class="number_column first" data-number="{{numbers.[0]}}">
-					{{#compare numbers.[0] "===" "no_match"}}
-						{{ i18n.oldCallflows.catch_all }}
-					{{else}}
-						{{#compare numbers.[0] "===" ""}}
-							{{ i18n.oldCallflows.no_number }}
-						{{else}}
-							{{ numbers.[0] }}
-						{{/compare}}
-					{{/compare}}
-					<span class="delete"/>
-				</div>
-				<div class="number_column empty second">{{ i18n.oldCallflows.click_to_add_number }}</div>
-			{{else}}
-				<div class="number_column empty full">{{ i18n.oldCallflows.click_to_add_number }}</div>
-			{{/if}}
+			<div class="number_column empty full">{{ i18n.oldCallflows.click_to_add_number }}</div>
 		{{/if}}
-		<div class="clear"/>
-	</div>
+	{{/if}}
+	<div class="clear"/>
 </div>

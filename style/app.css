@@ -125,10 +125,6 @@
 	display: inline-block;
 }
 
-#ws_callflow .tools {
-	color: #ebebeb;
-}
-
 #ws_callflow .tools .category {
 	text-align: center;
 	background: url(static/images/background_category.png) no-repeat;
@@ -299,36 +295,42 @@
 }
 
 .add_number_popup {
-	min-width: 400px;
+	width: 525px;
 }
 
 .add_number_popup .popup_field {
-	height: 30px;
+	height: 40px;
+	line-height: 40px;
+	margin: 10px 30px;
+}
+
+.add_number_popup .popup_field label {
+	width: 110px;
 }
 
 .add_number_popup input[type=radio] {
-	margin: 8px 5px 0 0;
-	float: left;
+	margin: -5px 5px 0 10px;
 }
 
 .add_number_popup #list_numbers {
 	width: 157px;
-	float: left;
 }
 
 .add_number_popup #add_number_text {
 	width: 172px;
 }
 
-.add_number_popup .extensions_content, .add_number_popup .list_numbers_content {
+.add_number_popup .extensions_content, 
+.add_number_popup .list_numbers_content {
 	display: inline-block;
 }
 
-.add_number_popup #number_manager_fields {
-	float: right;
-	line-height: 27px;
-	height: 27px;
-	margin-left: 5px;
+.add_number_popup .list_numbers_content .nav {
+	margin-top: 7px;
+}
+
+.add_number_popup .buttons {
+	text-align: center;
 }
 
 .fax_callflow_popup .checkbox_field,
@@ -377,23 +379,20 @@
 }
 
 #ws_callflow #callflow_header {
-	width: 100%;
 	height: 30px;
+	margin-top: 15px;
+	width: 100%;
 }
 
 #ws_callflow #callflow_header #pending_change {
-	float: left;
-	width: 85%;
 	text-align: center;
 	display: none;
 }
 
 #ws_callflow #callflow_header #pending_change span {
-	text-shadow: 1px 2px #363636;
 	color: #05ADDC;
 	font-weight: lighter;
 	font-style: italic;
-	font-size: 14px;
 }
 
 #ws_callflow #ws_cf_flow {
@@ -550,13 +549,15 @@
 }
 
 /* JR's customization */
+#callflow_container {
+	color: #ebebeb;
+}
+
 #callflow_container .callflow-view {
 	height: 100%;
 	overflow: auto;
 }
 
-#callflow_container .real-content {
-}
 
 /* JR's work for left bar, from accountBrowser */
 #callflow_container .callflow-content {
