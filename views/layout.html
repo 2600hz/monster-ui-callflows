@@ -1,5 +1,45 @@
-<div id="skeleton_wrapper">
-	<div class="hero-unit well">
-		<h1>{{ i18n.callflows.welcome }}</h1>
+<div id="callflow_container">
+	<div class="left-bar-container">
+		<div class="search-box">
+			<i class="icon-search"></i>
+			<input type="text" class="search-query" placeholder="{{ i18n.search }}">
+		</div>
+		<div class="list-add">
+			<i class="icon-plus-sign icon-large"></i>
+			<span>{{ i18n.callflows.addCallflow }}</span>
+		</div>
+		<div class="list-container clearfix">
+			<ul class="list"></ul>
+		</div>
+	</div>
+
+	<div class="callflow-content listing-mode">
+		<div class="callflow-view clearfix">
+			<div class="real-content"> 
+				<div class="callflow-help"/>
+
+				<div id="ws_callflow" class="clearfix">
+					<div class="tools">
+						<div id="ws_cf_tools"></div>
+					</div>
+					<div class="flowchart">
+						<div id="callflow_header">
+							<div id="pending_change">
+								<span>{{ i18n.oldCallflows.you_have_modified_this_callflow }}</span>
+							</div>
+						</div>
+						<div class="callflow">
+							<div>
+								<span class="flow">
+									<div class="buttons"></div>
+									<div id="ws_cf_flow"></div>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
+
