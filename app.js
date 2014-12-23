@@ -624,7 +624,6 @@ define(function(require){
 						self.flow = $.extend(true, { contact_list: { exclude: false }} , self.flow);
 
 						var popup = monster.ui.dialog(monster.template(self, 'edit_name', { name: self.flow.name, exclude: self.flow.contact_list.exclude}), {
-							width: '310px',
 							title: self.i18n.active().oldCallflows.popup_title
 						});
 
@@ -722,7 +721,9 @@ define(function(require){
 									searchType: $(this).data('type'),
 									callbacks: {
 										success: function(numbers) {
-											
+											_.each(numbers, function(number, k) {
+												$('<option value="'+k+'">'+k+'</option>').appendTo($('#list_numbers', popup));
+											});
 										}
 									}
 								});

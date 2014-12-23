@@ -1,0 +1,27 @@
+<div class="dialog_popup edit_name">
+	<form name="form" class="form-inline" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="callflow_name">{{ i18n.oldCallflows.callflow_name }}</label>
+				<input type="text" id="callflow_name" class="input-medium" value="{{ name }}"/>
+			</div>
+
+			<div class="popup_field">
+				 <label>
+					 <span rel="popover" data-content="{{ i18n.oldCallflows.by_checking_this_box }}">
+						 {{#if exclude}}
+							 <input type="checkbox" id="callflow_exclude" checked/>
+						 {{else}}
+							 <input type="checkbox" id="callflow_exclude"/>
+						 {{/if}}
+						 <span>{{ i18n.oldCallflows.hide_from_contact_list }}</span>
+					 </span>
+				</label>
+			</div>
+			<div class="fancy_help_text">{{ i18n.oldCallflows.giving_a_name_to_a_callflow }}</div>
+		</div>
+	</form>
+	<div class="buttons">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>

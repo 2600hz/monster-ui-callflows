@@ -294,14 +294,44 @@
 	overflow: hidden;
 }
 
-.add_number_popup {
-	width: 525px;
+/* Add number and Edit name popups */
+.dialog_popup {
+	padding: 15px;
 }
 
-.add_number_popup .popup_field {
+.dialog_popup .popup_field {
 	height: 40px;
 	line-height: 40px;
-	margin: 10px 30px;
+	margin-bottom: 10px;
+}
+
+.dialog_popup .popup_field > * {
+	margin-right: 10px;
+}
+
+.dialog_popup .buttons {
+	text-align: center;
+}
+
+.dialog_popup form {
+	margin: 0;
+}
+
+.dialog_popup.edit_name {
+	width: 350px;
+}
+
+.dialog_popup.edit_name .fancy_help_text {
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.dialog_popup.edit_name input[type="checkbox"] {
+	margin: 0;
+}
+
+.dialog_popup.add_number_popup {
+	width: 475px;
 }
 
 .add_number_popup .popup_field label {
@@ -327,10 +357,6 @@
 
 .add_number_popup .list_numbers_content .nav {
 	margin-top: 7px;
-}
-
-.add_number_popup .buttons {
-	text-align: center;
 }
 
 .fax_callflow_popup .checkbox_field,
