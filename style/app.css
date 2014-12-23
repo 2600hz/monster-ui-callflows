@@ -469,8 +469,10 @@
 
 #ws_callflow .tools {
 	float: right;
+
+	/* Have to disable this for now because dragging element doesn't work properly otherwise... TODO THO
 	overflow-y: auto;
-	overflow-x: hidden;
+	overflow-x: hidden;*/
 }
 
 #ws_callflow .tools #ws_cf_tools {

@@ -149,5 +149,35 @@
 		"hot_desking_name": "Hot Desking",
 		"language": "Language",
 		"language_tip": "This callflow action lets you change the language of the prompts used in this callflow!"
+	},
+	"conference": {
+		"conference": "Conference",
+		"conference_tip": "Connect a caller to a Meet-Me conference bridge",
+		"conference_service": "Conference Service",
+		"conference_service_tip": "Transfer the caller to the conference call service, prompting for both a conference number and a pin"
+	},
+	"device": {
+	},
+	"directory": {
+	},
+	"faxbox": {
+	},
+	"groups": {
+	},
+	"media": {
+	},
+	"menu": {
+	},
+	"resource": {
+		"global_carrier": "Global Carrier",
+		"global_carrier_tip": "Route calls to the phone network through pre-configured service providers",
+		"account_carrier": "Account Carrier",
+		"account_carrier_tip": "Route calls to the phone network through a configured SIP provider, Google Voice or physical digital/analog line"
+	},
+	"timeofday": {
+	},
+	"user": {
+	},
+	"vmbox": {
 	}
 }
