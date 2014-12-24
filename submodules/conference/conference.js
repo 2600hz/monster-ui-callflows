@@ -16,11 +16,11 @@ define(function(require){
 
             $.extend(callflow_nodes, {
                 'conference[id=*]': {
-                    name: self.i18n.active().conference.conference,
+                    name: self.i18n.active().callflows.conference.conference,
                     icon: 'conference',
                     category: self.i18n.active().oldCallflows.basic_cat,
                     module: 'conference',
-                    tip: self.i18n.active().conference.conference_tip,
+                    tip: self.i18n.active().callflows.conference.conference_tip,
                     data: {
                         id: 'null'
                     },
@@ -87,7 +87,7 @@ define(function(require){
                                 });
 
                                 popup = winkstart.dialog(popup_html, {
-                                    title: self.i18n.active().conference.conference,
+                                    title: self.i18n.active().callflows.conference.conference,
                                     minHeight: '0',
                                     beforeClose: function() {
                                         if(typeof callback == 'function') {
@@ -101,11 +101,11 @@ define(function(require){
                 },
 
                 'conference[]': {
-                    name: self.i18n.active().conference.conference_service,
+                    name: self.i18n.active().callflows.conference.conference_service,
                     icon: 'conference',
                     category: self.i18n.active().oldCallflows.advanced_cat,
                     module: 'conference',
-                    tip: self.i18n.active().conference.conference_service_tip,
+                    tip: self.i18n.active().callflows.conference.conference_service_tip,
                     data: {},
                     rules: [
                         {

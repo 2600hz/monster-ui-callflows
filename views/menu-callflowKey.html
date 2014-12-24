@@ -1,0 +1,26 @@
+<div class="dialog_popup">
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="menu_key_selector">{{ i18n.callflows.menu.menu_option }}</label>
+				<div class="select_wrapper">
+					<select id="menu_key_selector">
+						{{#each items}}
+							{{debug @value}}
+							{{#compare ../selected "===" @key}}
+								<option value="{{ @key }}" SELECTED>{{ ../@value }}</option>
+							{{else}}
+								{{#compare ../@value "!=" "#"}}
+								<option value="{{ @key }}">{{ ../../@value }}</option>
+								{{/compare}}
+							{{/compare}}
+						{{/each}}
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>

@@ -21,7 +21,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'misc', 'resource', 'timeofday', 'user', 'vmbox'],
+		subModules: ['misc', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox'],
 
 		appFlags: {
 			flow: {},
@@ -667,6 +667,8 @@ define(function(require){
 								popup = monster.ui.dialog(popup_html, {
 									title: self.i18n.active().oldCallflows.add_number
 								});
+
+							console.log(popup_html, popup);
 
 							if(parsedNumbers.length === 0) {
 								$('#list_numbers', popup_html).attr('disabled', 'disabled');

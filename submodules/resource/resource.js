@@ -16,11 +16,11 @@ define(function(require){
 
 			$.extend(callflow_nodes, {
 				'offnet[]': {
-					name: self.i18n.active().resource.global_carrier,
+					name: self.i18n.active().callflows.resource.global_carrier,
 					icon: 'offnet',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'offnet',
-					tip: self.i18n.active().resource.global_carrier_tip,
+					tip: self.i18n.active().callflows.resource.global_carrier_tip,
 					data: {},
 					rules: [
 						{
@@ -39,11 +39,11 @@ define(function(require){
 					}
 				},
 				'resources[]': {
-					name: self.i18n.active().resource.account_carrier,
+					name: self.i18n.active().callflows.resource.account_carrier,
 					icon: 'resource',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'resources',
-					tip: self.i18n.active().resource.account_carrier_tip,
+					tip: self.i18n.active().callflows.resource.account_carrier_tip,
 					data: {},
 					rules: [
 						{
@@ -78,7 +78,7 @@ define(function(require){
 						});
 
 						popup = winkstart.dialog(popup_html, {
-							title: self.i18n.active().resource.account_carrier_title,
+							title: self.i18n.active().callflows.resource.account_carrier_title,
 							minHeight: '0',
 							beforeClose: function() {
 								if(typeof callback == 'function') {
