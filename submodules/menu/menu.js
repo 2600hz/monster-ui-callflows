@@ -11,7 +11,6 @@ define(function(require){
 		},
 
 		menuEdit: function(data, _parent, _target, _callbacks, data_defaults) {
-			console.log(data);
 			var self = this,
 				parent = _parent || $('#menu-content'),
 				target = _target || $('#menu-view', parent),
@@ -125,11 +124,26 @@ define(function(require){
 
 		menuRender: function(data, target, callbacks){
 			var self = this,
-				menu_html = $(monster.template(self, 'menu-edit', data));
+				menu_html = $(monster.template(self, 'menu-edit', data)),
+				menuForm = menu_html.find('#menu-form');
 
-			console.log(data);
-
-			// TODO winkstart.validate.set(self.config.validation, menu_html);
+			monster.ui.validate(menuForm, {
+				rules: {
+					'retries': {
+						number: true
+					},
+					'record_pin': {
+						number: true
+					},
+					'timeout': {
+						number: true,
+						max: 10
+					},
+					'max_extension_length': {
+						number: true
+					}
+				}
+			});
 
 			$('*[rel=popover]:not([type="text"])', menu_html).popover({
 				trigger: 'hover'
@@ -183,21 +197,20 @@ define(function(require){
 			$('.menu-save', menu_html).click(function(ev) {
 				ev.preventDefault();
 
-				// TODO Validation winkstart.validate.is_valid(self.config.validation, menu_html, function() {
-						var form_data = form2object('menu-form');
+				if(monster.ui.valid(menuForm)) {
+					var form_data = form2object('menu-form');
 
-						self.menuCleanFormData(form_data);
+					self.menuCleanFormData(form_data);
 
-						if('field_data' in data) {
-							delete data.field_data;
-						}
-
-						self.menuSave(form_data, data, callbacks.save_success);
-					/*},
-					function() {
-						winkstart.alert(_t('menu', 'there_were_errors_on_the_form'));
+					if('field_data' in data) {
+						delete data.field_data;
 					}
-				);*/
+
+					self.menuSave(form_data, data, callbacks.save_success);
+				}
+				else {
+					monster.ui.alert(self.i18n.active().callflows.menu.there_were_errors_on_the_form);
+				}
 			});
 
 			$('.menu-delete', menu_html).click(function(ev) {
@@ -341,7 +354,6 @@ define(function(require){
 						}));
 
 						popup_html.find('#add').on('click', function() {
-							console.log('click');
 							child_node.key = $('#menu_key_selector', popup).val();
 
 							child_node.key_caption = $('#menu_key_selector option:selected', popup).text();
@@ -397,7 +409,6 @@ define(function(require){
 							});
 
 							popup_html.find('#add').on('click', function() {
-								console.log('click');
 								node.setMetadata('id', $('#menu_selector', popup).val());
 								node.caption = $('#menu_selector option:selected', popup).text();
 

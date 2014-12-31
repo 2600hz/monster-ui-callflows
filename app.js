@@ -668,8 +668,6 @@ define(function(require){
 									title: self.i18n.active().oldCallflows.add_number
 								});
 
-							console.log(popup_html, popup);
-
 							if(parsedNumbers.length === 0) {
 								$('#list_numbers', popup_html).attr('disabled', 'disabled');
 								$('<option value="select_none">' + self.i18n.active().oldCallflows.no_phone_numbers + '</option>').appendTo($('#list_numbers', popup_html));

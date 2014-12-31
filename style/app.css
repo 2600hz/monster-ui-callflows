@@ -863,10 +863,6 @@
 	letter-spacing: 1px;
 }
 
-.callflows-port label {
-	color:#e6e6e6;
-}
-
 .callflows-port hr {
 	margin:0;
 	border-top:1px solid #404040;
@@ -1059,13 +1055,19 @@
 }
 
 /* Custom specific bootstrap */
-.callflow-port form label {
+.callflow-port form label:not(.monster-invalid) {
 	float: left;
 	font-size: 13px;
 	line-height: 18px;
 	padding-top: 6px;
 	text-align: right;
 	width: 130px;
+	color:#e6e6e6;
+}
+
+.callflow-port label.monster-invalid {
+	color: orange;
+	margin-top: -10px;
 }
 
 .callflow-port form .input {
