@@ -1,0 +1,164 @@
+<div class="callflows-port">
+	<div class="whapp-header clearfix">
+		{{#if data.id}}
+			<h1>{{ i18n.callflows.menu.edit_menu }}</h1>
+		{{else}}
+			<h1>{{ i18n.callflows.menu.create_menu }}</h1>
+		{{/if}}
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.menu.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.menu.advanced }}</button>
+		</div>
+	</div>
+
+	<div>
+		<ul class="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.menu.basic }}</a></li>
+			<li><a href="#extension_dialing"><span class="icon sip"></span>{{ i18n.callflows.menu.extension_dialing }}</a></li>
+			<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.menu.options }}</a></li>
+		</ul>
+
+		 <form id="menu-form" action="" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.menu.name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.menu.name }}" value="{{ data.name }}" rel="popover" data-content="{{ i18n.callflows.menu.name_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="record_pin">{{ i18n.callflows.menu.prompt_record_pin }}</label>
+						<div class="input">
+							<input class="span4" id="record_pin" name="record_pin" type="text" placeholder="{{ i18n.callflows.menu.prompt_record_pin_placeholder }}" value="{{ data.record_pin }}" rel="popover" data-content="{{ i18n.callflows.menu.prompt_record_pin_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.menu.allow_caller_to_dial_extensions_data_content }}">
+											{{#if data.hunt}}
+												<input type="checkbox" id="hunt" name="hunt" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="hunt" name="hunt" />
+											{{/if}}
+											<span>{{ i18n.callflows.menu.allow_caller_to_dial_extensions }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="media_greeting">{{ i18n.callflows.menu.greeting_message }}</label>
+						<div class="input">
+							<span rel="popover" data-content="{{ i18n.callflows.menu.greeting_message_data_content }}">
+								<select name="media.greeting" id="media_greeting" class="medium">
+									{{#each field_data.media}}
+										{{#compare data.media.greeting "===" id}}
+										<option id="{{ id }}" value="{{ id }}" selected="selected">{{ name }}</option>
+										{{else}}
+										<option id="{{ id }}" value="{{ id }}">{{ name }}</option>
+										{{/compare}}
+									{{/each}}
+								</select>
+								<div class="edit_create">
+									<a id="edit_link_media" class="inline_action_media" data-action="edit" href="#">{{ i18n.callflows.menu.edit }}</a>
+									<a class="inline_action_media" data-action="create" href="#">{{ i18n.callflows.menu.create }}</a>
+								</div>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div id="extension_dialing">
+					<div class="clearfix">
+						<label for="hunt_allow">{{ i18n.callflows.menu.whitelist_of_numbers }}</label>
+						<div class="input">
+							<input class="span4" id="hunt_allow" name="hunt_allow" type="text" placeholder="{{ i18n.callflows.menu.whitelist_of_numbers_placeholder }}" value="{{ data.hunt_allow }}" rel="popover" data-content="{{ i18n.callflows.menu.whitelist_of_numbers_data_content }}"/>
+						</div>
+					</div>
+					{{debug}}
+					<div class="clearfix">
+						<label for="hunt_deny">{{ i18n.callflows.menu.blacklist_of_numbers }}</label>
+						<div class="input">
+							<input class="span4" id="hunt_deny" name="hunt_deny" type="text" placeholder="{{ i18n.callflows.menu.blacklist_of_numbers_placeholder }}" value="{{ data.hunt_deny }}" rel="popover" data-content="{{ i18n.callflows.menu.blacklist_of_numbers_data_content }}"/>
+						</div>
+					</div>
+				</div>
+
+				<div id="options">
+					<div class="clearfix">
+						<label for="retries">{{ i18n.callflows.menu.number_of_retries_on_misdial }}</label>
+						<div class="input">
+							<input class="span4" id="retries" name="retries" type="text" placeholder="{{ i18n.callflows.menu.retries }}" value="{{ data.retries }}" rel="popover" data-content="{{ i18n.callflows.menu.number_of_retries_on_misdial_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="timeout">{{ i18n.callflows.menu.timeout_for_dialing }}</label>
+						<div class="input">
+							<input class="span4" id="timeout" name="timeout" type="text" placeholder="{{ i18n.callflows.menu.timeout_for_dialing_placeholder }}" value="{{ data.timeout }}" rel="popover" data-content="{{ i18n.callflows.menu.timeout_for_dialing_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="max_extension_length">{{ i18n.callflows.menu.extension_number_length }}</label>
+						<div class="input">
+							<input class="span4" id="max_extension_length" name="max_extension_length" type="text" placeholder="{{ i18n.callflows.menu.length }}" value="{{ data.max_extension_length }}" rel="popover" data-content="{{ i18n.callflows.menu.extension_number_length_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.menu.allow_outside_recording_data_content }}">
+										{{#if data.allow_record_from_offnet}}
+											<input type="checkbox" id="allow_record_from_offnet" name="allow_record_from_offnet" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="allow_record_from_offnet" name="allow_record_from_offnet" />
+										{{/if}}
+										<span>{{ i18n.callflows.menu.allow_outside_recording }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.menu.suppress_playing_of_invalid_entry_data_content }}">
+											{{#if data.suppress_media}}
+												<input type="checkbox" id="suppress_media" name="suppress_media" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="suppress_media" name="suppress_media" />
+											{{/if}}
+											<span>{{ i18n.callflows.menu.suppress_playing_of_invalid_entry }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		 </form>
+		 <div class="buttons-right">
+			{{#if data.id}}
+				<button class="btn btn-danger menu-delete">{{ i18n.callflows.menu.delete }}</button>
+			{{/if}}
+			<button class="btn btn-success menu-save">{{ i18n.callflows.menu.save }}</button>
+		</div>
+	</div>
+</div>

@@ -10,16 +10,282 @@ define(function(require){
 			'callflows.fetchActions': 'menuDefineActions'
 		},
 
-		menuList: function(callback) {
-			var self = this;
+		menuEdit: function(data, _parent, _target, _callbacks, data_defaults) {
+			console.log(data);
+			var self = this,
+				parent = _parent || $('#menu-content'),
+				target = _target || $('#menu-view', parent),
+				_callbacks = _callbacks || {},
+				callbacks = {
+					save_success: _callbacks.save_success || function(_data) {
+						self.render_list(parent);
 
-			self.callApi({
-				resource: 'menu.list',
-				data: {
-					accountId: self.accountId
+						self.edit_menu({ id: _data.data.id }, parent, target, callbacks);
+					},
+
+					save_error: _callbacks.save_error,
+
+					delete_success: _callbacks.delete_success || function() {
+						target.empty();
+
+						self.render_list(parent);
+					},
+
+					delete_error: _callbacks.delete_error,
+
+					after_render: _callbacks.after_render
 				},
-				success: callback
+				defaults = {
+					data: $.extend(true, {
+						retries: '3',
+						timeout: '10',
+						max_extension_length: '4',
+						media: {}
+					}, data_defaults || {}),
+					field_data: {
+						media: []
+					}
+				};
+
+			monster.parallel({
+					media_list: function(callback) {
+						self.callApi({
+							resource: 'media.list', 
+							data: {
+								accountId: self.accountId
+							},
+							success: function(mediaList, status) {
+								mediaList.data.unshift({
+									id: '',
+									name: self.i18n.active().callflows.menu.not_set
+								});
+
+								defaults.field_data.media = mediaList.data;
+
+								callback(null, mediaList);
+							}
+						});
+					},
+					menu_get: function(callback) {
+						if(typeof data == 'object' && data.id) {
+							self.menuGet(data.id, function(menuData, status) {
+								self.menuformatData(menuData);
+
+								callback(null, { data: menuData });
+							});
+						}
+						else {
+							callback(null, {});
+						}
+					}
+				},
+				function(err, results) {
+					var render_data = defaults;
+
+					if(typeof data === 'object' && data.id) {
+						render_data = $.extend(true, defaults, results.menu_get)
+					}
+
+					self.menuRender(render_data, target, callbacks);
+
+					if(typeof callbacks.after_render == 'function') {
+						callbacks.after_render();
+					}
+				}
+			);
+		},
+
+		menuPopupEdit: function(data, callback, data_defaults) {
+			var self = this,
+				popup, 
+				popup_html = $('<div class="inline_popup callflow-port"><div class="inline_content main_content"/></div>');
+
+			self.menuEdit(data, popup_html, $('.inline_content', popup_html), {
+				save_success: function(_data) {
+					popup.dialog('close');
+
+					if(typeof callback == 'function') {
+						callback(_data);
+					}
+				},
+				delete_success: function() {
+					popup.dialog('close');
+
+					if(typeof callback == 'function') {
+						callback({ data: {} });
+					}
+				},
+				after_render: function() {
+					popup = monster.ui.dialog(popup_html, {
+						title: (data.id) ? self.i18n.active().callflows.menu.edit_menu : self.i18n.active().callflows.menu.create_menu
+					});
+				}
+			}, data_defaults);
+		},
+
+		menuRender: function(data, target, callbacks){
+			var self = this,
+				menu_html = $(monster.template(self, 'menu-edit', data));
+
+			console.log(data);
+
+			// TODO winkstart.validate.set(self.config.validation, menu_html);
+
+			$('*[rel=popover]:not([type="text"])', menu_html).popover({
+				trigger: 'hover'
 			});
+
+			$('*[rel=popover][type="text"]', menu_html).popover({
+				trigger: 'focus'
+			});
+
+			self.winkstartTabs(menu_html);
+
+			if(!$('#media_greeting', menu_html).val()) {
+				$('#edit_link_media', menu_html).hide();
+			}
+
+			$('#media_greeting', menu_html).change(function() {
+				!$('#media_greeting option:selected', menu_html).val() ? $('#edit_link_media', menu_html).hide() : $('#edit_link_media', menu_html).show();
+			});
+
+			$('.inline_action_media', menu_html).click(function(ev) {
+				var _data = ($(this).dataset('action') == 'edit') ? { id: $('#media_greeting', menu_html).val() } : {},
+					_id = _data.id;
+
+				ev.preventDefault();
+
+				monster.pub('media.popupEdit', {
+					data: _data,
+					callback: function(_data) {
+						/* Create */
+						if(!_id) {
+							$('#media_greeting', menu_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.name +'</option>')
+							$('#media_greeting', menu_html).val(_data.data.id);
+
+							$('#edit_link_media', menu_html).show();
+						}
+						else {
+							/* Update */
+							if('id' in _data.data) {
+								$('#media_greeting #'+_data.data.id, menu_html).text(_data.data.name);
+							}
+							/* Delete */
+							else {
+								$('#media_greeting #'+_id, menu_html).remove();
+								$('#edit_link_media', menu_html).hide();
+							}
+						}
+					}
+				});
+			});
+
+			$('.menu-save', menu_html).click(function(ev) {
+				ev.preventDefault();
+
+				// TODO Validation winkstart.validate.is_valid(self.config.validation, menu_html, function() {
+						var form_data = form2object('menu-form');
+
+						self.menuCleanFormData(form_data);
+
+						if('field_data' in data) {
+							delete data.field_data;
+						}
+
+						self.menuSave(form_data, data, callbacks.save_success);
+					/*},
+					function() {
+						winkstart.alert(_t('menu', 'there_were_errors_on_the_form'));
+					}
+				);*/
+			});
+
+			$('.menu-delete', menu_html).click(function(ev) {
+				ev.preventDefault();
+
+				monster.ui.confirm(self.i18n.active().callflows.menu.are_you_sure_you_want_to_delete, function() {
+					self.menuDelete(data, callbacks.delete_success, callbacks.delete_error);
+				});
+			});
+
+			(target)
+				.empty()
+				.append(menu_html);
+		},
+
+		menuSave: function(form_data, data, success) {
+			var self = this,
+				normalized_data = self.menuNormalizeData($.extend(true, {}, data.data, form_data));
+
+			if (typeof data.data == 'object' && data.data.id) {
+				self.menuUpdate(normalized_data, function(data, status) {
+					success && success(data, status, 'update');
+				});
+			}
+			else {
+				self.menuCreate(normalized_data, function(data, status) {
+					success && success(data, status, 'create');
+				});
+			}
+		},
+
+		menuformatData: function(data) {
+			data.timeout /= 1000; // ms to seconds
+
+			if(data.media) {
+				if(data.media.invalid_media === false && data.media.transfer_media === false && data.media.exit_media === false) {
+					data.suppress_media = true;
+				}
+				else {
+					data.suppress_media = false;
+				}
+			}
+		},
+
+		menuCleanFormData: function(form_data) {
+			if(form_data.record_pin.length == 0) {
+				form_data.max_extension_length = 4;
+			}
+			else if(form_data.max_extension_length < form_data.record_pin.length) {
+				form_data.max_extension_length = form_data.record_pin.length;
+			}
+
+			/* Hack to put timeout in ms in database. */
+			form_data.timeout = form_data.timeout * 1000;
+
+			if('suppress_media' in form_data) {
+				form_data.media = form_data.media || {};
+				if(form_data.suppress_media === true) {
+					form_data.media.invalid_media = false;
+					form_data.media.transfer_media = false;
+					form_data.media.exit_media = false;
+				}
+				else {
+					form_data.media.invalid_media = true;
+					form_data.media.transfer_media = true;
+					form_data.media.exit_media = true;
+				}
+			}
+		},
+
+		menuNormalizeData: function(form_data) {
+			if(!form_data.media.greeting) {
+				delete form_data.media.greeting;
+			}
+
+			if(form_data.hunt_allow == '') {
+				delete form_data.hunt_allow;
+			}
+
+			if(form_data.hunt_deny == '') {
+				delete form_data.hunt_deny;
+			}
+
+			if(form_data.record_pin == '') {
+				delete form_data.record_pin;
+			}
+
+			return form_data;
 		},
 
 		menuDefineActions: function(args) {
@@ -104,11 +370,11 @@ define(function(require){
 					edit: function(node, callback) {
 						var _this = this;
 
-						self.menuList(function(data) {
+						self.menuList(function(menus) {
 							var popup, popup_html;
 
 							popup_html = $(monster.template(self, 'menu-callflowEdit', {
-								items: monster.util.sort(data.data),
+								items: monster.util.sort(menus),
 								selected: node.getMetadata('id') || ''
 							}));
 
@@ -117,22 +383,18 @@ define(function(require){
 							}
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).dataset('action') == 'edit') ?
+								var _data = ($(this).data('action') == 'edit') ?
 												{ id: $('#menu_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
-								winkstart.publish('menu.popup_edit', _data, function(_data) {
-									node.setMetadata('id', _data.data.id || 'null');
-
-									node.caption = _data.data.name || '';
+								self.menuPopupEdit(_data, function(menu) {
+									node.setMetadata('id', menu.id || 'null');
+									node.caption = menu.name || '';
 
 									popup.dialog('close');
 								});
 							});
-
-							console.log(popup_html);
-							console.log(popup_html.find('#add'));
 
 							popup_html.find('#add').on('click', function() {
 								console.log('click');
@@ -155,7 +417,82 @@ define(function(require){
 					}
 				}
 			});
-		}
+		},
+
+		menuList: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'menu.list',
+				data: {
+					accountId: self.accountId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		menuGet: function(menuId, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'menu.get',
+				data: {
+					accountId: self.accountId,
+					menuId: menuId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		menuCreate: function(data, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'menu.create',
+				data: {
+					accountId: self.accountId,
+					data: data
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		menuUpdate: function(data, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'menu.update',
+				data: {
+					accountId: self.accountId,
+					menuId: data.id,
+					data: data
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		menuDelete: function(menuId, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'menu.delete',
+				data: {
+					accountId: self.accountId,
+					menuId: menuId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
 	};
 
 	return app;

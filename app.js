@@ -270,11 +270,11 @@ define(function(require){
 
 		renderButtons: function() {
 			var self = this,
-				buttons_html = $(monster.template(self, 'buttons'));
+				buttons = $(monster.template(self, 'buttons'));
 
 			$('.buttons').empty();
 
-			$('.save', buttons_html).click(function() {
+			$('.save', buttons).click(function() {
 				if(self.flow.numbers && self.flow.numbers.length > 0) {
 					self.save();
 				}
@@ -283,7 +283,7 @@ define(function(require){
 				}
 			});
 
-			$('.delete', buttons_html).click(function() {
+			$('.delete', buttons).click(function() {
 				if(self.flow.id) {
 					monster.ui.confirm(self.i18n.active().oldCallflows.are_you_sure, function() {
 						self.callApi({
@@ -309,7 +309,7 @@ define(function(require){
 				}
 			});
 
-			$('.buttons').append(buttons_html);
+			$('.buttons').append(buttons);
 		},
 
 		// Callflow JS code
@@ -377,7 +377,7 @@ define(function(require){
 			self.flow.nodes = self.flow.root.nodes();
 		},
 
-	 	// Create a new branch node for the flow
+		// Create a new branch node for the flow
 		branch: function(actionName) {
 			var self = this;
 
@@ -536,58 +536,58 @@ define(function(require){
 		},
 
 		repaintFlow: function() {
-            var self = this;
+			var self = this;
 
-            // Let it there for now, if we need to save callflows automatically again.
-            /*if('savable' in THIS.flow) {
-                THIS.save_callflow_no_loading();
-            }*/
+			// Let it there for now, if we need to save callflows automatically again.
+			/*if('savable' in THIS.flow) {
+				THIS.save_callflow_no_loading();
+			}*/
 
-            self.flow.savable = true;
+			self.flow.savable = true;
 
-            var target = $('#ws_cf_flow').empty();
+			var target = $('#ws_cf_flow').empty();
 
-            target.append(this.getUIFlow());
+			target.append(this.getUIFlow());
 
-            var current_flow = self.stringify_flow(self.flow);
-            if(!('original_flow' in self) || self.original_flow.split('|')[0] !== current_flow.split('|')[0]) {
-                self.original_flow = current_flow;
-                self.show_pending_change(false);
-            } else {
-                self.show_pending_change(self.original_flow !== current_flow);
-            }
-        },
+			var current_flow = self.stringify_flow(self.flow);
+			if(!('original_flow' in self) || self.original_flow.split('|')[0] !== current_flow.split('|')[0]) {
+				self.original_flow = current_flow;
+				self.show_pending_change(false);
+			} else {
+				self.show_pending_change(self.original_flow !== current_flow);
+			}
+		},
 
-        show_pending_change: function(pending_change) {
-            var self = this;
-            if(pending_change) {
-                $('#pending_change', '#ws_callflow').show();
-                $('.save', '#ws_callflow').addClass('pulse-box');
-            } else {
-                $('#pending_change', '#ws_callflow').hide();
-                $('.save', '#ws_callflow').removeClass('pulse-box');
-            }
-        },
+		show_pending_change: function(pending_change) {
+			var self = this;
+			if(pending_change) {
+				$('#pending_change', '#ws_callflow').show();
+				$('.save', '#ws_callflow').addClass('pulse-box');
+			} else {
+				$('#pending_change', '#ws_callflow').hide();
+				$('.save', '#ws_callflow').removeClass('pulse-box');
+			}
+		},
 
-        stringify_flow: function(flow) {
-            var s_flow = flow.id + "|" + (!flow.name ? 'undefined' : flow.name),
-                first_iteration;
-            s_flow += "|NUMBERS";
-            $.each(flow.numbers, function(key, value) {
-                s_flow += "|" + value;
-            });
-            s_flow += "|NODES";
-            $.each(flow.nodes, function(key, value) {
-                s_flow += "|" + key + "::";
-                first_iteration = true;
-                $.each(value.data.data, function(k,v) {
-                    if(!first_iteration) { s_flow += '//'; }
-                    else { first_iteration = false; }
-                    s_flow += k+':'+v;
-                });
-            });
-            return s_flow;
-        },
+		stringify_flow: function(flow) {
+			var s_flow = flow.id + "|" + (!flow.name ? 'undefined' : flow.name),
+				first_iteration;
+			s_flow += "|NUMBERS";
+			$.each(flow.numbers, function(key, value) {
+				s_flow += "|" + value;
+			});
+			s_flow += "|NODES";
+			$.each(flow.nodes, function(key, value) {
+				s_flow += "|" + key + "::";
+				first_iteration = true;
+				$.each(value.data.data, function(k,v) {
+					if(!first_iteration) { s_flow += '//'; }
+					else { first_iteration = false; }
+					s_flow += k+':'+v;
+				});
+			});
+			return s_flow;
+		},
 
 		getUIFlow: function() {
 			var self = this;
@@ -1066,6 +1066,61 @@ define(function(require){
 			else {
 				monster.ui.alert(self.i18n.active().oldCallflows.you_need_to_select_a_number);
 			}
+		},
+
+		winkstartTabs: function(template, advanced) {
+			var buttons = template.find('.view-buttons'),
+				tabs = template.find('.tabs');
+
+			if(advanced) {
+				buttons.find('.btn').removeClass('activate');
+				buttons.find('.advanced').addClass('activate');
+			} else {
+				if(monster.config.advancedView) {
+					buttons.find('.btn').removeClass('activate');
+					buttons.find('.advanced').addClass('activate');
+				} else {
+					 tabs.hide('blind');
+				}
+			}
+
+			if(tabs.find('li').length < 2){
+				buttons.hide();
+			}
+
+			buttons.find('.basic').on('click', function(){
+				var $this = $(this);
+
+				if(!$this.hasClass('activate')){
+					buttons.find('.btn').removeClass('activate');
+					$this.addClass('activate');
+					tabs.find('li:first-child > a').trigger('click');
+					tabs.hide('blind');
+				}
+			});
+
+			buttons.find('.advanced').click(function(){
+				var $this = $(this);
+
+				if(!$this.hasClass('activate')){
+					buttons.find('.btn').removeClass('activate');
+					$this.addClass('activate');
+					tabs.show('blind');
+				}
+			});
+
+			tabs.find('li').on('click', function(ev) { 
+				ev.preventDefault();
+
+				var $this = $(this),
+					link = $this.find('a').attr('href');
+
+				tabs.find('li').removeClass('active');
+				template.find('.pill-content >').removeClass('active');
+
+				$this.addClass('active');
+				template.find(link).addClass('active');
+			});
 		}
 	};
 

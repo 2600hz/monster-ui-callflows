@@ -6,12 +6,11 @@
 				<div class="select_wrapper">
 					<select id="menu_key_selector">
 						{{#each items}}
-							{{debug @value}}
 							{{#compare ../selected "===" @key}}
-								<option value="{{ @key }}" SELECTED>{{ ../@value }}</option>
+								<option value="{{ @key }}" SELECTED>{{ this }}</option>
 							{{else}}
-								{{#compare ../@value "!=" "#"}}
-								<option value="{{ @key }}">{{ ../../@value }}</option>
+								{{#compare @key "!==" "#"}}
+								<option value="{{ @key }}">{{ this }}</option>
 								{{/compare}}
 							{{/compare}}
 						{{/each}}
