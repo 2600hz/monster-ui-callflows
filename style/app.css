@@ -955,7 +955,8 @@
 	-webkit-box-shadow:4px 5px 10px 1px #262626;
 }
 
-.callflows-port .pill-content h3, .row h3 {
+.callflows-port .pill-content h3, 
+.callflows-port .row h3 {
 	margin-bottom:20px;
 	color:#0ac9ff;
 }

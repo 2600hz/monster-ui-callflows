@@ -217,7 +217,7 @@ define(function(require){
 				ev.preventDefault();
 
 				monster.ui.confirm(self.i18n.active().callflows.menu.are_you_sure_you_want_to_delete, function() {
-					self.menuDelete(data, callbacks.delete_success, callbacks.delete_error);
+					self.menuDelete(data.data.id, callbacks.delete_success, callbacks.delete_error);
 				});
 			});
 
