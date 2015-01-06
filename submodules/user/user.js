@@ -32,64 +32,16 @@ define(function(require){
 		],
 
 		resources: {
-			'user.list_classifiers': {
-				url: '{api_url}/accounts/{account_id}/phone_numbers/classifiers',
-				contentType: 'application/json',
-				verb: 'GET'
-			},
-			'user.list': {
-				url: '{api_url}/accounts/{account_id}/users',
-				contentType: 'application/json',
-				verb: 'GET'
-			},
-			'user.list_no_loading': {
-				url: '{api_url}/accounts/{account_id}/users',
-				contentType: 'application/json',
-				verb: 'GET',
-				trigger_events: false
-			},
-			'user.get': {
-				url: '{api_url}/accounts/{account_id}/users/{user_id}',
-				contentType: 'application/json',
-				verb: 'GET'
-			},
-			'user.create': {
-				url: '{api_url}/accounts/{account_id}/users',
-				contentType: 'application/json',
-				verb: 'PUT'
-			},
-			'user.update': {
-				url: '{api_url}/accounts/{account_id}/users/{user_id}',
-				contentType: 'application/json',
-				verb: 'POST'
-			},
-			'user.delete': {
-				url: '{api_url}/accounts/{account_id}/users/{user_id}',
-				contentType: 'application/json',
-				verb: 'DELETE'
-			},
-			'user.hotdesks': {
-				url: '{api_url}/accounts/{account_id}/users/{user_id}/hotdesks',
-				contentType: 'application/json',
-				verb: 'GET'
-			},
 			'user.device_list': {
 				url: '{api_url}/accounts/{account_id}/devices?filter_owner_id={owner_id}',
 				contentType: 'application/json',
-				verb: 'GET',
-				trigger_events: false
+				verb: 'GET'
 			},
 			'user.device_new_user': {
 				url: '{api_url}/accounts/{account_id}/devices?filter_new_user={owner_id}',
 				contentType: 'application/json',
-				verb: 'GET',
-				trigger_events: false
-			},
-			'user.account_get': {
-				url: '{api_url}/accounts/{account_id}',
-				contentType: 'application/json',
 				verb: 'GET'
-			},
+			}
 		},
 
 		save_user: function(form_data, data, success, error) {
@@ -97,41 +49,43 @@ define(function(require){
 				normalized_data = self.normalize_data($.extend(true, {}, data.data, form_data));
 
 			if(typeof data.data == 'object' && data.data.id) {
-				winkstart.request(true, 'user.update', {
-						account_id: winkstart.apps['voip'].account_id,
-						api_url: winkstart.apps['voip'].api_url,
-						user_id: data.data.id,
+				self.callApi({
+					resource: 'user.update',
+					data: {
+						accountId: self.accountId,
+						userId: data.data.id,
 						data: normalized_data
 					},
-					function(_data, status) {
+					success: function(_data, status) {
 						if(typeof success == 'function') {
 							success(_data, status, 'update');
 						}
 					},
-					function(_data, status) {
+					error: function(_data, status) {
 						if(typeof error == 'function') {
 							error(_data, status, 'update');
 						}
 					}
-				);
+				});
 			}
 			else {
-				winkstart.request(true, 'user.create', {
-						account_id: winkstart.apps['voip'].account_id,
-						api_url: winkstart.apps['voip'].api_url,
+				self.callApi({
+					resource: 'user.create',
+					data: {
+						accountId: self.accountId,
 						data: normalized_data
 					},
-					function(_data, status) {
+					success: function(_data, status) {
 						if(typeof success == 'function') {
 							success(_data, status, 'create');
 						}
 					},
-					function(_data, status) {
+					error: function(_data, status) {
 						if(typeof error == 'function') {
 							error(_data, status, 'create');
 						}
 					}
-				);
+				});
 			}
 		},
 
@@ -248,11 +202,12 @@ define(function(require){
 
 			winkstart.parallel({
 				list_classifiers: function(callback) {
-					winkstart.request('user.list_classifiers', {
-							account_id: winkstart.apps['voip'].account_id,
-							api_url: winkstart.apps['voip'].api_url
+					self.callApi({
+						resource: 'numbers.listClassifiers',
+						data: {
+							accountId: self.accountId
 						},
-						function(_data_classifiers, status) {
+						success: function(_data_classifiers, status) {
 							if('data' in _data_classifiers) {
 								$.each(_data_classifiers.data, function(k, v) {
 									defaults.field_data.call_restriction[k] = {
@@ -264,8 +219,7 @@ define(function(require){
 							}
 							callback(null, _data_classifiers);
 						}
-					);
-
+					});
 				},
 				media_list: function(callback) {
 					winkstart.request(true, 'media.list', {
@@ -294,17 +248,18 @@ define(function(require){
 				},
 				user_get: function(callback) {
 					if(typeof data == 'object' && data.id) {
-						winkstart.request(true, 'user.get', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url,
-								user_id: data.id
+						self.callApi({
+							resource: 'user.get',
+							data: {
+								accountId: self.accountId,
+								userId: data.id
 							},
-							function(_data, status) {
+							success: function(_data, status) {
 								self.migrate_data(_data);
 
 								callback(null, _data);
 							}
-						);
+						});
 					}
 					else {
 						self.random_id = $.md5(winkstart.random_string(10)+new Date().toString());
@@ -315,12 +270,13 @@ define(function(require){
 				},
 				user_hotdesks: function(callback) {
 					if(typeof data == 'object' && data.id) {
-						winkstart.request(true, 'user.hotdesks', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url,
-								user_id: data.id
+						self.callApi({
+							resource: 'user.hotdesks',
+							data: {
+								accountId: self.accountId,
+								userId: data.id
 							},
-							function(_data_devices) {
+							success: function(_data_devices) {
 								defaults.field_data.hotdesk_enabled = true;
 								defaults.field_data.device_list = {};
 
@@ -334,11 +290,11 @@ define(function(require){
 
 								callback(null, _data_devices);
 							},
-							function(_data, status) {
+							error: function(_data, status) {
 								//callback({api_name: 'Hotdesk'}, _data);
 								callback(null, defaults);
 							}
-						);
+						});
 					}
 					else {
 						callback(null, defaults);
@@ -363,22 +319,23 @@ define(function(require){
 			var self = this;
 
 			if(typeof data.data == 'object' && data.data.id) {
-				winkstart.request(true, 'user.delete', {
-						account_id: winkstart.apps['voip'].account_id,
-						api_url: winkstart.apps['voip'].api_url,
-						user_id: data.data.id
+				self.callApi({
+					resource: 'user.delete',
+					data: {
+						accountId: self.accountId,
+						userId: data.data.id
 					},
-					function(_data, status) {
+					success: function(_data, status) {
 						if(typeof success == 'function') {
 							success(_data, status);
 						}
 					},
-					function(_data, status) {
+					error: function(_data, status) {
 						if(typeof error == 'function') {
 							error(_data, status);
 						}
 					}
-				);
+				});
 			}
 		},
 
@@ -486,12 +443,12 @@ define(function(require){
 						}
 
 						if(form_data.password === undefined || winkstart.is_password_valid(form_data.password)) {
-
-							winkstart.request('user.account_get', {
-									api_url: winkstart.apps['voip'].api_url,
-									account_id: winkstart.apps['voip'].account_id,
+							self.callApi({
+								resource: 'account.get',
+								data: {
+									accountId: self.accountId
 								},
-								function(_data, status) {
+								success: function(_data, status) {
 									if(form_data.priv_level == 'admin') {
 										form_data.apps = form_data.apps || {};
 										if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
@@ -532,8 +489,7 @@ define(function(require){
 										}
 									}, winkstart.error_message.process_error(callbacks.save_error));
 								}
-							);
-
+							});
 						}
 					},
 					function() {
@@ -822,11 +778,12 @@ define(function(require){
 		render_list: function(parent, callback) {
 			var self = this;
 
-			winkstart.request(true, 'user.list', {
-					account_id: winkstart.apps['voip'].account_id,
-					api_url: winkstart.apps['voip'].api_url
+			self.callApi({
+				resource: 'user.list',
+				data: {
+					accountId: self.accountId
 				},
-				function(data, status) {
+				success: function(data, status) {
 					var map_crossbar_data = function(data) {
 						var new_list = [];
 
@@ -863,7 +820,7 @@ define(function(require){
 
 					callback && callback();
 				}
-			);
+			});
 		},
 
 		activate: function(args) {
@@ -921,11 +878,12 @@ define(function(require){
 				'users': {
 					icon: 'user',
 					get_stat: function(callback) {
-						winkstart.request('user.list_no_loading', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url
+						self.callApi({
+							resource: 'user.list',
+							data: {
+								accountId: self.accountId
 							},
-							function(_data, status) {
+							success: function(_data, status) {
 								var stat_attributes = {
 									name: 'users',
 									number: _data.data.length,
@@ -936,11 +894,10 @@ define(function(require){
 									callback(stat_attributes);
 								}
 							},
-							function(_data, status) {
+							error: function(_data, status) {
 								callback({error: true});
 							}
-						);
-
+						});
 					},
 					click_handler: function() {
 						winkstart.publish('user.activate');
@@ -982,11 +939,12 @@ define(function(require){
 						return returned_value;
 					},
 					edit: function(node, callback) {
-						winkstart.request(true, 'user.list', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url
+						self.callApi({
+							resource: 'user.list',
+							data: {
+								accountId: self.accountId
 							},
-							function(data, status) {
+							success: function(data, status) {
 								var popup, popup_html;
 
 								$.each(data.data, function() {
@@ -1049,7 +1007,7 @@ define(function(require){
 									}
 								});
 							}
-						);
+						});
 					}
 				},
 				'hotdesk[action=login]': {
