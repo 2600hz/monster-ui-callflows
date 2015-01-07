@@ -206,8 +206,13 @@ define(function(require){
 					isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
 
 				if(!isFeatureCode) {
-					callflow.description = callflow.name;
-					callflow.title = listNumbers;
+					if(callflow.name) {
+						callflow.description = listNumbers;
+						callflow.title = callflow.name;
+					}
+					else {
+						callflow.title = listNumbers
+					}
 
 					formattedList.push(callflow);
 				}

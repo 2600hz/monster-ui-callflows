@@ -955,7 +955,8 @@
 	-webkit-box-shadow:4px 5px 10px 1px #262626;
 }
 
-.callflows-port .pill-content h3, .row h3 {
+.callflows-port .pill-content h3, 
+.callflows-port .row h3 {
 	margin-bottom:20px;
 	color:#0ac9ff;
 }
@@ -1048,14 +1049,23 @@
 }
 
 /* From layout.css */
-.callflow-port .main_content {
+.callflows-port .main_content {
 	margin: 0 auto;
-	padding: 10px 0;
+	padding: 10px 0 15px 0;
 	width: 800px;
 }
 
 /* Custom specific bootstrap */
-.callflow-port form label:not(.monster-invalid) {
+.callflows-port input[type="checkbox"] {
+	margin: 0 5px 0 0;
+}
+
+/* Hack for callflow quick edit popup */
+.dialog_popup.callflows-port form label:not(.monster-invalid) {
+	color: #333;
+}
+
+.callflows-port form label:not(.monster-invalid) {
 	float: left;
 	font-size: 13px;
 	line-height: 18px;
@@ -1065,20 +1075,20 @@
 	color:#e6e6e6;
 }
 
-.callflow-port label.monster-invalid {
+.callflows-port label.monster-invalid {
 	color: orange;
 	margin-top: -10px;
 }
 
-.callflow-port form .input {
+.callflows-port form .input {
 	margin-left: 150px;
 }
 
-.callflow-port form .clearfix {
+.callflows-port form .clearfix {
 	margin-bottom: 10px;
 }
 
-.callflow-port form .inputs-list label {
+.callflows-port form .inputs-list label {
 	display: block;
 	float: none;
 	line-height: 18px;
@@ -1089,75 +1099,75 @@
 	width: auto;
 }
 
-.callflow-port form .inputs-list input[type="radio"],
-.callflow-port form .inputs-list input[type="checkbox"] {
+.callflows-port form .inputs-list input[type="radio"],
+.callflows-port form .inputs-list input[type="checkbox"] {
 	float: left;
 	margin-bottom: 0;
 	margin-left: -20px;
 }
 
-.callflow-port form input.span4, 
-.callflow-port form textarea.span4 {
+.callflows-port form input.span4, 
+.callflows-port form textarea.span4 {
 	display: inline-block;
 	float: none;
 	margin-left: 0;
 	width: 210px;
 }
 
-.callflow-port li {
+.callflows-port li {
 	color: #808080;
 	line-height: 18px;
 }
 
 /* Still Bootstrap, but Tabs */
-.callflow-port .tab-content > .tab-pane,
-.callflow-port .pill-content > .pill-pane,
-.callflow-port .tab-content > div, 
-.callflow-port .pill-content > div {
+.callflows-port .tab-content > .tab-pane,
+.callflows-port .pill-content > .pill-pane,
+.callflows-port .tab-content > div, 
+.callflows-port .pill-content > div {
 	display: none;
 }
 
-.callflow-port .tab-content > .active,
-.callflow-port .pill-content > .active {
+.callflows-port .tab-content > .active,
+.callflows-port .pill-content > .active {
 	display: block;
 }
 
-.callflow-port .tabs:before, 
-.callflow-port .pills:before, 
-..callflow-port tabs:after, 
-.callflow-port .pills:after {
+.callflows-port .tabs:before, 
+.callflows-port .pills:before, 
+..callflows-port tabs:after, 
+.callflows-port .pills:after {
 	content: "";
 	display: table;
 }
 
-.callflow-port .tabs:after, 
-.callflow-port .pills:after {
+.callflows-port .tabs:after, 
+.callflows-port .pills:after {
 	clear: both;
 }
 
-.callflow-port .tabs:before,
-.callflow-port .pills:before,
-.callflow-port .tabs:after,
-.callflow-port .pills:after {
+.callflows-port .tabs:before,
+.callflows-port .pills:before,
+.callflows-port .tabs:after,
+.callflows-port .pills:after {
 	content: "";
 	display: table;
 }
 
-.callflow-port .pills {
+.callflows-port .pills {
 	list-style: outside none none;
 	margin: 0 0 18px;
 	padding: 0;
 }
 
-.callflow-port .pills > li {
+.callflows-port .pills > li {
 	float: left;
 }
 
-.callflow-port .pills > li > a {
+.callflows-port .pills > li > a {
 	display: block;
 }
 
-.callflow-port .tabs {
+.callflows-port .tabs {
 	list-style: none;
 	padding: 0;
 	background-color:none;
@@ -1194,7 +1204,7 @@
 	border-right-color: #1a1a1a;
 }
 
-.callflow-port .tabs > li > a {
+.callflows-port .tabs > li > a {
 	border-radius: 4px 4px 0 0;
 	display: block;
 	line-height: 34px;
@@ -1202,7 +1212,7 @@
 	color: #fff;
 }
 
-.callflow-port .tabs > li > a:hover {
+.callflows-port .tabs > li > a:hover {
 	text-decoration: none;
 }
 

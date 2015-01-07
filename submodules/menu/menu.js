@@ -16,22 +16,10 @@ define(function(require){
 				target = _target || $('#menu-view', parent),
 				_callbacks = _callbacks || {},
 				callbacks = {
-					save_success: _callbacks.save_success || function(_data) {
-						self.render_list(parent);
-
-						self.edit_menu({ id: _data.data.id }, parent, target, callbacks);
-					},
-
+					save_success: _callbacks.save_success,
 					save_error: _callbacks.save_error,
-
-					delete_success: _callbacks.delete_success || function() {
-						target.empty();
-
-						self.render_list(parent);
-					},
-
+					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-
 					after_render: _callbacks.after_render
 				},
 				defaults = {
@@ -97,7 +85,7 @@ define(function(require){
 		menuPopupEdit: function(data, callback, data_defaults) {
 			var self = this,
 				popup, 
-				popup_html = $('<div class="inline_popup callflow-port"><div class="inline_content main_content"/></div>');
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
 			self.menuEdit(data, popup_html, $('.inline_content', popup_html), {
 				save_success: function(_data) {
@@ -217,7 +205,7 @@ define(function(require){
 				ev.preventDefault();
 
 				monster.ui.confirm(self.i18n.active().callflows.menu.are_you_sure_you_want_to_delete, function() {
-					self.menuDelete(data, callbacks.delete_success, callbacks.delete_error);
+					self.menuDelete(data.data.id, callbacks.delete_success, callbacks.delete_error);
 				});
 			});
 
@@ -503,7 +491,7 @@ define(function(require){
 					callback && callback(data.data);
 				}
 			});
-		},
+		}
 	};
 
 	return app;
