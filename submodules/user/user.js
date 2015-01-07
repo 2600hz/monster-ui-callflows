@@ -31,19 +31,6 @@ define(function(require){
 				{ name: '#call_forward_number',					regex: /^[\+]?[0-9]*$/ }
 		],
 
-		resources: {
-			'user.device_list': {
-				url: '{api_url}/accounts/{account_id}/devices?filter_owner_id={owner_id}',
-				contentType: 'application/json',
-				verb: 'GET'
-			},
-			'user.device_new_user': {
-				url: '{api_url}/accounts/{account_id}/devices?filter_new_user={owner_id}',
-				contentType: 'application/json',
-				verb: 'GET'
-			}
-		},
-
 		save_user: function(form_data, data, success, error) {
 			var self = this,
 				normalized_data = self.normalize_data($.extend(true, {}, data.data, form_data));
@@ -635,14 +622,14 @@ define(function(require){
 				parent = $('#tab_devices', parent);
 
 			if(data.data.id) {
-				var request_string = data.data.new_user ? 'user.device_new_user' : 'user.device_list';
+				var filters = data.data.new_user ? { owner_id: data.data.id } : { new_user: data.data.id };
 
-				winkstart.request(true, request_string, {
-						account_id: winkstart.apps['voip'].account_id,
-						api_url: winkstart.apps['voip'].api_url,
-						owner_id: data.data.id
+				self.callApi({
+					resource: ' device.list',
+					data: {
+						filters: filters
 					},
-					function(_data, status) {
+					success: function(_data, status) {
 						$('.rows', parent).empty();
 						if(_data.data.length > 0) {
 							$.each(_data.data, function(k, v) {
@@ -670,7 +657,7 @@ define(function(require){
 							}));
 						}
 					}
-				);
+				});
 			}
 			else {
 				$('.rows', parent).empty()
