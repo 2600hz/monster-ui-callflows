@@ -506,28 +506,31 @@ define(function(require){
 				});
 
 				$('.inline_action_media', device_html).click(function(ev) {
-					var _data = ($(this).dataset('action') == 'edit') ? { id: $('#music_on_hold_media_id', device_html).val() } : {},
+					var _data = ($(this).data('action') == 'edit') ? { id: $('#music_on_hold_media_id', device_html).val() } : {},
 						_id = _data.id;
 
 					ev.preventDefault();
 
-					winkstart.publish('media.popup_edit', _data, function(_data) {
-						/* Create */
-						if(!_id) {
-							$('#music_on_hold_media_id', device_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.name +'</option>');
-							$('#music_on_hold_media_id', device_html).val(_data.data.id);
+					monster.pub('callflows.media.editPopup', {
+						data: _data,
+						callback: function(media) {
+							/* Create */
+							if(!_id) {
+								$('#music_on_hold_media_id', device_html).append('<option id="'+ media.id  +'" value="'+ media.id +'">'+ media.name +'</option>');
+								$('#music_on_hold_media_id', device_html).val(media.id);
 
-							$('#edit_link_media', device_html).show();
-						}
-						else {
-							/* Update */
-							if('id' in _data.data) {
-								$('#music_on_hold_media_id #'+_data.data.id, device_html).text(_data.data.name);
+								$('#edit_link_media', device_html).show();
 							}
-							/* Delete */
 							else {
-								$('#music_on_hold_media_id #'+_id, device_html).remove();
-								$('#edit_link_media', device_html).hide();
+								/* Update */
+								if(media.hasOwnProperty('id')) {
+									$('#music_on_hold_media_id #'+ media.id, device_html).text(media.name);
+								}
+								/* Delete */
+								else {
+									$('#music_on_hold_media_id #'+_id, device_html).remove();
+									$('#edit_link_media', device_html).hide();
+								}
 							}
 						}
 					});
