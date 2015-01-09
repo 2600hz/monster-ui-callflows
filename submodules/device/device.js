@@ -17,12 +17,16 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'deviceDefineActions',
-			'device.popupEdit': 'devicePopupEdit'
+			'callflows.device.popupEdit': 'devicePopupEdit'
 		},
 
-		devicePopupEdit: function(data, callback, data_defaults) {
+		devicePopupEdit: function(args) {
 			var self = this,
-				popup, popup_html;
+				popup,
+				popup_html,
+				data = args.data,
+				callback = args.callback,
+				data_defaults = args.data_defaults;
 
 			popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
@@ -50,6 +54,7 @@ define(function(require){
 		},
 
 		deviceEdit: function(data, _parent, _target, _callbacks, data_defaults) {
+			console.log(data);
 			var self = this,
 				parent = _parent || $('#device-content'),
 				target = _target || $('#device-view', parent),
@@ -1056,14 +1061,17 @@ define(function(require){
 
 								ev.preventDefault();
 
-								self.devicePopupEdit(_data, function(device) {
-									node.setMetadata('id', device.id || 'null');
-									node.setMetadata('timeout', $('#parameter_input', popup_html).val());
-									node.setMetadata('can_call_self', $('#device_can_call_self', popup_html).is(':checked'));
+								self.devicePopupEdit({
+									data: _data,
+									callback: function(device) {
+										node.setMetadata('id', device.id || 'null');
+										node.setMetadata('timeout', $('#parameter_input', popup_html).val());
+										node.setMetadata('can_call_self', $('#device_can_call_self', popup_html).is(':checked'));
 
-									node.caption = device.name || '';
+										node.caption = device.name || '';
 
-									popup.dialog('close');
+										popup.dialog('close');
+									}
 								});
 							});
 

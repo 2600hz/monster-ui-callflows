@@ -569,17 +569,21 @@ define(function(require){
 					defaults.owner_id = data.data.id;
 				}
 
-				monster.pub('device.popupEdit', data_device, function(_data) {
-					data_devices = {
-						data: { },
-						field_data: {
-							device_types: data.field_data.device_types
-						}
-					};
-					data_devices.data = _data.data.new_user ? { new_user: true, id: self.random_id } : { id: data.data.id };
+				monster.pub('callflows.device.popupEdit', {
+					data: data_device,
+					callback: function(_data) {
+						data_devices = {
+							data: { },
+							field_data: {
+								device_types: data.field_data.device_types
+							}
+						};
+						data_devices.data = _data.data.new_user ? { new_user: true, id: self.random_id } : { id: data.data.id };
 
-					self.userRenderDeviceList(data_devices, user_html);
-				}, defaults);
+						self.userRenderDeviceList(data_devices, user_html);
+					},
+					data_defaults: defaults
+				});
 			});
 
 			$(user_html).delegate('.action_device.delete', 'click', function() {
@@ -614,17 +618,21 @@ define(function(require){
 					defaults.owner_id = data.data.id;
 				}
 
-				winkstart.publish('device.popup_edit', data_device, function(_data) {
-					var data_devices = {
-						data: { },
-						field_data: {
-							device_types: data.field_data.device_types
-						}
-					};
-					data_devices.data = self.random_id ? { new_user: true, id: self.random_id } : { id: data.data.id };
+				monster.pub('callflows.device.popupEdit', {
+					data: data_device,
+					callback: function(_data) {
+						var data_devices = {
+							data: { },
+							field_data: {
+								device_types: data.field_data.device_types
+							}
+						};
+						data_devices.data = self.random_id ? { new_user: true, id: self.random_id } : { id: data.data.id };
 
-					self.userRenderDeviceList(data_devices, user_html);
-				}, defaults);
+						self.userRenderDeviceList(data_devices, user_html);
+					},
+					data_defaults: defaults
+				});
 			});
 
 			(target)
