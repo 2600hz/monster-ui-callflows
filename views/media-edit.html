@@ -1,0 +1,159 @@
+<div>
+	<div class="whapp-header clearfix">
+		{{#if data.id}}
+			<h1>{{ i18n.callflows.media.edit_media }}</h1>
+		{{else}}
+			<h1>{{ i18n.callflows.media.create_media }}</h1>
+		{{/if}}
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.media.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.media.advanced }}</button>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.media.basic }}</a></li>
+			<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.media.options }}</a></li>
+		</ul>
+		 <form id="media-form" action="" enctype="multipart/form-data" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.media.name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.media.name }}" value="{{data.name}}" rel="popover" data-content="{{ i18n.callflows.media.name_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="media_type">{{ i18n.callflows.media.media_type }}</label>
+						<div class="input">
+							<select class="medium" name="media_source" id="media_type">
+								<option value="upload">{{ i18n.callflows.media.file }}</option>
+								{{#compare data.media_source "==" "tts"}}
+									<option selected="selected" value="tts">{{ i18n.callflows.media.tts }}</option>
+								{{else}}
+									<option value="tts">{{ i18n.callflows.media.tts }}</option>
+								{{/compare}}
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix file">
+						<label for="fileInput">{{ i18n.callflows.media.file_input }}</label>
+						<div id="upload_div" class="input">
+							<input class="input-file" id="file" name="upload_media" type="file">
+						</div>
+						{{#if data.id }}
+							<div class="input player_file">
+								<span class="uneditable-input">{{data.description}}</span>
+							</div>
+					</div>
+						<div class="clearfix player_file file">
+							<div class="input">
+								<button class="btn" id="change_link">{{ i18n.callflows.media.change_file }}</button>
+								<button class="btn" id="download_link">{{ i18n.callflows.media.download_file }}</button>
+							</div>
+						</div>
+						{{else}}
+					</div>
+						{{/if}}
+
+					<div class="clearfix tts">
+						<label for="tts_text">{{ i18n.callflows.media.text }}</label>
+						<div class="input">
+							{{#if data.tts}}
+								<input class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}" value="{{data.tts.text}}"/>
+							{{else}}
+								<input class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}" />
+							{{/if}}
+						</div>
+					</div>
+
+					<div class="clearfix tts">
+						<label for="tts_voice">{{ i18n.callflows.media.select }}</label>
+						<div class="input">
+							<select class="medium" name="tts.voice" id="tts_voice">
+								{{#if data.tts}}
+									<option selected="selected">{{data.tts.voice}}</option>
+								{{/if}}
+									<option>female/en-US</option>
+									<option>male/en-US</option>
+									<option>female/en-CA</option>
+									<option>female/en-AU</option>
+									<option>female/en-GB</option>
+									<option>male/en-GB</option>
+									<option>female/es-US</option>
+									<option>male/es-US</option>
+									<option>female/us-US</option>
+									<option>female/zh-CN</option>
+									<option>male/zh-CN</option>
+									<option>female/zh-HK</option>
+									<option>female/zh-TW</option>
+									<option>female/ja-JP</option>
+									<option>male/ja-JP</option>
+									<option>female/ko-KR</option>
+									<option>male/ko-KR</option>
+									<option>female/da-DK</option>
+									<option>female/de-DE</option>
+									<option>male/de-DE</option>
+									<option>female/ca-ES</option>
+									<option>female/es-ES</option>
+									<option>male/es-ES</option>
+									<option>female/fi-FI</option>
+									<option>female/fr-CA</option>
+									<option>male/fr-CA</option>
+									<option>female/fr-FR</option>
+									<option>male/fr-FR</option>
+									<option>female/it-IT</option>
+									<option>male/it-IT</option>
+									<option>female/nb-NO</option>
+									<option>female/nl-NL</option>
+									<option>female/pl-PL</option>
+									<option>female/pt-BR</option>
+									<option>female/pt-PT</option>
+									<option>male/pt-PT</option>
+									<option>female/ru-RU</option>
+									<option>male/ru-RU</option>
+									<option>female/sv-SE</option>
+									<option>female/hu-HU</option>
+									<option>female/cs-CZ</option>
+									<option>female/tr-TR</option>
+									<option>male/tr-TR</option>
+							</select>
+						</div>
+					</div>
+
+					<input name="auth_token" id="auth_token" type="hidden" value="{{auth_token}}"/>
+				</div>
+
+				<div id="options">
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.media.streamable_data_content }}">
+											{{#if data.streamable}}
+												<input type="checkbox" id="streamable" name="streamable" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="streamable" name="streamable" />
+											{{/if}}
+											<span>{{ i18n.callflows.media.streamable }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		 </form>
+		 <div class="buttons-right">
+			{{#if data.id}}
+				<button class="btn btn-danger media-delete">{{ i18n.callflows.media.delete }}</button>
+			{{/if}}
+			<button class="btn btn-success media-save">{{ i18n.callflows.media.save }}</button>
+		</div>
+	</div>
+</div>
