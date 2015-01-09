@@ -10,6 +10,54 @@ define(function(require){
 			'callflows.fetchActions': 'miscDefineActions'
 		},
 
+		miscGetGroupPickupData: function(callback) {
+			var self = this;
+
+			monster.parallel({
+					groups: function(callback) {
+						self.callApi({
+							resource: 'group.list',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(groups) {
+								callback(null, groups.data);
+							}
+						});
+					},
+					users: function(callback) {
+						self.callApi({
+							resource: 'user.list',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(users) {
+								_.each(users.data, function(user) {
+									user.name = user.first_name + ' ' + user.last_name;
+								});
+
+								callback(null, users.data);
+							}
+						});
+					},
+					devices: function(callback) {
+						self.callApi({
+							resource: 'device.list',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(devices) {
+								callback(null, devices.data);
+							}
+						});
+					}
+				},
+				function(err, results) {
+					callback && callback(results);
+				}
+			);
+		},
+
 		miscDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions,
@@ -1128,61 +1176,40 @@ define(function(require){
 						return node.getMetadata('name') || '';
 					},
 					edit: function(node, callback) {
-						winkstart.parallel({
-								groups: function(callback) {
-									self.groups_list(function(groups) {
-										callback(null, groups);
-									});
-								},
-								users: function(callback) {
-									self.users_list(function(users) {
-										callback(null, users);
-									});
-								},
-								devices: function(callback) {
-									self.devices_list(function(devices) {
-										callback(null, devices);
-									});
+						self.miscGetGroupPickupData(function(results) {
+							var popup, popup_html;
+
+							popup_html = $(monster.template(self, 'misc-group_pickup', {
+								data: {
+									items: results,
+									selected: node.getMetadata('device_id') || node.getMetadata('group_id') || node.getMetadata('user_id') || ''
 								}
-							},
-							function(err, results) {
-								var popup, popup_html;
+							}));
 
-								popup_html = self.templates.group_pickup.tmpl({
-									data: {
-										items: results,
-										selected: node.getMetadata('device_id') || node.getMetadata('group_id') || node.getMetadata('user_id') || ''
-									}
-								});
+							$('#add', popup_html).click(function() {
+								var selector = $('#endpoint_selector', popup_html),
+									id = selector.val(),
+									name = selector.find('#'+id).html(),
+									type = $('#'+ id, popup_html).parents('optgroup').data('type'),
+									type_id = type.substring(type, type.length - 1) + '_id';
 
-								$('#add', popup_html).click(function() {
-									var selector = $('#endpoint_selector', popup_html),
-										id = selector.val(),
-										name = selector.find('#'+id).html(),
-										type = $('#'+ id, popup_html).data('type'),
-										type_id = type.substring(type, type.length - 1) + '_id';
+								/* Clear all the useless attributes */
+								node.data.data = {};
+								node.setMetadata(type_id, id);
+								node.setMetadata('name', name);
 
-									/* Clear all the useless attributes */
-									node.data.data = {};
-									node.setMetadata(type_id, id);
-									node.setMetadata('name', name);
+								node.caption = name;
 
-									node.caption = name;
+								popup.dialog('close');
+							});
 
-									popup.dialog('close');
-								});
-
-								popup = winkstart.dialog(popup_html, {
-									title: self.i18n.active().oldCallflows.select_endpoint_title,
-									minHeight: '0',
-									beforeClose: function() {
-										if(typeof callback == 'function') {
-											callback();
-										}
-									}
-								});
-							}
-						);
+							popup = monster.ui.dialog(popup_html, {
+								title: self.i18n.active().oldCallflows.select_endpoint_title,
+								beforeClose: function() {
+									callback && callback();
+								}
+							});
+						});
 					}
 				},
 				'receive_fax[]': {
