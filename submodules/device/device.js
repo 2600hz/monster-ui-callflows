@@ -1,7 +1,8 @@
 define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
-		monster = require('monster');
+		monster = require('monster'),
+		mask = require('mask');
 
 	var app = {
 		requests: {
@@ -398,7 +399,9 @@ define(function(require){
 
 				var deviceForm = device_html.find('#device-form');
 
-				self.deviceSetProvisionerStuff(device_html, data);
+				if(monster.config.api.hasOwnProperty('provisioner') && monster.config.api.provisioner)  {
+					self.deviceSetProvisionerStuff(device_html, data);
+				}
 
 				/* Do device type specific things here */
 				if($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile']) > -1) {
@@ -410,6 +413,8 @@ define(function(require){
 				if(!$('#owner_id', device_html).val()) {
 					$('#edit_link', device_html).hide();
 				}
+
+				device_html.find('#mac_address').mask("hh:hh:hh:hh:hh:hh", {placeholder:" "});
 
 				$('#owner_id', device_html).change(function() {
 					!$('#owner_id option:selected', device_html).val() ? $('#edit_link', device_html).hide() : $('#edit_link', device_html).show();
