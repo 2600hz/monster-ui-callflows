@@ -1,3 +1,5 @@
+@import url('../submodules/device/device.css');
+
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
@@ -861,6 +863,7 @@
 .callflows-port h1 {
 	font-size:24px;
 	letter-spacing: 1px;
+	margin-top: 0;
 }
 
 .callflows-port hr {
@@ -938,7 +941,6 @@
 	border-bottom-left-radius:0;
 }
 
-
 .callflows-port .pill-content {
 	background:#373737;
 	background:-moz-linear-gradient(top, #373737 0, #2e2e2e 50%, #2f2f2f 100%);
@@ -948,6 +950,7 @@
 	background:-ms-linear-gradient(top, #373737 0, #2e2e2e 50%, #2f2f2f 100%);
 	background:linear-gradient(top, #373737 0, #2e2e2e 50%, #2f2f2f 100%);
 	filter:progid:dximagetransform.microsoft.gradient(startColorstr='#373737', endColorstr='#2f2f2f', GradientType=0);
+	color: #EEE;
 	padding:30px;
 	border:1px solid #05addc;
 	box-shadow:1px 2px 5px 0px #363636;

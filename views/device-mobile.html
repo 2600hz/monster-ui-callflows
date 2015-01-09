@@ -1,7 +1,7 @@
 <div>
-	<div class="row">
-		<div class="whapp-header">
-			{{if data.id}}
+	<div>
+		<div class="whapp-header clearfix">
+			{{#if data.id}}
 				<h1>Edit Mobile</h1>
 			{{else}}
 				<h1>Add a Mobile</h1>
@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div>
 		<ul class="tabs" data-tabs="tabs">
 			<li class="active"><a href="#basic">Basic</a></li>
 			<li><a href="#caller_id">Caller ID</a></li>
@@ -28,24 +28,21 @@
 					<div class="clearfix">
 						<label for="name">Device Nickname</label>
 						<div class="input">
-							<input class="span4" id="name" name="name" type="text" placeholder="Name" value="${data.name}" rel="popover" data-content="Friendly name for this device"/>
+							<input class="span4" id="name" name="name" type="text" placeholder="Name" value="{{ data.name }}" rel="popover" data-content="Friendly name for this device" required/>
 						</div>
 					</div>
 
-					{{if field_data.hide_owner}}
-					{{else}}
+					{{#unless field_data.hide_owner}}
 						<div class="clearfix">
 							<label for="owner_id">Assign To</label>
 							<div class="input">
 								<span rel="popover" data-content="Select the owner of this device">
 									<select name="owner_id" id="owner_id" class="medium">
-										{{each field_data.users}}
-											{{if data.owner_id == id}}
-												<option value="${id}" id="${id}" selected="selected">${first_name} ${last_name}</option>
-											{{else}}
-												<option value="${id}" id="${id}">${first_name} ${last_name}</option>
-											{{/if}}
-										{{/each}}
+										{{#select data.owner_id}}
+											{{#each field_data.users}}
+												<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
+											{{/each}}
+										{{/select}}
 									</select>
 									<div class="edit_create">
 										<a id="edit_link"  class="inline_action" data-action="edit" href="#">Edit</a>
@@ -54,33 +51,33 @@
 								</span>
 							</div>
 						</div>
-					{{/if}}
+					{{/unless}}
 
 					<div class="clearfix">
 						<label for="sip_realm">Realm</label>
 						<div class="input">
-							<span class="uneditable-input">${field_data.sip.realm}</span>
+							<span class="uneditable-input">{{ field_data.sip.realm }}</span>
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="sip_username">Username</label>
 						<div class="input">
-							<input class="span4" id="sip_username" name="sip.username" type="text" placeholder="Username" value="${data.sip.username}" rel="popover" data-content="Enter your SIP Username"/>
+							<input class="span4" id="sip_username" name="sip.username" type="text" placeholder="Username" value="{{ data.sip.username }}" rel="popover" data-content="Enter your SIP Username" required/>
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="sip_password">Password</label>
 						<div class="input">
-							<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="${data.sip.password}"/>
+							<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="name">MDN</label>
 						<div class="input">
-							<input class="span4" id="mdn" name="mobile.mdn" type="text" placeholder="5556667777" value="${data.mobile.mdn}" rel="popover" data-content="Mobile Device Number"/>
+							<input class="span4" id="mdn" name="mobile.mdn" type="text" placeholder="5556667777" value="{{ data.mobile.mdn }}" rel="popover" data-content="Mobile Device Number" required/>
 						</div>
 					</div>
 
@@ -90,11 +87,7 @@
 								<li>
 									<label>
 										<span rel="popover" data-content="Check to enable device.">
-											{{if data.enabled == true}}
-												<input type="checkbox" id="enabled" name="enabled" checked="checked" />
-											{{else}}
-												<input type="checkbox" id="enabled" name="enabled"/>
-											{{/if}}
+											<input type="checkbox" id="enabled" name="enabled"{{#if data.enabled}} checked="checked"{{/if}} />
 											<span>Enabled</span>
 										</span>
 									</label>
@@ -103,14 +96,14 @@
 						</div>
 					</div>
 
-					<input type="hidden" value="${data.device_type}" name="device_type"/>
+					<input type="hidden" value="{{ data.device_type }}" name="device_type"/>
 				</div>
 
 				<div id="caller_id">
 					<div class="clearfix">
-						<label for="name">${_t('presence_id')}</label>
+						<label for="name">{{ i18n.callflows.device.presence_id }}</label>
 						<div class="input">
-							<input class="span4" id="presence_id" name="presence_id" type="text" placeholder="${_t('presence_id_placeholder')}" value="${data.presence_id}" rel="popover" data-content="${_t('presence_id_help')}"/>
+							<input class="span4" id="presence_id" name="presence_id" type="text" placeholder="{{ i18n.callflows.device.presence_id_placeholder }}" value="{{ data.presence_id }}" rel="popover" data-content="{{ i18n.callflows.device.presence_id_help }}"/>
 						</div>
 					</div>
 
@@ -118,14 +111,14 @@
 					<div class="clearfix">
 						<label for="caller_id_name_internal">Caller ID Name</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="Name" value="${data.caller_id.internal.name}"  rel="popover" data-content="Define the Caller ID Name of this Device for In-House Calls." />
+							<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="Name" value="{{ data.caller_id.internal.name }}"  rel="popover" data-content="Define the Caller ID Name of this Device for In-House Calls." />
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_internal">Caller ID Number</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="${data.caller_id.internal.number}" rel="popover" data-content="Define the Caller ID Number of this Device for In-House Calls."/>
+							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="Define the Caller ID Number of this Device for In-House Calls."/>
 						</div>
 					</div>
 					<hr />
@@ -134,14 +127,14 @@
 					<div class="clearfix">
 						<label for="caller_id_name_external">Caller ID Name</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="Name" value="${data.caller_id.external.name}" rel="popover" data-content="Define the Caller ID Name of this Device for Outbound Calls."/>
+							<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="Name" value="{{ data.caller_id.external.name }}" rel="popover" data-content="Define the Caller ID Name of this Device for Outbound Calls."/>
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_external">Caller ID Number</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="${data.caller_id.external.number}" rel="popover" data-content="Define the Caller ID Number of this Device for Outbound Calls."/>
+							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.external.number }}" rel="popover" data-content="Define the Caller ID Number of this Device for Outbound Calls."/>
 						</div>
 					</div>
 
@@ -151,14 +144,14 @@
 					<div class="clearfix">
 						<label for="caller_id_name_emergency">Caller ID Name</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="Name" value="${data.caller_id.emergency.name}" rel="popover" data-content="Define the Caller ID Name of this Device for Emergency Calls." />
+							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="Name" value="{{ data.caller_id.emergency.name }}" rel="popover" data-content="Define the Caller ID Name of this Device for Emergency Calls." />
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_emergency">Caller ID Number</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="${data.caller_id.emergency.number}" rel="popover" data-content="Define the Caller ID Number of this Device for Emergency Calls."/>
+							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="Define the Caller ID Number of this Device for Emergency Calls."/>
 						</div>
 					</div>
 				</div>
@@ -168,15 +161,13 @@
 						<label for="sip_method">Authentication Method</label>
 						<div class="input">
 							<select name="sip.method" id="sip_method" class="medium" rel="popover" data-content="Select your authentication method">
-								{{each(key, val) field_data.sip.methods}}
-									{{if key != 'ip'}}
-										{{if data.sip.method == key}}
-											<option value="${key}" selected="selected">${val}</option>
-										{{else}}
-											<option value="${key}">${val}</option>
-										{{/if}}
-									{{/if}}
-								{{/each}}
+								{{#select data.sip.method}}
+									{{#each field_data.sip_methods}}
+										{{#compare key "!=" "ip"}}
+											<option value="{{ @key }}">{{ this }}</option>
+										{{/compare}}
+									{{/each}}
+								{{/select}}
 							</select>
 						</div>
 					</div>
@@ -185,13 +176,11 @@
 						<label for="sip_invite_format">Invite Format</label>
 						<div class="input">
 							<select name="sip.invite_format" id="sip_invite_format" class="medium" rel="popover" data-content="Enter your SIP Invite Format">
-								{{each(key, val) field_data.sip.invite_formats}}
-									{{if data.sip.invite_format == key}}
-										<option value="${key}" selected="selected">${val}</option>
-									{{else}}
-										<option value="${key}">${val}</option>
-									{{/if}}
-								{{/each}}
+								{{#select data.sip.invite_format}}
+									{{#each field_data.sip.invite_formats}}
+										<option value="{{ @key }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
 							</select>
 						</div>
 					</div>
@@ -199,7 +188,7 @@
 					<div class="clearfix">
 						<label for="sip_expire_seconds">Expire Seconds</label>
 						<div class="input">
-							<input class="span4" id="sip_expire_seconds" name="sip.expire_seconds" type="text" placeholder="Expire Seconds" value="${data.sip.expire_seconds}" rel="popover" data-content="Enter the expiration time of this device (in seconds)"/>
+							<input class="span4" id="sip_expire_seconds" name="sip.expire_seconds" type="text" placeholder="Expire Seconds" value="{{ data.sip.expire_seconds }}" rel="popover" data-content="Enter the expiration time of this device (in seconds)" required/>
 						</div>
 					</div>
 				</div>
@@ -210,13 +199,11 @@
 						<div class="input">
 							<span rel="popover" data-content="Select the media file that you want to be played by default when it's not set on a user or a device.">
 								<select name="music_on_hold.media_id" id="music_on_hold_media_id" class="medium">
-									{{each field_data.music_on_hold}}
-										{{if data.music_on_hold.media_id == id}}
-										<option id="${id}" value="${id}" selected="selected">${name}</option>
-										{{else}}
-										<option id="${id}" value="${id}">${name}</option>
-										{{/if}}
-									{{/each}}
+									{{#select data.music_on_hold.media_id}}
+										{{#each field_data.music_on_hold}}
+											<option id="{{ id }}" value="{{ id }}">{{ name }}</option>
+										{{/each}}
+									{{/select}}
 								</select>
 								<div class="edit_create">
 									<a id="edit_link_media" class="inline_action_media" data-action="edit" href="#">Edit</a>
@@ -230,44 +217,36 @@
 						<label for="media_peer_to_peer">Peer to Peer Audio</label>
 						<div class="input">
 							<select name="media.peer_to_peer" id="media_peer_to_peer" class="medium" rel="popover" data-content="Select the kind of Peer-to-Peer that you would like to set on this device">
-								{{each(key, val) field_data.media.peer_to_peer_options}}
-									{{if data.media.peer_to_peer == key}}
-										<option value="${key}" selected="selected">${val}</option>
-									{{else}}
-										<option value="${key}">${val}</option>
-									{{/if}}
-								{{/each}}
+								{{#select data.media.peer_to_peer}}
+									{{#each field_data.media.peer_to_peer_options}}
+										<option value="{{ @key }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
 							</select>
 						</div>
 					</div>
 
 					<div class="clearfix">
-						<label for="secure_rtp">${_t('secure_rtp')}</label>
+						<label for="secure_rtp">{{ i18n.callflows.device.secure_rtp }}</label>
 						<div class="input">
-							<select name="extra.encryptionMethod" id="secure_rtp" class="medium" rel="popover" data-content="${_t('secure_rtp_help')}">
-								{{each(key, val) field_data.media.secure_rtp.options}}
-									{{if field_data.media.secure_rtp.value == key}}
-										<option value="${key}" selected="selected">${val}</option>
-									{{else}}
-										<option value="${key}">${val}</option>
-									{{/if}}
-								{{/each}}
+							<select name="extra.encryptionMethod" id="secure_rtp" class="medium" rel="popover" data-content="{{ i18n.callflows.device.secure_rtp_help }}">
+								{{#select field_data.media.secure_rtp.value}}
+									{{#each field_data.media.secure_rtp.options}}
+										<option value="{{ @key }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
 							</select>
 						</div>
 					</div>
 
-					{{each(key, val) field_data.media.audio.codecs}}
+					{{#each field_data.media.audio.codecs}}
 						<div>
 							<div class="input">
 								<ul class="inputs-list">
 									<li>
 										<label>
-											{{if functions.inArray(key, data.media.audio.codecs) }}
-												<input type="checkbox" id="media_audio_codecs" name="media.audio.codecs[]" checked="checked" rel="popover" data-content="" value="${key}"/>
-											{{else}}
-												<input type="checkbox" id="media_audio_codecs" name="media.audio.codecs[]" rel="popover" data-content="" value="${key}"/>
-											{{/if}}
-											<span>${val}</span>
+											<input type="checkbox" id="media_audio_codecs" name="media.audio.codecs[]"{{#ifInArray @key ../data.media.audio.codecs}} checked="checked"{{/ifInArray}} rel="popover" data-content="" value="{{ @key }}"/>
+											<span>{{ this }}</span>
 										</label>
 									</li>
 								</ul>
@@ -277,18 +256,14 @@
 				</div>
 
 				<div id="video_settings">
-					{{each(key, val) field_data.media.video.codecs}}
+					{{#each field_data.media.video.codecs}}
 						<div class="clearfix">
 							<div class="input">
 								<ul class="inputs-list">
 									<li>
 										<label>
-											{{if functions.inArray(key, data.media.video.codecs) }}
-												<input type="checkbox" id="media_video_codecs" name="media.video.codecs[]" checked="checked" rel="popover" data-content="" value="${key}"/>
-											{{else}}
-												<input type="checkbox" id="media_video_codecs" name="media.video.codecs[]" rel="popover" data-content="" value="${key}"/>
-											{{/if}}
-											<span>${val}</span>
+											<input type="checkbox" id="media_video_codecs" name="media.video.codecs[]"{{#ifInArray @key ../data.media.video.codecs}} checked="checked"{{/ifInArray}} rel="popover" data-content="" value="{{ @key }}"/>
+											<span>{{ this }}</span>
 										</label>
 									</li>
 								</ul>
@@ -300,59 +275,47 @@
 				<div id="options">
 					<div class="clearfix">
 						<div class="input">
-						   <ul class="inputs-list">
-							   <li>
+							<ul class="inputs-list">
+								<li>
 									<label>
-										<span rel="popover" data-content="${_t('t_38_data_content')}">
-											{{if data.media.fax_option === true}}
-											<input id="media_fax_option" type="checkbox" name="media.fax_option" checked="checked" />
-											{{else}}
-											<input id="media_fax_option" type="checkbox" name="media.fax_option" />
-											{{/if}}
-											<span>${_t('t_38')}</span>
+										<span rel="popover" data-content="{{ i18n.callflows.device.t_38_data_content }}">
+											<input id="media_fax_option" type="checkbox" name="media.fax_option"{{#if data.media.fax_option}} checked="checked"{{/if}} />
+											<span>{{ i18n.callflows.device.t_38 }}</span>
 										</span>
 									</label>
 								</li>
 							</ul>
-					   </div>
+						</div>
 					</div>
 
 					<div class="clearfix">
 						<div class="input">
-						   <ul class="inputs-list">
-							   <li>
+							<ul class="inputs-list">
+								<li>
 									<label>
 										<span rel="popover" data-content="By checking this box, this endpoint will not be added automatically to the contact list of the devices of this platform">
-											{{if data.contact_list.exclude === true}}
-											<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude" checked="checked" />
-											{{else}}
-											<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude" />
-											{{/if}}
+											<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude"{{#if data.contact_list.exclude}} checked="checked"{{/if}} />
 											<span>Hide from Contact List</span>
 										</span>
 									</label>
 								</li>
 							</ul>
-					   </div>
+						</div>
 					</div>
 
 					<div class="clearfix">
 						<div class="input">
-						   <ul class="inputs-list">
-							   <li>
+							<ul class="inputs-list">
+								<li>
 									<label>
 										<span rel="popover" data-content="When checked supporting phones will not show a call missed if it was part of a ring group answered elsewhere.">
-											{{if data.ignore_completed_elsewhere === true}}
-											<input id="ignore_completed_elsewhere" type="checkbox" name="ignore_completed_elsewhere" checked="checked" />
-											{{else}}
-											<input id="ignore_completed_elsewhere" type="checkbox" name="ignore_completed_elsewhere"/>
-											{{/if}}
+											<input id="ignore_completed_elsewhere" type="checkbox" name="ignore_completed_elsewhere"{{#if data.ignore_completed_elsewhere}} checked="checked"{{/if}} />
 											<span>Ignore Complete Elsewhere</span>
 										</span>
 									</label>
 								</li>
 							</ul>
-					   </div>
+						</div>
 					</div>
 					<input type="hidden" name="extra.notify_unregister" value="false"/>
 				</div>
@@ -364,11 +327,7 @@
 								<li>
 									<label>
 										<span rel="popover" data-content="If checked, this device will only be able to call the devices that are part of the same groups">
-											{{if data.call_restriction.closed_groups.action === 'deny'}}
-												<input type="checkbox" name="extra.closed_groups" checked="checked"/>
-											{{else}}
-												<input type="checkbox" name="extra.closed_groups"/>
-											{{/if}}
+											<input type="checkbox" name="extra.closed_groups"{{#compare data.call_restriction.closed_groups.action "===" "deny"}} checked="checked"{{/compare}}/>
 											<span>Closed Groups</span>
 										</span>
 									</label>
@@ -377,24 +336,16 @@
 						</div>
 					</div>
 
-					{{each(k, v) field_data.call_restriction}}
+					{{#each field_data.call_restriction}}
 					<div class="clearfix">
-						<label>${v.friendly_name}</label>
+						<label>{{ this.friendly_name }}</label>
 						<div class="input">
-							 <select name="call_restriction.${k}.action" class="medium" rel="popover">
-								{{if data.call_restriction[k].action === 'allow'}}
-									<option value="allow" selected>Allow</option>
-									<option value="deny">Deny</option>
-									<option value="inherit">Inherit</option>
-								{{else data.call_restriction[k].action === 'deny'}}
-									<option value="allow">Allow</option>
-									<option value="deny" selected>Deny</option>
-									<option value="inherit">Inherit</option>
-								{{else}}
-									<option value="allow">Allow</option>
-									<option value="deny">Deny</option>
-									<option value="inherit" selected>Inherit</option>
-								{{/if}}
+							<select name="call_restriction.{{ @key }}.action" class="medium" rel="popover">
+								{{#select this.value }}
+									<option value="allow">{{ ../../i18n.callflows.device.allow }}</option>
+									<option value="deny">{{ ../../i18n.callflows.device.deny }}</option>
+									<option value="inherit">{{ ../../i18n.callflows.device.inherit }}</option>
+								{{/select}}
 							</select>
 						</div>
 					</div>
@@ -403,10 +354,10 @@
 			</div>
 		</form>
 		<div class="buttons-right">
-			{{if data.id}}
-				<button class="btn danger device-delete">Delete</button>
+			{{#if data.id}}
+				<button class="btn btn-danger device-delete">Delete</button>
 			{{/if}}
-			<button class="btn success device-save">Save</button>
+			<button class="btn btn-success device-save">Save</button>
 		</div>
 	</div>
 </div>
