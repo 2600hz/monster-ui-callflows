@@ -1,142 +1,232 @@
 define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
-		monster = require('monster');
+		monster = require('monster'),
+		timezone = require('monster-timezone');
 
 	var app = {
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'userDefineActions',
-
-			'user.activate': 'activate',
-			'user.edit': 'edit_user',
-			'callflow.define_callflow_nodes': 'define_callflow_nodes',
-			'user.popup_edit': 'popup_edit_user'
+			'callflows.fetchActions': 'userDefineActions'
 		},
 
-		validation : [
-				{ name: '#first_name',							regex: _t('user', 'first_last_name_regex') },
-				{ name: '#last_name',							regex: _t('user', 'first_last_name_regex') },
-				{ name: '#username',							regex: _t('user', 'username_regex') },
-				{ name: '#email',								regex: _t('user', 'email_regex') },
-				{ name: '#caller_id_number_internal',			regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
-				{ name: '#caller_id_name_internal',				regex: _t('user', 'caller_id_name_regex') },
-				{ name: '#caller_id_number_external',			regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
-				{ name: '#caller_id_name_external',				regex: _t('user', 'caller_id_name_regex') },
-				{ name: '#advanced_caller_id_number_emergency',	regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
-				{ name: '#advanced_caller_id_name_emergency',	regex: _t('user', 'caller_id_name_regex') },
-				{ name: '#hotdesk_id',							regex: /^[0-9\+\#\*]*$/ },
-				{ name: '#hotdesk_pin',							regex: /^[0-9]*$/ },
-				{ name: '#call_forward_number',					regex: /^[\+]?[0-9]*$/ }
-		],
+		random_id: false,
 
-		save_user: function(form_data, data, success, error) {
+		userDefineActions: function(args) {
 			var self = this,
-				normalized_data = self.normalize_data($.extend(true, {}, data.data, form_data));
+				callflow_nodes= args.actions;
 
-			if(typeof data.data == 'object' && data.data.id) {
-				self.callApi({
-					resource: 'user.update',
+			$.extend(callflow_nodes, {
+				 'user[id=*]': {
+					name: self.i18n.active().callflows.user.user,
+					icon: 'user',
+					category: self.i18n.active().oldCallflows.basic_cat,
+					module: 'user',
+					tip: self.i18n.active().callflows.user.user_tip,
 					data: {
-						accountId: self.accountId,
-						userId: data.data.id,
-						data: normalized_data
+						id: 'null'
 					},
-					success: function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'update');
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
 						}
-					},
-					error: function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'update');
-						}
-					}
-				});
-			}
-			else {
-				self.callApi({
-					resource: 'user.create',
-					data: {
-						accountId: self.accountId,
-						data: normalized_data
-					},
-					success: function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'create');
-						}
-					},
-					error: function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'create');
-						}
-					}
-				});
-			}
-		},
+					],
+					isUsable: 'true',
+					caption: function(node, caption_map) {
+						var id = node.getMetadata('id'),
+							returned_value = '';
 
-		acquire_device: function(user_data, success, error) {
-			var self = this,
-				user_id = user_data.data.id;
+						if(id in caption_map) {
+							returned_value = caption_map[id].name;
+						}
 
-			if(self.random_id) {
-				winkstart.request(true, 'user.device_new_user', {
-						account_id: winkstart.apps['voip'].account_id,
-						api_url: winkstart.apps['voip'].api_url,
-						owner_id: self.random_id
+						return returned_value;
 					},
-					function(_data, status) {
-						var device_id;
-						var array_length = _data.data.length;
-						if(array_length != 0) {
-							$.each(_data.data, function(k, v) {
-								device_id = this.id;
-								winkstart.request(false, 'device.get', {
-										account_id: winkstart.apps['voip'].account_id,
-										api_url: winkstart.apps['voip'].api_url,
-										device_id: device_id
-									},
-									function(_data, status) {
-										_data.data.owner_id = user_id;
-										delete _data.data.new_user;
-										winkstart.request(false, 'device.update', {
-												account_id: winkstart.apps['voip'].account_id,
-												api_url: winkstart.apps['voip'].api_url,
-												device_id: _data.data.id,
-												data: _data.data
-											},
-											function(_data, status) {
-												if(k == array_length - 1) {
-													success({}, status, 'create');
-												}
-											}
-										);
-									}
-								);
+					edit: function(node, callback) {
+						self.userList(function(users) {
+							var popup, popup_html;
+
+							$.each(users, function() {
+								this.name = this.first_name + ' ' + this.last_name;
 							});
+
+							popup_html = $(monster.template(self, 'user-callflowEdit' , {
+								can_call_self: node.getMetadata('can_call_self') || false,
+								parameter: {
+									name: 'timeout (s)',
+									value: node.getMetadata('timeout') || '20'
+								},
+								objects: {
+									items: monster.util.sort(users),
+									selected: node.getMetadata('id') || ''
+								}
+							}));
+
+							if($('#user_selector option:selected', popup_html).val() == undefined) {
+								$('#edit_link', popup_html).hide();
+							}
+
+							$('.inline_action', popup_html).click(function(ev) {
+								var _data = ($(this).data('action') == 'edit') ?
+												{ id: $('#user_selector', popup_html).val() } : {};
+
+								ev.preventDefault();
+
+								self.userPopupEdit(_data, function(_data) {
+									node.setMetadata('id', _data.id || 'null');
+									node.setMetadata('timeout', $('#parameter_input', popup_html).val());
+									node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
+
+									node.caption = (_data.first_name || '') + ' ' + (_data.last_name || '');
+
+									popup.dialog('close');
+								});
+							});
+
+							$('#add', popup_html).click(function() {
+								node.setMetadata('id', $('#user_selector', popup_html).val());
+								node.setMetadata('timeout', $('#parameter_input', popup_html).val());
+								node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
+
+								node.caption = $('#user_selector option:selected', popup_html).text();
+
+								popup.dialog('close');
+							});
+
+							popup = monster.ui.dialog(popup_html, {
+								title: self.i18n.active().callflows.user.select_user,
+								beforeClose: function() {
+									if(typeof callback == 'function') {
+										callback();
+									}
+								}
+							});
+						});
+					}
+				},
+				'hotdesk[action=login]': {
+					name: self.i18n.active().callflows.user.hot_desk_login,
+					icon: 'hotdesk_login',
+					category: self.i18n.active().oldCallflows.hotdesking_cat,
+					module: 'hotdesk',
+					tip: self.i18n.active().callflows.user.hot_desk_login_tip,
+					data: {
+						action: 'login'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
 						}
-						else {
-							success({}, status, 'create');
+					],
+					isUsable: 'true',
+					caption: function(node, caption_map) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if(typeof callback == 'function') {
+							callback();
 						}
 					}
-				);
-			}
-			else {
-				success({}, status, 'create');
-			}
+				},
+				'hotdesk[action=logout]': {
+					name: self.i18n.active().callflows.user.hot_desk_logout,
+					icon: 'hotdesk_logout',
+					category: self.i18n.active().oldCallflows.hotdesking_cat,
+					module: 'hotdesk',
+					tip: self.i18n.active().callflows.user.hot_desk_logout_tip,
+					data: {
+						action: 'logout'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					caption: function(node, caption_map) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if(typeof callback == 'function') {
+							callback();
+						}
+					}
+				},
+				'hotdesk[action=toggle]': {
+					name: self.i18n.active().callflows.user.hot_desk_toggle,
+					icon: 'hotdesk_toggle',
+					category: self.i18n.active().oldCallflows.hotdesking_cat,
+					module: 'hotdesk',
+					tip: self.i18n.active().callflows.user.hot_desk_toggle_tip,
+					data: {
+						action: 'toggle'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					caption: function(node, caption_map) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if(typeof callback == 'function') {
+							callback();
+						}
+					}
+				}
+			});
 		},
 
-		edit_user: function(data, _parent, _target, _callbacks, data_defaults) {
+		userPopupEdit: function(data, callback, data_defaults) {
+			var self = this,
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				popup;
+
+			popup_html.css({
+				height: 500,
+				'overflow-y': 'scroll'
+			});
+
+			self.userEdit(data, popup_html, $('.inline_content', popup_html), {
+				save_success: function(_data) {
+					popup.dialog('close');
+
+					if(typeof callback == 'function') {
+						callback(_data);
+					}
+				},
+				delete_success: function() {
+					popup.dialog('close');
+
+					if(typeof callback == 'function') {
+						callback({ data: {} });
+					}
+				},
+				after_render: function() {
+					popup = monster.ui.dialog(popup_html, {
+						title: (data.id) ? self.i18n.active().callflows.user.edit_user : self.i18n.active().callflows.user.create_user
+					});
+				}
+			}, data_defaults);
+		},
+
+		userEdit: function(data, _parent, _target, _callbacks, data_defaults) {
 			var self = this,
 				parent = _parent || $('#user-content'),
 				target = _target || $('#user-view', parent),
 				_callbacks = _callbacks || {},
 				callbacks = {
 					save_success: _callbacks.save_success || function(_data) {
-						self.render_list(parent);
+						self.userRenderList(parent);
 
-						self.edit_user({ id: _data.data.id }, parent, target, callbacks);
+						self.userEdit({ id: _data.data.id }, parent, target, callbacks);
 					},
 
 					save_error: _callbacks.save_error,
@@ -144,7 +234,7 @@ define(function(require){
 					delete_success: _callbacks.delete_success || function() {
 						target.empty();
 
-						self.render_list(parent);
+						self.userRenderList(parent);
 					},
 
 					delete_error: _callbacks.delete_error,
@@ -173,13 +263,13 @@ define(function(require){
 					}, data_defaults || {}),
 					field_data: {
 						device_types: {
-							sip_device: _t('user', 'sip_device_type'),
-							cellphone: _t('user', 'cell_phone_type'),
-							fax: _t('user', 'fax_type'),
-							smartphone: _t('user', 'smartphone_type'),
-							landline: _t('user', 'landline_type'),
-							softphone: _t('user', 'softphone_type'),
-							sip_uri: _t('user', 'sip_uri_type')
+							sip_device: self.i18n.active().callflows.user.sip_device_type,
+							cellphone: self.i18n.active().callflows.user.cell_phone_type,
+							fax: self.i18n.active().callflows.user.fax_type,
+							smartphone: self.i18n.active().callflows.user.smartphone_type,
+							landline: self.i18n.active().callflows.user.landline_type,
+							softphone: self.i18n.active().callflows.user.softphone_type,
+							sip_uri: self.i18n.active().callflows.user.sip_uri_type
 						},
 						call_restriction: {}
 					}
@@ -187,7 +277,7 @@ define(function(require){
 
 			self.random_id = false;
 
-			winkstart.parallel({
+			monster.parallel({
 				list_classifiers: function(callback) {
 					self.callApi({
 						resource: 'numbers.listClassifiers',
@@ -209,20 +299,21 @@ define(function(require){
 					});
 				},
 				media_list: function(callback) {
-					winkstart.request(true, 'media.list', {
-							account_id: winkstart.apps['voip'].account_id,
-							api_url: winkstart.apps['voip'].api_url
+					self.callApi({
+						resource: 'media.list',
+						data: {
+							accountId: self.accountId
 						},
-						function(_data, status) {
+						success: function(_data, status) {
 							if(_data.data) {
 								_data.data.unshift(
 									{
 										id: '',
-										name: _t('user', 'default_music')
+										name: self.i18n.active().callflows.user.default_music
 									},
 									{
 										id: 'silence_stream://300000',
-										name: _t('user', 'silence')
+										name: self.i18n.active().callflows.user.silence
 									}
 								);
 							}
@@ -231,25 +322,18 @@ define(function(require){
 
 							callback(null, _data);
 						}
-					);
+					});
 				},
 				user_get: function(callback) {
 					if(typeof data == 'object' && data.id) {
-						self.callApi({
-							resource: 'user.get',
-							data: {
-								accountId: self.accountId,
-								userId: data.id
-							},
-							success: function(_data, status) {
-								self.migrate_data(_data);
+						self.userGet(data.id, function(_data, status) {
+							self.userMigrateData(_data);
 
-								callback(null, _data);
-							}
+							callback(null, _data);
 						});
 					}
 					else {
-						self.random_id = $.md5(winkstart.random_string(10)+new Date().toString());
+						self.random_id = $.md5(monster.util.randomString(10)+new Date().toString());
 						defaults.field_data.new_user = self.random_id;
 
 						callback(null, defaults);
@@ -281,7 +365,7 @@ define(function(require){
 								//callback({api_name: 'Hotdesk'}, _data);
 								callback(null, defaults);
 							}
-						});
+						})
 					}
 					else {
 						callback(null, defaults);
@@ -291,10 +375,16 @@ define(function(require){
 			function(err, results) {
 				var render_data = defaults;
 				if(typeof data === 'object' && data.id) {
-					render_data = $.extend(true, defaults, results.user_get);
+					$.each(results.user_get.call_restriction, function(k, v) {
+						if (defaults.field_data.call_restriction.hasOwnProperty(k)) {
+							defaults.field_data.call_restriction[k].action = v.action;
+						}
+					});
+
+					render_data = $.extend(true, defaults, { data: results.user_get });
 				}
 
-				self.render_user(render_data, target, callbacks);
+				self.userRender(render_data, target, callbacks);
 
 				if(typeof callbacks.after_render == 'function') {
 					callbacks.after_render();
@@ -302,91 +392,20 @@ define(function(require){
 			});
 		},
 
-		delete_user: function(data, success, error) {
-			var self = this;
-
-			if(typeof data.data == 'object' && data.data.id) {
-				self.callApi({
-					resource: 'user.delete',
-					data: {
-						accountId: self.accountId,
-						userId: data.data.id
-					},
-					success: function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status);
-						}
-					},
-					error: function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status);
-						}
-					}
-				});
-			}
-		},
-
-		update_single_device: function($checkbox, parent) {
-			$checkbox.attr('disabled', 'disabled');
-
-			var device_id = $checkbox.dataset('device_id'),
-				enabled = $checkbox.is(':checked');
-
-			winkstart.request(false, 'device.get', {
-					account_id: winkstart.apps['voip'].account_id,
-					api_url: winkstart.apps['voip'].api_url,
-					device_id: device_id
-				},
-				function(_data, status) {
-					if($.inArray(_data.data.device_type, ['cellphone', 'smartphone', 'landline']) > -1) {
-						_data.data.call_forward.enabled = enabled;
-					}
-					_data.data.enabled = enabled;
-					winkstart.request(false, 'device.update', {
-							account_id: winkstart.apps['voip'].account_id,
-							api_url: winkstart.apps['voip'].api_url,
-							device_id: _data.data.id,
-							data: _data.data
-						},
-						function(_data, status) {
-							$checkbox.removeAttr('disabled');
-							if(_data.data.enabled === true) {
-								$('#'+ _data.data.id + ' .column.third', parent).removeClass('disabled');
-							}
-							else {
-								$('#'+ _data.data.id + ' .column.third', parent).addClass('disabled');
-							}
-						},
-						function(_data, status) {
-							$checkbox.removeAttr('disabled');
-							enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
-						}
-					);
-				},
-				function(_data, status) {
-					$checkbox.removeAttr('disabled');
-					enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
-				}
-			);
-		},
-
-		render_user: function(data, target, callbacks) {
-			data._t = function(param){
-				return window.translate['user'][param];
-			};
+		userRender: function(data, target, callbacks) {
 			var self = this,
-				user_html = self.templates.edit.tmpl(data),
+				user_html = $(monster.template(self, 'user-edit', data)),
 				data_devices,
 				hotdesk_pin =   $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
 
-			self.render_device_list(data, user_html);
+			self.userRenderDeviceList(data, user_html);
 
-			winkstart.validate.set(self.config.validation, user_html);
+			// winkstart.validate.set(self.config.validation, user_html);
 
-			winkstart.timezone.populate_dropdown($('#timezone', user_html), data.data.timezone);
+			timezone.populateDropdown($('#timezone', user_html), data.data.timezone);
 
-			if (data.data.id === winkstart.apps['voip'].user_id){
+			if (data.data.id === monster.apps.auth.userId){
 				$('.user-delete', user_html).hide();
 			}
 
@@ -398,8 +417,8 @@ define(function(require){
 				trigger: 'focus'
 			});
 
-			winkstart.tabs($('.view-buttons', user_html), $('.tabs', user_html));
-			winkstart.link_form(user_html);
+			self.winkstartTabs(user_html);
+			self.winkstartLinkForm(user_html);
 
 			hotdesk_pin_require.is(':checked') ? hotdesk_pin.show() : hotdesk_pin.hide();
 
@@ -411,11 +430,11 @@ define(function(require){
 				ev.preventDefault();
 
 				if($('#pwd_mngt_pwd1', user_html).val() != $('#pwd_mngt_pwd2', user_html).val()) {
-					winkstart.alert(_t('user', 'the_passwords_on_the'));
+					monster.ui.alert(self.i18n.active().callflows.user.the_passwords_on_the);
 					return true;
 				}
 
-				winkstart.validate.is_valid(self.config.validation, user_html, function() {
+				// winkstart.validate.is_valid(self.config.validation, user_html, function() {
 						var form_data = form2object('user-form');
 
 						if(form_data.enable_pin === false) {
@@ -423,13 +442,13 @@ define(function(require){
 							delete data.data.record_call;
 						}
 
-						self.clean_form_data(form_data);
+						self.userCleanFormData(form_data);
 
 						if('field_data' in data) {
 							delete data.field_data;
 						}
 
-						if(form_data.password === undefined || winkstart.is_password_valid(form_data.password)) {
+						// if(form_data.password === undefined || winkstart.is_password_valid(form_data.password)) {
 							self.callApi({
 								resource: 'account.get',
 								data: {
@@ -440,9 +459,9 @@ define(function(require){
 										form_data.apps = form_data.apps || {};
 										if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
 											form_data.apps['voip'] = {
-												label: _t('user', 'voip_services_label'),
+												label: self.i18n.active().callflows.user.voip_services_label,
 												icon: 'device',
-												api_url: winkstart.apps['voip'].api_url
+												api_url: monster.config.api.default
 											}
 										}
 									}
@@ -450,16 +469,16 @@ define(function(require){
 										form_data.apps = form_data.apps || {};
 										if(!('userportal' in form_data.apps)) {
 											form_data.apps['userportal'] = {
-												label: _t('user', 'user_portal_label'),
+												label: self.i18n.active().callflows.user.user_portal_label,
 												icon: 'userportal',
-												api_url: winkstart.apps['voip'].api_url
+												api_url: monster.config.api.default
 											}
 										}
 									}
 
-									self.save_user(form_data, data, function(data, status, action) {
+									self.userSave(form_data, data, function(data, status, action) {
 										if(action == 'create') {
-											self.acquire_device(data, function() {
+											self.userAcquireDevice(data, function() {
 												if(typeof callbacks.save_success == 'function') {
 													callbacks.save_success(data, status, action);
 												}
@@ -474,22 +493,24 @@ define(function(require){
 												callbacks.save_success(data, status, action);
 											}
 										}
-									}, winkstart.error_message.process_error(callbacks.save_error));
+									// }, winkstart.error_message.process_error(callbacks.save_error));
+									});
 								}
 							});
-						}
-					},
-					function() {
-						winkstart.alert(_t('user', 'there_were_errors_on_the_form'));
-					}
-				);
+
+						// }
+				// 	},
+				// 	function() {
+				// 		monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
+				// 	}
+				// );
 			});
 
 			$('.user-delete', user_html).click(function(ev) {
 				ev.preventDefault();
 
-				winkstart.confirm(_t('user', 'are_you_sure_you_want_to_delete'), function() {
-					self.delete_user(data, callbacks.delete_success, callbacks.delete_error);
+				monster.ui.confirm(self.i18n.active().callflows.user.are_you_sure_you_want_to_delete, function() {
+					self.userDelete(data.data.id, callbacks.delete_success, callbacks.delete_error);
 				});
 			});
 
@@ -502,7 +523,7 @@ define(function(require){
 			});
 
 			$('.inline_action_media', user_html).click(function(ev) {
-				var _data = ($(this).dataset('action') == 'edit') ? { id: $('#music_on_hold_media_id', user_html).val() } : {},
+				var _data = ($(this).data('action') == 'edit') ? { id: $('#music_on_hold_media_id', user_html).val() } : {},
 					_id = _data.id;
 
 				ev.preventDefault();
@@ -530,12 +551,12 @@ define(function(require){
 			});
 
 			$(user_html).delegate('.enabled_checkbox', 'click', function() {
-				self.update_single_device($(this), user_html);
+				self.userUpdateSingleDevice($(this), user_html);
 			});
 
 			$(user_html).delegate('.action_device.edit', 'click', function() {
 				var data_device = {
-					id: $(this).dataset('id'),
+					id: $(this).data('id'),
 					hide_owner: !data.data.id ? true : false
 				};
 
@@ -548,7 +569,7 @@ define(function(require){
 					defaults.owner_id = data.data.id;
 				}
 
-				winkstart.publish('device.popup_edit', data_device, function(_data) {
+				monster.pub('device.popupEdit', data_device, function(_data) {
 					data_devices = {
 						data: { },
 						field_data: {
@@ -557,30 +578,24 @@ define(function(require){
 					};
 					data_devices.data = _data.data.new_user ? { new_user: true, id: self.random_id } : { id: data.data.id };
 
-					self.render_device_list(data_devices, user_html);
+					self.userRenderDeviceList(data_devices, user_html);
 				}, defaults);
 			});
 
 			$(user_html).delegate('.action_device.delete', 'click', function() {
-				var device_id = $(this).dataset('id');
-				winkstart.confirm(_t('user', 'do_you_really_want_to_delete'), function() {
-					winkstart.request(true, 'device.delete', {
-							account_id: winkstart.apps['voip'].account_id,
-							api_url: winkstart.apps['voip'].api_url,
-							device_id: device_id
-						},
-						function(_data, status) {
-							data_devices = {
-								data: { },
-								field_data: {
-									device_types: data.field_data.device_types
-								}
-							};
-							data_devices.data = self.random_id ? { new_user: true, id: self.random_id } : { id: data.data.id };
+				var device_id = $(this).data('id');
+				monster.ui.confirm(self.i18n.active().callflows.user.do_you_really_want_to_delete, function() {
+					self.userDeleteDevice(device_id, function() {
+						data_devices = {
+							data: { },
+							field_data: {
+								device_types: data.field_data.device_types
+							}
+						};
+						data_devices.data = self.random_id ? { new_user: true, id: self.random_id } : { id: data.data.id };
 
-							self.render_device_list(data_devices, user_html);
-						}
-					);
+						self.userRenderDeviceList(data_devices, user_html);
+					});
 				});
 			});
 
@@ -608,7 +623,7 @@ define(function(require){
 					};
 					data_devices.data = self.random_id ? { new_user: true, id: self.random_id } : { id: data.data.id };
 
-					self.render_device_list(data_devices, user_html);
+					self.userRenderDeviceList(data_devices, user_html);
 				}, defaults);
 			});
 
@@ -617,71 +632,167 @@ define(function(require){
 				.append(user_html);
 		},
 
-		render_device_list: function(data, parent) {
+		userRenderList: function(parent, callback) {
+			var self = this;
+
+			self.userList(function(data, status) {
+					var map_crossbar_data = function(data) {
+						var new_list = [];
+
+						if(data.length > 0) {
+							$.each(data, function(key, val) {
+								new_list.push({
+									id: val.id,
+									title: (val.first_name && val.last_name) ?
+											   val.last_name + ', ' + val.first_name :
+											   '(no name)'
+								});
+							});
+						}
+
+						new_list.sort(function(a, b) {
+							return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+						});
+
+						return new_list;
+					};
+
+					$('#user-listpanel', parent)
+						.empty()
+						.listpanel({
+							label: _t('user', 'users_label'),
+							identifier: 'user-listview',
+							new_entity_label: _t('user', 'add_user_label'),
+							data: map_crossbar_data(data.data),
+							publisher: monster.pub,
+							notifyMethod: 'user.edit',
+							notifyCreateMethod: 'user.edit',
+							notifyParent: parent
+						});
+
+					callback && callback();
+				}
+			);
+		},
+
+		userRenderDeviceList: function(data, parent) {
 			var self = this,
 				parent = $('#tab_devices', parent);
 
 			if(data.data.id) {
-				var filters = data.data.new_user ? { owner_id: data.data.id } : { new_user: data.data.id };
+				var filter = data.data.new_user ? { filter_new_user: data.data.id } : { filter_owner_id: data.data.id };
 
-				self.callApi({
-					resource: ' device.list',
-					data: {
-						filters: filters
-					},
-					success: function(_data, status) {
-						$('.rows', parent).empty();
-						if(_data.data.length > 0) {
-							$.each(_data.data, function(k, v) {
-								v.display_type = data.field_data.device_types[v.device_type];
-								v.not_enabled = this.enabled === false ? true : false;
-								$('.rows', parent).append(self.templates.device_row.tmpl(v));
-							});
+				self.userListDevice(filter, function(_data, status) {
+					$('.rows', parent).empty();
+					if(_data.length > 0) {
+						$.each(_data, function(k, v) {
+							v.display_type = data.field_data.device_types[v.device_type];
+							v.not_enabled = this.enabled === false ? true : false;
+							$('.rows', parent).append($(monster.template(self, 'user-deviceRow', v)));
+						});
 
-							winkstart.request(true, 'device.status_no_loading', {
-									account_id: winkstart.apps['voip'].account_id,
-									api_url: winkstart.apps['voip'].api_url
-								},
-								function(_data, status) {
-									$.each(_data.data, function(key, val) {
-										$('#' + val.device_id + ' .column.third', parent).addClass('registered');
-									});
-								}
-							);
-						}
-						else {
-							$('.rows', parent).append(self.templates.device_row.tmpl({
-								_t: function(param){
-									return window.translate['user'][param];
-								}
-							}));
-						}
+						self.callApi({
+							resource: 'device.getStatus',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(_data, status) {
+								$.each(_data.data, function(key, val) {
+									$('#' + val.device_id + ' .column.third', parent).addClass('registered');
+								});
+							}
+						});
+					}
+					else {
+						$('.rows', parent).append($(monster.template(self, 'user-deviceRow')));
 					}
 				});
 			}
 			else {
 				$('.rows', parent).empty()
-								  .append(self.templates.device_row.tmpl({
-									_t: function(param){
-										return window.translate['user'][param];
-									}
-								  }));
+								  .append($(monster.template(self, 'user-deviceRow')));
 			}
 		},
 
-		migrate_data: function(data) {
-			if(!('priv_level' in data.data)) {
-				if('apps' in data.data && 'voip' in data.data.apps) {
-					data.data.priv_level = 'admin';
+		userMigrateData: function(data) {
+			if(!('priv_level' in data)) {
+				if('apps' in data && 'voip' in data.apps) {
+					data.priv_level = 'admin';
 				} else {
-					data.data.priv_level = 'user';
+					data.priv_level = 'user';
 				}
 			}
 
 			return data;
 		},
 
-		clean_form_data: function(form_data){
+		userUpdateSingleDevice: function($checkbox, parent) {
+			$checkbox.attr('disabled', 'disabled');
+
+			var self = this,
+				device_id = $checkbox.data('device_id'),
+				enabled = $checkbox.is(':checked');
+
+			self.userGetDevice(device_id, function(_data) {
+					if($.inArray(_data.device_type, ['cellphone', 'smartphone', 'landline']) > -1) {
+						_data.call_forward.enabled = enabled;
+					}
+					_data.enabled = enabled;
+					self.userUpdateDevice(device_id, _data, function(_data) {
+							$checkbox.removeAttr('disabled');
+							if(_data.enabled === true) {
+								$('#'+ _data.id + ' .column.third', parent).removeClass('disabled');
+							}
+							else {
+								$('#'+ _data.id + ' .column.third', parent).addClass('disabled');
+							}
+						},
+						function() {
+							$checkbox.removeAttr('disabled');
+							enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
+						}
+					);
+				},
+				function() {
+					$checkbox.removeAttr('disabled');
+					enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
+				}
+			);
+		},
+
+		userAcquireDevice: function(user_data, success, error) {
+			var self = this,
+				user_id = user_data.id;
+
+			if(self.random_id) {
+				self.userListDevice({ filter_new_user: self.random_id }, function(_data, status) {
+					var device_id;
+					var array_length = _data.length;
+					if(array_length != 0) {
+						$.each(_data, function(k, v) {
+							device_id = this.id;
+							self.userGetDevice(device_id, _data, function(_data, status) {
+								_data.owner_id = user_id;
+								delete _data.new_user;
+								self.userUpdateDevice(deviceId, _data, function(_data, status) {
+									if(k == array_length - 1) {
+										success({}, status, 'create');
+									}
+								});
+							});
+						});
+					}
+					else {
+						success({}, status, 'create');
+					}
+				});
+			}
+			else {
+				success({}, status, 'create');
+			}
+		},
+
+		userCleanFormData: function(form_data){
 			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|\-|\./g,'');
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|\-|\./g,'');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|\-|\./g,'');
@@ -703,8 +814,39 @@ define(function(require){
 			return form_data;
 		},
 
-		normalize_data: function(data) {
+		userSave: function(form_data, data, success, error) {
+			var self = this,
+				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data));
 
+			if(typeof data.data == 'object' && data.data.id) {
+				self.userUpdate(normalized_data, function(_data, status) {
+						if(typeof success == 'function') {
+							success(_data, status, 'update');
+						}
+					},
+					function(_data, status) {
+						if(typeof error == 'function') {
+							error(_data, status, 'update');
+						}
+					}
+				);
+			}
+			else {
+				self.userCreate(normalized_data, function(_data, status) {
+						if(typeof success == 'function') {
+							success(_data, status, 'create');
+						}
+					},
+					function(_data, status) {
+						if(typeof error == 'function') {
+							error(_data, status, 'create');
+						}
+					}
+				);
+			}
+		},
+
+		userNormalizeData: function(data) {
 			if($.isArray(data.directories)) {
 				data.directories = {};
 			}
@@ -762,7 +904,8 @@ define(function(require){
 			return data;
 		},
 
-		render_list: function(parent, callback) {
+
+		userList: function(callback) {
 			var self = this;
 
 			self.callApi({
@@ -770,307 +913,139 @@ define(function(require){
 				data: {
 					accountId: self.accountId
 				},
-				success: function(data, status) {
-					var map_crossbar_data = function(data) {
-						var new_list = [];
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
 
-						if(data.length > 0) {
-							$.each(data, function(key, val) {
-								new_list.push({
-									id: val.id,
-									title: (val.first_name && val.last_name) ?
-											   val.last_name + ', ' + val.first_name :
-											   '(no name)'
-								});
-							});
-						}
+		userGet: function(userId, callback) {
+			var self = this;
 
-						new_list.sort(function(a, b) {
-							return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
-						});
+			self.callApi({
+				resource: 'user.get',
+				data: {
+					accountId: self.accountId,
+					userId: userId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
 
-						return new_list;
-					};
+		userCreate: function(data, callback) {
+			var self = this;
 
-					$('#user-listpanel', parent)
-						.empty()
-						.listpanel({
-							label: _t('user', 'users_label'),
-							identifier: 'user-listview',
-							new_entity_label: _t('user', 'add_user_label'),
-							data: map_crossbar_data(data.data),
-							publisher: winkstart.publish,
-							notifyMethod: 'user.edit',
-							notifyCreateMethod: 'user.edit',
-							notifyParent: parent
-						});
+			self.callApi({
+				resource: 'user.create',
+				data: {
+					accountId: self.accountId,
+					data: data
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
 
+		userUpdate: function(data, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'user.update',
+				data: {
+					accountId: self.accountId,
+					userId: data.id,
+					data: data
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		userDelete: function(userId, callbackSuccess, callbackError) {
+			var self = this;
+
+			self.callApi({
+				resource: 'user.delete',
+				data: {
+					accountId: self.accountId,
+					userId: userId
+				},
+				success: function(data) {
+					callbackSuccess && callbackSuccess(data.data);
+				},
+				error: function(error) {
+					callbackError && callbackError();
+				}
+			});
+		},
+
+		userListDevice: function(filters, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.list',
+				data: {
+					accountId: self.accountId,
+					filters: filters
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			})
+		},
+
+		userGetDevice: function(deviceId, callbackSuccess, callbackError) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.get',
+				data: {
+					accountId: self.accountId,
+					deviceId: deviceId
+				},
+				success: function(data) {
+					callbackSuccess && callbackSuccess(data.data);
+				},
+				error: function(data) {
+					callbackError && callbackError();
+				}
+			})
+		},
+
+		userUpdateDevice: function(deviceId, data, callbackSuccess, callbackError) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.update',
+				data: {
+					accountId: self.accountId,
+					deviceId: deviceId,
+					data: data
+				},
+				success: function(data) {
+					callbackSuccess && callbackSuccess(data.data);
+				},
+				error: function() {
+					callbackError && callbackError();
+				}
+			});
+		},
+
+		userDeleteDevice: function(deviceId, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.delete',
+				data: {
+					accountId: self.accountId,
+					deviceId: deviceId
+				},
+				success: function() {
 					callback && callback();
-				}
-			});
-		},
-
-		activate: function(args) {
-			var self = this,
-				args = args || {},
-				user_html = self.templates.user.tmpl(),
-				parent = args.parent || $('#ws-content');
-
-			(parent)
-				.empty()
-				.append(user_html);
-
-			self.render_list(user_html, function() {
-				args.callback && args.callback();
-			});
-		},
-
-		popup_edit_user: function(data, callback, data_defaults) {
-			var popup, popup_html;
-
-			popup_html = $('<div class="inline_popup"><div class="inline_content main_content"/></div>');
-
-			popup_html.css({
-				height: 500,
-				'overflow-y': 'scroll'
-			});
-
-			winkstart.publish('user.edit', data, popup_html, $('.inline_content', popup_html), {
-				save_success: function(_data) {
-					popup.dialog('close');
-
-					if(typeof callback == 'function') {
-						callback(_data);
-					}
-				},
-				delete_success: function() {
-					popup.dialog('close');
-
-					if(typeof callback == 'function') {
-						callback({ data: {} });
-					}
-				},
-				after_render: function() {
-					popup = winkstart.dialog(popup_html, {
-						title: (data.id) ? _t('user', 'edit_user') : _t('user', 'create_user')
-					});
-				}
-			}, data_defaults);
-		},
-
-		define_stats: function() {
-			var self = this;
-
-			var stats = {
-				'users': {
-					icon: 'user',
-					get_stat: function(callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(_data, status) {
-								var stat_attributes = {
-									name: 'users',
-									number: _data.data.length,
-									active: _data.data.length > 0 ? true : false,
-									color: _data.data.length < 1 ? 'red' : (_data.data.length > 1 ? 'green' : 'orange')
-								};
-								if(typeof callback === 'function') {
-									callback(stat_attributes);
-								}
-							},
-							error: function(_data, status) {
-								callback({error: true});
-							}
-						});
-					},
-					click_handler: function() {
-						winkstart.publish('user.activate');
-					}
-				}
-			};
-
-			return stats;
-		},
-
-		define_callflow_nodes: function(callflow_nodes) {
-			var self = this;
-
-			$.extend(callflow_nodes, {
-				 'user[id=*]': {
-					name: _t('user', 'user'),
-					icon: 'user',
-					category: _t('config', 'basic_cat'),
-					module: 'user',
-					tip: _t('user', 'user_tip'),
-					data: {
-						id: 'null'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						var id = node.getMetadata('id'),
-							returned_value = '';
-
-						if(id in caption_map) {
-							returned_value = caption_map[id].name;
-						}
-
-						return returned_value;
-					},
-					edit: function(node, callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(data, status) {
-								var popup, popup_html;
-
-								$.each(data.data, function() {
-									this.name = this.first_name + ' ' + this.last_name;
-								});
-
-								popup_html = self.templates.user_callflow.tmpl({
-									_t: function(param){
-										return window.translate['user'][param];
-									},
-									can_call_self: node.getMetadata('can_call_self') || false,
-									parameter: {
-										name: 'timeout (s)',
-										value: node.getMetadata('timeout') || '20'
-									},
-									objects: {
-										items: winkstart.sort(data.data),
-										selected: node.getMetadata('id') || ''
-									}
-								});
-
-								if($('#user_selector option:selected', popup_html).val() == undefined) {
-									$('#edit_link', popup_html).hide();
-								}
-
-								$('.inline_action', popup_html).click(function(ev) {
-									var _data = ($(this).dataset('action') == 'edit') ?
-													{ id: $('#user_selector', popup_html).val() } : {};
-
-									ev.preventDefault();
-
-									winkstart.publish('user.popup_edit', _data, function(_data) {
-										node.setMetadata('id', _data.data.id || 'null');
-										node.setMetadata('timeout', $('#parameter_input', popup_html).val());
-										node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
-
-										node.caption = (_data.data.first_name || '') + ' ' + (_data.data.last_name || '');
-
-										popup.dialog('close');
-									});
-								});
-
-								$('#add', popup_html).click(function() {
-									node.setMetadata('id', $('#user_selector', popup_html).val());
-									node.setMetadata('timeout', $('#parameter_input', popup_html).val());
-									node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
-
-									node.caption = $('#user_selector option:selected', popup_html).text();
-
-									popup.dialog('close');
-								});
-
-								popup = winkstart.dialog(popup_html, {
-									title: _t('user', 'select_user'),
-									minHeight: '0',
-									beforeClose: function() {
-										if(typeof callback == 'function') {
-											callback();
-										}
-									}
-								});
-							}
-						});
-					}
-				},
-				'hotdesk[action=login]': {
-					name: _t('user', 'hot_desk_login'),
-					icon: 'hotdesk_login',
-					category: _t('config', 'hotdesking_cat'),
-					module: 'hotdesk',
-					tip: _t('user', 'hot_desk_login_tip'),
-					data: {
-						action: 'login'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						return '';
-					},
-					edit: function(node, callback) {
-						if(typeof callback == 'function') {
-							callback();
-						}
-					}
-				},
-				'hotdesk[action=logout]': {
-					name: _t('user', 'hot_desk_logout'),
-					icon: 'hotdesk_logout',
-					category: _t('config', 'hotdesking_cat'),
-					module: 'hotdesk',
-					tip: _t('user', 'hot_desk_logout_tip'),
-					data: {
-						action: 'logout'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						return '';
-					},
-					edit: function(node, callback) {
-						if(typeof callback == 'function') {
-							callback();
-						}
-					}
-				},
-				'hotdesk[action=toggle]': {
-					name: _t('user', 'hot_desk_toggle'),
-					icon: 'hotdesk_toggle',
-					category: _t('config', 'hotdesking_cat'),
-					module: 'hotdesk',
-					tip: _t('user', 'hot_desk_toggle_tip'),
-					data: {
-						action: 'toggle'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						return '';
-					},
-					edit: function(node, callback) {
-						if(typeof callback == 'function') {
-							callback();
-						}
-					}
 				}
 			});
 		}

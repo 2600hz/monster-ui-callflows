@@ -16,7 +16,8 @@ define(function(require){
 		},
 
 		subscribe: {
-			'callflows.fetchActions': 'deviceDefineActions'
+			'callflows.fetchActions': 'deviceDefineActions',
+			'device.popupEdit': 'devicePopupEdit'
 		},
 
 		devicePopupEdit: function(data, callback, data_defaults) {
