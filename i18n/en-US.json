@@ -29,6 +29,7 @@
 			"smart_phone": "Smart Phone",
 			"landline": "Landline",
 			"soft_phone": "Soft Phone",
+			"mobile": "Mobile",
 			"fax": "Fax",
 			"sip_uri": "SIP URI",
 			"add_a_smart_phone": "Add a Smart Phone",
