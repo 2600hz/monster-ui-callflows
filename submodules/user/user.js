@@ -535,23 +535,26 @@ define(function(require){
 
 				ev.preventDefault();
 
-				winkstart.publish('media.popup_edit', _data, function(_data) {
-					/* Create */
-					if(!_id) {
-						$('#music_on_hold_media_id', user_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.name +'</option>')
-						$('#music_on_hold_media_id', user_html).val(_data.data.id);
+				monster.pub('callflows.media.popupEdit', {
+					data: _data,
+					callback: function(_data) {
+						/* Create */
+						if(!_id) {
+							$('#music_on_hold_media_id', user_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.name +'</option>')
+							$('#music_on_hold_media_id', user_html).val(_data.id);
 
-						$('#edit_link_media', user_html).show();
-					}
-					else {
-						/* Update */
-						if('id' in _data.data) {
-							$('#music_on_hold_media_id #'+_data.data.id, user_html).text(_data.data.name);
+							$('#edit_link_media', user_html).show();
 						}
-						/* Delete */
 						else {
-							$('#music_on_hold_media_id #'+_id, user_html).remove();
-							$('#edit_link_media', user_html).hide();
+							/* Update */
+							if('id' in _data) {
+								$('#music_on_hold_media_id #'+_data.id, user_html).text(_data.name);
+							}
+							/* Delete */
+							else {
+								$('#music_on_hold_media_id #'+_id, user_html).remove();
+								$('#edit_link_media', user_html).hide();
+							}
 						}
 					}
 				});
