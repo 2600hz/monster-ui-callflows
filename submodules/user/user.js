@@ -8,7 +8,8 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'userDefineActions'
+			'callflows.fetchActions': 'userDefineActions',
+			'callflows.user.popupEdit': 'userPopupEdit'
 		},
 
 		random_id: false,
@@ -74,14 +75,17 @@ define(function(require){
 
 								ev.preventDefault();
 
-								self.userPopupEdit(_data, function(_data) {
-									node.setMetadata('id', _data.id || 'null');
-									node.setMetadata('timeout', $('#parameter_input', popup_html).val());
-									node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
+								self.userPopupEdit({
+									data: _data, 
+									callback: function(_data) {
+										node.setMetadata('id', _data.id || 'null');
+										node.setMetadata('timeout', $('#parameter_input', popup_html).val());
+										node.setMetadata('can_call_self', $('#user_can_call_self', popup_html).is(':checked'));
 
-									node.caption = (_data.first_name || '') + ' ' + (_data.last_name || '');
+										node.caption = (_data.first_name || '') + ' ' + (_data.last_name || '');
 
-									popup.dialog('close');
+										popup.dialog('close');
+									}
 								});
 							});
 
@@ -184,10 +188,13 @@ define(function(require){
 			});
 		},
 
-		userPopupEdit: function(data, callback, data_defaults) {
+		userPopupEdit: function(args) {
 			var self = this,
 				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
-				popup;
+				popup,
+				data = args.data,
+				callback = args.callback,
+				data_defaults = args.data_defaults;
 
 			popup_html.css({
 				height: 500,
@@ -779,10 +786,10 @@ define(function(require){
 					if(array_length != 0) {
 						$.each(_data, function(k, v) {
 							device_id = this.id;
-							self.userGetDevice(device_id, _data, function(_data, status) {
+							self.userGetDevice(device_id, function(_data, status) {
 								_data.owner_id = user_id;
 								delete _data.new_user;
-								self.userUpdateDevice(deviceId, _data, function(_data, status) {
+								self.userUpdateDevice(device_id, _data, function(_data, status) {
 									if(k == array_length - 1) {
 										success({}, status, 'create');
 									}

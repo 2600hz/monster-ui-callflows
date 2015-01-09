@@ -373,8 +373,6 @@ define(function(require){
 						self.menuList(function(menus) {
 							var popup, popup_html;
 
-							console.log(node);
-
 							popup_html = $(monster.template(self, 'menu-callflowEdit', {
 								items: monster.util.sort(menus),
 								selected: node.getMetadata('id') || ''

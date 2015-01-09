@@ -54,7 +54,6 @@ define(function(require){
 		},
 
 		deviceEdit: function(data, _parent, _target, _callbacks, data_defaults) {
-			console.log(data);
 			var self = this,
 				parent = _parent || $('#device-content'),
 				target = _target || $('#device-view', parent),
@@ -417,27 +416,30 @@ define(function(require){
 				});
 
 				$('.inline_action', device_html).click(function(ev) {
-					var _data = ($(this).dataset('action') == 'edit') ? { id: $('#owner_id', device_html).val() } : {},
+					var _data = ($(this).data('action') == 'edit') ? { id: $('#owner_id', device_html).val() } : {},
 						_id = _data.id;
 
 					ev.preventDefault();
 
-					winkstart.publish('user.popup_edit', _data, function(_data) {
-						/* Create */
-						if(!_id) {
-							$('#owner_id', device_html).append('<option id="'+ _data.data.id  +'" value="' + _data.data.id +'">'+ _data.data.first_name + ' ' + _data.data.last_name  +'</option>');
-							$('#owner_id', device_html).val(_data.data.id);
-							$('#edit_link', device_html).show();
-						}
-						else {
-							/* Update */
-							if('id' in _data.data) {
-								$('#owner_id #'+_data.data.id, device_html).text(_data.data.first_name + ' ' + _data.data.last_name);
+					monster.pub('callflows.user.popupEdit', {
+						data: _data,
+						callback: function(user) {
+							/* Create */
+							if(!_id) {
+								$('#owner_id', device_html).append('<option id="'+ user.id  +'" value="' + user.id +'">'+ user.first_name + ' ' + user.last_name  +'</option>');
+								$('#owner_id', device_html).val(user.id);
+								$('#edit_link', device_html).show();
 							}
-							/* Delete */
 							else {
-								$('#owner_id #'+_id, device_html).remove();
-								$('#edit_link', device_html).hide();
+								/* Update */
+								if(_data.hasOwnProperty('id')) {
+									$('#owner_id #'+user.id, device_html).text(user.first_name + ' ' + user.last_name);
+								}
+								/* Delete */
+								else {
+									$('#owner_id #'+_id, device_html).remove();
+									$('#edit_link', device_html).hide();
+								}
 							}
 						}
 					});
