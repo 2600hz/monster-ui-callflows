@@ -118,17 +118,17 @@ define(function(require){
 			monster.ui.validate(menuForm, {
 				rules: {
 					'retries': {
-						number: true
+						digits: true
 					},
 					'record_pin': {
-						number: true
+						digits: true
 					},
 					'timeout': {
 						number: true,
 						max: 10
 					},
 					'max_extension_length': {
-						number: true
+						digits: true
 					}
 				}
 			});
@@ -197,7 +197,7 @@ define(function(require){
 					self.menuSave(form_data, data, callbacks.save_success);
 				}
 				else {
-					monster.ui.alert(self.i18n.active().callflows.menu.there_were_errors_on_the_form);
+					monster.ui.alert('error', self.i18n.active().callflows.menu.there_were_errors_on_the_form);
 				}
 			});
 

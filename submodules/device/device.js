@@ -1,20 +1,33 @@
 define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
-		monster = require('monster');
+		monster = require('monster'),
+		mask = require('mask');
 
 	var app = {
-		requests: {},
-
-		subscribe: {
-			'callflows.fetchActions': 'deviceDefineActions'
+		requests: {
+			'callflows.device.getProvisionerPhones': {
+				'apiRoot': monster.config.api.provisioner,
+				'url': 'phones/',
+				'verb': 'GET',
+				'headers': {
+					'Accept': '*/*'
+				}
+			}
 		},
 
-		
+		subscribe: {
+			'callflows.fetchActions': 'deviceDefineActions',
+			'callflows.device.popupEdit': 'devicePopupEdit'
+		},
 
-		devicePopupEdit: function(data, callback, data_defaults) {
+		devicePopupEdit: function(args) {
 			var self = this,
-				popup, popup_html;
+				popup,
+				popup_html,
+				data = args.data,
+				callback = args.callback,
+				data_defaults = args.data_defaults;
 
 			popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
@@ -273,26 +286,20 @@ define(function(require){
 					else {
 						callback(null, defaults);
 					}
+				},
+				provisionerData: function(callback) {
+					if(monster.config.api.hasOwnProperty('provisioner') && monster.config.api.provisioner) {
+						self.deviceGetDataProvisoner(function(data) {
+							callback(null, data);
+						});
+					}
+					else {
+						callback(null, {});
+					}
 				}
 			},
 			function(err, results){
-				var render_data = defaults;
-
-				if(typeof data === 'object' && data.id) {
-					render_data = $.extend(true, defaults, { data: results.get_device });
-				}
-				console.log(render_data);
-				if(results.get_device.hasOwnProperty('media') && results.get_device.media.hasOwnProperty('audio')) {
-					// If the codecs property is defined, override the defaults with it. Indeed, when an empty array is set as the
-					// list of codecs, it gets overwritten by the extend function otherwise.
-					if(results.get_device.media.audio.hasOwnProperty('codecs')) {
-						render_data.data.media.audio.codecs = results.get_device.media.audio.codecs;
-					}
-
-					if(results.get_device.media.video.hasOwnProperty('codecs')) {
-						render_data.data.media.video.codecs = results.get_device.media.video.codecs;
-					}
-				}
+				var render_data = self.devicePrepareDataForTemplate(data, defaults, results);
 
 				self.deviceRender(render_data, target, callbacks);
 
@@ -302,12 +309,86 @@ define(function(require){
 			});
 		},
 
+		devicePrepareDataForTemplate: function(data, dataGlobal, results) {
+			var self = this,
+				dataDevice = results.get_device,
+				dataProvisioner = results.provisionerData;
+
+			if(typeof data === 'object' && data.id) {
+				dataGlobal = $.extend(true, dataGlobal, { data: dataDevice });
+			}
+
+			if(dataDevice.hasOwnProperty('media') && dataDevice.media.hasOwnProperty('audio')) {
+				// If the codecs property is defined, override the defaults with it. Indeed, when an empty array is set as the
+				// list of codecs, it gets overwritten by the extend function otherwise.
+				if(dataDevice.media.audio.hasOwnProperty('codecs')) {
+					dataGlobal.data.media.audio.codecs = dataDevice.media.audio.codecs;
+				}
+
+				if(dataDevice.media.video.hasOwnProperty('codecs')) {
+					dataGlobal.data.media.video.codecs = dataDevice.media.video.codecs;
+				}
+			}
+
+			_.each(dataGlobal.field_data.call_restriction, function(restriction, key) {
+				restriction.value = dataGlobal.data.call_restriction[key].action;
+			});
+
+			dataGlobal.field_data.provisioner = dataProvisioner;
+			dataGlobal.field_data.provisioner.isEnabled = !_.isEmpty(dataProvisioner);
+
+			if(dataGlobal.field_data.provisioner.isEnabled) {
+				var default_provision_data = {
+					endpoint_brand: 'yealink',
+					endpoint_model: 't22',
+					voicemail_beep: 1, //ie enabled
+					time_format: '12',
+					hotline: '',
+					vlan: {
+						enable: false,
+						number: ''
+					},
+					date_format: 'middle-endian'
+				}
+
+				dataGlobal.data.provision = $.extend(true, {}, default_provision_data, dataGlobal.data.provision);
+			}
+
+			return dataGlobal;
+		},
+
+		deviceGetValidationByDeviceType: function(deviceType) {
+			var validation = {
+				sip_uri: {},
+				sip_device : {
+					'mac_address': { mac: true },
+					'sip_expire_seconds': {	digits: true }
+				},
+				fax : {
+					'mac_address': { mac: true },
+					'sip_expire_seconds': {	digits: true }
+				},
+				cellphone: {},
+				smartphone: {
+					'sip_expire_seconds': {	digits: true }
+				},
+				landline: {},
+				softphone: {
+					'sip_expire_seconds': {	digits: true }
+				},
+				mobile: {
+					'mdn': { digits: true },
+					'sip_expire_seconds': {	digits: true }
+				}
+			};
+
+			return { rules: validation[deviceType] };
+		},
+
 		deviceRender: function(data, target, callbacks){
 			var self = this,
 				device_html,
 				render;
-
-				console.log(data);
 
 			if('media' in data.data && 'fax_option' in data.data.media) {
 				data.data.media.fax_option = (data.data.media.fax_option === 'auto' || data.data.media.fax_option === true);
@@ -316,57 +397,54 @@ define(function(require){
 			if(typeof data.data == 'object' && data.data.device_type) {
 				device_html = $(monster.template(self, 'device-' + data.data.device_type, data));
 
-				/* Do device type specific things here */
-				if($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile']) > -1) {
-					device_html.delegate('#sip_password[type="password"]', 'focus', function() {
-						var value = $(this).val();
-						$('<input id="sip_password" name="sip.password" type="text"/>').insertBefore($(this)).val(value).focus();
-						$(this).remove();
-					});
+				var deviceForm = device_html.find('#device-form');
 
-					device_html.delegate('#sip_password[type="text"]', 'blur', function(ev) {
-						var value;
-						if($(this).attr('removing') != 'true') {
-							$(this).attr('removing', 'true');
-							value = $(this).val();
-							$('<input id="sip_password" name="sip.password" type="password"/>').insertBefore($(this)).val(value);
-							$(this).remove();
-						}
-					});
+				if(monster.config.api.hasOwnProperty('provisioner') && monster.config.api.provisioner)  {
+					self.deviceSetProvisionerStuff(device_html, data);
 				}
 
-				//winkstart.validate.set(self.config.validation[data.data.device_type], device_html);
+				/* Do device type specific things here */
+				if($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile']) > -1) {
+					monster.ui.protectField(device_html.find('#sip_password'), device_html);
+				}
+
+				monster.ui.validate(deviceForm, self.deviceGetValidationByDeviceType(data.data.device_type));
 
 				if(!$('#owner_id', device_html).val()) {
 					$('#edit_link', device_html).hide();
 				}
+
+				device_html.find('#mac_address').mask("hh:hh:hh:hh:hh:hh", {placeholder:" "});
 
 				$('#owner_id', device_html).change(function() {
 					!$('#owner_id option:selected', device_html).val() ? $('#edit_link', device_html).hide() : $('#edit_link', device_html).show();
 				});
 
 				$('.inline_action', device_html).click(function(ev) {
-					var _data = ($(this).dataset('action') == 'edit') ? { id: $('#owner_id', device_html).val() } : {},
+					var _data = ($(this).data('action') == 'edit') ? { id: $('#owner_id', device_html).val() } : {},
 						_id = _data.id;
 
 					ev.preventDefault();
 
-					winkstart.publish('user.popup_edit', _data, function(_data) {
-						/* Create */
-						if(!_id) {
-							$('#owner_id', device_html).append('<option id="'+ _data.data.id  +'" value="' + _data.data.id +'">'+ _data.data.first_name + ' ' + _data.data.last_name  +'</option>');
-							$('#owner_id', device_html).val(_data.data.id);
-							$('#edit_link', device_html).show();
-						}
-						else {
-							/* Update */
-							if('id' in _data.data) {
-								$('#owner_id #'+_data.data.id, device_html).text(_data.data.first_name + ' ' + _data.data.last_name);
+					monster.pub('callflows.user.popupEdit', {
+						data: _data,
+						callback: function(user) {
+							/* Create */
+							if(!_id) {
+								$('#owner_id', device_html).append('<option id="'+ user.id  +'" value="' + user.id +'">'+ user.first_name + ' ' + user.last_name  +'</option>');
+								$('#owner_id', device_html).val(user.id);
+								$('#edit_link', device_html).show();
 							}
-							/* Delete */
 							else {
-								$('#owner_id #'+_id, device_html).remove();
-								$('#edit_link', device_html).hide();
+								/* Update */
+								if(_data.hasOwnProperty('id')) {
+									$('#owner_id #'+user.id, device_html).text(user.first_name + ' ' + user.last_name);
+								}
+								/* Delete */
+								else {
+									$('#owner_id #'+_id, device_html).remove();
+									$('#edit_link', device_html).hide();
+								}
 							}
 						}
 					});
@@ -375,35 +453,29 @@ define(function(require){
 				$('.device-save', device_html).click(function(ev) {
 					ev.preventDefault();
 
-					//TODO winkstart.validate.is_valid(self.config.validation[data.data.device_type], device_html, function() {
-							var form_data = form2object('device-form');
+					if(monster.ui.valid(deviceForm)) {
+						var form_data = form2object('device-form');
 
-							self.clean_form_data(form_data);
+						self.deviceCleanFormData(form_data);
 
-							if(form_data.provision && form_data.provision.endpoint_brand) {
-								form_data.provision.endpoint_model = $('.dropdown_family[data-brand="'+form_data.provision.endpoint_brand+'"]', device_html).val();
-								if($('#'+form_data.provision.endpoint_model, device_html).size() > 0) {
-									form_data.provision.endpoint_family = $('#'+form_data.provision.endpoint_model, device_html).data('family');
-								}
-							}
-
-							// if('field_data' in data) {
-							//     delete data.field_data;
-							// }
-
-							self.save_device(form_data, data, callbacks.save_success, winkstart.error_message.process_error(callbacks.save_error));
-						/*},
-						function() {
-							winkstart.alert(_t('device', 'there_were_errors_on_the_form'));
+						if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand')) {
+							// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
+							form_data.provision.endpoint_model = $('.dropdown_family[data-brand="'+form_data.provision.endpoint_brand+'"]', device_html).val();
+							form_data.provision.endpoint_family = $('#'+form_data.provision.endpoint_model, device_html).parents('optgroup').data('family');
 						}
-					);*/
+
+						self.deviceSave(form_data, data, callbacks.save_success);
+					}
+					else {
+						monster.ui.alert('error', self.i18n.active().callflows.device.there_were_errors_on_the_form);
+					}
 				});
 
 				$('.device-delete', device_html).click(function(ev) {
 					ev.preventDefault();
 
-					winkstart.confirm(_t('device', 'are_you_sure_you_want_to_delete'), function() {
-						self.delete_device(data, callbacks.delete_success, callbacks.delete_error);
+					monster.ui.confirm(self.i18n.active().callflows.device.are_you_sure_you_want_to_delete, function() {
+						self.deviceDelete(data.data.id, callbacks.delete_success);
 					});
 				});
 
@@ -418,7 +490,7 @@ define(function(require){
 					$('#ip_block', device_html).hide();
 				}
 
-				$('#sip_method', device_html).change(function() {
+				device_html.find('#sip_method').on('change', function() {
 					if($('#sip_method option:selected', device_html).val() === 'ip') {
 						$('#ip_block', device_html).slideDown();
 						$('#username_block', device_html).slideUp();
@@ -462,7 +534,7 @@ define(function(require){
 				});
 			}
 			else {
-				device_html = $(monster.template(self, 'general_edit'));
+				device_html = $(monster.template(self, 'device-general_edit'));
 
 				$('.media_pane', device_html).hide();
 				$('.media_tabs .buttons', device_html).click(function() {
@@ -492,23 +564,87 @@ define(function(require){
 
 			self.winkstartTabs(device_html);
 
-			/* Awesome sauce for provisioning goodness */
-			render = function() {
-				(target)
-					.empty()
-					.append(device_html);
-			};
+			(target)
+				.empty()
+				.append(device_html);
 
-			if(typeof data.data == 'object' && data.data.device_type == 'sip_device') {
-				//TODO if(winkstart.publish('phone.render_fields', $(device_html), data.data.provision || (data.data.provision = {}), render, data.list_models || {})) {
-					render();
-				//}
-			}
-			else {
-				render();
+			$('.media_tabs .buttons[device_type="sip_device"]', device_html).trigger('click');
+		},
 
-				$('.media_tabs .buttons[device_type="sip_device"]', device_html).trigger('click');
-			}
+		deviceSetProvisionerStuff: function(device_html, data) {
+			var self = this,
+				set_value = function(brand_name, model_name) {
+					if(brand_name in data.field_data.provisioner.brands) {
+						device_html.find('#dropdown_brand').val(brand_name);
+						device_html.find('.dropdown_family').hide();
+						device_html.find('.dropdown_family[data-brand="'+brand_name+'"]').show()
+																						 .val(model_name);
+					}
+				},
+				provisionData = data.data.provision,
+				regex_brands = {
+					"00085d": "aastra",
+					"0010bc": "aastra",
+					"00036b": "cisco",
+					"00000c": "cisco",
+					"000142": "cisco",
+					"000143": "cisco",
+					"000163": "cisco",
+					"000164": "cisco",
+					"000196": "cisco",
+					"000197": "cisco",
+					"0001c7": "cisco",
+					"0001c9": "cisco",
+					"000f23": "cisco",
+					"0013c4": "cisco",
+					"0016c8": "cisco",
+					"001818": "cisco",
+					"00175a": "cisco",
+					"001795": "cisco",
+					"001A2f": "cisco",
+					"001c58": "cisco",
+					"001dA2": "cisco",
+					"002155": "cisco",
+					"000e84": "cisco",
+					"000e38": "cisco",
+					"00070e": "cisco",
+					"001bd4": "cisco",
+					"001930": "cisco",
+					"0019aa": "cisco",
+					"001d45": "cisco",
+					"001ef7": "cisco",
+					"000e08": "cisco",
+					"1cdf0f": "cisco",
+					"e05fb9": "cisco",
+					"5475d0": "cisco",
+					"c46413": "cisco",
+					"000Ffd3": "digium",
+					"000b82": "grandstream",
+					"08000f": "mitel",
+					"1045bE": "norphonic",
+					"0050c2": "norphonic",
+					"0004f2": "polycom",
+					"00907a": "polycom",
+					"000413": "snom",
+					"001f9f": "thomson",
+					"00147f": "thomson",
+					"642400": "xorcom",
+					"001565": "yealink"
+				};
+
+			set_value(provisionData.endpoint_brand, provisionData.endpoint_model);
+
+			device_html.find('#dropdown_brand').on('change', function() {
+				set_value($(this).val());
+			});
+
+			device_html.find('#mac_address').on('keyup', function() {
+				var mac_address = $(this).val().replace(/[^0-9a-fA-F]/g, '');
+
+				if(mac_address in regex_brands) {
+					set_value(regex_brands[mac_address]);
+				}
+			});
 		},
 
 		deviceFormatData: function(data) {
@@ -743,6 +879,37 @@ define(function(require){
 			return form_data;
 		},
 
+		deviceFixArrays: function(data, data2) {
+			if(typeof data.media == 'object' && typeof data2.media == 'object') {
+				(data.media.audio || {}).codecs = (data2.media.audio || {}).codecs;
+				(data.media.video || {}).codecs = (data2.media.video || {}).codecs;
+			}
+
+			if('media' in data2 && 'encryption' in data2.media && 'methods' in data2.media.encryption) {
+				data.media.encryption = data.media.encryption || {};
+				data.media.encryption.methods = data2.media.encryption.methods;
+			}
+
+			return data;
+		},
+
+		deviceSave: function(form_data, data, success) {
+			var self = this,
+				id = (typeof data.data == 'object' && data.data.id) ? data.data.id : undefined,
+				normalized_data = self.deviceFixArrays(self.deviceNormalizeData($.extend(true, {}, data.data, form_data)), form_data);
+
+			if(id) {
+				self.deviceUpdate(normalized_data, function(_data, status) {
+					success && success(_data, status, 'update');
+				});
+			}
+			else {
+				self.deviceCreate(normalized_data, function(_data, status) {
+					success && success(_data, status, 'create');
+				});
+			}
+		},
+
 		deviceList: function(callback) {
 			var self = this;
 
@@ -818,6 +985,30 @@ define(function(require){
 			});
 		},
 
+		deviceGetDataProvisoner: function(callback) {
+			var self = this;
+
+			monster.request({
+				resource: 'callflows.device.getProvisionerPhones',
+				data: {
+				},
+				success: function(data) {
+					data = self.deviceFormatDataProvisioner(data.data);
+
+					callback && callback(data)
+				}
+			});
+		},
+
+		deviceFormatDataProvisioner: function(data) {
+			var self = this,
+				formattedData = {
+					brands: data
+				};
+
+			return formattedData;
+		},
+
 		deviceDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions;
@@ -877,14 +1068,17 @@ define(function(require){
 
 								ev.preventDefault();
 
-								self.devicePopupEdit(_data, function(_data) {
-									node.setMetadata('id', _data.data.id || 'null');
-									node.setMetadata('timeout', $('#parameter_input', popup_html).val());
-									node.setMetadata('can_call_self', $('#device_can_call_self', popup_html).is(':checked'));
+								self.devicePopupEdit({
+									data: _data,
+									callback: function(device) {
+										node.setMetadata('id', device.id || 'null');
+										node.setMetadata('timeout', $('#parameter_input', popup_html).val());
+										node.setMetadata('can_call_self', $('#device_can_call_self', popup_html).is(':checked'));
 
-									node.caption = _data.data.name || '';
+										node.caption = device.name || '';
 
-									popup.dialog('close');
+										popup.dialog('close');
+									}
 								});
 							});
 

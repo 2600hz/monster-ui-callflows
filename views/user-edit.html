@@ -1,0 +1,600 @@
+<div>
+	<div class="whapp-header clearfix">
+		{{#if data.id}}
+			<h1>{{ i18n.callflows.user.edit_user }}</h1>
+		{{else}}
+			<h1>{{ i18n.callflows.user.create_user }}</h1>
+		{{/if}}
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.user.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.user.advanced }}</button>
+		</div>
+	</div>
+</div>
+<div>
+	<ul class="tabs" data-tabs="tabs">
+		<li class="active"><a href="#basic">{{ i18n.callflows.user.basic }}</a></li>
+		<li><a href="#caller_id">{{ i18n.callflows.user.caller_id }}</a></li>
+		<li><a href="#options">{{ i18n.callflows.user.options }}</a></li>
+		<li><a href="#call_forward">{{ i18n.callflows.user.call_forward }}</a></li>
+		<li><a href="#password_management">{{ i18n.callflows.user.password_management }}</a></li>
+		<li><a href="#hot_desking">{{ i18n.callflows.user.hot_desking }}</a></li>
+		<li><a href="#restrictions">{{ i18n.callflows.user.restrictions }}</a></li>
+	</ul>
+	<form id="user-form" action="#" method="post">
+		<div class="pill-content">
+			<div class="active basic_view" id="basic">
+				<h3>{{ i18n.callflows.user.basic_settings }}</h3>
+				<div class="clearfix">
+					<label for="username">{{ i18n.callflows.user.username }}</label>
+					<div class="input">
+						{{#if data.username}}
+							<label id="username_label">{{data.username}}</label>
+							<input id="username" name="username" type="hidden"value="{{data.username}}" />
+						{{else}}
+							<input class="span4" id="username" name="username" type="text" placeholder="{{ i18n.callflows.user.username_placeholder }}" value="{{data.username}}" rel="popover" data-content="{{ i18n.callflows.user.username_pdata_content }}"/>
+						{{/if}}
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="first_name">{{ i18n.callflows.user.first_name }}</label>
+					<div class="input">
+						<input class="span4" id="first_name" name="first_name" type="text" placeholder="{{ i18n.callflows.user.first_name_placeholder }}" value="{{data.first_name}}" rel="popover" data-content="{{ i18n.callflows.user.first_name_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="last_name">{{ i18n.callflows.user.last_name }}</label>
+					<div class="input">
+						<input class="span4" id="last_name" name="last_name" type="text" placeholder="{{ i18n.callflows.user.last_name_placeholder }}" value="{{data.last_name}}" rel="popover" data-content="{{ i18n.callflows.user.last_name_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="email">{{ i18n.callflows.user.email }}</label>
+					<div class="input">
+						<input class="span4" id="email" name="email" type="text" placeholder="{{ i18n.callflows.user.email_placeholder }}" value="{{data.email}}" rel="popover" data-content="{{ i18n.callflows.user.email_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="priv_level">{{ i18n.callflows.user.user_privilege_level }}</label>
+					<div class="input">
+						<select id="priv_level" name="priv_level" class="medium" rel="popover" data-content="{{ i18n.callflows.user.user_privilege_level_data_content }}">
+							<option value="admin"{{#compare data.priv_level '===' 'admin'}} selected{{/compare}}>{{ i18n.callflows.user.administrator }}</option>
+							<option value="user"{{#compare data.priv_level '===' 'user'}} selected{{/compare}}>{{ i18n.callflows.user.user }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="vm_to_email_enabled">{{ i18n.callflows.user.email_notifications }}</label>
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.voicemail_data_content }}">
+										{{#if data.vm_to_email_enabled}}
+										<input id="vm_to_email_enabled" type="checkbox" name="vm_to_email_enabled" checked="checked" />
+										{{else}}
+										<input id="vm_to_email_enabled" type="checkbox" name="vm_to_email_enabled" />
+										{{/if}}
+										<span>{{ i18n.callflows.user.voicemail }}</span>
+									</span>
+								</label>
+							</li>
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.fax_data_content }}">
+										{{#if data.fax_to_email_enabled}}
+										<input id="fax_to_email_enabled" type="checkbox" name="fax_to_email_enabled" checked="checked" />
+										{{else}}
+										<input id="fax_to_email_enabled" type="checkbox" name="fax_to_email_enabled" />
+										{{/if}}
+										<span>{{ i18n.callflows.user.fax }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<hr />
+
+				<h3>{{ i18n.callflows.user.in_house_calls }}</h3>
+				<div class="clearfix">
+					<label for="caller_id_name_internal">{{ i18n.callflows.user.caller_id_name }}</label>
+					<div class="input">
+						<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="{{ i18n.callflows.user.caller_id_name_placeholder }}" value="{{data.caller_id.internal.name}}"  rel="popover" data-content="{{ i18n.callflows.user.caller_id_name_data_content }}" />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="caller_id_number_internal">{{ i18n.callflows.user.caller_id_number }}</label>
+					<div class="input">
+						<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{data.caller_id.internal.number}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_number_data_content }}"/>
+					</div>
+				</div>
+				<hr />
+
+				<h3>{{ i18n.callflows.user.outbound_calls }}</h3>
+				<div class="clearfix">
+					<label for="caller_id_name_external">{{ i18n.callflows.user.caller_id_name }}</label>
+					<div class="input">
+						<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="{{ i18n.callflows.user.caller_id_name_placeholder }}" value="{{data.caller_id.external.name}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_name_data_content2 }}" />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="caller_id_number_external">{{ i18n.callflows.user.caller_id_number }}</label>
+					<div class="input">
+						<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{data.caller_id.external.number}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_number_data_content2 }}"/>
+					</div>
+				</div>
+
+				<h3>{{ i18n.callflows.user.devices }}</h3>
+				<div id="equipment">
+					<div class="help_box">
+						{{ i18n.callflows.user.the_following_devices_are_mapped }}
+					</div>
+					<div id="tab_devices">
+						<div class="row title">
+							<div class="column first">{{ i18n.callflows.user.device_name }}&nbsp;&nbsp;<span class="icon medium device"/></div>
+							<div class="column second">{{ i18n.callflows.user.type }}&nbsp;&nbsp;<span class="icon medium iphone" style="margin-bottom: 4px;"/></div>
+							<div class="column third">{{ i18n.callflows.user.status }}</div>
+							<div class="column fourth">{{ i18n.callflows.user.enabled }}</div>
+							<div class="column fifth">{{ i18n.callflows.user.actions }}&nbsp;&nbsp;<span class="icon medium settings" style="margin-bottom: 2px;"/></div>
+						</div>
+						<div class="rows">
+						</div>
+					</div>
+
+					{{#if field_data.new_user}}
+						<button type="button" class="btn add_device" data-new_user="{{field_data.new_user}}">{{ i18n.callflows.user.add_a_new_device }}</button>
+					{{else}}
+						<button type="button" class="btn add_device" data-user_id="{{data.id}}">{{ i18n.callflows.user.add_a_new_device }}</button>
+					{{/if}}
+				</div>
+			</div>
+
+			<div id="caller_id">
+				<div class="clearfix">
+					<label for="name">{{ i18n.callflows.user.presence_id }}</label>
+					<div class="input">
+						<input class="span4" id="presence_id" name="presence_id" type="text" placeholder="{{ i18n.callflows.user.presence_id_placeholder }}" value="{{data.presence_id}}" rel="popover" data-content="{{ i18n.callflows.user.presence_id_help }}"/>
+					</div>
+				</div>
+				<h3>{{ i18n.callflows.user.in_house_calls }}</h3>
+				<div class="clearfix">
+					<label for="advanced_caller_id_name_internal">{{ i18n.callflows.user.caller_id_name }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="{{ i18n.callflows.user.caller_id_name_placeholder }}" value="{{data.caller_id.internal.name}}"  rel="popover" data-content="{{ i18n.callflows.user.caller_id_name_data_content }}" />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="advanced_caller_id_number_internal">{{ i18n.callflows.user.caller_id_number }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{data.caller_id.internal.number}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_number_data_content }}"/>
+					</div>
+				</div>
+				<hr />
+
+				<h3>{{ i18n.callflows.user.outbound_calls }}</h3>
+				<div class="clearfix">
+					<label for="advanced_caller_id_name_external">{{ i18n.callflows.user.caller_id_name }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_name_external" name="caller_id.external.name" type="text" placeholder="{{ i18n.callflows.user.caller_id_name_placeholder }}" value="{{data.caller_id.external.name}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_name_data_content2 }}" />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="advanced_caller_id_number_external">{{ i18n.callflows.user.caller_id_number }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{data.caller_id.external.number}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_number_data_content2 }}"/>
+					</div>
+				</div>
+				<hr />
+
+				<h3>{{ i18n.callflows.user.emergency }}</h3>
+				<div class="clearfix">
+					<label for="advanced_caller_id_name_emergency">{{ i18n.callflows.user.caller_id_name }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="{{ i18n.callflows.user.caller_id_name_placeholder }}" value="{{data.caller_id.emergency.name}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_name_data_content3 }}" />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="advanced_caller_id_number_emergency">{{ i18n.callflows.user.caller_id_number }}</label>
+					<div class="input">
+						<input class="span4" id="advanced_caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{data.caller_id.emergency.number}}" rel="popover" data-content="{{ i18n.callflows.user.caller_id_number_data_content3 }}"/>
+					</div>
+				</div>
+			</div>
+
+			<div id="options">
+				<h3>{{ i18n.callflows.user.standard_options }}</h3>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.user_has_been_verified_data_content }}">
+										{{#if data.verified}}
+											<input type="checkbox" id="verified" name="verified" checked="checked"/>
+										{{else}}
+											<input type="checkbox" id="verified" name="verified"
+											/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.user_has_been_verified }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="timezone">{{ i18n.callflows.user.time_zone }}</label>
+					<div class="input">
+						<select name="timezone" id="timezone" rel="popover" data-content="{{ i18n.callflows.user.time_zone_data_content }}"></select>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="music_on_hold_media_id">{{ i18n.callflows.user.music_on_hold }}</label>
+					<div class="input">
+						<span rel="popover" data-content="{{ i18n.callflows.user.music_on_hold_data_content }}">
+							<select name="music_on_hold.media_id" id="music_on_hold_media_id" class="medium">
+							{{#select data.music_on_hold.media_id}}
+								{{#each field_data.media}}
+									<option value="{{id}}" id="{{id}}">{{name}}</option>
+								{{/each}}
+							{{/select}}
+							</select>
+							<div class="edit_create">
+								<a id="edit_link_media" class="inline_action_media" data-action="edit" href="#">{{ i18n.callflows.user.edit }}</a>
+								<a class="inline_action_media" data-action="create" href="#">{{ i18n.callflows.user.create }}</a>
+							</div>
+						</span>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+					   <ul class="inputs-list">
+						   <li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.hide_from_contact_list_data_content }}">
+										{{#compare data.contact_list.exclude '===' true}}
+										<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude" checked="checked" />
+										{{else}}
+										<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude" />
+										{{/compare}}
+										<span>{{ i18n.callflows.user.hide_from_contact_list }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<hr/>
+				<h3>{{ i18n.callflows.user.queue_options }}</h3>
+
+				<!--<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="Tick the checkbox to set this user as an agent and you will then be able to define a Queue PIN for this agent (not mandatory).">
+										{{#compare data.enable_pin '===' true}}
+										<input id="enable_pin" type="checkbox" name="enable_pin" checked="checked" />
+										{{else}}
+										<input id="enable_pin" type="checkbox" name="enable_pin"/>
+										{{/compare}}
+										<span>Enable Agent / PIN</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>-->
+
+				<!--<div class="queue_block">
+					<div class="clearfix queue_pin">
+						<label for="queue_pin">PIN</label>
+						<div class="input">
+							<input id="queue_pin" placeholder="3615" type="text" name="queue_pin" value="{{data.queue_pin}}" rel="popover" data-content="PIN used by the agent to login to a queue."/>
+						</div>
+					</div>-->
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.record_this_agent_data_content }}">
+										{{#compare data.record_call '===' true}}
+										<input id="record_call" type="checkbox" name="record_call" checked="checked" />
+										{{else}}
+										<input id="record_call" type="checkbox" name="record_call"/>
+										{{/compare}}
+										<span>{{ i18n.callflows.user.record_this_agent }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div id="call_forward">
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.enable_call_forward_data_content }}">
+										{{#if data.call_forward.enabled}}
+											<input type="checkbox" id="call_forward_enabled" name="call_forward.enabled" checked="checked" rel="popover" data-content=""/>
+										{{else}}
+											<input type="checkbox" id="call_forward_enabled" name="call_forward.enabled" rel="popover" data-content=""/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.enable_call_forward }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="call_forward_number">{{ i18n.callflows.user.redirect_calls_to }}</label>
+					<div class="input">
+						<input class="span4" id="call_forward_number" name="call_forward.number" type="text" placeholder="+1415555555" value="{{data.call_forward.number}}" rel="popover" data-content="{{ i18n.callflows.user.redirect_calls_to_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.bypass_users_phones_data_content }}">
+										{{#if data.call_forward.substitute}}
+											<input type="checkbox" id="call_forward_substitute" name="call_forward.substitute" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="call_forward_substitute" name="call_forward.substitute"/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.bypass_users_phones }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.require_key_press_data_content }}">
+										{{#if data.call_forward.require_keypress}}
+											<input type="checkbox" id="call_forward_require_keypress" name="call_forward.require_keypress" checked="checked"/>
+										{{else}}
+											<input type="checkbox" id="call_forward_require_keypress" name="call_forward.require_keypress" />
+										{{/if}}
+										<span>{{ i18n.callflows.user.require_key_press }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.keep_caller_id_data_content }}">
+										{{#if data.call_forward.keep_caller_id}}
+											<input type="checkbox" id="call_forward_keep_caller_id" name="call_forward.keep_caller_id" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="call_forward_keep_caller_id" name="call_forward.keep_caller_id"/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.keep_caller_id }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.direct_calls_only_data_content }}">
+										{{#if data.call_forward.direct_calls_only}}
+											<input type="checkbox" id="call_forward_direct_calls_only" name="call_forward.direct_calls_only" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="call_forward_direct_calls_only" name="call_forward.direct_calls_only" />
+										{{/if}}
+										<span>{{ i18n.callflows.user.direct_calls_only }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div id="password_management">
+				<div class="clearfix">
+					<label for="pwd_mngt_pwd1">{{ i18n.callflows.user.new_password }}</label>
+					<div class="input">
+						<input class="span4" id="pwd_mngt_pwd1" name="pwd_mngt_pwd1" type="password" value="fakePassword"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="pwd_reco_pwd2">{{ i18n.callflows.user.confirm_password }}</label>
+					<div class="input">
+						<input class="span4" id="pwd_mngt_pwd2" name="pwd_mngt_pwd2" type="password" value="fakePassword"/>
+					</div>
+				</div>
+			</div>
+
+			<div id="hot_desking">
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.enable_hot_desking_data_content }}">
+										{{#if data.hotdesk.enabled}}
+											<input type="checkbox" id="hotdesk_enabled" name="hotdesk.enabled" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="hotdesk_enabled" name="hotdesk.enabled"/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.enable_hot_desking }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="hotdesk_id">{{ i18n.callflows.user.id }}</label>
+					<div class="input">
+						<input class="span4" id="hotdesk_id" name="hotdesk.id" type="text" placeholder="{{ i18n.callflows.user.id_placeholder }}" value="{{data.hotdesk.id}}" rel="popover" data-content="{{ i18n.callflows.user.id_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span  rel="popover" data-content="{{ i18n.callflows.user.require_pin_data_content }}">
+										{{#if data.hotdesk.require_pin}}
+											<input type="checkbox" id="hotdesk_require_pin" name="hotdesk.require_pin" checked="checked"/>
+										{{else}}
+											<input type="checkbox" id="hotdesk_require_pin" name="hotdesk.require_pin"/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.require_pin }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix hotdesk_pin">
+					<label for="">{{ i18n.callflows.user.pin }}</label>
+					<div class="input">
+						<input class="span4" id="hotdesk_pin" name="hotdesk.pin" type="text" placeholder="{{ i18n.callflows.user.pin_placeholder }}" value="{{data.hotdesk.pin}}" rel="popover" data-content="{{ i18n.callflows.user.pin_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.check_if_you_want_data_content }}">
+										{{#if data.hotdesk.keep_logged_in_elsewhere}}
+											<input type="checkbox" id="hotdesk_keep_logged_in_elsewhere" name="hotdesk.keep_logged_in_elsewhere" checked="checked" />
+										{{else}}
+											<input type="checkbox" id="hotdesk_keep_logged_in_elsewhere" name="hotdesk.keep_logged_in_elsewhere"/>
+										{{/if}}
+										<span>{{ i18n.callflows.user.check_if_you_want }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				{{#if field_data.hotdesk_enabled}}
+					<hr/>
+
+					<h3>{{ i18n.callflows.user.devices_where_this_user }}</h3>
+
+					<!--<div class="help_box">In order to actually log out from the devices listed below, you need to tick the checkbox on the right of the device and then press the Save button!</div>-->
+
+					<div id="hotdesk_devices" class="small-table">
+						<div class="row title">
+							<div class="column">{{ i18n.callflows.user.devices }}&nbsp;&nbsp;<span class="icon medium device"/></div>
+							<!--<div class="column">Log out</div>-->
+						</div>
+						<div class="rows">
+							{{#if field_data.device_list}}
+								{{#each field_data.device_list}}
+									<div id="row_hotdesk_{{@key}}" data-id="{{@key}}">
+										<div class="column">{{name}}</div>
+										<!-- <div class="column"><input type="checkbox" name="hotdesk.log_out[]" value="{{@key}}"></input></a></div> -->
+									</div>
+								{{/each}}
+							{{else}}
+								<div id="row_no_data">
+									<div class="column merged">{{ i18n.callflows.user.this_user_is_not_logged }}</div>
+								</div>
+							{{/if}}
+						</div>
+					</div>
+				{{/if}}
+			</div>
+
+			<div id="restrictions">
+				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.closed_groups_data_content }}">
+										{{#compare data.call_restriction.closed_groups.action '===' 'deny'}}
+											<input type="checkbox" name="extra.closed_groups" checked="checked"/>
+										{{else}}
+											<input type="checkbox" name="extra.closed_groups"/>
+										{{/compare}}
+										<span>{{ i18n.callflows.user.closed_groups }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				{{#each field_data.call_restriction}}
+				<div class="clearfix">
+					<label>{{friendly_name}}</label>
+					<div class="input">
+						<select name="call_restriction.{{@key}}.action" class="medium" rel="popover">
+							{{#compare action '===' 'deny'}}
+								<option value="deny" selected>{{ ../../i18n.callflows.user.deny }}</option>
+								<option value="inherit">{{ ../../i18n.callflows.user.inherit }}</option>
+							{{else}}
+								<option value="deny">{{ ../../i18n.callflows.user.deny }}</option>
+								<option value="inherit" selected>{{ ../../i18n.callflows.user.inherit }}</option>
+							{{/compare}}
+						</select>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+	</form>
+	<div class="buttons-right">
+		{{#if data.id}}
+			<button class="btn btn-danger user-delete">{{ i18n.callflows.user.delete }}</button>
+		{{/if}}
+		<button class="btn btn-success user-save">{{ i18n.callflows.user.save }}</button>
+	</div>
+</div>

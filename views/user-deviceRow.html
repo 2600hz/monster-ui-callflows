@@ -1,0 +1,18 @@
+<div class="row"{{#if id}} id="{{id}}"{{/if}}>
+{{#if id}}
+	<div class="column first">{{name}}</div>
+	<div class="column second">{{display_type}}</div>
+		<div class="column third {{device_type}}{{#if not_enabled}} disabled{{/if}}">
+	</div>
+	<div class="column fourth">
+		<input type="checkbox" class="enabled_checkbox" data-device_id="{{id}}"{{#unless not_enabled}} checked="checked"{{/unless}}/>
+	</div>
+		<div class="column fifth">
+			<a class="action_device edit icon medium pencil" data-id="{{id}}"></a>
+			<a class="action_device delete icon medium trash" data-id="{{id}}"></a>
+		</div>
+{{else}}
+	<div class="column merged">{{ i18n.callflows.user.there_is_currently_no_devices }}</div>
+{{/if}}
+	<div class="clear"/>
+</div>

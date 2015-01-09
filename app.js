@@ -1124,6 +1124,36 @@ define(function(require){
 				$this.addClass('active');
 				template.find(link).addClass('active');
 			});
+		},
+
+		winkstartLinkForm: function(html) {
+			$('input', html).bind('change.link keyup.link focus.link', function() {
+				var input = $(this),
+					name = input.attr('name'),
+					type = input.attr('type'),
+					value = input.val(),
+					id = input.attr('id'),
+					input_fields = $('input[name="' + name + '"]', html);
+
+				if(input_fields.size() > 1) {
+					if(type == 'checkbox'){
+						input_fields = input_fields.filter('[value='+value+']');
+						(input.attr('checked')) ? input_fields.attr('checked', 'checked') : input_fields.removeAttr('checked');
+					}
+					else {
+						$.each(input_fields, function(k, v) {
+							var element = $(v);
+
+							if(element.attr('id') !== id) {
+								element.val(value);
+							}
+						});
+					}
+				}
+				else {
+					input.unbind('.link');
+				}
+			});
 		}
 	};
 
