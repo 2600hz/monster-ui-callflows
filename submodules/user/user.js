@@ -9,7 +9,8 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'userDefineActions',
-			'callflows.user.popupEdit': 'userPopupEdit'
+			'callflows.user.popupEdit': 'userPopupEdit',
+			'callflows.user.edit': 'userEdit'
 		},
 
 		random_id: false,
@@ -402,13 +403,69 @@ define(function(require){
 		userRender: function(data, target, callbacks) {
 			var self = this,
 				user_html = $(monster.template(self, 'user-edit', data)),
+				user_form = user_html.find('#user-form'),
 				data_devices,
-				hotdesk_pin =   $('.hotdesk_pin', user_html),
+				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
 
 			self.userRenderDeviceList(data, user_html);
 
-			// winkstart.validate.set(self.config.validation, user_html);
+			monster.ui.validate(user_form, {
+				rules: {
+					username: {
+						required: true,
+						minlength: 3,
+						regex: /^[0-9a-zA-Z+@._-]*$/
+					},
+					first_name: {
+						required: true,
+						minlength: 1,
+						maxlength: 256,
+						regex: /^[0-9a-zA-Z\\s\\-\\']+$/
+					},
+					last_name: {
+						required: true,
+						minlength: 1,
+						maxlength: 256,
+						regex: /^[0-9a-zA-Z\\s\\-\\']+$/
+					},
+					email: {
+						required: true,
+						email: true
+					},
+					pwd_mngt_pwd1: {
+						required: true,
+						minlength: 3
+					},
+					pwd_mngt_pwd2: {
+						required: true,
+						minlength: 3,
+						equalTo: '#pwd_mngt_pwd1'
+					},
+					'hotdesk.pin': { regex: /^[0-9]*$/ },
+					'hotdesk.id': { regex: /^[0-9\+\#\*]*$/ },
+					call_forward_number: { regex: /^[\+]?[0-9]*$/ },
+					'caller_id.internal.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.external.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.internal.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
+					'caller_id.external.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
+					'caller_id.emergency.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.emergency.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ }
+				},
+				messages: {
+					username: { regex: self.i18n.active().callflows.user.validation.username },
+					first_name: { regex: self.i18n.active().callflows.user.validation.name },
+					last_name: { regex: self.i18n.active().callflows.user.validation.name },
+					'hotdesk.pin': { regex: self.i18n.active().callflows.user.validation.hotdesk.pin },
+					'hotdesk.id': { regex: self.i18n.active().callflows.user.validation.hotdesk.id },
+					'caller_id.internal.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.external.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.emergency.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.internal.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.external.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.emergency.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number }
+				}
+			});
 
 			timezone.populateDropdown($('#timezone', user_html), data.data.timezone);
 
@@ -436,81 +493,72 @@ define(function(require){
 			$('.user-save', user_html).click(function(ev) {
 				ev.preventDefault();
 
-				if($('#pwd_mngt_pwd1', user_html).val() != $('#pwd_mngt_pwd2', user_html).val()) {
-					monster.ui.alert(self.i18n.active().callflows.user.the_passwords_on_the);
-					return true;
-				}
+				if (monster.ui.valid(user_form)) {
+					var form_data = form2object('user-form');
 
-				// winkstart.validate.is_valid(self.config.validation, user_html, function() {
-						var form_data = form2object('user-form');
+					if(form_data.enable_pin === false) {
+						delete data.data.queue_pin;
+						delete data.data.record_call;
+					}
 
-						if(form_data.enable_pin === false) {
-							delete data.data.queue_pin;
-							delete data.data.record_call;
-						}
+					self.userCleanFormData(form_data);
 
-						self.userCleanFormData(form_data);
+					if('field_data' in data) {
+						delete data.field_data;
+					}
 
-						if('field_data' in data) {
-							delete data.field_data;
-						}
-
-						// if(form_data.password === undefined || winkstart.is_password_valid(form_data.password)) {
-							self.callApi({
-								resource: 'account.get',
-								data: {
-									accountId: self.accountId
-								},
-								success: function(_data, status) {
-									if(form_data.priv_level == 'admin') {
-										form_data.apps = form_data.apps || {};
-										if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
-											form_data.apps['voip'] = {
-												label: self.i18n.active().callflows.user.voip_services_label,
-												icon: 'device',
-												api_url: monster.config.api.default
-											}
-										}
+					self.callApi({
+						resource: 'account.get',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(_data, status) {
+							if(form_data.priv_level == 'admin') {
+								form_data.apps = form_data.apps || {};
+								if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
+									form_data.apps['voip'] = {
+										label: self.i18n.active().callflows.user.voip_services_label,
+										icon: 'device',
+										api_url: monster.config.api.default
 									}
-									else if(form_data.priv_level == 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
-										form_data.apps = form_data.apps || {};
-										if(!('userportal' in form_data.apps)) {
-											form_data.apps['userportal'] = {
-												label: self.i18n.active().callflows.user.user_portal_label,
-												icon: 'userportal',
-												api_url: monster.config.api.default
-											}
-										}
+								}
+							}
+							else if(form_data.priv_level == 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
+								form_data.apps = form_data.apps || {};
+								if(!('userportal' in form_data.apps)) {
+									form_data.apps['userportal'] = {
+										label: self.i18n.active().callflows.user.user_portal_label,
+										icon: 'userportal',
+										api_url: monster.config.api.default
 									}
+								}
+							}
 
-									self.userSave(form_data, data, function(data, status, action) {
-										if(action == 'create') {
-											self.userAcquireDevice(data, function() {
-												if(typeof callbacks.save_success == 'function') {
-													callbacks.save_success(data, status, action);
-												}
-											}, function() {
-												if(typeof callbacks.save_error == 'function') {
-													callbacks.save_error(data, status, action);
-												}
-											});
+							self.userSave(form_data, data, function(data, status, action) {
+								if(action == 'create') {
+									self.userAcquireDevice(data, function() {
+										if(typeof callbacks.save_success == 'function') {
+											callbacks.save_success(data, status, action);
 										}
-										else {
-											if(typeof callbacks.save_success == 'function') {
-												callbacks.save_success(data, status, action);
-											}
+									}, function() {
+										if(typeof callbacks.save_error == 'function') {
+											callbacks.save_error(data, status, action);
 										}
-									// }, winkstart.error_message.process_error(callbacks.save_error));
 									});
 								}
+								else {
+									if(typeof callbacks.save_success == 'function') {
+										callbacks.save_success(data, status, action);
+									}
+								}
+							// }, winkstart.error_message.process_error(callbacks.save_error));
 							});
-
-						// }
-				// 	},
-				// 	function() {
-				// 		monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
-				// 	}
-				// );
+						}
+					});
+				}
+				else {
+					monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
+				}
 			});
 
 			$('.user-delete', user_html).click(function(ev) {
@@ -682,8 +730,8 @@ define(function(require){
 							new_entity_label: _t('user', 'add_user_label'),
 							data: map_crossbar_data(data.data),
 							publisher: monster.pub,
-							notifyMethod: 'user.edit',
-							notifyCreateMethod: 'user.edit',
+							notifyMethod: 'callflows.user.edit',
+							notifyCreateMethod: 'callflows.user.edit',
 							notifyParent: parent
 						});
 

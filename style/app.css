@@ -173,7 +173,7 @@
 }
 
 #ws_callflow .tools .tool .action {
-	z-index: 9000;
+	z-index: 19;
 	height:56px;
 	background: url(static/images/blackbox_small.png) no-repeat;
 }
@@ -1079,6 +1079,7 @@
 }
 
 .callflows-port label.monster-invalid {
+	position: relative;
 	color: orange;
 	margin-top: -10px;
 }
