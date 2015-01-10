@@ -534,21 +534,20 @@ define(function(require){
 					_id = _data.id;
 
 				ev.preventDefault();
-
-				monster.pub('callflows.media.popupEdit', {
+				monster.pub('callflows.media.editPopup', {
 					data: _data,
-					callback: function(_data) {
+					callback: function(media) {
 						/* Create */
 						if(!_id) {
-							$('#music_on_hold_media_id', user_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.name +'</option>')
-							$('#music_on_hold_media_id', user_html).val(_data.id);
+							$('#music_on_hold_media_id', user_html).append('<option id="'+ media.id  +'" value="'+ media.id +'">'+ media.name +'</option>')
+							$('#music_on_hold_media_id', user_html).val(media.id);
 
 							$('#edit_link_media', user_html).show();
 						}
 						else {
 							/* Update */
-							if('id' in _data) {
-								$('#music_on_hold_media_id #'+_data.id, user_html).text(_data.name);
+							if(media.hasOwnProperty('id')) {
+								$('#music_on_hold_media_id #'+ media.id, user_html).text(media.name);
 							}
 							/* Delete */
 							else {

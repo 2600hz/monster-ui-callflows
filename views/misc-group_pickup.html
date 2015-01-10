@@ -1,0 +1,27 @@
+<div class="dialog_popup">
+	<h1>{{ i18n.oldCallflows.setting_group_pickup }}</h1>
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="endpoint_selector">{{ i18n.oldCallflows.which_endpoint }}</label>
+				<div class="select_wrapper">
+					<select id="endpoint_selector">
+						{{#select data.selected}}
+							{{#each data.items}}
+								<optgroup data-type="{{ @key }}" label="{{ @key }}">
+								{{#each this}}
+									<option id="{{ this.id }}" value="{{ this.id }}" {{#compare ../../data.selected "===" this.id}} selected{{/compare}}>{{ this.name }}</option>
+								{{/each}}
+								</optgroup>
+							{{/each}}
+						{{/select}}
+					</select>
+				</div>
+				<div class="clear"/>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>

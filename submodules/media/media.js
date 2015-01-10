@@ -8,7 +8,7 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'mediaDefineActions',
-			'callflows.media.popupEdit': 'mediaPopupEdit'
+			'callflows.media.editPopup': 'mediaPopupEdit'
 		},
 
 		mediaRender: function(data, target, callbacks) {
@@ -269,7 +269,10 @@ define(function(require){
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
 				popup, 
-				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				data = args.data,
+				callback = args.callback,
+				data_defaults = args.data_defaults;
 
 			self.mediaEdit(data, popup_html, $('.inline_content', popup_html), {
 				save_success: function(_data) {
@@ -347,7 +350,7 @@ define(function(require){
 								ev.preventDefault();
 
 								self.mediaPopupEdit({
-									data: _data,
+									data: _data, 
 									callback: function(media) {
 										node.setMetadata('id', media.id || 'null');
 										node.caption = media.name || '';
