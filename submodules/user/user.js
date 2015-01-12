@@ -421,13 +421,13 @@ define(function(require){
 						required: true,
 						minlength: 1,
 						maxlength: 256,
-						regex: /^[0-9a-zA-Z\\s\\-\\']+$/
+						regex: /^[0-9a-zA-Z\s\-\']+$/
 					},
 					last_name: {
 						required: true,
 						minlength: 1,
 						maxlength: 256,
-						regex: /^[0-9a-zA-Z\\s\\-\\']+$/
+						regex: /^[0-9a-zA-Z\s\-\']+$/
 					},
 					email: {
 						required: true,
