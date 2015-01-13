@@ -15,40 +15,21 @@ define(function(require){
 
 			monster.parallel({
 					groups: function(callback) {
-						self.callApi({
-							resource: 'group.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(groups) {
-								callback(null, groups.data);
-							}
+						self.miscGroupList(function(data) {
+							callback(null, data);
 						});
 					},
 					users: function(callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(users) {
-								_.each(users.data, function(user) {
-									user.name = user.first_name + ' ' + user.last_name;
-								});
-
-								callback(null, users.data);
-							}
+						self.miscUserList(function(data) {
+							_.each(data, function(user) {
+								user.name = user.first_name + ' ' + user.last_name;
+							});
+							callback(null, data);
 						});
 					},
 					devices: function(callback) {
-						self.callApi({
-							resource: 'device.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(devices) {
-								callback(null, devices.data);
-							}
+						self.miscDeviceList(function(data) {
+							callback(null, data);
 						});
 					}
 				},
