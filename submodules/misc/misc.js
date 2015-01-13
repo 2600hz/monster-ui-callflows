@@ -1387,12 +1387,12 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.disa_callflow.tmpl({
+						popup_html = $(monster.template(self,'misc-disa', {
 							data_disa: {
 								'pin': node.getMetadata('pin') || '',
 								'retries': node.getMetadata('retries') || '3'
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							var save_disa = function() {
@@ -1402,7 +1402,7 @@ define(function(require){
 								popup.dialog('close');
 							};
 							if($('#disa_pin_input', popup_html).val() == '') {
-								winkstart.confirm(self.i18n.active().oldCallflows.not_setting_a_pin, function() {
+								monster.ui.confirm(self.i18n.active().oldCallflows.not_setting_a_pin, function() {
 									save_disa();
 								});
 							}
@@ -1411,9 +1411,8 @@ define(function(require){
 							}
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.disa_title,
-							minHeight: '0',
 							beforeClose: function() {
 								if(typeof callback == 'function') {
 									 callback();
