@@ -1,0 +1,82 @@
+<div id="ring_group_popup" class="dialog_popup page_group callflows-port">
+	<div class="form_content">
+		<div class="popup_field">
+			<label>{{ i18n.oldCallflows.name_this_page_group }}</label>
+			<input id="name" type="text" value="{{form.name}}"/>
+			<div class="clear"/>
+		</div>
+	</div>
+	<div id="two_columns">
+		<div class="wrapper">
+			<ul class="settings_tabs settings1">
+				<li class="current"><a id="users_tab_link" href="javascript:void(0);">{{ i18n.oldCallflows.users }}</a></li>
+				<li><a id="devices_tab_link" href="javascript:void(0);">{{ i18n.oldCallflows.devices }}</a></li>
+				<li><a id="groups_tab_link" href="javascript:void(0);">{{ i18n.oldCallflows.groups }}</a></li>
+				<div class="clear"/>
+			</ul>
+			<div class="clear"></div>
+
+			<div class="panes">
+				<div class="pane_content" id="devices_pane">
+					<div class="column left">
+						<div class="search_box title_column">
+							<div class="searchsubmit1"/>
+							<input class="search searchfield" type="text" placeholder="{{ i18n.oldCallflows.device_name }}"/>
+							<div class="searchsubmit2"/>
+							<div class="clear"/>
+						</div>
+						<div class="scrollable device">
+							<ul class="connect left">
+							</ul>
+						</div>
+						<div class="clear"/>
+					</div>
+				</div>
+
+				<div class="pane_content" id="users_pane">
+					<div class="column left">
+						<div class="search_box title_column">
+							<div class="searchsubmit1"/>
+							<input class="search searchfield" type="text" placeholder="{{ i18n.oldCallflows.user_name }}"/>
+							<div class="searchsubmit2"/>
+							<div class="clear"/>
+						</div>
+						<div class="scrollable user">
+							<ul class="connect left">
+							</ul>
+						</div>
+						<div class="clear"/>
+					</div>
+				</div>
+
+				<div class="pane_content" id="groups_pane">
+					<div class="column left">
+						<div class="search_box title_column">
+							<div class="searchsubmit1"/>
+							<input class="search searchfield" type="text" placeholder="{{ i18n.oldCallflows.group_name }}"/>
+							<div class="searchsubmit2"/>
+							<div class="clear"/>
+						</div>
+						<div class="scrollable group">
+							<ul class="connect left">
+							</ul>
+						</div>
+						<div class="clear"/>
+					</div>
+				</div>
+			</div>
+			<div class="column right">
+				<div class="title_column"><div class="title">{{ i18n.oldCallflows.page_group }} - {{form.name}}</div><div class="actions_item">{{ i18n.oldCallflows.delete }}</div></div>
+				<div class="scrollable">
+					<ul class="connect right">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="clear"/>
+	</div>
+
+	<div class="buttons-center">
+		<button class="btn primary" id="save_ring_group">{{ i18n.save }}</button>
+	</div>
+</div>
