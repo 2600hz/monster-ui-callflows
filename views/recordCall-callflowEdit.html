@@ -1,0 +1,27 @@
+<div class="dialog_popup callflow-port">
+	<h1>{{ i18n.oldCallflows.call_recording }}</h1>
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="format">{{ i18n.oldCallflows.format }}: </label>
+				<select id="format" style="width: 100px; height: 28px;">
+						<option value="mp3"{{#compare data_call_record.format '===' 'mp3'}} selected="selected"{{/compare}}>mp3</option>
+						<option value="wav"{{#compare data_call_record.format '===' 'wav'}} selected="selected"{{/compare}}>wav</option>
+				</select>
+			</div>
+
+			<div class="popup_field">
+				<label for="url">{{ i18n.oldCallflows.url }}: </label>
+				<input type="text" id="url" class="medium" value="{{data_call_record.url}}" placeholder="http://your.server.com/place/to/store/recordings"/>
+			</div>
+
+			<div class="popup_field">
+				<label for="time_limit">{{ i18n.oldCallflows.time_limit }}: </label>
+				<input type="text" id="time_limit" class="medium" value="{{data_call_record.time_limit}}"/>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>
