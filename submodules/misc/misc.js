@@ -1187,61 +1187,59 @@ define(function(require){
 						return '';
 					},
 					edit: function(node, callback) {
-						winkstart.request('user.list', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url
-							},
-							function(data, status) {
-								var popup, popup_html;
+						self.miscUserList(function(data, status) {
+							var popup, popup_html;
 
-								$.each(data.data, function() {
-									self.name = self.first_name + ' ' + self.last_name;
-								});
+							$.each(data, function() {
+								this.name = this.first_name + ' ' + this.last_name;
+							});
 
-								popup_html = self.templates.fax_callflow.tmpl({
-									objects: {
-										items: data.data,
-										selected: node.getMetadata('owner_id') || '',
-										t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
-									}
-								});
-
-								if($('#user_selector option:selected', popup_html).val() == undefined) {
-									$('#edit_link', popup_html).hide();
+							popup_html = $(monster.template(self, 'fax-callflowEdit', {
+								objects: {
+									items: data,
+									selected: node.getMetadata('owner_id') || '',
+									t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
 								}
+							}));
 
-								$('.inline_action', popup_html).click(function(ev) {
-									var _data = ($(this).dataset('action') == 'edit') ?
-													{ id: $('#user_selector', popup_html).val() } : {};
+							if($('#user_selector option:selected', popup_html).val() == undefined) {
+								$('#edit_link', popup_html).hide();
+							}
 
-									ev.preventDefault();
+							$('.inline_action', popup_html).click(function(ev) {
+								var _data = ($(this).data('action') == 'edit') ?
+												{ id: $('#user_selector', popup_html).val() } : {};
 
-									winkstart.publish('user.popup_edit', _data, function(_data) {
-										node.setMetadata('owner_id', _data.data.id || 'null');
+								ev.preventDefault();
+
+								monster.pub('callflows.user.popupEdit', {
+									data:  _data,
+									callback: function(_data) {
+										node.setMetadata('owner_id', _data.id || 'null');
 
 										popup.dialog('close');
-									});
-								});
-
-								$('#add', popup_html).click(function() {
-									node.setMetadata('owner_id', $('#user_selector', popup_html).val());
-									node.setMetadata('media', {
-										fax_option: $('#t_38_checkbox', popup_html).is(':checked')
-									});
-									popup.dialog('close');
-								});
-
-								popup = winkstart.dialog(popup_html, {
-									title: self.i18n.active().oldCallflows.select_user_title,
-									minHeight: '0',
-									beforeClose: function() {
-										if(typeof callback == 'function') {
-											callback();
-										}
 									}
 								});
-							}
-						);
+							});
+
+							$('#add', popup_html).click(function() {
+								node.setMetadata('owner_id', $('#user_selector', popup_html).val());
+								node.setMetadata('media', {
+									fax_option: $('#t_38_checkbox', popup_html).is(':checked')
+								});
+								popup.dialog('close');
+							});
+
+							popup = monster.ui.dialog(popup_html, {
+								title: self.i18n.active().oldCallflows.select_user_title,
+								minHeight: '0',
+								beforeClose: function() {
+									if(typeof callback == 'function') {
+										callback();
+									}
+								}
+							});
+						});
 					}
 				},
 				'record_call[action=start]': {
