@@ -1262,15 +1262,14 @@ define(function(require){
 						return '';
 					},
 					edit: function(node, callback) {
-						var popup, popup_html;
-
-						popup_html = self.templates.call_record_callflow.tmpl({
-							data_call_record: {
-								'format': node.getMetadata('format') || 'mp3',
-								'url': node.getMetadata('url') || '',
-								'time_limit': node.getMetadata('time_limit') || '600'
-							}
-						});
+						var popup_html = $(monster.template(self, 'recordCall-callflowEdit', {
+								data_call_record: {
+									'format': node.getMetadata('format') || 'mp3',
+									'url': node.getMetadata('url') || '',
+									'time_limit': node.getMetadata('time_limit') || '600'
+								}
+							})),
+							popup;
 
 						$('#add', popup_html).click(function() {
 							node.setMetadata('url', $('#url', popup_html).val());
@@ -1280,7 +1279,7 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.start_call_recording,
 							minHeight: '0',
 							beforeClose: function() {
