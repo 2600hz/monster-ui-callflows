@@ -1340,14 +1340,14 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.pivot_callflow.tmpl({
+						popup_html = $(monster.template(self,'misc-pivot', {
 							data_pivot: {
 								'method': node.getMetadata('method') || 'get',
 								'voice_url': node.getMetadata('voice_url') || '',
 								'req_timeout': node.getMetadata('req_timeout') || '5',
 								'req_format': node.getMetadata('req_format') || 'twiml'
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							node.setMetadata('voice_url', $('#pivot_voiceurl_input', popup_html).val());
@@ -1357,7 +1357,7 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.pivot_title,
 							minHeight: '0',
 							beforeClose: function() {
