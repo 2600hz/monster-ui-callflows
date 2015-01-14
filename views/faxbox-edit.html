@@ -1,0 +1,170 @@
+<div>
+	<div class="whapp-header clearfix">
+		{{#if faxbox.id}}
+			<h1>{{ i18n.callflows.faxbox.edit_faxbox }}</h1>
+		{{else}}
+			<h1>{{ i18n.callflows.faxbox.create_faxbox }}</h1>
+		{{/if}}
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.faxbox.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.faxbox.advanced }}</button>
+		</div>
+	</div>
+</div>
+<div>
+	<ul class="tabs" data-tabs="tabs">
+		<li class="active"><a href="#basic">{{ i18n.callflows.faxbox.basic }}</a></li>
+		<li><a href="#caller_id_tab">{{ i18n.callflows.faxbox.caller_id_placeholder }}</a></li>
+		<li><a href="#smtp">{{ i18n.callflows.faxbox.smtp }}</a></li>
+		{{#if faxbox.cloud_connector_claim_url}}
+		<li><a href="#google">{{ i18n.callflows.faxbox.google }}</a></li>
+		{{/if}}
+		<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.faxbox.options }}</a></li>
+	</ul>
+	 <form id="faxbox_form" action="" method="post">
+		<div class="pill-content">
+			<div class="active basic_view" id="basic">
+				<div class="clearfix">
+					<label for="name">{{ i18n.callflows.faxbox.name }}</label>
+					<div class="input">
+						<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.faxbox.name_placeholder }}" value="{{faxbox.name}}" rel="popover" data-content="{{ i18n.callflows.faxbox.name_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="owner_id">{{ i18n.callflows.faxbox.assign_to }}</label>
+					<div class="input">
+						<span rel="popover" data-content="{{ i18n.callflows.faxbox.belongs_to_data_content }}">
+							<select name="owner_id" id="owner_id" class="medium">
+							{{#select faxbox.owner_id}}
+								{{#each users}}
+									<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
+								{{/each}}
+							{{/select}}
+							</select>
+							<div class="edit_create">
+								<a id="edit_link"  class="inline-action" data-action="edit" href="#">{{ i18n.callflows.faxbox.edit_user }}</a>
+								<a class="inline-action" data-action="create" href="#">{{ i18n.callflows.faxbox.create_user }}</a>
+							</div>
+						</span>
+					</div>
+				</div>
+
+				<hr>
+				<h3>{{ i18n.callflows.faxbox.notification_emails }}</h3>
+
+				<div class="clearfix">
+					<label for="inbound_notification_email">{{ i18n.callflows.faxbox.inbound_notification_email }}</label>
+					<div class="input">
+						<input class="span4" id="inbound_notification_email" name="notifications.inbound.email.send_to" type="text" placeholder="{{ i18n.callflows.faxbox.inbound_notification_email_placeholder }}" value="{{#if faxbox.notifications}}{{faxbox.notifications.inbound.email.send_to}}{{/if}}" rel="popover" data-content="{{ i18n.callflows.faxbox.inbound_notification_email_data_content }}"{{#if faxbox.owner_id}} disabled{{/if}} />
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="outbound_notification_email">{{ i18n.callflows.faxbox.outbound_notification_email }}</label>
+					<div class="input">
+						<input class="span4" id="outbound_notification_email" name="notifications.outbound.email.send_to" type="text" placeholder="{{ i18n.callflows.faxbox.inbound_notification_email_placeholder }}" value="{{#if faxbox.notifications}}{{faxbox.notifications.outbound.email.send_to}}{{/if}}" rel="popover" data-content="{{ i18n.callflows.faxbox.outbound_notification_email_data_content }}"{{#if faxbox.owner_id}} disabled{{/if}} />
+					</div>
+				</div>
+
+			</div>
+
+			<div id="caller_id_tab">
+				<div class="clearfix">
+					<label for="caller_id">{{ i18n.callflows.faxbox.caller_id }}</label>
+					<div class="input">
+						<input class="span4" id="caller_id" name="caller_id" type="text" placeholder="{{ i18n.callflows.faxbox.caller_id_placeholder }}" value="{{faxbox.caller_id}}" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="caller_name">{{ i18n.callflows.faxbox.caller_name }}</label>
+					<div class="input">
+						<input class="span4" id="caller_name" name="caller_name" type="text" placeholder="{{ i18n.callflows.faxbox.caller_name_placeholder }}" value="{{faxbox.caller_name}}" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_name_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="fax_header">{{ i18n.callflows.faxbox.fax_header }}</label>
+					<div class="input">
+						<input class="span4" id="fax_header" name="fax_header" type="text" placeholder="{{ i18n.callflows.faxbox.fax_header_placeholder }}" value="{{faxbox.fax_header}}" rel="popover" data-content="{{ i18n.callflows.faxbox.fax_header_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="fax_identity">{{ i18n.callflows.faxbox.fax_identity }}</label>
+					<div class="input">
+						<input class="span4" id="fax_identity" name="fax_identity" type="text" placeholder="{{ i18n.callflows.faxbox.fax_identity_placeholder }}" value="{{faxbox.fax_identity}}" rel="popover" data-content="{{ i18n.callflows.faxbox.fax_identity_data_content }}"/>
+					</div>
+				</div>
+			</div>
+
+			<div id="smtp">
+				<div class="clearfix">
+					<label for="smtp_permission_list">{{ i18n.callflows.faxbox.smtp_permission_list }}</label>
+					<div class="input">
+						<input class="span4" id="smtp_permission_list" name="smtp_permission_list" type="text" placeholder="{{ i18n.callflows.faxbox.smtp_permission_list_placeholder }}" value="{{faxbox.smtp_permission_list}}" rel="popover" data-content="{{ i18n.callflows.faxbox.smtp_permission_list_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="custom_smtp_address">{{ i18n.callflows.faxbox.custom_smtp_address }}</label>
+					<div class="input">
+						<input class="span4" id="custom_smtp_address" name="custom_smtp_address" type="text" placeholder="{{ i18n.callflows.faxbox.custom_smtp_address_placeholder }}" value="{{faxbox.custom_smtp_address}}" rel="popover" data-content="{{ i18n.callflows.faxbox.custom_smtp_address_data_content }}"/>
+					</div>
+				</div>
+
+			{{#if faxbox.smtp_email_address}}
+				<div class="clearfix">
+					<label for="smtp_email_address">{{ i18n.callflows.faxbox.smtp_email_address }}</label>
+					<div class="input">
+						<span class="text">{{faxbox.smtp_email_address}}</span>
+						<input type="hidden" name="smtp_email_address" value="{{faxbox.smtp_email_address}}">
+					</div>
+				</div>
+			{{/if}}
+			</div>
+
+		{{#compare faxbox.cloud_state '===' 'registered'}}
+			<div id="google">
+				<div class="clearfix">
+					<label for="cloud_connector_claim_url">{{ i18n.callflows.faxbox.cloud_connector_claim_url }}</label>
+					<div class="input">
+						<a href="{{faxbox.cloud_connector_claim_url}}" id="cloud_connector_claim_url" target="_blank">{{faxbox.cloud_connector_claim_url}}</a>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="cloud_connector_installer_url">{{ i18n.callflows.faxbox.cloud_connector_installer_url }}</label>
+					<div class="input">
+						<a href="https://tools.google.com/dlpage/cloudprintdriver" target="_blank">https://tools.google.com/dlpage/cloudprintdriver</a>
+					</div>
+				</div>
+			</div>
+		{{/compare}}
+
+			<div id="options">
+				<div class="clearfix">
+					<label for="retries">{{ i18n.callflows.faxbox.retries }}</label>
+					<div class="input">
+						<input class="span4" id="retries" name="retries" type="text" placeholder="{{ i18n.callflows.faxbox.retries_placeholder }}" value="{{faxbox.retries}}" rel="popover" data-content="{{ i18n.callflows.faxbox.retries_data_content }}"/>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<label for="fax_timezone">{{ i18n.callflows.faxbox.fax_timezone }}</label>
+					<div class="input">
+						<select name="fax_timezone" id="fax_timezone" rel="popover" data-content="{{ i18n.callflows.faxbox.fax_timezone_data_content }}">
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	 </form>
+
+	 <div class="buttons-right">
+		{{#if faxbox.id}}
+			<button class="btn btn-danger faxbox-delete">{{ i18n.callflows.faxbox.delete }}</button>
+		{{/if}}
+		<button class="btn btn-success faxbox-save">{{ i18n.callflows.faxbox.save }}</button>
+	</div>
+</div>

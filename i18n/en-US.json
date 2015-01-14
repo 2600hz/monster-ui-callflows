@@ -240,6 +240,8 @@
 			"edit_faxbox": "Edit Fax Box",
 			"basic": "Basic",
 			"advanced": "Advanced",
+			"smtp": "SMTP",
+			"google": "Google",
 			"options": "Options",
 			"no_name": "(no name)",
 			"assign_to": "Assign to",
@@ -293,7 +295,11 @@
 			"default_settings_header_extension": " Fax Printer",
 			"ok": "OK",
 			"save": "Save",
-			"delete": "Delete"
+			"delete": "Delete",
+			"validation": {
+				"retries": "Please enter a numeric value between 0 and 4",
+				"words": "Please only enter alphanumeric characters, space or - '"
+			}
 		},
 		"groups": {
 		},
