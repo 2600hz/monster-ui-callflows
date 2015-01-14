@@ -47,6 +47,7 @@
 	height: 289px;
 	width: 220px;
 	overflow: auto;
+	float: left;
 }
 
 .callflows-port #two_columns .wrapper .connect {
