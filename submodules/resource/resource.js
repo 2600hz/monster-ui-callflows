@@ -58,14 +58,11 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.account_carrier_callflow.tmpl({
-							_t: function(param){
-								return window.translate['resource'][param];
-							},
+						popup_html = $(monster.template(self, 'resource-account_carrier',  {
 							data_resource: {
 								'hunt_account_id': node.getMetadata('hunt_account_id') || '',
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							var hunt_id = $('#hunt_account_id', popup_html).val();
@@ -77,9 +74,8 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().callflows.resource.account_carrier_title,
-							minHeight: '0',
 							beforeClose: function() {
 								if(typeof callback == 'function') {
 									 callback();

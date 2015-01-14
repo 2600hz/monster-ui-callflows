@@ -1,0 +1,104 @@
+<div>
+	<div class="whapp-header clearfix">
+		<h1>{{#if data.id}}{{ i18n.callflows.conference.edit_conference }}{{else}}{{ i18n.callflows.conference.create_conference }}{{/if}}</h1>
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.conference.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.conference.advanced }}</button>
+		</div>
+	</div>
+
+	<div>
+		<ul class="tabs" data-tabs="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.conference.basic }}</a></li>
+			<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.conference.options }}</a></li>
+			<li><a href="#conference_server"><span class="icon conference"></span>{{ i18n.callflows.conference.conference_server }}</a></li>
+		</ul>
+
+		<form id="conference_form" action="" method="post" >
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="">{{ i18n.callflows.conference.conference_name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="Name" value="{{data.name}}" rel="popover" data-content="{{ i18n.callflows.conference.conference_name_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="owner_id">{{ i18n.callflows.conference.assign_to }}</label>
+						<div class="input">
+							<span rel="popover" data-content="{{ i18n.callflows.conference.assign_to_data_content }}">
+								<select name="owner_id" id="owner_id" class="medium" >
+								{{#select data.owner_id}}
+									{{#each field_data.users}}
+										<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
+									{{/each}}
+								{{/select}}
+								</select>
+								<div class="edit_create">
+									<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.conference.edit }}</a>
+									<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.conference.create }}</a>
+								</div>
+							</span>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="member_pins_string">{{ i18n.callflows.conference.pins }}</label>
+						<div class="input">
+							<input class="span4" id="member_pins_string" name="member.pins_string" type="text" placeholder="PIN" value="{{data.member.pins_string}}" rel="popover" data-content="{{ i18n.callflows.conference.pins_data_content }}"/>
+						</div>
+					</div>
+				</div>
+
+				<div id="options">
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.conference.join_the_conference_muted_data_content }}">
+											<input type="checkbox" id="member_join_muted" name="member.join_muted"{{#if data.member.join_muted}} checked="checked"{{/if}} />
+											<span>{{ i18n.callflows.conference.join_the_conference_muted }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.conference.join_the_conference_deaf_data_content }}">
+											<input type="checkbox" id="member_join_deaf" name="member.join_deaf"{{#if data.member.join_deaf}} checked="checked"{{/if}} />
+											<span>{{ i18n.callflows.conference.join_the_conference_deaf }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div id="conference_server">
+					<div class="clearfix">
+						<label for="member_numbers_string">{{ i18n.callflows.conference.numbers }}</label>
+						<div class="input">
+							<input class="span4" id="member_numbers_string" name="member.numbers_string" type="text" placeholder="{{ i18n.callflows.conference.numbers_placeholder }}" value="{{data.member.numbers_string}}" rel="popover" data-content="{{ i18n.callflows.conference.numbers_data_content }}" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="buttons-right">
+			{{#if data.id}}
+				<button class="btn btn-danger conference-delete">{{ i18n.callflows.conference.delete }}</button>
+			{{/if}}
+			<button class="btn btn-success conference-save">{{ i18n.callflows.conference.save }}</button>
+		</div>
+	</div>
+</div>
