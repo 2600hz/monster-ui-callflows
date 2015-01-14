@@ -1,0 +1,237 @@
+<div>
+	<div class="whapp-header clearfix">
+		{{#if data.id}}
+			<h1>{{ i18n.callflows.vmbox.edit_voicemail_box }}</h1>
+		{{else}}
+			<h1>{{ i18n.callflows.vmbox.create_voicemail_box }}</h1>
+		{{/if}}
+		<div class="buttons-right pasted view-buttons">
+			<button class="btn black basic activate">{{ i18n.callflows.vmbox.basic }}</button>
+			<button class="btn black advanced">{{ i18n.callflows.vmbox.advanced }}</button>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.vmbox.basic }}</a></li>
+			<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.vmbox.options }}</a></li>
+		</ul>
+		<form id="vmbox-form" action="" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.vmbox.name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.vmbox.name_placeholder }}" value="{{data.name}}" rel="popover" data-content="{{ i18n.callflows.vmbox.name_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="mailbox">{{ i18n.callflows.vmbox.voicemail_number }}</label>
+						<div class="input">
+							<input class="span4" id="mailbox" name="mailbox" type="text" placeholder="{{ i18n.callflows.vmbox.voicemail_number_placeholder }}" value="{{data.mailbox}}" rel="popover" data-content="{{ i18n.callflows.vmbox.voicemail_number_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="owner_id">{{ i18n.callflows.vmbox.assign_to }}</label>
+						<div class="input">
+							<span rel="popover" data-content="{{ i18n.callflows.vmbox.assign_to_data_content }}">
+								<select name="owner_id" id="owner_id" class="medium" >
+									{{#each field_data.users}}
+										{{#compare data.owner_id "==" id}}
+											<option value="{{id}}" id="{{id}}" selected="selected">{{first_name}} {{last_name}}</option>
+										{{else}}
+											<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
+										{{/compare}}
+									{{/each}}
+								</select>
+								<div class="edit_create">
+									<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.vmbox.edit }}</a>
+									<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.vmbox.create }}</a>
+								</div>
+							</span>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="pin">{{ i18n.callflows.vmbox.pin_number }}</label>
+						<div class="input">
+							<input class="span4" id="pin" name="pin" type="text" placeholder="PIN" value="{{data.pin}}" rel="popover" data-content="{{ i18n.callflows.vmbox.pin_number_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="media_unavailable">{{ i18n.callflows.vmbox.unavailable_message }}</label>
+						<div class="input">
+							<span rel="popover" data-content="{{ i18n.callflows.vmbox.unavailable_message_data_content }}">
+								<select name="media.unavailable" id="media_unavailable" class="medium" >
+									{{#each field_data.media}}
+										{{#compare data.media.unavailable "==" id}}
+											<option value="{{id}}" id="{{id}}" selected="selected">{{name}}</option>
+										{{else}}
+											<option value="{{id}}" id="{{id}}">{{name}}</option>
+										{{/compare}}
+									{{/each}}
+								</select>
+								<div class="edit_create">
+									<a id="edit_link_media"  class="inline_action_media" data-action="edit" href="#">{{ i18n.callflows.vmbox.edit }}</a>
+									<a class="inline_action_media" data-action="create" href="#">{{ i18n.callflows.vmbox.create }}</a>
+								</div>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div id="options">
+					<div class="clearfix">
+						<label for="timezone">{{ i18n.callflows.vmbox.timezone }}</label>
+						<div class="input">
+							<select name="timezone" id="timezone">
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.already_setup_data_content }}">
+											{{#if data.is_setup}}
+												<input type="checkbox" id="is_setup" name="is_setup" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="is_setup" name="is_setup"/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.already_setup }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.require_pin_data_content }}">
+											{{#if data.require_pin}}
+												<input type="checkbox" id="require_pin" name="require_pin" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="require_pin" name="require_pin" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.require_pin }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.auto_login_enabled_data_content }}">
+											{{#if data.check_if_owner}}
+												<input type="checkbox" id="check_if_owner" name="check_if_owner" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="check_if_owner" name="check_if_owner" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.auto_login_enabled }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.skip_greeting_data_content }}">
+											{{#if data.skip_greeting}}
+												<input type="checkbox" id="skip_greeting" name="skip_greeting" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="skip_greeting" name="skip_greeting"/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.skip_greeting }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.skip_instructions_data_content }}">
+											{{#if data.skip_instructions}}
+												<input type="checkbox" id="skip_instructions" name="skip_instructions" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="skip_instructions" name="skip_instructions"/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.skip_instructions }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.delete_after_notification_data_content }}">
+											{{#if data.delete_after_notify}}
+												<input type="checkbox" id="delete_after_notify" name="delete_after_notify" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="delete_after_notify" name="delete_after_notify"/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.delete_after_notification }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.not_configurable_data_content }}">
+											{{#if data.not_configurable}}
+												<input type="checkbox" id="not_configurable" name="extra.allow_configuration" />
+											{{else}}
+												<input type="checkbox" id="not_configurable" name="extra.allow_configuration" checked/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.not_configurable }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		 <div class="buttons-right">
+			{{#if data.id}}
+				<button class="btn btn-danger vmbox-delete">{{ i18n.callflows.vmbox.delete }}</button>
+			{{/if}}
+			<button class="btn btn-success vmbox-save">{{ i18n.callflows.vmbox.save }}</button>
+		</div>
+	</div>
+</div>
