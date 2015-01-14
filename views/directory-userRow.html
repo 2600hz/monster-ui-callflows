@@ -1,0 +1,26 @@
+	{{#if user_id}}
+		<div class="row row-user" id="row_user_{{ user_id }}" data-id="{{ user_id }}">
+			<div class="column first">{{ user_name }}</div>
+			<div class="column second">
+				<select id="user_callflow_id" name="user_callflow_id">
+					{{#select callflow_id}}
+						{{#each field_data.callflows}}
+							<option value="{{ id }}" data-callflow_id={{ id }}>
+								&nbsp;
+								{{#if name}}
+									{{ name }}&nbsp;
+								{{else}}
+									{{#each numbers}}{{ this }}&nbsp;{{/each}}
+								{{/if}}
+							</option>
+						{{/each}}
+					{{/select}}
+				</select>
+			</div>
+			<div class="column third"><a class="action_user delete icon-trash" data-id="{{ user_id }}"></a></div>
+	{{else}}
+		<div class="row row-user" id="row_no_data">
+			<div class="column merged">{{ i18n.callflows.directory.there_is_currently_no_user }}</div>
+	{{/if}}
+		<div class="clear"/>
+	</div>

@@ -269,10 +269,7 @@ define(function(require){
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
 				popup, 
-				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
-				data = args.data,
-				callback = args.callback,
-				data_defaults = args.data_defaults;
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
 			self.mediaEdit(data, popup_html, $('.inline_content', popup_html), {
 				save_success: function(_data) {

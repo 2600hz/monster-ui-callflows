@@ -1,0 +1,23 @@
+<div class="dialog_popup callflows-port">
+	<h1>{{ i18n.oldCallflows.connect_caller_to_another_callflow }}</h1>
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="object-selector">{{ i18n.oldCallflows.which_callflow }}</label>
+				<div class="select_wrapper">
+					<select id="object-selector">
+						{{#select objects.selected}}
+							{{#each objects.items}}
+									<option value="{{ id }}">{{ name }}</option>
+							{{/each}}
+						{{/select}}
+					</select>
+					<div class="clear"/>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>

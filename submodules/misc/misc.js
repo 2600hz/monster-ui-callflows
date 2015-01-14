@@ -767,35 +767,41 @@ define(function(require){
 						var id = node.getMetadata('id'),
 							return_value = '';
 
-						if(id in caption_map && 'numbers' in caption_map[id]) {
-							return_value = caption_map[id].numbers.toString();
+						if(id in caption_map) {
+							if(caption_map[id].hasOwnProperty('name')) {
+								return_value = caption_map[id].name;
+							}
+							else if(caption_map[id].hasOwnProperty('numbers')) {
+								return_value = caption_map[id].numbers.toString();
+							}
 						}
 
 						return return_value;
 					},
 					edit: function(node, callback) {
-						winkstart.request(true, 'callflow.list', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url
+						self.callApi({
+							resource: 'callflow.list',
+							data: {
+								accountId: self.accountId
 							},
-							function(data, status) {
+							success:function(data, status) {
 								var popup, popup_html, _data = [];
 
 								$.each(data.data, function() {
-									if(!self.featurecode && self.id != self.flow.id) {
-										self.name = self.name ? self.name : ((self.numbers) ? self.numbers.toString() : self.i18n.active().oldCallflows.no_numbers);
+									if(!this.featurecode && this.id !== self.flow.id) {
+										this.name = this.name ? this.name : ((this.numbers) ? this.numbers.toString() : self.i18n.active().oldCallflows.no_numbers);
 
-										_data.push(self);
+										_data.push(this);
 									}
 								});
 
-								popup_html = self.templates.edit_dialog.tmpl({
+								popup_html = $(monster.template(self, 'callflow-edit_dialog', {
 									objects: {
 										type: 'callflow',
-										items: winkstart.sort(_data),
+										items: monster.util.sort(_data),
 										selected: node.getMetadata('id') || ''
 									}
-								});
+								}));
 
 								$('#add', popup_html).click(function() {
 									node.setMetadata('id', $('#object-selector', popup_html).val());
@@ -805,7 +811,7 @@ define(function(require){
 									popup.dialog('close');
 								});
 
-								popup = winkstart.dialog(popup_html, {
+								popup = monster.ui.dialog(popup_html, {
 									title: self.i18n.active().oldCallflows.callflow_title,
 									beforeClose: function() {
 										if(typeof callback == 'function') {
@@ -814,7 +820,7 @@ define(function(require){
 									}
 								});
 							}
-						);
+						});
 					}
 				},
 				'page_group[]': {
@@ -956,12 +962,12 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.prepend_cid_callflow.tmpl({
+						popup_html = $(monster.template(self, 'misc-prepend_cid_callflow', {
 							data_cid: {
 								'caller_id_name_prefix': node.getMetadata('caller_id_name_prefix') || '',
 								'caller_id_number_prefix': node.getMetadata('caller_id_number_prefix') || ''
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							var cid_name_val = $('#cid_name_prefix', popup_html).val(),
@@ -975,9 +981,8 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.prepend_caller_id_title,
-							minHeight: '0',
 							beforeClose: function() {
 								if(typeof callback == 'function') {
 									 callback();
@@ -1387,12 +1392,12 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.disa_callflow.tmpl({
+						popup_html = $(monster.template(self,'misc-disa', {
 							data_disa: {
 								'pin': node.getMetadata('pin') || '',
 								'retries': node.getMetadata('retries') || '3'
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							var save_disa = function() {
@@ -1402,7 +1407,7 @@ define(function(require){
 								popup.dialog('close');
 							};
 							if($('#disa_pin_input', popup_html).val() == '') {
-								winkstart.confirm(self.i18n.active().oldCallflows.not_setting_a_pin, function() {
+								monster.ui.confirm(self.i18n.active().oldCallflows.not_setting_a_pin, function() {
 									save_disa();
 								});
 							}
@@ -1411,9 +1416,8 @@ define(function(require){
 							}
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.disa_title,
-							minHeight: '0',
 							beforeClose: function() {
 								if(typeof callback == 'function') {
 									 callback();
@@ -1517,54 +1521,6 @@ define(function(require){
 								});
 							}
 						);
-					}
-				}
-			});
-
-			/* Migration callflows, fixes our goofs. To be removed eventually */
-			$.extend(callflow_nodes, {
-				'resource[]': {
-					name: self.i18n.active().oldCallflows.resource_name,
-					icon: 'resource',
-					module: 'resources',
-					data: {},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '0'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						winkstart.alert(self.i18n.active().oldCallflows.this_callflow_is_outdated);
-						return '';
-					},
-					edit: function(node, callback) {
-					}
-				},
-				'hotdesk[id=*,action=call]': {
-					name: self.i18n.active().oldCallflows.hot_desking_name,
-					icon: 'v_phone',
-					module: 'hotdesk',
-					data: {
-						action: 'bridge',
-						id: 'null'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						//Migration here:
-						node.setMetadata('action', 'bridge');
-
-						winkstart.alert(self.i18n.active().oldCallflows.this_callflow_is_outdated);
-						return '';
-					},
-					edit: function(node, callback) {
 					}
 				}
 			});
