@@ -330,3 +330,9 @@
 	display: block;
 	height: 22px;
 }
+
+/********** Receive Fax **********/
+
+.callflows-port#fax_callflow_popup #t_38_checkbox {
+	margin-top: 8px;
+}
