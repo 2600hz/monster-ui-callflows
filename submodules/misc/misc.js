@@ -1445,79 +1445,77 @@ define(function(require){
 						return self.i18n.active().oldCallflows.sip_code_caption + node.getMetadata('code');
 					},
 					edit: function(node, callback) {
-						winkstart.request(true, 'callflow.list_media', {
-								account_id: winkstart.apps['voip'].account_id,
-								api_url: winkstart.apps['voip'].api_url
-							},
-							function(data, status) {
-								var popup, popup_html;
+						self.miscMediaList(function(data) {
+							var popup, popup_html;
 
-								popup_html = self.templates.response_callflow.tmpl({
-									response_data: {
-										items: data.data,
-										media_enabled: node.getMetadata('media') ? true : false,
-										selected_media: node.getMetadata('media') || '',
-										code: node.getMetadata('code') || '',
-										message: node.getMetadata('message') || ''
-									}
-								});
+							popup_html = $(monster.template(self, 'misc-response', {
+								response_data: {
+									items: data,
+									media_enabled: node.getMetadata('media') ? true : false,
+									selected_media: node.getMetadata('media') || '',
+									code: node.getMetadata('code') || '',
+									message: node.getMetadata('message') || ''
+								}
+							}));
 
+							if($('#media_selector option:selected', popup_html).val() == undefined
+							|| $('#media_selector option:selected', popup_html).val() == 'null') {
+								$('#edit_link', popup_html).hide();
+							}
+
+							$('#media_selector', popup_html).change(function() {
 								if($('#media_selector option:selected', popup_html).val() == undefined
 								|| $('#media_selector option:selected', popup_html).val() == 'null') {
 									$('#edit_link', popup_html).hide();
+								} else {
+									$('#edit_link', popup_html).show();
 								}
+							})
 
-								$('#media_selector', popup_html).change(function() {
-									if($('#media_selector option:selected', popup_html).val() == undefined
-									|| $('#media_selector option:selected', popup_html).val() == 'null') {
-										$('#edit_link', popup_html).hide();
-									} else {
-										$('#edit_link', popup_html).show();
-									}
-								})
+							$('.inline_action', popup_html).click(function(ev) {
+								var _data = ($(this).data('action') == 'edit') ?
+												{ id: $('#media_selector', popup_html).val() } : {};
 
-								$('.inline_action', popup_html).click(function(ev) {
-									var _data = ($(this).dataset('action') == 'edit') ?
-													{ id: $('#media_selector', popup_html).val() } : {};
+								ev.preventDefault();
 
-									ev.preventDefault();
-
-									winkstart.publish('media.popup_edit', _data, function(_data) {
+								monster.pub('callflows.media.editPopup', {
+									data: _data,
+									callback: function(_data) {
 										node.setMetadata('media', _data.data.id || 'null');
 
 										popup.dialog('close');
-									});
+									}
 								});
+							});
 
-								$('#add', popup_html).click(function() {
-									if($('#response_code_input', popup_html).val().match(/^[1-6][0-9]{2}$/)) {
-										node.setMetadata('code', parseInt($('#response_code_input', popup_html).val(), 10));
-										node.setMetadata('message', $('#response_message_input', popup_html).val());
-										if($('#media_selector', popup_html).val() && $('#media_selector', popup_html).val() != 'null') {
-											node.setMetadata('media', $('#media_selector', popup_html).val());
-										} else {
-											node.deleteMetadata('media');
-										}
-
-										node.caption = self.i18n.active().oldCallflows.sip_code_caption + $('#response_code_input', popup_html).val();
-
-										popup.dialog('close');
+							$('#add', popup_html).click(function() {
+								if($('#response_code_input', popup_html).val().match(/^[1-6][0-9]{2}$/)) {
+									node.setMetadata('code', $('#response_code_input', popup_html).val());
+									node.setMetadata('message', $('#response_message_input', popup_html).val());
+									if($('#media_selector', popup_html).val() && $('#media_selector', popup_html).val() != 'null') {
+										node.setMetadata('media', $('#media_selector', popup_html).val());
 									} else {
-										winkstart.alert('error', self.i18n.active().oldCallflows.please_enter_a_valide_sip_code);
+										node.deleteMetadata('media');
 									}
-								});
 
-								popup = winkstart.dialog(popup_html, {
-									title: self.i18n.active().oldCallflows.response_title,
-									minHeight: '0',
-									beforeClose: function() {
-										if(typeof callback == 'function') {
-											callback();
-										}
+									node.caption = self.i18n.active().oldCallflows.sip_code_caption + $('#response_code_input', popup_html).val();
+
+									popup.dialog('close');
+								} else {
+									monster.ui.alert('error', self.i18n.active().oldCallflows.please_enter_a_valide_sip_code);
+								}
+							});
+
+							popup = monster.ui.dialog(popup_html, {
+								title: self.i18n.active().oldCallflows.response_title,
+								minHeight: '0',
+								beforeClose: function() {
+									if(typeof callback == 'function') {
+										callback();
 									}
-								});
-							}
-						);
+								}
+							});
+						});
 					}
 				}
 			});

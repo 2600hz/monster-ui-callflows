@@ -1,0 +1,44 @@
+<div class="dialog_popup callflows-port">
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="response_code_input">{{ i18n.oldCallflows.sip_code }}</label>
+				<div class="input">
+					<input type="text" id="response_code_input" class="medium" value="{{response_data.code}}"/>
+				</div>
+			</div>
+
+			<div class="popup_field">
+				<label for="response_message_input">{{ i18n.oldCallflows.message }}</label>
+				<div class="input">
+					<input type="text" id="response_message_input" class="medium" value="{{response_data.message}}"/>
+				</div>
+			</div>
+
+			<div class="popup_field">
+				<label for="media_selector">{{ i18n.oldCallflows.media }}</label>
+				<div class="select_wrapper input" style="margin-left: 30px;">
+					<select id="media_selector">
+						{{#if response_data.selected_media}}
+							<option value="null">- {{ i18n.oldCallflows.no_media }} -</option>
+						{{else}}
+							<option value="null" selected>- {{ i18n.oldCallflows.no_media }} -</option>
+						{{/if}}
+						{{#select response_data.selected_media}}
+							{{#each response_data.items}}
+								<option class="{{ this.class }}" value="{{ this.id }}">{{ this.name }}</option>
+							{{/each}}
+						{{/select}}
+					</select>
+					<div class="action_links_div">
+						<div id="edit_link"><a class="inline_action" data-action="edit" href="#">{{ i18n.oldCallflows.edit_media_options }}</a></div>
+						<div><a class="inline_action" data-action="create" href="#">{{ i18n.oldCallflows.add_a_media }}</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+	</div>
+</div>
