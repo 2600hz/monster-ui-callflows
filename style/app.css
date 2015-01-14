@@ -3,6 +3,8 @@
 @import url('../submodules/misc/misc.css');
 @import url('../submodules/device/device.css');
 @import url('../submodules/faxbox/faxbox.css');
+@import url('../submodules/directory/directory.css');
+@import url('../submodules/timeofday/timeofday.css');
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;

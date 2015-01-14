@@ -1,0 +1,40 @@
+<div class="dialog_popup callflows-port">
+	<div id="two_columns">
+		<div class="wrapper">
+			<div class="column left">
+				<div class="title_column">{{ left.title }}</div>
+				<div class="scrollable">
+					<ul class="connect">
+						{{#each left.items}}
+							<li id="{{ id }}" data-id="{{ id }}">
+								<a href="#" class="drag_btn"></a>
+								{{ name }}
+							</li>
+						{{/each}}
+					</ul>
+				</div>
+			</div>
+			<div class="column right">
+				<div class="title_column">{{ right.title }}</div>
+				<div class="scrollable">
+					<ul class="connect">
+						{{#each right.items}}
+							<li id="{{ id }}" data-id="{{ id }}">
+								<a href="#" class="drag_btn"></a>
+								{{ name }}
+							</li>
+						{{/each}}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="clear"/>
+	</div>
+
+	<div>
+		<div class="optional_content"></div>
+		<div class="buttons-center">
+			<button id="add" class="btn btn-primary">{{ i18n.save }}</button>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,136 @@
+<div>
+	<div>
+		<div class="whapp-header clearfix">
+			{{#if data.id}}
+				<h1>{{ i18n.callflows.timeofday.edit_time_of_day }}</h1>
+			{{else}}
+				<h1>{{ i18n.callflows.timeofday.create_time_of_day }}</h1>
+			{{/if}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.timeofday.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.timeofday.advanced }}</button>
+			</div>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs" data-tabs="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.timeofday.basic }}</a></li>
+		</ul>
+		<form action="#" id="timeofday-form">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.timeofday.name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.timeofday.name }}" value="{{ data.name }}" rel="popover" data-content="{{ i18n.callflows.timeofday.name_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix" id="repeats">
+						<label for="cycle">{{ i18n.callflows.timeofday.repeats }}</label>
+						<div class="input">
+							<select name="cycle" id="cycle" class="input-medium" rel="popover" data-content="{{ i18n.callflows.timeofday.repeats_data_content }}">
+								{{#select data.cycle}}
+									{{#each field_data.cycle}}
+										<option id="{{ id }}" value="{{ id }}">{{ value }}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix" id="every">
+						<label>{{ i18n.callflows.timeofday.every }}</label>
+						<div class="input" >
+							<div id="yearly_every">
+								<select name="month" id="month" class="input-medium" rel="popover" data-content="{{ i18n.callflows.timeofday.every_data_content }}">
+									{{#select data.month}}
+										{{#each field_data.months}}
+											<option value="{{ id }}">{{ value }}</option>
+										{{/each}}
+									{{/select}}
+								</select>
+							</div>
+
+							<span id="monthly_every">
+								<input class="span1" id="interval_month" name="interval" type="text" placeholder="1" value="{{ data.interval }}" rel="popover" data-content=""/>&nbsp;{{ i18n.callflows.timeofday.months }}
+							</span>
+							<span id="weekly_every">
+								<input class="span1" id="interval_week" name="interval" type="text" placeholder="1" value="{{ data.interval }}" rel="popover" data-content=""/>&nbsp;{{ i18n.callflows.timeofday.weeks }}
+							</span>
+						</div>
+					</div>
+
+					<div class="clearfix" id="on">
+						<label>{{ i18n.callflows.timeofday.on }}</label>
+						<div class="input">
+							<select name="ordinal" id="ordinal" class="input-medium" rel="popover" data-content="">
+								{{#select data.ordinal}}
+									{{#each field_data.ordinals}}
+										<option value="{{ id }}">{{ value }}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+
+							<span id="weekdays">
+								<select id="wday" name="weekday" class="medium">
+									{{#select data.wdays.[0]}}
+										{{#each field_data.wdays}}
+											<option value="{{ @key }}">{{ this.friendlyName }}</option>
+										{{/each}}
+									{{/select}}
+								</select>
+							</span>
+
+							<span id="days_checkboxes" rel="popover" data-content="{{ i18n.callflows.timeofday.select_which_days }}">
+								{{#each field_data.wdays}}
+									<div class="fake_checkbox{{#ifInArray @key ../data.wdays}} checked{{/ifInArray}}" data-value="{{ @key }}">{{ this.shortName }}</div>
+								{{/each}}
+							</span>
+
+							<select id="specific_day" name="days[0]" class="input-medium">
+								{{#select data.days.[0]}}
+									{{#each field_data.day}}
+										{{ this }}
+										<option value="{{ this }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="day">{{ i18n.callflows.timeofday.start_date }}</label>
+						<div class="input">
+							<input class="span4" id="start_date" name="start_date" type="text" placeholder="03/12/2012" value="{{ data.start_date }}" rel="popover" data-content="{{ i18n.callflows.timeofday.start_date_data_content }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix time_wrapper_field">
+						<label for="time">{{ i18n.callflows.timeofday.time }}</label>
+						<div class="input time_wrapper">
+							<input id="time" name="time" type="slider" value="{{ data.time_window_start }};{{ data.time_window_stop }}"/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="day">{{ i18n.callflows.timeofday.enabled }}</label>
+						<div class="input">
+							<select name="enabled" id="enabled" class="input-medium" rel="popover" data-content="{{ i18n.callflows.timeofday.enabled_data_content }}">
+								<option value="">{{ i18n.callflows.timeofday.enabled_based_on_time }}</option>
+								<option value="true"{{#if data.enabled}} selected{{/if}}>{{ i18n.callflows.timeofday.enabled_forced_on }}</option>
+								<option value="false"{{#compare data.enabled "===" false}} selected{{/compare}}>{{ i18n.callflows.timeofday.enabled_forced_off }}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="buttons-right">
+			{{#if data.id}}
+				<button class="btn btn-danger timeofday-delete">{{ i18n.callflows.timeofday.delete }}</button>
+			{{/if}}
+			<button class="btn btn-success timeofday-save">{{ i18n.callflows.timeofday.save }}</button>
+		</div>
+	</div>
+</div>
