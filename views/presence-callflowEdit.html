@@ -1,0 +1,22 @@
+<div class="dialog_popup callflows-port">
+	<h1>{{ i18n.oldCallflows.manual_presence }}</h1>
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="presence_id_input">{{ i18n.oldCallflows.ID }} </label>
+				<input type="text" id="presence_id_input" class="medium" value="{{data_presence.presence_id}}"/>
+			</div>
+			<div class="popup_field">
+				<label for="presence_status">{{ i18n.oldCallflows.status }}: </label>
+				<select id="presence_status" style="width: 100px; height: 28px;">
+					<option value="idle"{{#compare data_presence.status '===' 'idle'}} selected="selected"{{/compare}}>{{ i18n.oldCallflows.idle }}</option>
+					<option value="ringing"{{#compare data_presence.status '===' 'ringing'}} selected="selected"{{/compare}}>{{ i18n.oldCallflows.ringing }}</option>
+					<option value="busy"{{#compare data_presence.status '===' 'busy'}} selected="selected"{{/compare}}>{{ i18n.oldCallflows.busy }}</option>
+				</select>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="btn btn-primary">{{i18n.save}}</button>
+	</div>
+</div>

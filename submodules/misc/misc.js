@@ -1039,14 +1039,13 @@ define(function(require){
 						return node.getMetadata('presence_id') || '';
 					},
 					edit: function(node, callback) {
-						var popup, popup_html;
-
-						popup_html = self.templates.presence_callflow.tmpl({
-							data_presence: {
-								'presence_id': node.getMetadata('presence_id') || '',
-								'status': node.getMetadata('status') || 'busy'
-							}
-						});
+						var popup_html = $(monster.template(self, 'presence-callflowEdit', {
+								data_presence: {
+									'presence_id': node.getMetadata('presence_id') || '',
+									'status': node.getMetadata('status') || 'busy'
+								}
+							})),
+							popup;
 
 						$('#add', popup_html).click(function() {
 							var presence_id = $('#presence_id_input', popup_html).val();
@@ -1058,7 +1057,7 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.manual_presence_title,
 							beforeClose: function() {
 								if(typeof callback == 'function') {
