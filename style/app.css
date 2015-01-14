@@ -1,7 +1,8 @@
 @import url('../submodules/device/device.css');
 @import url('../submodules/user/user.css');
 @import url('../submodules/misc/misc.css');
-@import url('../submodules/directory/directory.css');
+@import url('../submodules/device/device.css');
+@import url('../submodules/faxbox/faxbox.css');
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
