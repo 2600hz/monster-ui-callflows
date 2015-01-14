@@ -1089,11 +1089,11 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = self.templates.language_callflow.tmpl({
+						popup_html = $(monster.template(self, 'misc-language', {
 							data_language: {
 								'language': node.getMetadata('language') || ''
 							}
-						});
+						}));
 
 						$('#add', popup_html).click(function() {
 							var language = $('#language_id_input', popup_html).val();
@@ -1103,7 +1103,7 @@ define(function(require){
 							popup.dialog('close');
 						});
 
-						popup = winkstart.dialog(popup_html, {
+						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.language_title,
 							beforeClose: function() {
 								if(typeof callback == 'function') {
