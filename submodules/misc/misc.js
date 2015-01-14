@@ -1518,54 +1518,6 @@ define(function(require){
 					}
 				}
 			});
-
-			/* Migration callflows, fixes our goofs. To be removed eventually */
-			$.extend(callflow_nodes, {
-				'resource[]': {
-					name: self.i18n.active().oldCallflows.resource_name,
-					icon: 'resource',
-					module: 'resources',
-					data: {},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '0'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						winkstart.alert(self.i18n.active().oldCallflows.this_callflow_is_outdated);
-						return '';
-					},
-					edit: function(node, callback) {
-					}
-				},
-				'hotdesk[id=*,action=call]': {
-					name: self.i18n.active().oldCallflows.hot_desking_name,
-					icon: 'v_phone',
-					module: 'hotdesk',
-					data: {
-						action: 'bridge',
-						id: 'null'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					caption: function(node, caption_map) {
-						//Migration here:
-						node.setMetadata('action', 'bridge');
-
-						winkstart.alert(self.i18n.active().oldCallflows.this_callflow_is_outdated);
-						return '';
-					},
-					edit: function(node, callback) {
-					}
-				}
-			});
 		},
 
 		miscDeviceList: function(callback) {
