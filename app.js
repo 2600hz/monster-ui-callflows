@@ -885,21 +885,45 @@ define(function(require){
 
 		renderTools: function() {
 			var self = this,
+				advanced_cat = self.i18n.active().oldCallflows.advanced_cat,
+				basic_cat = self.i18n.active().oldCallflows.basic_cat,
+				dataTemplate = { categories: [] },
+				categories = {},
 				target,
 				tools;
 
-			/* Don't add categories here, this is just a hack to order the list on the right */
-			self.categories = {};
+			categories[basic_cat] = [];
+			categories[advanced_cat] = [];
 
 			$.each(self.actions, function(i, data) {
 				if('category' in data) {
-					data.category in self.categories ? true : self.categories[data.category] = [];
+					data.category in categories ? true : categories[data.category] = [];
 					data.key = i;
-					self.categories[data.category].push(data);
+					categories[data.category].push(data);
 				}
 			});
 
-			$.each(self.categories, function(idx, val) {
+			$.each(categories, function(key, val) {
+				if (key !== basic_cat && key !== advanced_cat) {
+					dataTemplate.categories.push({ key: key, actions: val });
+				}
+			});
+
+			dataTemplate.categories.sort(function(a, b){
+				return a.key < b.key ? 1 : -1;
+			});
+
+			dataTemplate.categories.unshift({
+					key: basic_cat,
+					actions: categories[basic_cat]
+				},
+				{
+					key: advanced_cat,
+					actions: categories[advanced_cat]
+				}
+			);
+
+			$.each(categories, function(idx, val) {
 				val.sort(function(a, b){
 					if (a.hasOwnProperty('weight')) {
 						return a.weight > b.weight ? 1 : -1;
@@ -907,11 +931,7 @@ define(function(require){
 				});
 			});
 
-			var templateData = {
-				categories: self.categories
-			};
-
-			tools = $(monster.template(self, 'tools', templateData));
+			tools = $(monster.template(self, 'tools', dataTemplate));
 
 			$('.tooltip', tools).click(function() {
 				monster.ui.dialog(monster.template(self, 'help_callflow'));
