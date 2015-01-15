@@ -1033,6 +1033,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 10,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
 							returned_value = '';

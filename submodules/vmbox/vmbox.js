@@ -349,6 +349,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 50,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
 							returned_value = '';
@@ -430,6 +431,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 120,
 					caption: function(node, caption_map) {
 						return '';
 					},

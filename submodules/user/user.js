@@ -36,6 +36,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 40,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
 							returned_value = '';
@@ -127,6 +128,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 10,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -152,6 +154,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -177,6 +180,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 30,
 					caption: function(node, caption_map) {
 						return '';
 					},

@@ -29,6 +29,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 140,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -52,6 +53,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 150,
 					caption: function(node, caption_map) {
 						return '';
 					},

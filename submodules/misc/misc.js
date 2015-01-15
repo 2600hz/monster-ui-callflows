@@ -739,6 +739,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						return node.getMetadata('name') || '';
 					},
@@ -763,6 +764,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
 							return_value = '';
@@ -839,6 +841,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 30,
 					caption: function(node, caption_map) {
 						return node.getMetadata('name') || '';
 					},
@@ -863,6 +866,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 10,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -888,6 +892,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -913,6 +918,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 30,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -929,6 +935,7 @@ define(function(require){
 					module: 'dynamic_cid',
 					tip: self.i18n.active().oldCallflows.dynamic_cid_tip,
 					isUsable: 'true',
+					weight: 10,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -956,6 +963,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						return (node.getMetadata('caller_id_name_prefix') || '') + ' ' + (node.getMetadata('caller_id_number_prefix') || '');
 					},
@@ -1011,6 +1019,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 30,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -1035,6 +1044,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 40,
 					caption: function(node, caption_map) {
 						return node.getMetadata('presence_id') || '';
 					},
@@ -1082,6 +1092,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 50,
 					caption: function(node, caption_map) {
 						return node.getMetadata('language') || '';
 					},
@@ -1127,6 +1138,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 60,
 					caption: function(node, caption_map) {
 						return node.getMetadata('name') || '';
 					},
@@ -1183,6 +1195,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 70,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -1258,6 +1271,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 10,
 					caption: function(node) {
 						return '';
 					},
@@ -1306,6 +1320,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node) {
 						return '';
 					},
@@ -1331,6 +1346,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 80,
 					caption: function(node) {
 						return '';
 					},
@@ -1382,6 +1398,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 90,
 					caption: function(node) {
 						return '';
 					},
@@ -1440,6 +1457,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 100,
 					caption: function(node, caption_map) {
 						return self.i18n.active().oldCallflows.sip_code_caption + node.getMetadata('code');
 					},

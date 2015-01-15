@@ -899,6 +899,14 @@ define(function(require){
 				}
 			});
 
+			$.each(self.categories, function(idx, val) {
+				val.sort(function(a, b){
+					if (a.hasOwnProperty('weight')) {
+						return a.weight > b.weight ? 1 : -1;
+					}
+				});
+			});
+
 			var templateData = {
 				categories: self.categories
 			};

@@ -310,6 +310,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 60,
 					key_caption: function(child_node, caption_map) {
 						var key = child_node.key;
 

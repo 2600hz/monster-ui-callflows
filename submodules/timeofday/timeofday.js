@@ -474,6 +474,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 10,
 					key_caption: function(child_node, caption_map) {
 						var key = child_node.key;
 
@@ -593,6 +594,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 20,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -686,6 +688,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 30,
 					caption: function(node, caption_map) {
 						return '';
 					},
@@ -777,6 +780,7 @@ define(function(require){
 						}
 					],
 					isUsable: 'true',
+					weight: 40,
 					caption: function(node, caption_map) {
 						return '';
 					},
