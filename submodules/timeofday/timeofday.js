@@ -180,9 +180,10 @@ define(function(require){
 			var self = this,
 				wday,
 				timeofday_html = $(monster.template(self, 'timeofday-callflowEdit', data)),
-				_after_render;
+				_after_render,
+				timeofdayForm = timeofday_html.find('#timeofday-form');
 
-			//winkstart.validate.set(self.config.validation, timeofday_html);
+			monster.ui.validate(timeofdayForm);
 
 			$('*[rel=popover]', timeofday_html).popover({
 				trigger: 'focus'
@@ -284,26 +285,25 @@ define(function(require){
 			$('.timeofday-save', timeofday_html).click(function(ev) {
 				ev.preventDefault();
 
-				//winkstart.validate.is_valid(self.config.validation, timeofday_html, function() {
-						var form_data = form2object('timeofday-form');
+				if(monster.ui.valid(timeofdayForm)) {
+					var form_data = form2object('timeofday-form');
 
-						form_data.wdays = [];
-						data.data.wdays = [];
+					form_data.wdays = [];
+					data.data.wdays = [];
 
-						$('.fake_checkbox.checked', timeofday_html).each(function() {
-							form_data.wdays.push($(this).data('value'));
-						});
+					$('.fake_checkbox.checked', timeofday_html).each(function() {
+						form_data.wdays.push($(this).data('value'));
+					});
 
-						form_data.interval = $('#cycle', timeofday_html).val() == 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
+					form_data.interval = $('#cycle', timeofday_html).val() == 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
 
-						form_data = self.timeofdayCleanFormData(form_data);
+					form_data = self.timeofdayCleanFormData(form_data);
 
-						self.timeofdaySave(form_data, data, callbacks.save_success);
-					/*},
-					function() {
-						winkstart.alert(self.i18n.active().callflows.timeofday.there_were_errors_on_the_form);
-					}*/
-				//);
+					self.timeofdaySave(form_data, data, callbacks.save_success);
+				}
+				else {
+					monster.ui.alert('error', self.i18n.active().callflows.timeofday.there_were_errors_on_the_form);
+				};
 			});
 
 			$('.timeofday-delete', timeofday_html).click(function(ev) {
@@ -511,10 +511,10 @@ define(function(require){
 
 								self.timeofdayPopupEdit({
 									data: _data,
-									callback: function(_data) {
-										child_node.key = _data.data.id || 'null';
+									callback: function(timeofday) {
+										child_node.key = timeofday.id || 'null';
 
-										child_node.key_caption = _data.data.name || '';
+										child_node.key_caption = timeofday.name || '';
 
 										popup.dialog('close');
 									}
