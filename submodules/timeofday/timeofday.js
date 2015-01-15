@@ -321,7 +321,7 @@ define(function(require){
 					_after_render();
 				}
 
-				$('#time', timeofday_html).slider({
+				$('#time', timeofday_html).jslider({
 					from: 0,
 					to: 86400,
 					step: 900,
