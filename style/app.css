@@ -181,6 +181,7 @@
 	z-index: 19;
 	height:56px;
 	background: url(static/images/blackbox_small.png) no-repeat;
+	min-width: 82px;
 }
 
 #ws_callflow .tools .app_list_nav {
@@ -480,10 +481,8 @@
 
 #ws_callflow .tools {
 	float: right;
-
-	/* Have to disable this for now because dragging element doesn't work properly otherwise... TODO THO
 	overflow-y: auto;
-	overflow-x: hidden;*/
+	overflow-x: hidden;
 }
 
 #ws_callflow .tools #ws_cf_tools {
