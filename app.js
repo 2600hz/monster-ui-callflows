@@ -972,26 +972,22 @@ define(function(require){
 			function action (el) {
 				el.draggable({
 					start: function () {
-						var clone = $(this).clone();
-
 						self.enableDestinations($(this));
-
-						action(clone);
-						clone.addClass('inactive');
-						clone.insertBefore($(this));
-
-						$(this).addClass('active');
+						$(this).addClass('inactive');
 					},
 					drag: function () {
 						$('.callflow_helpbox_wrapper', '#callflow-view').hide();
 					},
 					stop: function () {
 						self.disableDestinations();
-						$(this).prev().removeClass('inactive');
-						$(this).remove();
-					}
+						$(this).removeClass('inactive');
+					},
+					containment: $('body'),
+					helper: 'clone'
 				});
 			}
+
+
 
 			$('.action', tools).each(function() {
 				action($(this));
