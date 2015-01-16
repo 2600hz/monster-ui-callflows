@@ -830,6 +830,7 @@
 		"hot_desking_name": "Hot Desking",
 		"language_title": "Language",
 		"language": "Language",
-		"language_tip": "This callflow action lets you change the language of the prompts used in this callflow!"
+		"language_tip": "This callflow action lets you change the language of the prompts used in this callflow!",
+		"searchLink": "Search on the server for"
 	}
 }

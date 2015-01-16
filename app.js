@@ -76,25 +76,6 @@ define(function(require){
 		bindEvents: function(template) {
 			var self = this;
 
-			// Search list
-			template.find('.search-query').on('keyup', function() {
-				var $this = $(this),
-					search = $this.val();
-
-				if(search) {
-					$.each(template.find('.list-element'), function() {
-						var $elem = $(this);
-						if($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
-							$elem.show();
-						} else {
-							$elem.hide();
-						}
-					});
-				} else {
-					template.find('.list-element').show();
-				}
-			});
-
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
 				template.find('.callflow-content')
@@ -114,6 +95,55 @@ define(function(require){
 					.addClass('edition-mode');
 
 				self.editCallflow({ id: callflowId });
+			});
+
+			// Load more paginated data
+			var callflowList = template.find('.list-container .list'),
+				isLoading = false,
+				loader = $('<li class="content-centered list-loader"> <i class="icon-spin icon-spinner"></i></li>'),
+				searchLink = $('<li class="search-link"><div>'
+							 + self.i18n.active().oldCallflows.searchLink
+							 + '</div><div>"<span class="search-value"></span>"</div></li>'); //Not fully implemented yet, see UI-1045
+
+			callflowList.on('scroll', function() {
+				if(!isLoading && callflowList.data('next-key') && (callflowList.scrollTop() >= (callflowList[0].scrollHeight - callflowList.innerHeight() - 100))) {
+					isLoading = true;
+					callflowList.append(loader);
+
+					self.listData(
+						function(callflowData) {
+							var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
+
+							loader.remove();
+
+							callflowList
+									.append(listCallflows)
+									.data('next-key', callflowData.next_start_key || null);
+
+							isLoading = false;
+						},
+						callflowList.data('next-key')
+					);
+				}
+			});
+
+			// Search list
+			template.find('.search-query').on('keyup', function() {
+				var $this = $(this),
+					search = $this.val();
+
+				if(search) {
+					$.each(template.find('.list-element'), function() {
+						var $elem = $(this);
+						if($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
+							$elem.show();
+						} else {
+							$elem.hide();
+						}
+					});
+				} else {
+					template.find('.list-element').show();
+				}
 			});
 		},
 
@@ -141,29 +171,39 @@ define(function(require){
 			var self = this
 				template = template || $('#callflow_container');
 
-			self.listData(function(callflows) {
-				var listCallflows = monster.template(self, 'callflowList', { callflows: callflows });
+			self.listData(function(callflowData) {
+				var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
 
 				template.find('.list-container .list')
 						.empty()
-						.append(listCallflows);
+						.append(listCallflows)
+						.data('next-key', callflowData.next_start_key);
 
-				callback && callback(callflows);
+				callback && callback(callflowData.data);
 			});
 		},
 
-		listData: function(callback) {
-			var self = this;
+		listData: function(callback, nextStartKey) {
+			var self = this,
+				apiData = {
+					accountId: self.accountId
+				};
+
+			if(nextStartKey) {
+				$.extend(true, apiData, {
+					filters: {
+						'start_key': encodeURIComponent(nextStartKey)
+					}
+				});
+			}
 
 			self.callApi({
 				resource: 'callflow.list',
-				data: {
-					accountId: self.accountId
-				},
-				success: function(callflows) {
-					var returnedCallflows = self.formatData(callflows);
+				data: apiData,
+				success: function(callflowData) {
+					var returnedCallflowData = self.formatData(callflowData);
 
-					callback && callback(returnedCallflows);
+					callback && callback(returnedCallflowData);
 				}
 			});
 		},
@@ -222,7 +262,9 @@ define(function(require){
 				return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
 			});
 
-			return formattedList;
+			data.data = formattedList;
+
+			return data;
 		},
 
 		editCallflow: function(data) {
