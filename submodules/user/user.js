@@ -498,7 +498,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if (monster.ui.valid(user_form)) {
-					var form_data = form2object('user-form');
+					var form_data = monster.ui.getFormData('user-form');
 
 					if(form_data.enable_pin === false) {
 						delete data.data.queue_pin;

@@ -454,7 +454,7 @@ define(function(require){
 					ev.preventDefault();
 
 					if(monster.ui.valid(deviceForm)) {
-						var form_data = form2object('device-form');
+						var form_data = monster.ui.getFormData('device-form');
 
 						self.deviceCleanFormData(form_data);
 

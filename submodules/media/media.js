@@ -93,7 +93,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if(monster.ui.valid(mediaForm)) {
-					var form_data = form2object('media-form');
+					var form_data = monster.ui.getFormData('media-form');
 
 					form_data = self.mediaCleanFormData(form_data);
 
