@@ -251,7 +251,7 @@ define(function(require){
 			}
 			else {
 				$('#owner_id', faxbox_html).change(function(ev) {
-					var currentFaxbox = form2object('faxbox_form');
+					var currentFaxbox = monster.ui.getFormData('faxbox_form');
 
 					if ($(this).val()) {
 						$('[id$="bound_notification_email"]', faxbox_html).each(function(idx, el) {
@@ -339,7 +339,7 @@ define(function(require){
 				ev.preventDefault();
 
 				var form_html = $('#faxbox_form', faxbox_html),
-					form_data = form2object('faxbox_form'),
+					form_data = monster.ui.getFormData('faxbox_form'),
 					word_reg = /^[\w\s'-]+/
 
 				monster.ui.validate(form_html, {

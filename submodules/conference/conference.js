@@ -305,7 +305,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if (monster.ui.valid(conference_form)) {
-					var form_data = form2object('conference_form');
+					var form_data = monster.ui.getFormData('conference_form');
 
 					self.conferenceCleanFormData(form_data);
 

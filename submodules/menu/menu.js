@@ -186,7 +186,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if(monster.ui.valid(menuForm)) {
-					var form_data = form2object('menu-form');
+					var form_data = monster.ui.getFormData('menu-form');
 
 					self.menuCleanFormData(form_data);
 

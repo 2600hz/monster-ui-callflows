@@ -286,7 +286,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if(monster.ui.valid(timeofdayForm)) {
-					var form_data = form2object('timeofday-form');
+					var form_data = monster.ui.getFormData('timeofday-form');
 
 					form_data.wdays = [];
 					data.data.wdays = [];

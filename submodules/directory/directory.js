@@ -38,7 +38,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if(monster.ui.valid(directoryForm)) {
-					var form_data = form2object('directory-form');
+					var form_data = monster.ui.getFormData('directory-form');
 
 					self.directoryCleanFormData(form_data);
 

@@ -263,7 +263,7 @@ define(function(require){
 				ev.preventDefault();
 
 				if(monster.ui.valid(vmboxForm)) {
-					var form_data = form2object('vmbox-form');
+					var form_data = monster.ui.getFormData('vmbox-form');
 
 					/* self.clean_form_data(form_data); */
 
