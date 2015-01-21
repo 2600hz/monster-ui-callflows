@@ -5,6 +5,7 @@
 @import url('../submodules/faxbox/faxbox.css');
 @import url('../submodules/directory/directory.css');
 @import url('../submodules/timeofday/timeofday.css');
+@import url('../submodules/groups/groups.css');
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
