@@ -190,7 +190,10 @@ define(function(require){
 		listData: function(callback, nextStartKey) {
 			var self = this,
 				apiData = {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { // Temporarily disabling pagination. See UI-1069.
+						paginate: 'false'
+					}
 				};
 
 			if(nextStartKey) {
