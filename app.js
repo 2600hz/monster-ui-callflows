@@ -245,16 +245,16 @@ define(function(require){
 			var formattedList = [];
 
 			_.each(data.data, function(callflow) {
-				var listNumbers = callflow.numbers || '-',
-				isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
+				var listNumbers = (callflow.numbers || '-').toString(),
+					isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
 
 				if(!isFeatureCode) {
 					if(callflow.name) {
-						callflow.description = listNumbers.toString();
+						callflow.description = listNumbers;
 						callflow.title = callflow.name;
 					}
 					else {
-						callflow.title = listNumbers.toString()
+						callflow.title = listNumbers;
 					}
 
 					formattedList.push(callflow);
