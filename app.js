@@ -28,6 +28,10 @@ define(function(require){
 
 			// For now we use that to only load the numbers classifiers the first time we load the app, since it is very unlikely to change often
 			appData: {},
+
+			// By default, we don't want to list SmartPBX Callflows, so we create a flag here that we'll check in different places (Callflow listing, Callflow searching for example)
+			// We only want to display the SmartPBX Callflows if the flag is set in the config.js, or if the account is a superduper_admin
+			showSmartPBXCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showSmartPBXCallflows) || monster.apps.auth.originalAccount.superduper_admin
 		},
 
 		actions: {},
@@ -200,6 +204,10 @@ define(function(require){
 				});
 			}
 
+			if(!self.appFlags.showSmartPBXCallflows) {
+				apiData.filters['filter_not_ui_metadata.origin'] = 'voip';
+			}
+
 			self.callApi({
 				resource: 'callflow.list',
 				data: apiData,
@@ -311,7 +319,6 @@ define(function(require){
 				self.resetFlow();
 				self.dataCallflow = {};
 				self.repaintFlow();
-
 			}
 
 			self.renderButtons();
@@ -606,6 +613,11 @@ define(function(require){
 			} else {
 				self.show_pending_change(self.original_flow !== current_flow);
 			}
+
+			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
+				isSmartPBXCallflow = metadata && metadata.hasOwnProperty('origin') && metadata.origin === 'voip';
+
+			isSmartPBXCallflow ? $('#smartpbx_warning').show() : $('#smartpbx_warning').hide();
 		},
 
 		show_pending_change: function(pending_change) {
