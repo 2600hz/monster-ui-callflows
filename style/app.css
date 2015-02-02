@@ -416,6 +416,16 @@
 	width: 100%;
 }
 
+#ws_callflow #smartpbx_warning {
+	color: red;
+	display: none;
+	font-style: italic;
+	font-weight: lighter;
+	margin: auto auto 15px;
+	text-align: center;
+	width: 50%;
+}
+
 #ws_callflow #callflow_header {
 	height: 30px;
 	margin-top: 15px;

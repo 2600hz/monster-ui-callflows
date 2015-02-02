@@ -6,6 +6,7 @@
 		"buyLocal": "Local",
 		"buyTollfree": "Toll-Free",
 		"buyVanity": "Vanity",
+		"smartPBXWarning": "It looks like you're editing a callflow that was last modified by the Smart PBX. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break the SmartPBX, so make sure you know what you're doing!",
 		"conference": {
 			"conference": "Conference",
 			"conference_tip": "Connect a caller to a Meet-Me conference bridge",
