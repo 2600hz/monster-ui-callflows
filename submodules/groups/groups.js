@@ -277,6 +277,7 @@ define(function(require){
 							helper: 'clone',
 							appendTo: $('.wrapper', popup),
 							scroll: false,
+							tolerance: 'pointer',
 							receive: function(ev, ui) {
 								var data = ui.item[0].dataset,
 									list_li = [],
@@ -661,6 +662,7 @@ define(function(require){
 								helper: 'clone',
 								appendTo: $('.wrapper', popup),
 								scroll: false,
+								tolerance: 'pointer',
 								receive: function(ev, ui) {
 									var data = ui.item[0].dataset,
 										list_li = [],

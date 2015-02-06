@@ -662,6 +662,7 @@ define(function(require){
 								helper: 'clone',
 								appendTo: $('.wrapper', popup),
 								scroll: false,
+								tolerance: 'pointer',
 								receive: function() {
 									//$('.scrollable', popup).data('jsp').reinitialise();
 								},
@@ -754,6 +755,7 @@ define(function(require){
 								helper: 'clone',
 								appendTo: $('.wrapper', popup),
 								scroll: false,
+								tolerance: 'pointer',
 								receive: function() {
 									//$('.scrollable', popup).data('jsp').reinitialise();
 								},
@@ -846,6 +848,7 @@ define(function(require){
 									helper: 'clone',
 									appendTo: $('.wrapper', popup),
 									scroll: false,
+									tolerance: 'pointer',
 									receive: function() {
 										//$('.scrollable', popup).data('jsp').reinitialise();
 									},
