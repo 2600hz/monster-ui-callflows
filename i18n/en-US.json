@@ -832,6 +832,7 @@
 		"language_title": "Language",
 		"language": "Language",
 		"language_tip": "This callflow action lets you change the language of the prompts used in this callflow!",
-		"searchLink": "Search on the server for"
+		"searchLink": "Search on the server for",
+		"searchReset": "Click again to clear the search"
 	}
 }
