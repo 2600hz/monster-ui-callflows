@@ -705,12 +705,12 @@
 }
 
 #callflow_container .left-bar-container .search-link {
-    border-top: solid 1px #ccc;
-    text-align: center;
-    font-size: 12px;
-    line-height: 15px;
-    padding: 5px;
-    color: #555;
+	border-bottom: solid 1px #ccc;
+	text-align: center;
+	font-size: 12px;
+	line-height: 15px;
+	padding: 5px;
+	color: #555;
 	background-color: #f6f6f6;
 	background-image: -webkit-linear-gradient(top, hsl(0, 0%, 90%) 0%, hsl(0, 0%, 85%) 100%);
 	background-image:    -moz-linear-gradient(top, hsl(0, 0%, 90%) 0%, hsl(0, 0%, 85%) 100%);
@@ -723,9 +723,22 @@
 	cursor: pointer;
 }
 
-#callflow_container .left-bar-container .search-link  .search-value {
-    font-weight: 600;
-    text-shadow: 1px 1px 0px #ccc;
+#callflow_container .left-bar-container .search-link .search-value {
+	font-weight: 600;
+	text-shadow: 1px 1px 0px #ccc;
+}
+
+#callflow_container .left-bar-container .search-link .search-reset {
+	color: #22a5ff;
+	line-height: 30px;
+	font-weight: 600;
+}
+
+#callflow_container .left-bar-container .search-link:not(.active) .search-reset {
+	display: none;
+}
+#callflow_container .left-bar-container .search-link.active > *:not(.search-reset) {
+	display: none;
 }
 
 #callflow_container .list-container .link .title {
@@ -1323,11 +1336,11 @@
 }
 
 .callflows-port .search_box .searchsubmit1 {
-    background: url(static/images/search_left.png) no-repeat top left;
+	background: url(static/images/search_left.png) no-repeat top left;
 }
 .callflows-port .search_box .searchsubmit2 {
-    background: url(static/images/search_right.png) no-repeat top right;
+	background: url(static/images/search_right.png) no-repeat top right;
 }
 .callflows-port .search_box .searchfield {
-    background: url(static/images/search_mid.png) repeat-x;
+	background: url(static/images/search_mid.png) repeat-x;
 }
