@@ -201,6 +201,7 @@ define(function(require){
 
 		repaintList: function(args) {
 			var self = this,
+				args = args || {},
 				template = args.template || $('#callflow_container'),
 				callback = args.callback;
 
