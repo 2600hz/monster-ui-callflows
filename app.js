@@ -396,6 +396,8 @@ define(function(require){
 								$('#ws_cf_flow').empty();
 								$('.buttons').empty();
 								$('#ws_cf_tools').empty();
+								$('#smartpbx_warning').hide()
+
 								self.repaintList();
 								self.resetFlow();
 							}
