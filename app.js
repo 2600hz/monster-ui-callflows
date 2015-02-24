@@ -68,17 +68,24 @@ define(function(require){
 
 			self.bindEvents(skeletonTemplate);
 
-			self.repaintList(skeletonTemplate, function() {
-				(parent)
-					.empty()
-					.append(skeletonTemplate);
+			self.repaintList({
+				template: skeletonTemplate,
+				callback: function() {
+					(parent)
+						.empty()
+						.append(skeletonTemplate);
 
-				self.hackResize(skeletonTemplate);
+					self.hackResize(skeletonTemplate);
+				}
 			});
 		},
 
 		bindEvents: function(template) {
-			var self = this;
+			var self = this,
+				callflowList = template.find('.list-container .list'),
+				isLoading = false,
+				loader = $('<li class="content-centered list-loader"> <i class="icon-spin icon-spinner"></i></li>'),
+				searchLink = $(monster.template(self, 'callflowList-searchLink'));
 
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
@@ -90,7 +97,7 @@ define(function(require){
 			});
 
 			// Edit Callflow
-			template.find('.list-container .list').on('click', '.list-element', function() {
+			callflowList.on('click', '.list-element', function() {
 				var $this = $(this),
 					callflowId = $this.data('id');
 
@@ -101,21 +108,13 @@ define(function(require){
 				self.editCallflow({ id: callflowId });
 			});
 
-			// Load more paginated data
-			var callflowList = template.find('.list-container .list'),
-				isLoading = false,
-				loader = $('<li class="content-centered list-loader"> <i class="icon-spin icon-spinner"></i></li>'),
-				searchLink = $('<li class="search-link"><div>'
-							 + self.i18n.active().oldCallflows.searchLink
-							 + '</div><div>"<span class="search-value"></span>"</div></li>'); //Not fully implemented yet, see UI-1045
-
 			callflowList.on('scroll', function() {
 				if(!isLoading && callflowList.data('next-key') && (callflowList.scrollTop() >= (callflowList[0].scrollHeight - callflowList.innerHeight() - 100))) {
 					isLoading = true;
 					callflowList.append(loader);
 
-					self.listData(
-						function(callflowData) {
+					self.listData({
+						callback: function(callflowData) {
 							var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
 
 							loader.remove();
@@ -126,16 +125,17 @@ define(function(require){
 
 							isLoading = false;
 						},
-						callflowList.data('next-key')
-					);
+						nextStartKey: callflowList.data('next-key'),
+						searchValue: callflowList.data('search-value')
+					});
 				}
 			});
 
 			// Search list
 			template.find('.search-query').on('keyup', function() {
-				var $this = $(this),
-					search = $this.val();
+				var search = $(this).val();
 
+				searchLink.find('.search-value').text(search);
 				if(search) {
 					$.each(template.find('.list-element'), function() {
 						var $elem = $(this);
@@ -145,8 +145,36 @@ define(function(require){
 							$elem.hide();
 						}
 					});
+					callflowList.prepend(searchLink);
 				} else {
 					template.find('.list-element').show();
+					searchLink.remove();
+				}
+			});
+
+			callflowList.on('click', '.search-link', function() {
+				if(searchLink.hasClass('active')) {
+					callflowList.data('search-value', null);
+					searchLink.removeClass('active')
+							  .remove();
+					template.find('.search-query').prop('disabled', false)
+												  .val('');
+					self.repaintList({template: template});
+				} else {
+					var searchValue = searchLink.find('.search-value').text();
+					searchLink.addClass('active')
+							  .remove();
+					callflowList.data('search-value', searchValue);
+
+					template.find('.search-query').prop('disabled', true);
+
+					self.repaintList({
+						template: template,
+						searchValue: searchValue,
+						callback: function() {
+							callflowList.prepend(searchLink);
+						}
+					});
 				}
 			});
 		},
@@ -171,24 +199,33 @@ define(function(require){
 			$(window).resize();
 		},
 
-		repaintList: function(template, callback) {
-			var self = this
-				template = template || $('#callflow_container');
+		repaintList: function(args) {
+			var self = this,
+				args = args || {},
+				template = args.template || $('#callflow_container'),
+				callback = args.callback;
 
-			self.listData(function(callflowData) {
-				var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
+			self.listData({
+				callback: function(callflowData) {
+					var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
 
-				template.find('.list-container .list')
-						.empty()
-						.append(listCallflows)
-						.data('next-key', callflowData.next_start_key);
+					template.find('.list-container .list')
+							.empty()
+							.append(listCallflows)
+							.data('next-key', callflowData.next_start_key || null);
 
-				callback && callback(callflowData.data);
+					callback && callback(callflowData.data);
+				},
+				searchValue: args.searchValue
 			});
 		},
 
-		listData: function(callback, nextStartKey) {
+		listData: function(args) {
 			var self = this,
+				nextStartKey = args.nextStartKey,
+				searchValue = args.searchValue,
+				callback = args.callback,
+				apiResource = 'callflow.list',
 				apiData = {
 					accountId: self.accountId
 				};
@@ -202,11 +239,20 @@ define(function(require){
 			}
 
 			if(!self.appFlags.showSmartPBXCallflows) {
-				apiData.filters['filter_not_ui_metadata.origin'] = 'voip';
+				$.extend(true, apiData, {
+					filters: {
+						'filter_not_ui_metadata.origin': 'voip'
+					}
+				});
+			}
+
+			if(searchValue) {
+				apiResource = 'callflow.searchByNameAndNumber';
+				apiData.value = searchValue;
 			}
 
 			self.callApi({
-				resource: 'callflow.list',
+				resource: apiResource,
 				data: apiData,
 				success: function(callflowData) {
 					var returnedCallflowData = self.formatData(callflowData);

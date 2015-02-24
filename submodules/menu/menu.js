@@ -152,12 +152,12 @@ define(function(require){
 			});
 
 			$('.inline_action_media', menu_html).click(function(ev) {
-				var _data = ($(this).dataset('action') == 'edit') ? { id: $('#media_greeting', menu_html).val() } : {},
+				var _data = ($(this).data('action') == 'edit') ? { id: $('#media_greeting', menu_html).val() } : {},
 					_id = _data.id;
 
 				ev.preventDefault();
 
-				monster.pub('media.popupEdit', {
+				monster.pub('callflows.media.editPopup', {
 					data: _data,
 					callback: function(_data) {
 						/* Create */
