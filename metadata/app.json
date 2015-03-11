@@ -1,6 +1,5 @@
 {
 	"name": "callflows",
-	"source_url": "http://webdev/monster-modules/callflows",
 	"i18n": {
 		"en-US": {
 			"label": "Callflows",
