@@ -9,7 +9,7 @@ define(function(require){
 		subscribe: {
 			'callflows.conference.popupEdit': 'conferencePopupEdit',
 			'callflows.fetchActions': 'conferenceDefineActions',
-			'callflows.conference.edit': 'conferenceEdit'
+			'callflows.conference.edit': '_conferenceEdit'
 		},
 
 		conferenceDefineActions: function(args) {
@@ -88,7 +88,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'conference.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.conference.edit'
 				},
 
 				'conference[]': {
@@ -144,6 +157,12 @@ define(function(require){
 					});
 				}
 			}, data_defaults);
+		},
+
+		// Added for the subscribed event to avoid refactoring conferenceEdit
+		_conferenceEdit: function(args) {
+			var self = this;
+			self.conferenceEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		conferenceEdit: function(data, _parent, _target, _callbacks, data_defaults) {
@@ -358,18 +377,18 @@ define(function(require){
 						return new_list;
 					};
 
-			$('#conference-listpanel', parent)
-				.empty()
-				.listpanel({
-					label: self.i18n.active().callflows.conference.conferences_label,
-					identifier: 'conference-listview',
-					new_entity_label: self.i18n.active().callflows.conference.add_conference_label,
-					data: map_crossbar_data(data),
-					publisher: monster.pub,
-					notifyMethod: 'callflows.conference.edit',
-					notifyCreateMethod: 'callflows.conference.edit',
-					notifyParent: parent
-				});
+			// $('#conference-listpanel', parent)
+			// 	.empty()
+			// 	.listpanel({
+			// 		label: self.i18n.active().callflows.conference.conferences_label,
+			// 		identifier: 'conference-listview',
+			// 		new_entity_label: self.i18n.active().callflows.conference.add_conference_label,
+			// 		data: map_crossbar_data(data),
+			// 		publisher: monster.pub,
+			// 		notifyMethod: 'callflows.conference.edit',
+			// 		notifyCreateMethod: 'callflows.conference.edit',
+			// 		notifyParent: parent
+			// 	});
 			});
 		},
 

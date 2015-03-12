@@ -834,5 +834,12 @@
 		"language_tip": "This callflow action lets you change the language of the prompts used in this callflow!",
 		"searchLink": "Search on the server for",
 		"searchReset": "Click again to clear the search"
+	},
+	"__comment": "UI-1260: created common control for carrier selection",
+	"__version": "v3.20_s2",
+	"entityManager": {
+		"header": "Select a type of VOIP entity to manage:",
+		"callflowsTitle": "Callflows",
+		"backButton": "Go back to the list of VOIP entities"
 	}
 }

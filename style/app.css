@@ -600,17 +600,15 @@
 /* JR's customization */
 #callflow_container {
 	color: #ebebeb;
-}
-
-#callflow_container .callflow-view {
-	height: 100%;
-	overflow: auto;
+	min-height: 100%;
 }
 
 
 /* JR's work for left bar, from accountBrowser */
 #callflow_container .callflow-content {
 	margin-left: 240px;
+	background-color: #fff;
+	overflow-y: auto;
 }
 
 #callflow_container .left-bar-container {
@@ -749,6 +747,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+#callflow_container .list-container .link .title.standalone {
+	height: 60px;
+	line-height: 60px;
 }
 
 #callflow_container .list-container .link .description {
@@ -1344,4 +1346,91 @@
 }
 .callflows-port .search_box .searchfield {
 	background: url(static/images/search_mid.png) repeat-x;
+}
+
+
+#callflow_container .entity-manager {
+	padding: 10px;
+	max-width: 1120px;
+	margin: auto;
+	color: #303039;
+}
+
+#callflow_container .entity-manager .grid-header {
+	font-size: 34px;
+	line-height: 40px;
+	margin: 20px 10px;
+}
+
+#callflow_container .entity-manager .entity-element {
+	display: inline-block;
+	margin: 10px;
+	text-align: center;
+	width: 140px;
+	height: 140px;
+	padding: 0px;
+	font-size: 20px;
+	cursor: pointer;
+	border: solid 1px #303039;
+	box-sizing: border-box;
+	border-radius: 4px;
+}
+#callflow_container .entity-manager .entity-element.callflow-element {
+	width: 300px;
+	height: 300px;
+	float: left;
+	font-size: 50px;
+	font-weight: 300;
+}
+#callflow_container .entity-manager .entity-element:hover {
+	background-color: #f0f0f9;
+}
+
+#callflow_container .entity-manager .entity-element > div {
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+#callflow_container .entity-edition,
+#callflow_container .entity-manager .callflow-edition {
+	display: none;
+}
+
+#callflow_container .entity-edition .left-bar-container {
+	box-sizing: border-box;
+}
+
+#callflow_container .entity-edition .callflow-content {
+	margin: 0;
+	float: left;
+	box-sizing: border-box;
+	width: 800px; /* Arbitrary width if calc not supported */
+	width: -webkit-calc(100% - 240px);
+	width: -moz-calc(100% - 240px);
+	width: -o-calc(100% - 240px);
+	width: calc(100%-240px);
+}
+
+
+#callflow_container .callflow-content .entity-header {
+	padding: 18px 40px;
+	height: 71px;
+	box-sizing: border-box;
+	border-bottom: solid 1px #999;
+}
+#callflow_container .callflow-content .entity-header .entity-title {
+	color: #22a5ff;
+	font-size: 30px;
+	line-height: 36px;
+	float:left;
+}
+#callflow_container .callflow-content .entity-header .back-button {
+	float: right;
+}
+
+#callflow_container .entity-edition .entity-content {
+	padding: 20px 40px;
 }

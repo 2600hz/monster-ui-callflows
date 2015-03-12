@@ -8,7 +8,8 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'vmboxDefineActions'
+			'callflows.fetchActions': 'vmboxDefineActions',
+			'callflows.vmbox.edit': '_vmboxEdit'
 		},
 
 		vmboxPopupEdit: function(args) {
@@ -40,6 +41,12 @@ define(function(require){
 					});
 				}
 			}, data_defaults);
+		},
+
+		// Added for the subscribed event to avoid refactoring vmboxEdit
+		_vmboxEdit: function(args) {
+			var self = this;
+			self.vmboxEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		vmboxEdit: function(data, _parent, _target, _callbacks, data_defaults) {
@@ -412,7 +419,20 @@ define(function(require){
 								});
 							}
 						);
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'voicemail.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.vmbox.edit'
 				},
 
 				'voicemail[action=check]': {

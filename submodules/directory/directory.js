@@ -7,7 +7,8 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'directoryDefineActions'
+			'callflows.fetchActions': 'directoryDefineActions',
+			'callflows.directory.edit': '_directoryEdit'
 		},
 
 		directoryRender: function(data, target, callbacks){
@@ -155,6 +156,12 @@ define(function(require){
 				$('.rows', parent).empty()
 								  .append(monster.template(self,'directory-userRow'));
 			}
+		},
+
+		// Added for the subscribed event to avoid refactoring directoryEdit
+		_directoryEdit: function(args) {
+			var self = this;
+			self.directoryEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		directoryEdit: function(data, _parent, _target, _callbacks, data_defaults){
@@ -521,7 +528,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'directory.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.directory.edit'
 				}
 			});
 		},
