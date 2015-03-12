@@ -296,7 +296,7 @@ define(function(require){
 			var formattedList = [];
 
 			_.each(data.data, function(callflow) {
-				var listNumbers = callflow.numbers.toString() || '-',
+				var listNumbers = (callflow.numbers || '-').toString(),
 					isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
 
 				if(!isFeatureCode) {
