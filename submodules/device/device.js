@@ -18,7 +18,8 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'deviceDefineActions',
-			'callflows.device.popupEdit': 'devicePopupEdit'
+			'callflows.device.popupEdit': 'devicePopupEdit',
+			'callflows.device.edit': '_deviceEdit'
 		},
 
 		devicePopupEdit: function(args) {
@@ -52,6 +53,12 @@ define(function(require){
 					});
 				}
 			}, data_defaults);
+		},
+
+		// Added for the subscribed event to avoid refactoring deviceEdit
+		_deviceEdit: function(args) {
+			var self = this;
+			self.deviceEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		deviceEdit: function(data, _parent, _target, _callbacks, data_defaults) {
@@ -1105,7 +1112,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'device.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.device.edit'
 				}
 			});
 		}

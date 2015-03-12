@@ -110,7 +110,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'user.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.user.edit'
 				},
 				'hotdesk[action=login]': {
 					name: self.i18n.active().callflows.user.hot_desk_login,
@@ -206,39 +219,51 @@ define(function(require){
 				'overflow-y': 'scroll'
 			});
 
-			self.userEdit(data, popup_html, $('.inline_content', popup_html), {
-				save_success: function(_data) {
-					popup.dialog('close');
+			self.userEdit({
+				data: data,
+				parent: popup_html,
+				target: $('.inline_content', popup_html),
+				callbacks: {
+					save_success: function(_data) {
+						popup.dialog('close');
 
-					if(typeof callback == 'function') {
-						callback(_data);
+						if(typeof callback == 'function') {
+							callback(_data);
+						}
+					},
+					delete_success: function() {
+						popup.dialog('close');
+
+						if(typeof callback == 'function') {
+							callback({ data: {} });
+						}
+					},
+					after_render: function() {
+						popup = monster.ui.dialog(popup_html, {
+							title: (data.id) ? self.i18n.active().callflows.user.edit_user : self.i18n.active().callflows.user.create_user
+						});
 					}
 				},
-				delete_success: function() {
-					popup.dialog('close');
-
-					if(typeof callback == 'function') {
-						callback({ data: {} });
-					}
-				},
-				after_render: function() {
-					popup = monster.ui.dialog(popup_html, {
-						title: (data.id) ? self.i18n.active().callflows.user.edit_user : self.i18n.active().callflows.user.create_user
-					});
-				}
-			}, data_defaults);
+				data_defaults: data_defaults
+			});
 		},
 
-		userEdit: function(data, _parent, _target, _callbacks, data_defaults) {
+		userEdit: function(args) {
 			var self = this,
-				parent = _parent || $('#user-content'),
-				target = _target || $('#user-view', parent),
-				_callbacks = _callbacks || {},
+				data = args.data,
+				parent = args.parent || $('#user-content'),
+				target = args.target || $('#user-view', parent),
+				_callbacks = args.callbacks || {},
 				callbacks = {
 					save_success: _callbacks.save_success || function(_data) {
 						self.userRenderList(parent);
 
-						self.userEdit({ id: _data.data.id }, parent, target, callbacks);
+						self.userEdit({
+							data: { id: _data.data.id },
+							parent: parent,
+							target: target,
+							callbacks: callbacks
+						});
 					},
 
 					save_error: _callbacks.save_error,
@@ -272,7 +297,7 @@ define(function(require){
 							exclude: false,
 						},
 						music_on_hold: {}
-					}, data_defaults || {}),
+					}, args.data_defaults || {}),
 					field_data: {
 						device_types: {
 							sip_device: self.i18n.active().callflows.user.sip_device_type,
@@ -726,18 +751,18 @@ define(function(require){
 						return new_list;
 					};
 
-					$('#user-listpanel', parent)
-						.empty()
-						.listpanel({
-							label: _t('user', 'users_label'),
-							identifier: 'user-listview',
-							new_entity_label: _t('user', 'add_user_label'),
-							data: map_crossbar_data(data.data),
-							publisher: monster.pub,
-							notifyMethod: 'callflows.user.edit',
-							notifyCreateMethod: 'callflows.user.edit',
-							notifyParent: parent
-						});
+					// $('#user-listpanel', parent)
+					// 	.empty()
+					// 	.listpanel({
+					// 		label: _t('user', 'users_label'),
+					// 		identifier: 'user-listview',
+					// 		new_entity_label: _t('user', 'add_user_label'),
+					// 		data: map_crossbar_data(data.data),
+					// 		publisher: monster.pub,
+					// 		notifyMethod: 'callflows.user.edit',
+					// 		notifyCreateMethod: 'callflows.user.edit',
+					// 		notifyParent: parent
+					// 	});
 
 					callback && callback();
 				}

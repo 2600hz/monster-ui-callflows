@@ -61,26 +61,32 @@ define(function(require){
 		// Entry Point of the app
 		render: function(container){
 			var self = this,
-				skeletonTemplate = $(monster.template(self, 'layout')),
 				parent = _.isEmpty(container) ? $('#monster-content') : container;
 
 			monster.pub('callflows.fetchActions', { actions: self.actions });
 
-			self.bindEvents(skeletonTemplate);
+			self.renderEntityManager(parent);
+		},
+
+		renderCallflows: function(container){
+			var self = this,
+				callflowsTemplate = $(monster.template(self, 'callflow-manager'));
+
+			self.bindCallflowsEvents(callflowsTemplate);
 
 			self.repaintList({
-				template: skeletonTemplate,
+				template: callflowsTemplate,
 				callback: function() {
-					(parent)
+					(container)
 						.empty()
-						.append(skeletonTemplate);
+						.append(callflowsTemplate);
 
-					self.hackResize(skeletonTemplate);
+					self.hackResize(callflowsTemplate);
 				}
 			});
 		},
 
-		bindEvents: function(template) {
+		bindCallflowsEvents: function(template) {
 			var self = this,
 				callflowList = template.find('.list-container .list'),
 				isLoading = false,
@@ -179,6 +185,156 @@ define(function(require){
 			});
 		},
 
+		renderEntityManager: function(container) {
+			var self = this,
+				entityActions = _.indexBy(_.filter(self.actions, function(action) {
+					return action.hasOwnProperty('listEntities');
+				}), 'module'),
+				template = $(monster.template(self, 'layout', { actions: entityActions }));
+
+			self.bindEntityManagerEvents({
+				parent: container,
+				template: template,
+				actions: entityActions
+			});
+
+			container
+				.empty()
+				.append(template);
+		},
+
+		bindEntityManagerEvents: function(args) {
+			var self = this,
+				parent = args.parent,
+				template = args.template,
+				actions = args.actions,
+				editEntity = function(type, id) {
+					monster.pub(actions[type].editEntity, {
+						data: id ? { id: id } : {},
+						parent: template,
+						target: template.find('.entity-edition .entity-content'),
+						callbacks: {
+							after_render: function() {
+								$(window).trigger('resize');
+								template.find('.entity-edition .callflow-content').animate({ scrollTop: 0 });
+							},
+							save_success: function(data) {
+								self.refreshEntityList({
+									template: template,
+									actions: actions,
+									entityType: type
+								});
+								editEntity(type, data.id);
+							},
+							delete_success: function(data) {
+								self.refreshEntityList({
+									template: template,
+									actions: actions,
+									entityType: type
+								});
+								template.find('.entity-edition .entity-content').empty();
+							}
+						}
+					});
+				};
+
+			self.hackResize(template.find('.entity-edition'));
+
+			template.find('.entity-manager .entity-element').on('click', function() {
+				var $this = $(this);
+				if($this.hasClass('callflow-element')) {
+					self.renderCallflows(template.find('.callflow-edition'));
+
+					template.find('.callflow-app-section').hide();
+					template.find('.callflow-edition').show();
+				} else {
+					var entityType = $this.data('type');
+					template.find('.entity-edition .entity-header .entity-title').text(actions[entityType].name);
+					self.refreshEntityList({
+						template: template,
+						actions: actions,
+						entityType: entityType
+					});
+				}
+			});
+
+			template.on('click', '.entity-header .back-button', function() {
+				template.find('.entity-edition .entity-content').empty();
+				template.find('.entity-edition .list-container .list').empty();
+				template.find('.entity-edition .search-query').val('');
+
+				template.find('.callflow-app-section').hide();
+				template.find('.entity-manager').show();
+			});
+
+			template.find('.entity-edition .list-add').on('click', function() {
+				var type = template.find('.entity-edition .list-container .list').data('type');
+				editEntity(type);
+			});
+
+			template.find('.entity-edition .list-container .list').on('click', '.list-element', function() {
+				var $this = $(this),
+					id = $this.data('id'),
+					type = $this.parents('.list').data('type');
+
+				editEntity(type, id);
+			});
+
+			template.find('.entity-edition .search-query').on('keyup', function() {
+				var search = $(this).val();
+				if(search) {
+					$.each(template.find('.entity-edition .list-element'), function() {
+						var $elem = $(this);
+						if($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
+							$elem.show();
+						} else {
+							$elem.hide();
+						}
+					});
+				} else {
+					template.find('.entity-edition .list-element').show();
+				}
+			});
+		},
+
+		refreshEntityList: function(args) {
+			var self = this,
+				template = args.template,
+				actions = args.actions,
+				entityType = args.entityType,
+				callback = args.callbacks;
+
+			actions[entityType].listEntities(function(entities) {
+				self.formatEntityData(entities);
+				var listEntities = monster.template(self, 'entity-list', { entities: entities });
+
+				template.find('.entity-edition .list-container .list')
+						.empty()
+						.append(listEntities)
+						.data('type', entityType);
+
+				template.find('.callflow-app-section').hide();
+				template.find('.entity-edition').show();
+
+				$(window).trigger('resize');
+
+				callback && callback();
+			});
+		},
+
+		formatEntityData: function(entities) {
+			var self = this;
+			_.each(entities, function(entity) {
+				if(entity.first_name && entity.last_name) {
+					entity.displayName = entity.first_name + ' ' + entity.last_name;
+				} else if(entity.name) {
+					entity.displayName = entity.name;
+				} else {
+					entity.displayName = entity.id;
+				}
+			});
+		},
+
 		hackResize: function(container) {
 			var self = this;
 
@@ -189,12 +345,13 @@ define(function(require){
 					$tools = container.find('.tools'),
 					$flowChart = container.find('.flowchart'),
 					contentHeight = window.innerHeight - $('#topbar').outerHeight(),
-					contentHeightPx = contentHeight + 'px';
+					contentHeightPx = contentHeight + 'px',
+					innerContentHeightPx = (contentHeight-71) + 'px';
 
 				$listContainer.css('height', contentHeight - $listContainer.position().top + 'px');
 				$mainContent.css('height', contentHeightPx);
-				$tools.css('height', contentHeightPx);
-				$flowChart.css('height', contentHeightPx);
+				$tools.css('height', innerContentHeightPx);
+				$flowChart.css('height', innerContentHeightPx);
 			});
 			$(window).resize();
 		},

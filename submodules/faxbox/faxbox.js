@@ -9,7 +9,7 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'faxboxDefineActions',
-			'callflows.faxbox.edit': 'faxboxEdit'
+			'callflows.faxbox.edit': '_faxboxEdit'
 		},
 
 		faxboxDefineActions: function(args) {
@@ -93,7 +93,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'faxbox.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.faxbox.edit'
 				}
 			});
 		},
@@ -127,6 +140,12 @@ define(function(require){
 					});
 				}
 			}, data_defaults);
+		},
+
+		// Added for the subscribed event to avoid refactoring faxboxEdit
+		_faxboxEdit: function(args) {
+			var self = this;
+			self.faxboxEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		faxboxEdit: function(data, _parent, _target, _callbacks) {
@@ -420,18 +439,18 @@ define(function(require){
 					return new_list;
 				};
 
-				$('#faxbox-listpanel', parent)
-					.empty()
-					.listpanel({
-						label: self.i18n.active().callflows.faxbox.faxbox_label,
-						identifier: 'faxbox-listview',
-						new_entity_label: self.i18n.active().callflows.faxbox.add_faxbox_label,
-						data: map_crossbar_data(data),
-						publisher: monster.pub,
-						notifyMethod: 'callflows.faxbox.edit',
-						notifyCreateMethod: 'callflows.faxbox.edit',
-						notifyParent: parent
-					});
+				// $('#faxbox-listpanel', parent)
+				// 	.empty()
+				// 	.listpanel({
+				// 		label: self.i18n.active().callflows.faxbox.faxbox_label,
+				// 		identifier: 'faxbox-listview',
+				// 		new_entity_label: self.i18n.active().callflows.faxbox.add_faxbox_label,
+				// 		data: map_crossbar_data(data),
+				// 		publisher: monster.pub,
+				// 		notifyMethod: 'callflows.faxbox.edit',
+				// 		notifyCreateMethod: 'callflows.faxbox.edit',
+				// 		notifyParent: parent
+				// 	});
 			});
 		},
 

@@ -9,7 +9,8 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'timeofdayDefineActions'
+			'callflows.fetchActions': 'timeofdayDefineActions',
+			'callflows.timeofday.edit': '_timeofdayEdit'
 		},
 
 		timeofdaySave: function(form_data, data, success, error) {
@@ -59,6 +60,12 @@ define(function(require){
 					});
 				}
 			}, data_defaults);
+		},
+
+		// Added for the subscribed event to avoid refactoring timeofdayEdit
+		_timeofdayEdit: function(args) {
+			var self = this;
+			self.timeofdayEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		timeofdayEdit: function(data, _parent, _target, _callbacks, data_defaults) {
@@ -576,7 +583,20 @@ define(function(require){
 								}
 							}
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'temporalRule.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.timeofday.edit'
 				},
 				'temporal_route[action=disable]': {
 					name: self.i18n.active().callflows.timeofday.disable_time_of_day,

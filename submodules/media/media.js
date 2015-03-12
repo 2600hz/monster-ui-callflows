@@ -8,7 +8,8 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'mediaDefineActions',
-			'callflows.media.editPopup': 'mediaPopupEdit'
+			'callflows.media.editPopup': 'mediaPopupEdit',
+			'callflows.media.edit': '_mediaEdit'
 		},
 
 		mediaRender: function(data, target, callbacks) {
@@ -170,6 +171,12 @@ define(function(require){
 			delete form_data.media_type;
 
 			return form_data;
+		},
+
+		// Added for the subscribed event to avoid refactoring mediaEdit
+		_mediaEdit: function(args) {
+			var self = this;
+			self.mediaEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		mediaEdit: function(data, _parent, _target, _callbacks, data_defaults){
@@ -376,7 +383,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'media.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.media.edit'
 				}
 			});
 		},

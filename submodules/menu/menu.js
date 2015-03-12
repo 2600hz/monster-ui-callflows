@@ -7,7 +7,14 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'menuDefineActions'
+			'callflows.fetchActions': 'menuDefineActions',
+			'callflows.menu.edit': '_menuEdit'
+		},
+
+		// Added for the subscribed event to avoid refactoring menuEdit
+		_menuEdit: function(args) {
+			var self = this;
+			self.menuEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
 		menuEdit: function(data, _parent, _target, _callbacks, data_defaults) {
@@ -414,7 +421,20 @@ define(function(require){
 								}
 							});
 						});
-					}
+					},
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'menu.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.menu.edit'
 				}
 			});
 		},
