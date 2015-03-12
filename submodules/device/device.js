@@ -733,6 +733,10 @@ define(function(require){
 				delete data.provision.voicemail_beep;
 			}
 
+			if(data.hasOwnProperty('media') && data.media.hasOwnProperty('fax_option') && data.media.fax_option === 'auto') {
+				delete data.media.fax_option;
+			}
+
 			if('media' in data && 'fax' in data.media && 'fax_option' in data.media) {
 				data.media.fax.option = data.media.fax_option.toString();
 			}
