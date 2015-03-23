@@ -840,6 +840,6 @@
 	"entityManager": {
 		"header": "Click on what you would you like to configure:",
 		"callflowsTitle": "Callflows",
-		"backButton": "Go back to the list of VOIP entities"
+		"backButton": "Return to Callflows Home"
 	}
 }
