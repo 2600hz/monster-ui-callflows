@@ -9,8 +9,7 @@ define(function(require){
 		css: [ 'app', 'icons' ],
 
 		i18n: { 
-			'en-US': { customCss: false },
-			'fr-FR': { customCss: false }
+			'en-US': { customCss: false }
 		},
 
 		// Defines API requests not included in the SDK
