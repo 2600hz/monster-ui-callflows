@@ -304,7 +304,7 @@ define(function(require){
 				callback = args.callbacks;
 
 			actions[entityType].listEntities(function(entities) {
-				self.formatEntityData(entities);
+				self.formatEntityData(entities, entityType);
 				var listEntities = monster.template(self, 'entity-list', { entities: entities });
 
 				template.find('.entity-edition .list-container .list')
@@ -321,7 +321,7 @@ define(function(require){
 			});
 		},
 
-		formatEntityData: function(entities) {
+		formatEntityData: function(entities, entityType) {
 			var self = this;
 			_.each(entities, function(entity) {
 				if(entity.first_name && entity.last_name) {
@@ -330,6 +330,14 @@ define(function(require){
 					entity.displayName = entity.name;
 				} else {
 					entity.displayName = entity.id;
+				}
+
+				switch(entityType) {
+					case 'play': //media
+						if(entity.media_source) {
+							entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source]
+						}
+						break;
 				}
 			});
 		},

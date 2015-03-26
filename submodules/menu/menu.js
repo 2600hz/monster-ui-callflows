@@ -49,6 +49,12 @@ define(function(require){
 								accountId: self.accountId
 							},
 							success: function(mediaList, status) {
+								_.each(mediaList.data, function(media) {
+									if(media.media_source) {
+										media.name = '['+media.media_source.substring(0,3).toUpperCase()+'] ' + media.name;
+									}
+								});
+
 								mediaList.data.unshift({
 									id: '',
 									name: self.i18n.active().callflows.menu.not_set

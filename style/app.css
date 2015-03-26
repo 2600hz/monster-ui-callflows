@@ -756,7 +756,7 @@
 #callflow_container .list-container .link .description {
 	font-size: 10px;
 	height: 20px;
-	line-height: 6px;
+	line-height: 10px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;

@@ -1,7 +1,12 @@
 {{#each entities}}
 	<li class="list-element" data-id="{{this.id}}" data-search="{{this.displayName}} {{this.id}}">
 		<div class="link">
+			{{#if this.additionalInfo}}
+			<div class="title">{{this.displayName}}</div>
+			<div class="description">{{this.additionalInfo}}</div>
+			{{else}}
 			<div class="title standalone">{{this.displayName}}</div>
+			{{/if}}
 		</div>
 	</li>
 {{/each}}
