@@ -80,6 +80,8 @@ define(function(require){
 						.empty()
 						.append(callflowsTemplate);
 
+					container.find('.search-query').focus();
+
 					self.hackResize(callflowsTemplate);
 				}
 			});
@@ -314,6 +316,7 @@ define(function(require){
 
 				template.find('.callflow-app-section').hide();
 				template.find('.entity-edition').show();
+				template.find('.search-query').focus();
 
 				$(window).trigger('resize');
 
