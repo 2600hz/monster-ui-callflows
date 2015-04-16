@@ -198,7 +198,7 @@ define(function(require){
 
 			self.winkstartTabs(timeofday_html);
 
-			$('#start_date', timeofday_html).datepicker();
+			monster.ui.datepicker(timeofday_html.find('#start_date'));
 
 			$('#yearly_every', timeofday_html).hide();
 			$('#monthly_every', timeofday_html).hide();
@@ -303,7 +303,7 @@ define(function(require){
 					});
 
 					form_data.interval = $('#cycle', timeofday_html).val() == 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
-
+					form_data.start_date = timeofday_html.find('#start_date').datepicker('getDate');
 					form_data = self.timeofdayCleanFormData(form_data);
 
 					self.timeofdaySave(form_data, data, callbacks.save_success);
@@ -388,14 +388,7 @@ define(function(require){
 				delete form_data.start_date;
 			}
 			else {
-				var startDate = new Date(form_data.start_date),
-					year = startDate.getFullYear(),
-					month = startDate.getMonth(),
-					day = startDate.getDate(),
-					utcDate = new Date(Date.UTC(year, month, day)),
-					gregorianUTC = utcDate.getTime() / 1000 + 62167219200;
-
-				form_data.start_date = gregorianUTC;
+				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
 			}
 
 			form_data.time_window_start = times[0];
@@ -434,19 +427,6 @@ define(function(require){
 		},
 
 		timeofdayFormatData: function(data) {
-			var tmp_date = new Date();
-
-			if(data.data.start_date) {
-				tmp_date = new Date((data.data.start_date - 62167219200)* 1000); // Local Time
-			}
-
-			var month = tmp_date.getUTCMonth()+1 < 10 ? '0'+(tmp_date.getUTCMonth()+1) : tmp_date.getUTCMonth()+1,
-				day = tmp_date.getUTCDate() < 10 ? '0'+tmp_date.getUTCDate() : tmp_date.getUTCDate();
-
-			tmp_date = month + '/' + day + '/'  + tmp_date.getUTCFullYear();
-
-			data.data.start_date = tmp_date;
-
 			if(data.data.wdays != undefined && data.data.cycle != 'weekly') {
 				data.data.weekday = data.data.wdays[0];
 			}

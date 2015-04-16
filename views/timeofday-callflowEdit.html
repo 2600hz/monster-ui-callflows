@@ -102,7 +102,7 @@
 					<div class="clearfix">
 						<label for="day">{{ i18n.callflows.timeofday.start_date }}</label>
 						<div class="input">
-							<input class="span4" id="start_date" name="start_date" type="text" placeholder="03/12/2012" value="{{ data.start_date }}" rel="popover" data-content="{{ i18n.callflows.timeofday.start_date_data_content }}"/>
+							<input class="span4" id="start_date" name="start_date" type="text" placeholder="" value="{{ toFriendlyDate data.start_date "short"}}" rel="popover" data-content="{{ i18n.callflows.timeofday.start_date_data_content }}"/>
 						</div>
 					</div>
 
