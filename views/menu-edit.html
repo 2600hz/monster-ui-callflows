@@ -60,7 +60,7 @@
 							<span rel="popover" data-content="{{ i18n.callflows.menu.greeting_message_data_content }}">
 								<select name="media.greeting" id="media_greeting" class="medium">
 									{{#each field_data.media}}
-										{{#compare data.media.greeting "===" id}}
+										{{#compare ../data.media.greeting "===" id}}
 										<option id="{{ id }}" value="{{ id }}" selected="selected">{{ name }}</option>
 										{{else}}
 										<option id="{{ id }}" value="{{ id }}">{{ name }}</option>
