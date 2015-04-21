@@ -189,7 +189,12 @@ define(function(require){
 							},
 							success: function(_data, status) {
 								_data.data.sort(function(a, b){
-									return a.first_name.concat(' ', a.last_name).toLowerCase() > b.first_name.concat(' ', b.last_name).toLowerCase() ? 1 : -1;
+									if(a.hasOwnProperty('first_name') && a.hasOwnProperty('last_name') && b.hasOwnProperty('first_name') && b.hasOwnProperty('last_name')) {
+										return a.first_name.concat(' ', a.last_name).toLowerCase() > b.first_name.concat(' ', b.last_name).toLowerCase() ? 1 : -1;
+									}
+									else {
+										return 1;
+									}
 								});
 
 								_data.data.unshift({
@@ -278,8 +283,7 @@ define(function(require){
 						});
 
 						self.faxboxGetUser($(this).val(), function(_data, status) {
-							data.faxbox = $.extend(true, {}, self.faxboxGetDefaultSettings(), currentFaxbox, {
-								id: _data.id,
+							data.faxbox = $.extend(true, {}, self.faxboxGetDefaultSettings(), data.faxbox, currentFaxbox, {
 								cloud_connector_claim_url: faxbox_html.find('#cloud_connector_claim_url').attr('href'),
 								notifications: {
 									inbound: {
@@ -438,19 +442,6 @@ define(function(require){
 
 					return new_list;
 				};
-
-				// $('#faxbox-listpanel', parent)
-				// 	.empty()
-				// 	.listpanel({
-				// 		label: self.i18n.active().callflows.faxbox.faxbox_label,
-				// 		identifier: 'faxbox-listview',
-				// 		new_entity_label: self.i18n.active().callflows.faxbox.add_faxbox_label,
-				// 		data: map_crossbar_data(data),
-				// 		publisher: monster.pub,
-				// 		notifyMethod: 'callflows.faxbox.edit',
-				// 		notifyCreateMethod: 'callflows.faxbox.edit',
-				// 		notifyParent: parent
-				// 	});
 			});
 		},
 
@@ -613,7 +604,7 @@ define(function(require){
 
 		faxboxUpdate: function(data, callback) {
 			var self = this;
-
+			
 			self.callApi({
 				resource: 'faxbox.update',
 				data: {
