@@ -208,7 +208,7 @@ define(function(require){
 						});
 					},
 					current_user: function(callback) {
-						if (monster.apps.auth.accountId === self.accountId) {
+						if (!monster.util.isMasquerading()) {
 							self.faxboxGetUser(self.userId, function(_data, status) {
 								callback(null, _data);
 							});
