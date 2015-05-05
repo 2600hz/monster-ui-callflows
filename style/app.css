@@ -666,12 +666,12 @@
 
 #callflow_container .left-bar-container .list-add:hover {
 	background: #ccc;
-	/*color: #22ccff;*/
+	/*color: #22a5ff;*/
 	cursor: pointer;
 }
 
 #callflow_container .left-bar-container .list-add:hover i {
-	/*color: #22ccff;*/
+	/*color: #22a5ff;*/
 }
 
 #callflow_container .left-bar-container .list-loader {
@@ -700,7 +700,7 @@
 #callflow_container .left-bar-container .list-element > div:hover {
 	background: #eee;
 	cursor: pointer;
-	/*color: #22ccff;*/
+	/*color: #22a5ff;*/
 }
 
 #callflow_container .left-bar-container .search-link {
