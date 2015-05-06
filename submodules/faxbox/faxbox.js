@@ -370,12 +370,6 @@ define(function(require){
 						name: {
 							required: true
 						},
-						'notifications.inbound.email.send_to': {
-							email: true
-						},
-						'notifications.outbound.email.send_to': {
-							email: true
-						},
 						'caller_name': {
 							regex: word_reg
 						},
@@ -529,8 +523,8 @@ define(function(require){
 				var inbound = form_data.notifications.inbound.email.send_to,
 					outbound = form_data.notifications.outbound.email.send_to;
 
-				form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(' ') : inbound.split(' ');
-				form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(' ') : outbound.split(' ');
+				form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.split(',');
+				form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.split(',');
 			}
 
 			if (form_data.hasOwnProperty('smtp_permission_list')) {
