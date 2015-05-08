@@ -296,6 +296,7 @@ define(function(require){
 						contact_list: {
 							exclude: false,
 						},
+						priv_level: 'user',
 						music_on_hold: {}
 					}, args.data_defaults || {}),
 					field_data: {
