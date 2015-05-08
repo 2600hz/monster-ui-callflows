@@ -38,7 +38,7 @@
 							<span rel="popover" data-content="{{ i18n.callflows.vmbox.assign_to_data_content }}">
 								<select name="owner_id" id="owner_id" class="medium" >
 									{{#each field_data.users}}
-										{{#compare data.owner_id "==" id}}
+										{{#compare ../data.owner_id "==" id}}
 											<option value="{{id}}" id="{{id}}" selected="selected">{{first_name}} {{last_name}}</option>
 										{{else}}
 											<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
