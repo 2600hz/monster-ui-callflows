@@ -108,11 +108,7 @@ define(function(require){
 				$('#option_user_'+user_id, directory_html).show();
 				//if grid empty, add no data line
 				if($('.rows .row', directory_html).size() == 0) {
-					$('.rows', directory_html).append(self.templates.user_row.tmpl({
-						_t: function(param){
-							return window.translate['directory'][param];
-						}
-					}));
+					$('.rows', directory_html).append(monster.template(self, 'directory-userRow'));
 				}
 			});
 
@@ -145,11 +141,7 @@ define(function(require){
 				}
 				else {
 					$('.rows', parent).empty()
-									  .append(self.templates.user_row.tmpl({
-										_t: function(param){
-											return window.translate['directory'][param];
-										}
-									  }));
+									  .append(monster.template(self, 'directory-userRow'));
 				}
 			}
 			else {
