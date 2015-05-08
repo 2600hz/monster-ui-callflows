@@ -354,11 +354,11 @@ define(function(require){
 					$mainContent = container.find('.callflow-content'),
 					$tools = container.find('.tools'),
 					$flowChart = container.find('.flowchart'),
-					contentHeight = window.innerHeight - $('#topbar').outerHeight(),
+					contentHeight = window.innerHeight - $('#main_topbar').outerHeight(),
 					contentHeightPx = contentHeight + 'px',
 					innerContentHeightPx = (contentHeight-71) + 'px';
 
-				$listContainer.css('height', contentHeight - $listContainer.position().top + 'px');
+				$listContainer.css('height', window.innerHeight - $listContainer.position().top + 'px');
 				$mainContent.css('height', contentHeightPx);
 				$tools.css('height', innerContentHeightPx);
 				$flowChart.css('height', innerContentHeightPx);

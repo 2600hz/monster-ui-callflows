@@ -66,7 +66,7 @@
 							<span rel="popover" data-content="{{ i18n.callflows.vmbox.unavailable_message_data_content }}">
 								<select name="media.unavailable" id="media_unavailable" class="medium" >
 									{{#each field_data.media}}
-										{{#compare data.media.unavailable "==" id}}
+										{{#compare ../data.media.unavailable "===" id}}
 											<option value="{{id}}" id="{{id}}" selected="selected">{{name}}</option>
 										{{else}}
 											<option value="{{id}}" id="{{id}}">{{name}}</option>
