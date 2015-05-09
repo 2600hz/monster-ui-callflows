@@ -98,6 +98,9 @@ define(function(require){
 					$user.val('empty_option_user');
 					$callflow.val('empty_option_callflow');
 				}
+				else {
+					monster.ui.alert('warning', self.i18n.active().callflows.directory.noDataSelected);
+				}
 			});
 
 			$(directory_html).delegate('.action_user.delete', 'click', function() {
@@ -320,36 +323,17 @@ define(function(require){
 				normalized_data = self.directoryNormalizeData($.extend(true, {}, data.data, form_data));
 
 			if (typeof data.data == 'object' && data.data.id) {
-				self.callApi({
-					resource: 'directory.update',
-					data :{
-						accountId: self.accountId,
-						directoryId: data.data.id,
-						data: normalized_data
-					},
-					success: function(_data, status) {
-						self.directoryUpdateUsers(data.field_data.user_list, _data.data.id, function() {
-							if(typeof success == 'function') {
-								success(_data, status, 'update');
-							}
-						});
-					}
-				});
+				self.directoryUpdate(normalized_data, function(_data, status) {
+					self.directoryUpdateUsers(data.field_data.user_list, _data.id, function() {
+						success && success(_data, status, 'update');
+					});
+				})
 			}
 			else {
-				self.callApi({
-					resource: 'directory.create',
-					data: {
-						accountId: self.accountId,
-						data: normalized_data
-					},
-					success: function (_data, status) {
-						self.directoryUpdateUsers(data.field_data.user_list, _data.data.id, function() {
-							if(typeof success == 'function') {
-								success(_data, status, 'create');
-							}
-						});
-					}
+				self.directoryCreate(normalized_data, function(_data, status) {
+					self.directoryUpdateUsers(data.field_data.user_list, _data.id, function() {
+						success && success(_data, status, 'create');
+					});
 				});
 			}
 		},

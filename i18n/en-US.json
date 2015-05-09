@@ -232,7 +232,10 @@
 			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this directory?",
 			"no_name": "(no name)",
 			"directories_label": "Directories",
-			"add_directory_label": "Add Directory"
+			"add_directory_label": "Add Directory",
+			"__comment": "UI-1462: Show errors properly",
+			"__version": "v3.20_s5",
+			"noDataSelected": "You need to select a User AND its associated callflow, in order to add it to the directory, make sure both dropdowns have an item selected!"
 		},
 		"faxbox": {
 			"faxboxes_label": "Fax Boxes",
