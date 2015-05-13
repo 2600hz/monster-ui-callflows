@@ -3,9 +3,20 @@
 	"i18n": {
 		"en-US": {
 			"label": "Callflows",
-			"description": "Port of the Callflow Manager as it existed in Kazoo-UI.",
-			"extended_description": "...",
-			"features": []
+			"description": "The Callflow Manager allows you manage Callflows as well as various VOIP entities.",
+			"extended_description": "The Callflow Manager app has been ported from Kazoo-UI to provide you with the same experience of callflow management. It allows you to create, update and delete callflows in an quick and easy way. You can also manage various VOIP entities, such as users or devices.",
+			"features": [
+				"Manage Callflows",
+				"Manage Conferences",
+				"Manage Devices",
+				"Manage Directories",
+				"Manage Fax Boxes",
+				"Manage Medias",
+				"Manage Menus",
+				"Manage Users",
+				"Manage Voicemail Boxes",
+				"Manage Time of Day"
+			]
 		}
 	},
 	"tags": [],
@@ -15,7 +26,11 @@
 	"version": "1.0",
 	"license": "-",
 	"price": 0,
-	"screenshots": [],
+	"screenshots": [
+		"callflows_1.png",
+		"callflows_2.png",
+		"callflows_3.png"
+	],
 	"urls": {
 		"documentation": "{documentation_url}",
 		"howto": "{howto_video_url}"
