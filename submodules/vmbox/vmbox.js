@@ -66,7 +66,8 @@ define(function(require){
 						require_pin: true,
 						check_if_owner: true,
 						pin: '',
-						media: {}
+						media: {},
+						timezone: monster.apps.auth.currentAccount.timezone
 					}, data_defaults || {}),
 
 					field_data: {
