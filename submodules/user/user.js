@@ -297,7 +297,8 @@ define(function(require){
 							exclude: false,
 						},
 						priv_level: 'user',
-						music_on_hold: {}
+						music_on_hold: {},
+						timezone: monster.apps.auth.currentAccount.timezone
 					}, args.data_defaults || {}),
 					field_data: {
 						device_types: {

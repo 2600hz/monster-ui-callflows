@@ -445,7 +445,7 @@ define(function(require){
 					name: '',
 					caller_name: '',
 					fax_header: '',
-					fax_timezone: '',
+					fax_timezone: monster.apps.auth.currentAccount.timezone,
 					retries: 1,
 					notifications: {
 						inbound: {
