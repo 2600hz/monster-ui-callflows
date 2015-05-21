@@ -91,7 +91,7 @@ define(function(require){
 			var self = this,
 				callflowList = template.find('.list-container .list'),
 				isLoading = false,
-				loader = $('<li class="content-centered list-loader"> <i class="icon-spinning icon-spinner"></i></li>'),
+				loader = $('<li class="content-centered list-loader"> <i class="fa fa-spinner icon-spinning"></i></li>'),
 				searchLink = $(monster.template(self, 'callflowList-searchLink'));
 
 			// Add Callflow
