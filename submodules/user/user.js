@@ -298,7 +298,7 @@ define(function(require){
 						},
 						priv_level: 'user',
 						music_on_hold: {},
-						timezone: monster.apps.auth.currentAccount.timezone
+						timezone: 'inherit'
 					}, args.data_defaults || {}),
 					field_data: {
 						device_types: {
@@ -498,7 +498,7 @@ define(function(require){
 				}
 			});
 
-			timezone.populateDropdown($('#timezone', user_html), data.data.timezone);
+			timezone.populateDropdown($('#timezone', user_html), data.data.timezone||'inherit', {inherit: self.i18n.active().defaultTimezone});
 
 			if (data.data.id === monster.apps.auth.userId){
 				$('.user-delete', user_html).hide();
@@ -995,6 +995,10 @@ define(function(require){
 
 			if(data.hasOwnProperty('presence_id') && data.presence_id === '') {
 				delete data.presence_id;
+			}
+
+			if(data.timezone && data.timezone === 'inherit') {
+				delete data.timezone;
 			}
 
 			return data;

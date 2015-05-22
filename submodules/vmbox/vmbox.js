@@ -67,7 +67,7 @@ define(function(require){
 						check_if_owner: true,
 						pin: '',
 						media: {},
-						timezone: monster.apps.auth.currentAccount.timezone
+						timezone: 'inherit'
 					}, data_defaults || {}),
 
 					field_data: {
@@ -133,7 +133,7 @@ define(function(require){
 				vmbox_html = $(monster.template(self, 'vmbox-edit', data)),
 				vmboxForm = vmbox_html.find('#vmbox-form');
 
-			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone);
+			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone||'inherit', {inherit: self.i18n.active().defaultTimezone});
 
 			monster.ui.validate(vmboxForm, {
 				rules: {
@@ -327,6 +327,10 @@ define(function(require){
 
 			if(form_data.pin === '') {
 				delete form_data.pin;
+			}
+
+			if(form_data.timezone && form_data.timezone === 'inherit') {
+				delete form_data.timezone;
 			}
 
 			form_data.not_configurable = !form_data.extra.allow_configuration;
