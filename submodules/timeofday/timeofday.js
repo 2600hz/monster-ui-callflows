@@ -535,7 +535,7 @@ define(function(require){
 						});
 					},
 					caption: function(node, caption_map) {
-						return node.getMetadata('timezone') || '';
+						return node.getMetadata('timezone') || self.i18n.active().defaultTimezone;
 					},
 					edit: function(node, callback) {
 						var popup, popup_html;
@@ -545,10 +545,13 @@ define(function(require){
 							selected: {}
 						}));
 
-						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone'));
+						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone')||'inherit', {inherit: self.i18n.active().defaultTimezone});
 
 						$('#add', popup_html).click(function() {
-							node.setMetadata('timezone', $('#timezone_selector', popup_html).val());
+							var timezone = $('#timezone_selector', popup_html).val();
+							if(timezone && timezone !== 'inherit') {
+								node.setMetadata('timezone', timezone);
+							}
 
 							node.caption = $('#timezone_selector option:selected', popup_html).text();
 

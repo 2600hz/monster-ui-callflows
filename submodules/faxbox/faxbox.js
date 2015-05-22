@@ -246,7 +246,7 @@ define(function(require){
 					users: data.user_list
 				}));
 
-			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone);
+			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone||'inherit', {inherit: self.i18n.active().defaultTimezone});
 
 			$('*[rel=popover]:not([type="text"])', faxbox_html).popover({
 				trigger: 'hover'
@@ -445,7 +445,7 @@ define(function(require){
 					name: '',
 					caller_name: '',
 					fax_header: '',
-					fax_timezone: monster.apps.auth.currentAccount.timezone,
+					fax_timezone: 'inherit',
 					retries: 1,
 					notifications: {
 						inbound: {
@@ -468,7 +468,6 @@ define(function(require){
 							name: user.first_name.concat(' ', user.last_name, self.i18n.active().callflows.faxbox.default_settings_name_extension),
 							caller_name: user.first_name.concat(' ', user.last_name),
 							fax_header: monster.config.whitelabel.companyName.concat(self.i18n.active().callflows.faxbox.default_settings_header_extension),
-							fax_timezone: user.timezone,
 							owner_id: user.id,
 							notifications: {
 								inbound: {
@@ -543,6 +542,10 @@ define(function(require){
 
 			if (form_data.hasOwnProperty('owner_id') && form_data.owner_id === '') {
 				delete form_data.owner_id;
+			}
+
+			if(form_data.fax_timezone && form_data.fax_timezone === 'inherit') {
+				delete form_data.fax_timezone;
 			}
 
 			return form_data;
