@@ -151,9 +151,9 @@
 					</div>
 
 					{{#if field_data.new_user}}
-						<button type="button" class="btn add_device" data-new_user="{{field_data.new_user}}">{{ i18n.callflows.user.add_a_new_device }}</button>
+						<button type="button" class="monster-button monster-button-primary add_device" data-new_user="{{field_data.new_user}}">{{ i18n.callflows.user.add_a_new_device }}</button>
 					{{else}}
-						<button type="button" class="btn add_device" data-user_id="{{data.id}}">{{ i18n.callflows.user.add_a_new_device }}</button>
+						<button type="button" class="monster-button monster-button-primary add_device" data-user_id="{{data.id}}">{{ i18n.callflows.user.add_a_new_device }}</button>
 					{{/if}}
 				</div>
 			</div>
@@ -593,8 +593,8 @@
 	</form>
 	<div class="buttons-right">
 		{{#if data.id}}
-			<button class="btn btn-danger user-delete">{{ i18n.callflows.user.delete }}</button>
+			<button class="monster-button monster-button-danger user-delete">{{ i18n.callflows.user.delete }}</button>
 		{{/if}}
-		<button class="btn btn-success user-save">{{ i18n.callflows.user.save }}</button>
+		<button class="monster-button monster-button-success user-save">{{ i18n.callflows.user.save }}</button>
 	</div>
 </div>

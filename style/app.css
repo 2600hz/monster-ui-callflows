@@ -48,7 +48,7 @@
 	background: none;
 	background-color: #424242;
 	height: 30px;
-	border-radius: 0px 0px 5px 5px;
+	border-radius: 0px 0px 2px 2px;
 }
 
 #ws_callflow .callflow .root > .content .number_column {
@@ -174,7 +174,7 @@
 }
 
 #ws_callflow .destination {
-	border-radius: 5px;
+	border-radius: 2px;
 	border: 3px solid #05addc;
 }
 
@@ -276,7 +276,7 @@
 	margin: 0;
 	padding: 0;
 	border: 1px solid #303030;
-	border-radius: 5px;
+	border-radius: 2px;
 }
 
 #ws_callflow .div_icon {
@@ -469,7 +469,7 @@
 
 #ws_callflow .node.active {
 	background-color: #fff;
-	border-radius:10px;
+	border-radius: 2px;
 	border: 3px solid #05addc;
 }
 
@@ -530,7 +530,7 @@
 	font-size: 12px;
 	height: 25px;
 	line-height: 25px;
-	border-radius: 5px 5px 0px 0px;
+	border-radius: 2px 2px 0px 0px;
 	text-align: center;
 	color: #fff;
 	font-weight: bold;
@@ -543,12 +543,15 @@
 	margin-bottom: 5px;
 }
 
-#callflow_container .wrapper_callflow_buttons .btn {
+#callflow_container .wrapper_callflow_buttons .monster-button {
 	width: 114px;
 	text-align: center;
 	display: inline-block;
 	margin-left: 0px;
-	margin-right: 5px;
+}
+
+#callflow_container .wrapper_callflow_buttons .monster-button:first-child {
+	margin-right: 10px;
 }
 
 #callflow_container .callflow_helpbox_wrapper {
@@ -562,7 +565,7 @@
 #callflow_container .callflow_helpbox_wrapper .tip_box {
 	background-color: #3D3D3D;
 	border: 1px solid #333333;
-	border-radius: 5px;
+	border-radius: 2px;
 	opacity: 80%;
 	padding: 5px 2px 5px 9px;
 	text-align: left;
@@ -827,7 +830,7 @@
 
 .dialog_popup .parameter_div .parameter_description {
 	font-size: 10px;
-	border-radius: 10px;
+	border-radius: 2px;
 }
 
 .dialog_popup input.size2 {
@@ -918,7 +921,7 @@
 	border-bottom:1px solid #202020;
 }
 
-.callflows-port .btn {
+.callflows-port .monster-button {
 	min-width:100px;
 }
 
@@ -954,18 +957,18 @@
 }
 
 .callflows-port .input-append>span.add-on {
-	-webkit-border-top-left-radius:3px;
+	-webkit-border-top-left-radius:2px;
 	-webkit-border-top-right-radius:0;
 	-webkit-border-bottom-right-radius:0;
-	-webkit-border-bottom-left-radius:3px;
-	-moz-border-radius-topleft:3px;
+	-webkit-border-bottom-left-radius:2px;
+	-moz-border-radius-topleft:2px;
 	-moz-border-radius-topright:0;
 	-moz-border-radius-bottomright:0;
-	-moz-border-radius-bottomleft:3px;
-	border-top-left-radius:3px;
+	-moz-border-radius-bottomleft:2px;
+	border-top-left-radius:2px;
 	border-top-right-radius:0;
 	border-bottom-right-radius:0;
-	border-bottom-left-radius:3px;
+	border-bottom-left-radius:2px;
 	margin:0;
 	margin-right:-1px;
 	font-size:16px;
@@ -1022,6 +1025,14 @@
 	margin-left:5px;
 }
 
+.callflows-port .btn.black:first-child {
+	border-radius: 2px 0 0 2px;
+}
+
+.callflows-port .btn.black:last-child {
+	border-radius: 0 2px 2px 0;
+}
+
 .callflows-port .btn.black {
 	background:#434343;
 	background:-moz-linear-gradient(top, #434343 0, #353535 50%, #282828 100%);
@@ -1035,6 +1046,7 @@
 	text-shadow:none;
 	font-size:12px;
 	border:1px solid #1a1a1a;
+	border-radius: 0;
 }
 
 .callflows-port .btn.black.activate {
@@ -1062,38 +1074,38 @@
 	text-align: right;
 }
 
-.callflows-port .buttons-right>.btn:not(:last-child) {
+.callflows-port .buttons-right>.monster-button:not(:last-child) {
 	margin-right:6px;
 }
 
-.callflows-port .pasted>.btn:first-child {
-	-webkit-border-top-left-radius:4px;
+.callflows-port .pasted>.monster-button:first-child {
+	-webkit-border-top-left-radius:2px;
 	-webkit-border-top-right-radius:0;
 	-webkit-border-bottom-right-radius:0;
-	-webkit-border-bottom-left-radius:4px;
-	-moz-border-radius-topleft:4px;
+	-webkit-border-bottom-left-radius:2px;
+	-moz-border-radius-topleft:2px;
 	-moz-border-radius-topright:0;
 	-moz-border-radius-bottomright:0;
-	-moz-border-radius-bottomleft:4px;
-	border-top-left-radius:4px;
+	-moz-border-radius-bottomleft:2px;
+	border-top-left-radius:2px;
 	border-top-right-radius:0;
 	border-bottom-right-radius:0;
-	border-bottom-left-radius:4px;
+	border-bottom-left-radius:2px;
 	margin-right:-4px;
 }
 
-.callflows-port .pasted>.btn:last-child {
+.callflows-port .pasted>.monster-button:last-child {
 	-webkit-border-top-left-radius:0;
-	-webkit-border-top-right-radius:4px;
-	-webkit-border-bottom-right-radius:4px;
+	-webkit-border-top-right-radius:2px;
+	-webkit-border-bottom-right-radius:2px;
 	-webkit-border-bottom-left-radius:0;
 	-moz-border-radius-topleft:0;
-	-moz-border-radius-topright:4px;
-	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topright:2px;
+	-moz-border-radius-bottomright:2px;
 	-moz-border-radius-bottomleft:0;
 	border-top-left-radius:0;
-	border-top-right-radius:4px;
-	border-bottom-right-radius:4px;
+	border-top-right-radius:2px;
+	border-bottom-right-radius:2px;
 	border-bottom-left-radius:0;
 }
 
@@ -1243,19 +1255,19 @@
 }
 
 .callflows-port .tabs > li:first-child {
-	border-radius: 5px 0 0 0;
+	border-radius: 2px 0 0 0;
 	border-left: 1px solid;
 	border-left-color:#1a1a1a;
 }
 
 .callflows-port .tabs > li:last-child {
-	border-radius: 0 5px 0 0;
+	border-radius: 0 2px 0 0;
 	border-right: 1px solid;
 	border-right-color: #1a1a1a;
 }
 
 .callflows-port .tabs > li > a {
-	border-radius: 4px 4px 0 0;
+	border-radius: 2px 2px 0 0;
 	display: block;
 	line-height: 34px;
 	padding: 0 15px;
@@ -1292,7 +1304,7 @@
 .callflows-port .tabs .active > a:hover {
 	border:0;
 	background-color:none;
-	border-radius: 5px 5px 0 0;
+	border-radius: 2px 2px 0 0;
 	color:#fff;
 	background:#373737;
 	border-top:1px solid;
@@ -1318,7 +1330,7 @@
 	padding: 10px;
 	padding-bottom: 10px;
 	border: 1px solid #363636;
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 2px 2px 2px 2px;
 	background: #05addc;
 	background: -webkit-gradient(linear, left top, left bottom, from(#05addc), to(#036884)) !important;
 	background: -moz-linear-gradient(top,  #05addc,  #036884) !important;
@@ -1373,7 +1385,7 @@
 	cursor: pointer;
 	border: solid 1px #303039;
 	box-sizing: border-box;
-	border-radius: 4px;
+	border-radius: 2px;
 }
 #callflow_container .entity-manager .entity-element.callflow-element {
 	width: 300px;
