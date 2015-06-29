@@ -155,7 +155,7 @@
 
 #ws_callflow .tools .active .open {
 	background-image: url(static/images/arrow_active.png);
-	color: #05ADDC;
+	color: #22A5FF;
 }
 
 #ws_callflow .tools .inactive .open{
@@ -175,7 +175,7 @@
 
 #ws_callflow .destination {
 	border-radius: 2px;
-	border: 3px solid #05addc;
+	border: 3px solid #22A5FF;
 }
 
 #ws_callflow .tools .tool .action {
@@ -363,7 +363,7 @@
 	width: 172px;
 }
 
-.add_number_popup .extensions_content, 
+.add_number_popup .extensions_content,
 .add_number_popup .list_numbers_content {
 	display: inline-block;
 }
@@ -439,7 +439,7 @@
 }
 
 #ws_callflow #callflow_header #pending_change span {
-	color: #05ADDC;
+	color: #22A5FF;
 	font-weight: lighter;
 	font-style: italic;
 }
@@ -470,7 +470,7 @@
 #ws_callflow .node.active {
 	background-color: #fff;
 	border-radius: 2px;
-	border: 3px solid #05addc;
+	border: 3px solid #22A5FF;
 }
 
 #ws_callflow .node.inactive {
@@ -812,7 +812,7 @@
 	width: 100%;
 	text-align: right;
 	text-decoration: underline;
-	color: #05addc;
+	color: #22A5FF;
 	margin-top: 3px;
 }
 
@@ -900,8 +900,12 @@
 	filter:progid:dximagetransform.microsoft.gradient(startColorstr='#373737', endColorstr='#2f2f2f', GradientType=0);
 }
 
-.callflows-port h1, h2, h3, h4, h5 {
-	color:#05ADDC;
+.callflows-port h1,
+.callflows-port h2,
+.callflows-port h3,
+.callflows-port h4,
+.callflows-port h5 {
+	color:#22A5FF;
 	font-weight:lighter;
 }
 
@@ -1001,13 +1005,13 @@
 	filter:progid:dximagetransform.microsoft.gradient(startColorstr='#373737', endColorstr='#2f2f2f', GradientType=0);
 	color: #EEE;
 	padding:30px;
-	border:1px solid #05addc;
+	border:1px solid #22A5FF;
 	box-shadow:1px 2px 5px 0px #363636;
 	-moz-box-shadow:4px 5px 10px 1px #262626;
 	-webkit-box-shadow:4px 5px 10px 1px #262626;
 }
 
-.callflows-port .pill-content h3, 
+.callflows-port .pill-content h3,
 .callflows-port .row h3 {
 	margin-bottom:20px;
 	color:#0ac9ff;
@@ -1168,7 +1172,7 @@
 	margin-left: -20px;
 }
 
-.callflows-port form input.span4, 
+.callflows-port form input.span4,
 .callflows-port form textarea.span4 {
 	display: inline-block;
 	float: none;
@@ -1184,7 +1188,7 @@
 /* Still Bootstrap, but Tabs */
 .callflows-port .tab-content > .tab-pane,
 .callflows-port .pill-content > .pill-pane,
-.callflows-port .tab-content > div, 
+.callflows-port .tab-content > div,
 .callflows-port .pill-content > div {
 	display: none;
 }
@@ -1194,15 +1198,15 @@
 	display: block;
 }
 
-.callflows-port .tabs:before, 
-.callflows-port .pills:before, 
-..callflows-port tabs:after, 
+.callflows-port .tabs:before,
+.callflows-port .pills:before,
+..callflows-port tabs:after,
 .callflows-port .pills:after {
 	content: "";
 	display: table;
 }
 
-.callflows-port .tabs:after, 
+.callflows-port .tabs:after,
 .callflows-port .pills:after {
 	clear: both;
 }
@@ -1284,7 +1288,7 @@
 }
 
 .callflows-port .tabs > li:first-child.active {
-	border-left:1px solid #05addc;
+	border-left:1px solid #22A5FF;
 }
 
 .callflows-port .tabs > li:last-child.active {
@@ -1300,7 +1304,7 @@
 	background-color:transparent;
 }
 
-.callflows-port .tabs .active > a, 
+.callflows-port .tabs .active > a,
 .callflows-port .tabs .active > a:hover {
 	border:0;
 	background-color:none;
@@ -1308,11 +1312,11 @@
 	color:#fff;
 	background:#373737;
 	border-top:1px solid;
-	border-top-color:#05addc;
+	border-top-color:#22A5FF;
 	border-left:1px solid;
-	border-left-color:#05addc;
+	border-left-color:#22A5FF;
 	border-right:1px solid;
-	border-right-color:#05addc;
+	border-right-color:#22A5FF;
 	font-weight:bold;
 	text-decoration: none;
 }
@@ -1331,13 +1335,13 @@
 	padding-bottom: 10px;
 	border: 1px solid #363636;
 	border-radius: 2px 2px 2px 2px;
-	background: #05addc;
-	background: -webkit-gradient(linear, left top, left bottom, from(#05addc), to(#036884)) !important;
-	background: -moz-linear-gradient(top,  #05addc,  #036884) !important;
+	background: #22A5FF;
+	background: -webkit-gradient(linear, left top, left bottom, from(#22A5FF), to(#036884)) !important;
+	background: -moz-linear-gradient(top,  #22A5FF,  #036884) !important;
 	box-shadow: 1px 1px 1px #333333;
 	text-align: center;
 	font-style: italic;
-	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#05addc', endColorstr='#036884') !important;
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#22A5FF', endColorstr='#036884') !important;
 }
 
 /********** Misc images **********/
