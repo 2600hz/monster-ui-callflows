@@ -67,12 +67,10 @@ define(function(require){
 		},
 
 		groupsEditPageGroup: function(node, callback) {
-			var self = this,
-				node = node,
-				callback = callback;
+			var self = this;
 
 			self.groupsDeviceList(function(data) {
-				var popup, popup_html, index, endpoints
+				var popup, popup_html, index, endpoints,
 					selected_endpoints = {},
 					unselected_endpoints = [],
 					unselected_groups = [],
@@ -244,7 +242,7 @@ define(function(require){
 							endpoints = [];
 
 							$('.right .connect li', popup_html).each(function() {
-								var item_data = this.dataset;
+								var item_data = this.data();
 								delete item_data.owner_id;
 								endpoints.push(item_data);
 							});
@@ -332,7 +330,7 @@ define(function(require){
 
 						var remove_element = function(li) {
 							var $parent_li = li;
-							var data = $parent_li[0].dataset;
+							var data = $parent_li.data();
 							data.name = jQuery.trim($('.item_name', $parent_li).html());
 							$('#'+data.endpoint_type+'s_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', data)));
 							$parent_li.remove();
@@ -353,12 +351,10 @@ define(function(require){
 		groupsEditRingGroup: function(node, callback) {
 			var self = this,
 				default_timeout = '20',
-				default_delay = '0',
-				node = node,
-				callback = callback;
+				default_delay = '0';
 
 			self.groupsDeviceList(function(data) {
-				var popup, popup_html, index, endpoints
+				var popup, popup_html, index, endpoints,
 					selected_endpoints = {},
 					unselected_endpoints = [],
 					unselected_groups = [],
@@ -621,7 +617,7 @@ define(function(require){
 								}
 
 								$('.right .connect li', popup_html).each(function() {
-									var item_data = this.dataset;
+									var item_data = $(this).data();
 									delete item_data.owner_id;
 									endpoints.push(item_data);
 									global_timeout = computeTimeout(parseFloat(item_data.delay), parseFloat(item_data.timeout), global_timeout);
@@ -722,7 +718,7 @@ define(function(require){
 
 							var remove_element = function(li) {
 								var $parent_li = li;
-								var data = $parent_li[0].dataset;
+								var data = $parent_li.data();
 								data.name = jQuery.trim($('.item_name', $parent_li).html());
 								$('#'+data.endpoint_type+'s_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', data)));
 								$parent_li.remove();
