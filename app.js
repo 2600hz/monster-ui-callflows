@@ -248,6 +248,11 @@ define(function(require){
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
+				} else if($this.hasClass('account-element')) {
+					self.renderAccountSettings(template.find('.callflow-edition'));
+
+					template.find('.callflow-app-section').hide();
+					template.find('.callflow-edition').show();
 				} else {
 					var entityType = $this.data('type');
 					template.find('.entity-edition .entity-header .entity-title').text(actions[entityType].name);
@@ -263,6 +268,7 @@ define(function(require){
 				template.find('.entity-edition .entity-content').empty();
 				template.find('.entity-edition .list-container .list').empty();
 				template.find('.entity-edition .search-query').val('');
+				template.find('.callflow-edition').empty();
 
 				template.find('.callflow-app-section').hide();
 				template.find('.entity-manager').show();
@@ -342,6 +348,177 @@ define(function(require){
 						}
 						break;
 				}
+			});
+		},
+
+		renderAccountSettings: function(container) {
+			var self = this,
+				silenceMediaId = 'silence_stream://300000';
+			self.loadAccountSettingsData(function(accountSettingsData) {
+				var template = $(monster.template(self, 'accountSettings', $.extend(true, { silenceMedia: silenceMediaId }, accountSettingsData)));
+
+				template.find('.cid-number-select').chosen({ search_contains: true, width: '220px' });
+				container.empty().append(template);
+				self.bindAccountSettingsEvents(template, accountSettingsData);
+			});
+		},
+
+		bindAccountSettingsEvents: function(template, data) {
+			var self = this,
+				// account = args.account,
+				mediaToUpload,
+				closeUploadDiv = function(newMedia) {
+					mediaToUpload = undefined;
+					template.find('.upload-div input').val('');
+					template.find('.upload-div').slideUp(function() {
+						template.find('.upload-toggle').removeClass('active');
+					});
+					if(newMedia) {
+						var mediaSelect = template.find('.media-dropdown');
+						mediaSelect.append('<option value="'+newMedia.id+'">'+newMedia.name+'</option>');
+						mediaSelect.val(newMedia.id);
+					}
+				};
+
+			template.find('.upload-input').fileUpload({
+				inputOnly: true,
+				wrapperClass: 'file-upload input-append',
+				btnText: self.i18n.active().callflows.accountSettings.musicOnHold.audioUploadButton,
+				btnClass: 'monster-button',
+				maxSize: 5,
+				success: function(results) {
+					mediaToUpload = results[0];
+				},
+				error: function(errors) {
+					if(errors.hasOwnProperty('size') && errors.size.length > 0) {
+						monster.ui.alert(self.i18n.active().callflows.accountSettings.musicOnHold.fileTooBigAlert);
+					}
+					template.find('.upload-div input').val('');
+					mediaToUpload = undefined;
+				}
+			});
+
+			template.find('.upload-toggle').on('click', function() {
+				if($(this).hasClass('active')) {
+					template.find('.upload-div').stop(true, true).slideUp();
+				} else {
+					template.find('.upload-div').stop(true, true).slideDown();
+				}
+			});
+
+			template.find('.upload-cancel').on('click', function() {
+				closeUploadDiv();
+			});
+
+			template.find('.upload-submit').on('click', function() {
+				if(mediaToUpload) {
+					self.callApi({
+						resource: 'media.create',
+						data: {
+							accountId: self.accountId,
+							data: {
+								streamable: true,
+								name: mediaToUpload.name,
+								media_source: "upload",
+								description: mediaToUpload.name
+							}
+						},
+						success: function(data, status) {
+							var media = data.data;
+							self.callApi({
+								resource: 'media.upload',
+								data: {
+									accountId: self.accountId,
+									mediaId: media.id,
+									data: mediaToUpload.file
+								},
+								success: function(data, status) {
+									closeUploadDiv(media);
+								},
+								error: function(data, status) {
+									self.callApi({
+										resource: 'media.delete',
+										data: {
+											accountId: self.accountId,
+											mediaId: media.id,
+											data: {}
+										},
+										success: function(data, status) {}
+									});
+								}
+							});
+						}
+					});
+				} else {
+					monster.ui.alert(self.i18n.active().callflows.accountSettings.musicOnHold.emptyUploadAlert);
+				}
+			});
+
+			template.find('.account-settings-update').on('click', function() {
+				var formData = monster.ui.getFormData('account_settings_form'),
+					newData = $.extend(true, {}, data.account, formData);
+
+				if(formData.music_on_hold.media_id === '') {
+					delete newData.music_on_hold.media_id;
+				}
+				if(formData.caller_id.external.name === '') {
+					delete newData.caller_id.external.name;
+				}
+				if(formData.caller_id.external.number === '') {
+					delete newData.caller_id.external.number;
+				}
+
+				self.callApi({
+					resource: 'account.update',
+					data: {
+						accountId: newData.id,
+						data: newData
+					},
+					success: function(data, status) {
+						self.render();
+					}
+				});
+			});
+		},
+
+		loadAccountSettingsData: function(callback) {
+			var self = this;
+			monster.parallel({
+				account: function(parallelCallback) {
+					self.callApi({
+						resource: 'account.get',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data, status) {
+							parallelCallback && parallelCallback(null, data.data);
+						}
+					});
+				},
+				mediaList: function(parallelCallback) {
+					self.callApi({
+						resource: 'media.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data, status) {
+							parallelCallback && parallelCallback(null, data.data);
+						}
+					});
+				},
+				numberList: function(parallelCallback) {
+					self.callApi({
+						resource: 'numbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data, status) {
+							parallelCallback && parallelCallback(null, data.data.numbers);
+						}
+					});
+				}
+			}, function(err, results) {
+				callback && callback(results);
 			});
 		},
 

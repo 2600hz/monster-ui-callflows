@@ -1390,6 +1390,7 @@
 	border: solid 1px #303039;
 	box-sizing: border-box;
 	border-radius: 2px;
+	vertical-align: top;
 }
 #callflow_container .entity-manager .entity-element.callflow-element {
 	width: 300px;
@@ -1431,22 +1432,83 @@
 }
 
 
-#callflow_container .callflow-content .entity-header {
+#callflow_container .entity-header{
 	padding: 18px 40px;
 	height: 71px;
 	box-sizing: border-box;
 	border-bottom: solid 1px #999;
 }
-#callflow_container .callflow-content .entity-header .entity-title {
+#callflow_container .entity-header .entity-title {
 	color: #22a5ff;
 	font-size: 30px;
 	line-height: 36px;
 	float:left;
 }
-#callflow_container .callflow-content .entity-header .back-button {
+#callflow_container .entity-header .back-button {
 	float: right;
 }
 
-#callflow_container .entity-edition .entity-content {
+#callflow_container .entity-content {
 	padding: 20px 40px;
+}
+
+/* Account Settings */
+#callflow_container .account-settings-container {
+	color: #303039;
+}
+
+#callflow_container .account-settings-container .settings-section .section-title {
+	font-size: 22px;
+	font-weight: 600;
+	margin-bottom: 20px;
+}
+
+#callflow_container .account-settings-container .entity-content {
+	padding: 40px;
+}
+
+#callflow_container .account-settings-container #account_settings_form {
+	min-width: 400px;
+	max-width: 1080px;
+	margin: auto;
+	border: solid 1px #909099;
+	border-radius: 2px;
+	padding: 20px;
+	background-color: #f0f0f9;
+}
+
+#callflow_container .account-settings-container .upload-toggle {
+	margin-left: 10px;
+}
+#callflow_container .account-settings-container .upload-div {
+	display: none;
+	margin-top: 20px;
+}
+#callflow_container .account-settings-container .upload-div .upload-input {
+	margin: 0;
+	width: 330px;
+}
+#callflow_container .account-settings-container .upload-div button.upload-action {
+	margin-left: 10px;
+	min-width: 20px;
+	padding-right: 10px;
+}
+#callflow_container .account-settings-container .upload-div .file-upload {
+	margin: 0;
+	display: inline-block;
+}
+#callflow_container .account-settings-container .upload-div .file-upload > input {
+	margin: 0;
+	margin-left: 180px;
+	width: 110px;
+	padding: 6px;
+}
+#callflow_container .account-settings-container .upload-div .file-upload > button {
+	width: 100px;
+	min-width: initial;
+}
+#callflow_container .account-settings-container .action-bar {
+	margin-top: 40px;
+	padding-top: 20px;
+	border-top: solid 1px #c0c0c9;
 }
