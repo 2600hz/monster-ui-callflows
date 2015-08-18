@@ -47,7 +47,13 @@
 			"validation": {
 				"member_pins_string": "Please only enter alphanumeric characters, space or comma",
 				"member_numbers_string": "Please only enter numeric characters and space"
-			}
+			},
+			"__comment": "UI-1787: Adding play entry tone / play exit tone",
+			"__version": "3.22",
+			"play_entry_tone": "Play Entry Tone",
+			"play_entry_tone_help": "Will play a tone whenever a caller joins the conference if checked",
+			"play_exit_tone": "Play Exit Tone",
+			"play_exit_tone_help": "Will play a tone whenever a caller exits the conference if checked"
 		},
 		"device": {
 			"device": "Device",
