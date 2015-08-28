@@ -244,7 +244,9 @@ define(function(require){
 		},
 
 		menuformatData: function(data) {
-			data.timeout /= 1000; // ms to seconds
+			if(data.timeout) {
+				data.timeout /= 1000; // ms to seconds
+			}
 
 			if(data.media) {
 				if(data.media.invalid_media === false && data.media.transfer_media === false && data.media.exit_media === false) {
