@@ -1067,7 +1067,12 @@ define(function(require){
 					$('.edit_icon', node_html).click(function() {
 						self.flow = $.extend(true, { contact_list: { exclude: false }} , self.flow);
 
-						var popup = monster.ui.dialog(monster.template(self, 'editName', { name: self.flow.name, exclude: self.flow.contact_list.exclude}), {
+						var dialogTemplate = monster.template(self, 'editName', {
+								name: self.flow.name,
+								exclude: self.flow.contact_list.exclude,
+								ui_is_main_number_cf: self.dataCallflow.hasOwnProperty('ui_is_main_number_cf') ? self.dataCallflow.ui_is_main_number_cf : false
+							}),
+							popup = monster.ui.dialog(dialogTemplate, {
 							title: self.i18n.active().oldCallflows.popup_title
 						});
 
@@ -1084,6 +1089,7 @@ define(function(require){
 							self.flow.contact_list = {
 								exclude: $('#callflow_exclude', popup).prop('checked')
 							};
+							self.dataCallflow.ui_is_main_number_cf = $('#ui_is_main_number_cf', popup).prop('checked');
 							//self.save_callflow_no_loading();
 							self.repaintFlow();
 							popup.dialog('close');
