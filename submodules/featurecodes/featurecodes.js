@@ -67,6 +67,8 @@ define(function(require){
 		featureCodeBindEvents: function(template, actions) {
 			var self = this;
 
+			monster.ui.tooltips(template);
+
 			template.find('.featurecode_enabled').each(function() {
 				var action_wrapper = $(this).parents('.action_wrapper'),
 					number_field = action_wrapper.find('.featurecode-number');

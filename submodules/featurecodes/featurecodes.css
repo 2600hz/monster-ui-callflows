@@ -13,3 +13,8 @@
 	margin-top: 40px;
 	padding-top: 20px;
 }
+
+
+#featurecode_view .add-on .featurecode_enabled {
+	margin-top: 0;
+}
