@@ -1,0 +1,35 @@
+<div class="account-settings-container">
+	<div class="entity-header">
+		<div class="entity-title">{{ i18n.callflows.featureCodes.title }}</div>
+		<button type="button" class="back-button monster-button-secondary">{{ i18n.entityManager.backButton }}</button>
+	</div>
+
+	<div class="entity-content">
+		<div id="featurecode_view">
+			<form class="form-horizontal">
+				{{#each categories}}
+					<div class="feature-category">
+						<h3>{{ @key }}</h3>
+						{{#each this}}
+							<div class="control-group action_wrapper" data-id="{{id}}" data-action="{{tag}}" data-number="{{number}}" data-type="{{number_type}}" data-enabled="{{enabled}}">
+								<label class="control-label" for="{{name}}">{{name}}</label>
+								<div class="controls">
+									<div class="input-append">
+										<span class="add-on">*</span>
+										<input class="featurecode-number input-mini" id="{{id}}" name="{{name}}" size="16" type="text" value="{{number}}" rel="popover" data-content="{{ i18n.callflows.featureCodes.starDataCOntent }}">
+										<label class="add-on">
+											<input type="checkbox" class="featurecode_enabled"{{#if enabled}} checked="checked"{{/if}}>
+										</label>
+									</div>
+								</div>
+							</div>
+						{{/each}}
+					</div>
+				{{/each}}
+				<div class="action-bar clearfix">
+					<button type="button" class="monster-button-success featurecode-save pull-right">{{ i18n.save }}</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

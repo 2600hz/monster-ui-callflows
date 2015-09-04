@@ -1,0 +1,15 @@
+#featurecode_view form {
+	background-color: #f0f0f9;
+	border: 1px solid #909099;
+	border-radius: 2px;
+	margin: auto;
+	max-width: 1080px;
+	min-width: 400px;
+	padding: 20px;
+}
+
+#featurecode_view .action-bar {
+	border-top: 1px solid #c0c0c9;
+	margin-top: 40px;
+	padding-top: 20px;
+}

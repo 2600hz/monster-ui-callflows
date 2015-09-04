@@ -6,6 +6,7 @@
 @import url('../submodules/directory/directory.css');
 @import url('../submodules/timeofday/timeofday.css');
 @import url('../submodules/groups/groups.css');
+@import url('../submodules/featurecodes/featurecodes.css');
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
@@ -1367,7 +1368,7 @@
 
 #callflow_container .entity-manager {
 	padding: 10px;
-	max-width: 1120px;
+	max-width: 1280px;
 	margin: auto;
 	color: #303039;
 }

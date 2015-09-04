@@ -20,7 +20,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['misc', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox'],
+		subModules: ['misc', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes'],
 
 		appFlags: {
 			flow: {},
@@ -248,12 +248,20 @@ define(function(require){
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
-				} else if($this.hasClass('account-element')) {
+				}
+				else if($this.hasClass('account-element')) {
 					self.renderAccountSettings(template.find('.callflow-edition'));
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
-				} else {
+				}
+				else if($this.hasClass('feature-code-element')) {
+					monster.pub('callflows.featurecode.render', template.find('.callflow-edition'));
+
+					template.find('.callflow-app-section').hide();
+					template.find('.callflow-edition').show();
+				}
+				else {
 					var entityType = $this.data('type');
 					template.find('.entity-edition .entity-header .entity-title').text(actions[entityType].name);
 					self.refreshEntityList({
