@@ -198,6 +198,9 @@
 			"name_regex": "/^[a-zA-Z0-9\\s_'\\-]+$/",
 			"caller_id_name_regex": "/^[0-9A-Za-z ,]{0,30}$/"
 		},
+		"disa": {
+			"use_account_caller_id": "Use Account Caller ID"
+		},
 		"directory": {
 			"directory": "Directory",
 			"directory_tip": "Ask the caller to input the first letters of the name of the person that he wants to reach.",

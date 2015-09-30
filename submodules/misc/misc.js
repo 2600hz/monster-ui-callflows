@@ -689,7 +689,8 @@ define(function(require){
 						popup_html = $(monster.template(self,'misc-disa', {
 							data_disa: {
 								'pin': node.getMetadata('pin') || '',
-								'retries': node.getMetadata('retries') || '3'
+								'retries': node.getMetadata('retries') || '3',
+								'use_account_caller_id': node.getMetadata('use_account_caller_id') || false
 							}
 						}));
 
@@ -697,6 +698,7 @@ define(function(require){
 							var save_disa = function() {
 								node.setMetadata('pin', $('#disa_pin_input', popup_html).val());
 								node.setMetadata('retries', $('#disa_retries_input', popup_html).val());
+								node.setMetadata('use_account_caller_id', $('#disa_use_account_caller_id', popup_html).is(':checked'));
 
 								popup.dialog('close');
 							};
