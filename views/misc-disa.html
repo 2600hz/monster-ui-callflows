@@ -9,6 +9,10 @@
 			<div class="popup_field">
 				{{ i18n.oldCallflows.allow_a_maximum_of }} <input class="size2" type="text" id="disa_retries_input" value="{{ data_disa.retries }}"/> {{ i18n.oldCallflows.retries }}.
 			</div>
+			<div class="popup_field">
+				<input type="checkbox"{{#if data_disa.use_account_caller_id}} checked="checked"{{/if}} id="disa_use_account_caller_id">
+				{{ i18n.callflows.disa.use_account_caller_id }}
+			</div>
 		</div>
 	</form>
 	<div class="buttons-center">
