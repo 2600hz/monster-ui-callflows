@@ -196,7 +196,12 @@
 			"create_device": "Create Device",
 			"sip_uri_name_regex": "/^[a-zA-Z0-9\\s_']+$/",
 			"name_regex": "/^[a-zA-Z0-9\\s_'\\-]+$/",
-			"caller_id_name_regex": "/^[0-9A-Za-z ,]{0,30}$/"
+			"caller_id_name_regex": "/^[0-9A-Za-z ,]{0,30}$/",
+			"__comment": "UI-1887: Internationalize the Mobile device view",
+			"__version": "v3.23",
+			"view_mobile_phone": "View Mobile",
+			"mdn": "MDN",
+			"mdn_data_content": "Mobile Device Number"
 		},
 		"disa": {
 			"use_account_caller_id": "Use Account Caller ID"
