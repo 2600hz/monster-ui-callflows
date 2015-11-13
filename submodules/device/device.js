@@ -478,13 +478,15 @@ define(function(require){
 					}
 				});
 
-				$('.device-delete', device_html).click(function(ev) {
-					ev.preventDefault();
+				if (data.device_type !== 'mobile') {
+					$('.device-delete', device_html).click(function(ev) {
+						ev.preventDefault();
 
-					monster.ui.confirm(self.i18n.active().callflows.device.are_you_sure_you_want_to_delete, function() {
-						self.deviceDelete(data.data.id, callbacks.delete_success);
+						monster.ui.confirm(self.i18n.active().callflows.device.are_you_sure_you_want_to_delete, function() {
+							self.deviceDelete(data.data.id, callbacks.delete_success);
+						});
 					});
-				});
+				}
 
 				if(!$('#music_on_hold_media_id', device_html).val()) {
 					$('#edit_link_media', device_html).hide();
