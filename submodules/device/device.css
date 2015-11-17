@@ -80,3 +80,11 @@
 	display: inline-block;
 	margin-left: 22px;
 }
+
+.callflows-port .input .text {
+	display: inline-block;
+	width: 210px;
+	height: 20px;
+	margin-bottom: 10px;
+	padding: 4px 6px;
+}
