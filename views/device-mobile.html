@@ -28,19 +28,7 @@
 						<div class="clearfix">
 							<label for="owner_id">{{ i18n.callflows.device.assign_to }}</label>
 							<div class="input">
-								<span rel="popover" data-content="{{ i18n.callflows.device.belongs_to_data_content }}">
-									<select name="owner_id" id="owner_id" class="medium">
-										{{#select data.owner_id}}
-											{{#each field_data.users}}
-												<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
-											{{/each}}
-										{{/select}}
-									</select>
-									<div class="edit_create">
-										<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.device.edit }}</a>
-										<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.device.create }}</a>
-									</div>
-								</span>
+								<div class="text">{{field_data.users.first_name}} {{field_data.users.last_name}}</div>
 							</div>
 						</div>
 					{{/unless}}

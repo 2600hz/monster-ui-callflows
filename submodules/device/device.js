@@ -187,133 +187,150 @@ define(function(require){
 							else return false;
 						}
 					}
-				};
+				},
+				parallelRequests = function (deviceData) {
+					monster.parallel({
+						list_classifier: function(callback){
+							self.callApi({
+								resource: 'numbers.listClassifiers',
+								data: {
+									accountId: self.accountId
+								},
+								success: function(_data_classifiers) {
+									if('data' in _data_classifiers) {
+										$.each(_data_classifiers.data, function(k, v) {
+											defaults.field_data.call_restriction[k] = {
+												friendly_name: v.friendly_name
+											};
 
-			monster.parallel({
-				list_classifier: function(callback){
-					self.callApi({
-						resource: 'numbers.listClassifiers',
-						data: {
-							accountId: self.accountId
+											defaults.data.call_restriction[k] = { action: 'inherit' };
+										});
+									}
+									callback(null, _data_classifiers);
+								}
+							});
 						},
-						success: function(_data_classifiers) {
-							if('data' in _data_classifiers) {
-								$.each(_data_classifiers.data, function(k, v) {
-									defaults.field_data.call_restriction[k] = {
-										friendly_name: v.friendly_name
-									};
+						account: function(callback){
+							self.callApi({
+								resource: 'account.get',
+								data: {
+									accountId: self.accountId
+								},
+								success: function(_data, status) {
+									$.extend(defaults.field_data.sip, {
+										realm: _data.data.realm,
+									});
 
-									defaults.data.call_restriction[k] = { action: 'inherit' };
+									callback(null, _data);
+								}
+							});
+						},
+						user_list: function(callback) {
+							self.callApi({
+								resource: 'user.list',
+								data: {
+									accountId: self.accountId
+								},
+								success: function(_data, status) {
+									_data.data.sort(function(a, b) {
+										return (a.first_name + a.last_name).toLowerCase() < (b.first_name + b.last_name).toLowerCase() ? -1 : 1;
+									});
+
+									_data.data.unshift({
+										id: '',
+										first_name: '- No',
+										last_name: 'owner -',
+									});
+
+									if (deviceData.hasOwnProperty('device_type') && deviceData.device_type === 'mobile') {
+										var userData = _.find(_data.data, function(user, idx) { return user.id === deviceData.owner_id; });
+
+										if (userData) {
+											defaults.field_data.users = userData;
+										}
+										else {
+											defaults.field_data.users = {
+												first_name: '- No',
+												last_name: 'owner -'
+											};
+										}
+									}
+									else {
+										defaults.field_data.users = _data.data;
+									}
+
+									callback(null, _data);
+								}
+							});
+						},
+						media_list: function(callback) {
+							self.callApi({
+								resource: 'media.list',
+								data: {
+									accountId: self.accountId
+								},
+								success: function(_data, status) {
+									_data.data.unshift(
+										{
+											id: '',
+											name: self.i18n.active().callflows.device.default_music
+										},
+										{
+											id: 'silence_stream://300000',
+											name: self.i18n.active().callflows.device.silence
+										}
+									);
+
+									defaults.field_data.music_on_hold = _data.data;
+
+									callback(null, _data);
+								}
+							});
+						},
+						provisionerData: function(callback) {
+							if(monster.config.api.hasOwnProperty('provisioner') && monster.config.api.provisioner) {
+								self.deviceGetDataProvisoner(function(data) {
+									callback(null, data);
 								});
 							}
-							callback(null, _data_classifiers);
-						}
-					});
-				},
-				account: function(callback){
-					self.callApi({
-						resource: 'account.get',
-						data: {
-							accountId: self.accountId
-						},
-						success: function(_data, status) {
-							$.extend(defaults.field_data.sip, {
-								realm: _data.data.realm,
-							});
-
-							callback(null, _data);
-						}
-					});
-				},
-				user_list: function(callback) {
-					self.callApi({
-						resource: 'user.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: function(_data, status) {
-							_data.data.sort(function(a, b) {
-								return (a.first_name + a.last_name).toLowerCase() < (b.first_name + b.last_name).toLowerCase() ? -1 : 1;
-							});
-
-							_data.data.unshift({
-								id: '',
-								first_name: '- No',
-								last_name: 'owner -',
-							});
-
-							defaults.field_data.users = _data.data;
-
-							callback(null, _data);
-						}
-					});
-				},
-				media_list: function(callback) {
-					self.callApi({
-						resource: 'media.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: function(_data, status) {
-							_data.data.unshift(
-								{
-									id: '',
-									name: self.i18n.active().callflows.device.default_music
-								},
-								{
-									id: 'silence_stream://300000',
-									name: self.i18n.active().callflows.device.silence
-								}
-							);
-
-							defaults.field_data.music_on_hold = _data.data;
-
-							callback(null, _data);
-						}
-					});
-				},
-				get_device: function(callback) {
-					if(typeof data == 'object' && data.id) {
-						self.deviceGet(data.id,	function(_data, status) {
-							defaults.data.device_type = 'sip_device';
-
-							if('media' in _data && 'encryption' in _data.media) {
-								defaults.field_data.media.secure_rtp.value = _data.media.encryption.enforce_security ? _data.media.encryption.methods[0] : 'none';
+							else {
+								callback(null, {});
 							}
+						}
+					},
+					function(err, results){
+						var render_data = self.devicePrepareDataForTemplate(data, defaults, $.extend(true, results, {
+								get_device: deviceData
+							}));
 
-							if('sip' in _data && 'realm' in _data.sip) {
-								defaults.field_data.sip.realm = _data.sip.realm;
-							}
+						self.deviceRender(render_data, target, callbacks);
 
-							self.deviceMigrateData(_data);
+						if(typeof callbacks.after_render == 'function') {
+							callbacks.after_render();
+						}
+					});
+				};
 
-							callback(null, _data);
-						});
+			if(typeof data == 'object' && data.id) {
+				self.deviceGet(data.id, function(_data, status) {
+					defaults.data.device_type = 'sip_device';
+
+					if('media' in _data && 'encryption' in _data.media) {
+						defaults.field_data.media.secure_rtp.value = _data.media.encryption.enforce_security ? _data.media.encryption.methods[0] : 'none';
 					}
-					else {
-						callback(null, defaults);
-					}
-				},
-				provisionerData: function(callback) {
-					if(monster.config.api.hasOwnProperty('provisioner') && monster.config.api.provisioner) {
-						self.deviceGetDataProvisoner(function(data) {
-							callback(null, data);
-						});
-					}
-					else {
-						callback(null, {});
-					}
-				}
-			},
-			function(err, results){
-				var render_data = self.devicePrepareDataForTemplate(data, defaults, results);
 
-				self.deviceRender(render_data, target, callbacks);
+					if('sip' in _data && 'realm' in _data.sip) {
+						defaults.field_data.sip.realm = _data.sip.realm;
+					}
 
-				if(typeof callbacks.after_render == 'function') {
-					callbacks.after_render();
-				}
-			});
+					self.deviceMigrateData(_data);
+
+					parallelRequests(_data);
+				});
+			}
+			else {
+				parallelRequests(defaults);
+			}
 		},
 
 		devicePrepareDataForTemplate: function(data, dataGlobal, results) {
