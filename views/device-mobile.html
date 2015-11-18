@@ -118,17 +118,14 @@
 						</div>
 					</div>
 
-					<hr />
-
-					<h3>{{ i18n.callflows.device.emergency }}</h3>
-					<div class="clearfix">
+					<div class="clearfix hidden">
 						<label for="caller_id_name_emergency">{{ i18n.callflows.device.caller_id_name }}</label>
 						<div class="input">
 							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.emergency.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content3 }}" />
 						</div>
 					</div>
 
-					<div class="clearfix">
+					<div class="clearfix hidden">
 						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
 						<div class="input">
 							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.aller_id_number_data_content3 }}"/>
@@ -142,7 +139,7 @@
 						<div class="input">
 							<select name="sip.method" id="sip_method" class="medium" rel="popover" data-content="{{ i18n.callflows.device.authentication_method_data_content }}">
 								{{#select data.sip.method}}
-									{{#each field_data.sip_methods}}
+									{{#each field_data.sip.methods}}
 										{{#compare key "!=" "ip"}}
 											<option value="{{ @key }}">{{ this }}</option>
 										{{/compare}}
@@ -322,7 +319,6 @@
 						<div class="input">
 							<select name="call_restriction.{{ @key }}.action" class="medium" rel="popover">
 								{{#select this.value }}
-									<option value="allow">{{ ../../i18n.callflows.device.allow }}</option>
 									<option value="deny">{{ ../../i18n.callflows.device.deny }}</option>
 									<option value="inherit">{{ ../../i18n.callflows.device.inherit }}</option>
 								{{/select}}

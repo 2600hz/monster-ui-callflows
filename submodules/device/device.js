@@ -835,7 +835,7 @@ define(function(require){
 				delete data.ringtones.external;
 			}
 
-			if($.inArray(data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone']) < 0) {
+			if($.inArray(data.device_type, ['fax', 'mobile', 'softphone', 'sip_device', 'smartphone']) < 0) {
 				delete data.call_restriction;
 			}
 
