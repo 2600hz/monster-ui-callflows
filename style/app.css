@@ -610,7 +610,7 @@
 
 /* JR's work for left bar, from accountBrowser */
 #callflow_container .callflow-content {
-	margin-left: 240px;
+	margin-left: 241px;
 	background-color: #fff;
 	overflow-y: auto;
 }
@@ -619,14 +619,14 @@
 	float: left;
 	background-color: #F3F3F3;
 	border-right: solid 1px #999;
-	width: 240px;
+	width: 241px;
 	overflow: hidden;
 	border-radius: inherit;
 }
 
 #callflow_container .left-bar-container .search-box {
-	width: 220px;
-	padding: 20px 10px;
+	width: 221px;
+	padding: 18px 10px;
 	border-bottom: solid 1px #999;
 }
 
@@ -644,7 +644,7 @@
 	float: left;
 	overflow-y: auto;
 	overflow-x: hidden;
-	width: 240px;
+	width: 241px;
 	height: 100%;
 	max-height: inherit;
 }
@@ -654,7 +654,7 @@
 	max-height: 50px;
 	font-weight: 600;
 	background-color: #ddd;
-	width: 240px;
+	width: 241px;
 
 	background-image: -webkit-linear-gradient(top, hsl(0, 0%, 90%) 0%, hsl(0, 0%, 80%) 100%);
 	background-image:    -moz-linear-gradient(top, hsl(0, 0%, 90%) 0%, hsl(0, 0%, 80%) 100%);
@@ -1426,10 +1426,10 @@
 	float: left;
 	box-sizing: border-box;
 	width: 800px; /* Arbitrary width if calc not supported */
-	width: -webkit-calc(100% - 240px);
-	width: -moz-calc(100% - 240px);
-	width: -o-calc(100% - 240px);
-	width: calc(100%-240px);
+	width: -webkit-calc(100% - 241px);
+	width: -moz-calc(100% - 241px);
+	width: -o-calc(100% - 241px);
+	width: calc(100%-241px);
 }
 
 

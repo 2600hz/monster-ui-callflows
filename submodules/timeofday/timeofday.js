@@ -431,6 +431,18 @@ define(function(require){
 				data.data.weekday = data.data.wdays[0];
 			}
 
+			data.data.showSave = true;
+			data.data.showDelete = data.data.id ? true : false;
+
+			if(data.data.hasOwnProperty('ui_metadata') && data.data.ui_metadata.hasOwnProperty('origin') && data.data.ui_metadata.origin === 'voip') {
+				data.data.showSave = false;
+
+				if(!monster.util.isSuperDuper()) {
+					data.data.showDelete = false;
+				}
+			}
+			console.log(data);
+
 			return data;
 		},
 
