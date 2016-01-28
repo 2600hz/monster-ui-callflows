@@ -86,7 +86,8 @@ define(function(require){
 						time_window_stop: 61200,
 						wdays: [],
 						days: [],
-						interval: 1
+						interval: 1,
+						showSave: true
 					}, data_defaults || {}),
 					field_data: {
 						wdays: {
@@ -441,7 +442,6 @@ define(function(require){
 					data.data.showDelete = false;
 				}
 			}
-			console.log(data);
 
 			return data;
 		},
