@@ -87,7 +87,6 @@ define(function(require){
 						wdays: [],
 						days: [],
 						interval: 1,
-						showDelete: true,
 						showSave: true
 					}, data_defaults || {}),
 					field_data: {
