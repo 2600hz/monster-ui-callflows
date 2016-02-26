@@ -376,7 +376,7 @@ define(function(require){
 						'fax_header': {
 							regex: word_reg
 						},
-						'custom_smtp_address': {
+						'custom_smtp_email_address': {
 							email: true
 						},
 						retries: {
@@ -536,8 +536,8 @@ define(function(require){
 				}
 			}
 
-			if (form_data.hasOwnProperty('custom_smtp_address') && form_data.custom_smtp_address === '') {
-				delete form_data.custom_smtp_address;
+			if (form_data.hasOwnProperty('custom_smtp_email_address') && form_data.custom_smtp_email_address === '') {
+				delete form_data.custom_smtp_email_address;
 			}
 
 			if (form_data.hasOwnProperty('owner_id') && form_data.owner_id === '') {
