@@ -191,7 +191,10 @@ define(function(require){
 						self.callApi({
 							resource: 'callflow.list',
 							data: {
-								accountId: self.accountId
+								accountId: self.accountId,
+								filters: {
+									paginate: 'false'
+								}
 							},
 							success: function(callflows) {
 								var list_callflows = [];
@@ -218,7 +221,10 @@ define(function(require){
 						self.callApi({
 							resource: 'user.list',
 							data: {
-								accountId: self.accountId
+								accountId: self.accountId,
+								filters: {
+									paginate: 'false'
+								}
 							},
 							success: function(users) {
 								users.data.sort(function(a,b) {
