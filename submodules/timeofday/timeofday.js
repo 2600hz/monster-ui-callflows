@@ -884,7 +884,8 @@ define(function(require){
 			self.callApi({
 				resource: 'temporalRule.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data) {
 					callback && callback(data.data);
