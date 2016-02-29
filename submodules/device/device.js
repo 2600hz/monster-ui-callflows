@@ -194,7 +194,8 @@ define(function(require){
 							self.callApi({
 								resource: 'numbers.listClassifiers',
 								data: {
-									accountId: self.accountId
+									accountId: self.accountId,
+									filters: { paginate:false }
 								},
 								success: function(_data_classifiers) {
 									if('data' in _data_classifiers) {
@@ -229,7 +230,8 @@ define(function(require){
 							self.callApi({
 								resource: 'user.list',
 								data: {
-									accountId: self.accountId
+									accountId: self.accountId,
+									filters: { paginate:false }
 								},
 								success: function(_data, status) {
 									_data.data.sort(function(a, b) {
@@ -267,7 +269,8 @@ define(function(require){
 							self.callApi({
 								resource: 'media.list',
 								data: {
-									accountId: self.accountId
+									accountId: self.accountId,
+									filters: { paginate:false }
 								},
 								success: function(_data, status) {
 									_data.data.unshift(
@@ -949,7 +952,8 @@ define(function(require){
 			self.callApi({
 				resource: 'device.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data) {
 					callback && callback(data.data);

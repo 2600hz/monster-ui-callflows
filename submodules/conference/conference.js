@@ -205,7 +205,8 @@ define(function(require){
 						self.callApi({
 							resource: 'user.list',
 							data: {
-								accountId: self.accountId
+								accountId: self.accountId,
+								filters: { paginate:false }
 							},
 							success: function(_data, status) {
 								_data.data.unshift({
@@ -578,7 +579,8 @@ define(function(require){
 			self.callApi({
 				resource: 'conference.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data) {
 					callback && callback(data.data);

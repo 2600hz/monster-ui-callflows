@@ -534,7 +534,8 @@ define(function(require){
 			self.callApi({
 				resource: 'directory.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data) {
 					callback && callback(data.data);

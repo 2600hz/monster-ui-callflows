@@ -90,7 +90,8 @@ define(function(require){
 						self.callApi({
 							resource: 'callflow.list',
 							data: {
-								accountId: self.accountId
+								accountId: self.accountId,
+								filters: { paginate:false }
 							},
 							success:function(data, status) {
 								var popup, popup_html, _data = [];
@@ -827,7 +828,8 @@ define(function(require){
 			self.callApi({
 				resource: 'device.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -841,7 +843,8 @@ define(function(require){
 			self.callApi({
 				resource: 'group.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -855,7 +858,8 @@ define(function(require){
 			self.callApi({
 				resource: 'user.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -869,7 +873,8 @@ define(function(require){
 			self.callApi({
 				resource: 'media.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data, status) {
 					callback && callback(data.data);

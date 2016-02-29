@@ -185,7 +185,8 @@ define(function(require){
 						self.callApi({
 							resource: 'user.list',
 							data: {
-								accountId: self.accountId
+								accountId: self.accountId,
+								filters: { paginate:false }
 							},
 							success: function(_data, status) {
 								_data.data.sort(function(a, b){
@@ -551,17 +552,14 @@ define(function(require){
 			return form_data;
 		},
 
-
-
-
-
 		faxboxList: function(callback) {
 			var self = this;
 
 			self.callApi({
 				resource: 'faxbox.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: { paginate:false }
 				},
 				success: function(data) {
 					callback && callback(data.data);
