@@ -6,7 +6,30 @@
 	<div class="entity-content">
 		<form id="account_settings_form" class="form-horizontal">
 			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.title }}</div>
+				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleInbound }}</div>
+				<div class="section-content">
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
+						<div class="controls">
+							<input type="text" name="caller_id.internal.name" value="{{account.caller_id.internal.name}}"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+						<div class="controls">
+						<select name="caller_id.internal.number" class="cid-number-select">
+							<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
+							{{#each numberList}}
+								<option value="{{@key}}" {{#compare ../account.caller_id.internal.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+							{{/each}}
+						</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="settings-section">
+				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleOutbound }}</div>
 				<div class="section-content">
 					<div class="control-group">
 						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
@@ -27,6 +50,30 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="settings-section">
+				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleEmergency }}</div>
+				<div class="section-content">
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
+						<div class="controls">
+							<input type="text" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+						<div class="controls">
+						<select name="caller_id.emergency.number" class="cid-number-select">
+							<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
+							{{#each numberList}}
+								<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+							{{/each}}
+						</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="settings-section">
 				<div class="section-title">{{ i18n.callflows.accountSettings.musicOnHold.title }}</div>
 				<div class="section-content">
