@@ -715,7 +715,9 @@
 		"accountSettings": {
 			"title": "Account Settings",
 			"callerId": {
-				"title": "Account's Outbound Caller ID",
+				"titleOutbound": "Account's Outbound Caller ID",
+				"titleInbound": "Account's Inbound Caller ID",
+				"titleEmergency": "Account's Emergency Caller ID",
 				"nameLabel": "Caller ID Name:",
 				"numberLabel": "Caller ID Number:",
 				"defaultNumber": "Default"
