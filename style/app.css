@@ -418,7 +418,7 @@
 	width: 100%;
 }
 
-#ws_callflow #smartpbx_warning {
+#ws_callflow #hidden_callflow_warning {
 	color: red;
 	display: none;
 	font-style: italic;

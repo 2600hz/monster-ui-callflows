@@ -28,9 +28,7 @@ define(function(require){
 			// For now we use that to only load the numbers classifiers the first time we load the app, since it is very unlikely to change often
 			appData: {},
 
-			// By default, we don't want to list SmartPBX Callflows, so we create a flag here that we'll check in different places (Callflow listing, Callflow searching for example)
-			// We only want to display the SmartPBX Callflows if the flag is set in the config.js, or if the account is a superduper_admin
-			showSmartPBXCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showSmartPBXCallflows) || monster.apps.auth.originalAccount.superduper_admin
+			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin
 		},
 
 		actions: {},
@@ -590,7 +588,7 @@ define(function(require){
 				});
 			}
 
-			if(!self.appFlags.showSmartPBXCallflows) {
+			if(!self.appFlags.showAllCallflows) {
 				$.extend(true, apiData, {
 					filters: {
 						'filter_not_ui_metadata.origin': 'voip'
@@ -748,7 +746,7 @@ define(function(require){
 								$('#ws_cf_flow').empty();
 								$('.buttons').empty();
 								$('#ws_cf_tools').empty();
-								$('#smartpbx_warning').hide()
+								$('#hidden_callflow_warning').hide()
 
 								self.repaintList();
 								self.resetFlow();
@@ -1012,9 +1010,9 @@ define(function(require){
 			}
 
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
-				isSmartPBXCallflow = metadata && metadata.hasOwnProperty('origin') && metadata.origin === 'voip';
+				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile'], metadata.origin);
 
-			isSmartPBXCallflow ? $('#smartpbx_warning').show() : $('#smartpbx_warning').hide();
+			isHiddenCallflow ? $('#hidden_callflow_warning').show() : $('#hidden_callflow_warning').hide();
 		},
 
 		show_pending_change: function(pending_change) {
