@@ -242,7 +242,7 @@ define(function(require){
 							endpoints = [];
 
 							$('.right .connect li', popup_html).each(function() {
-								var item_data = this.data();
+								var item_data = $(this).data();
 								delete item_data.owner_id;
 								endpoints.push(item_data);
 							});
