@@ -598,7 +598,7 @@ define(function(require){
 
 			if(searchValue) {
 				apiResource = 'callflow.searchByNameAndNumber';
-				apiData.value = searchValue;
+				apiData.value = encodeURIComponent(searchValue);
 			}
 
 			self.callApi({
