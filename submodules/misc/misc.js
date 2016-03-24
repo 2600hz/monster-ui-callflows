@@ -671,7 +671,7 @@ define(function(require){
 					tip: self.i18n.active().oldCallflows.disa_tip,
 					data: {
 						pin: '',
-						retries: '3'
+						use_account_caller_id: true
 					},
 					rules: [
 						{
@@ -689,17 +689,34 @@ define(function(require){
 
 						popup_html = $(monster.template(self,'misc-disa', {
 							data_disa: {
-								'pin': node.getMetadata('pin') || '',
-								'retries': node.getMetadata('retries') || '3',
-								'use_account_caller_id': node.getMetadata('use_account_caller_id') || false
+								'pin': node.getMetadata('pin'),
+								'retries': node.getMetadata('retries'),
+								'interdigit': node.getMetadata('interdigit'),
+								'max_digits': node.getMetadata('max_digits'),
+								'preconnect_audio': node.getMetadata('preconnect_audio'),
+								'use_account_caller_id': node.getMetadata('use_account_caller_id')
 							}
 						}));
 
+						monster.ui.tooltips(popup_html);
+
 						$('#add', popup_html).click(function() {
 							var save_disa = function() {
-								node.setMetadata('pin', $('#disa_pin_input', popup_html).val());
-								node.setMetadata('retries', $('#disa_retries_input', popup_html).val());
-								node.setMetadata('use_account_caller_id', $('#disa_use_account_caller_id', popup_html).is(':checked'));
+								var setData = function(field, value) {
+										if(value !== 'default') {
+											node.setMetadata(field, value);
+										}
+										else {
+											node.deleteMetadata(field);
+										}
+									};
+
+								setData('pin', $('#disa_pin_input', popup_html).val());
+								setData('retries', $('#disa_retries_input', popup_html).val());
+								setData('interdigit', $('#disa_interdigit_input', popup_html).val());
+								setData('preconnect_audio', $('#preconnect_audio', popup_html).val());
+								setData('use_account_caller_id', !$('#disa_keep_original_caller_id', popup_html).is(':checked'));
+								setData('max_digits', $('#disa_max_digits_input', popup_html).val());
 
 								popup.dialog('close');
 							};
@@ -714,7 +731,7 @@ define(function(require){
 						});
 
 						popup = monster.ui.dialog(popup_html, {
-							title: self.i18n.active().oldCallflows.disa_title,
+							title: self.i18n.active().callflows.disa.title,
 							beforeClose: function() {
 								if(typeof callback == 'function') {
 									 callback();
