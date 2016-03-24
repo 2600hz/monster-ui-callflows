@@ -203,7 +203,32 @@
 			"mdn_data_content": "Mobile Device Number"
 		},
 		"disa": {
-			"use_account_caller_id": "Use Account Caller ID"
+			"title": "DISA",
+			"default": "Default",
+			"pin": {
+				"label": "PIN"
+			},
+			"retries": {
+				"label": "Retries",
+				"help": "The number of times to attempt to collect a pin number after an invalid attempt "
+			},
+			"interdigit": {
+				"label": "Interdigit",
+				"help": "The amount of time (in seconds) to wait for the next digit before considering the entry complete "
+			},
+			"max_digits": {
+				"label": "Max Digits",
+				"help": "The max digits to collect for the destination number "
+			},
+			"use_account_caller_id": {
+				"label": "Keep the original Caller-ID",
+				"help": "If 'checked' then the caller id of the call to disa will be used on the outbound call"
+			},
+			"preconnect_audio": {
+				"help": "This sets what the user should hear after entering a destination number until the outbound call is established",
+				"ringing": "Ringing",
+				"dialtone": "Dialtone"
+			}
 		},
 		"directory": {
 			"directory": "Directory",
@@ -865,10 +890,6 @@
 		"method": "Method",
 		"format": "Format",
 		"pivot_title": "Pivot",
-		"pin": "PIN",
-		"allow_a_maximum_of": "Allow a maximum of",
-		"retries": "retries",
-		"disa_title": "DISA",
 		"sip_code": "SIP Code",
 		"message": "Message",
 		"media": "Media",

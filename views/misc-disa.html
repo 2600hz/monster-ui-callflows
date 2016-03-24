@@ -1,18 +1,100 @@
 <div class="dialog_popup callflows-port">
-	<h1>{{ i18n.oldCallflows.disa }}</h1>
 	<form name="form" method="post" action="#">
 		<div class="form_content">
 			<div class="popup_field">
-				<label for="disa_pin_input">{{ i18n.oldCallflows.pin }}: </label>
+				<label for="disa_pin_input">{{ i18n.callflows.disa.pin.label }}</label>
 				<input type="text" id="disa_pin_input" class="medium" value="{{ data_disa.pin }}"/>
 			</div>
 			<div class="popup_field">
-				{{ i18n.oldCallflows.allow_a_maximum_of }} <input class="size2" type="text" id="disa_retries_input" value="{{ data_disa.retries }}"/> {{ i18n.oldCallflows.retries }}.
+				<label for="disa_retries_input">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.disa.retries.help }}"></i>
+					{{ i18n.callflows.disa.retries.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="disa_retries_input">
+						{{#select data_disa.retries}}
+							<option value="default">{{ i18n.callflows.disa.default }}</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						{{/select}}
+					</select>
+				</div>
 			</div>
 			<div class="popup_field">
-				<input type="checkbox"{{#if data_disa.use_account_caller_id}} checked="checked"{{/if}} id="disa_use_account_caller_id">
-				{{ i18n.callflows.disa.use_account_caller_id }}
+				<label for="disa_interdigit_input">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.disa.interdigit.help}}"></i>
+					{{ i18n.callflows.disa.interdigit.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="disa_interdigit_input">
+						{{#select data_disa.interdigit}}
+							<option value="default">{{ i18n.callflows.disa.default }}</option>
+							<option value="1000">1</option>
+							<option value="2000">2</option>
+							<option value="3000">3</option>
+							<option value="4000">4</option>
+							<option value="5000">5</option>
+							<option value="6000">6</option>
+							<option value="7000">7</option>
+							<option value="8000">8</option>
+							<option value="9000">9</option>
+							<option value="10000">10</option>
+						{{/select}}
+					</select>
+				</div>
 			</div>
+			<div class="popup_field">
+				<label for="disa_max_digits_input">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.disa.max_digits.help }}"></i>
+					{{ i18n.callflows.disa.max_digits.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="disa_max_digits_input">
+						{{#select data_disa.max_digits}}
+							<option value="default">{{ i18n.callflows.disa.default }}</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						{{/select}}
+					</select>
+				</div>
+			</div>
+			<div class="popup_field">
+				<label for="preconnect_audio">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.disa.preconnect_audio.help }}"></i>
+					{{ i18n.callflows.disa.preconnect_audio.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="preconnect_audio">
+						{{#select data_disa.preconnect_audio}}
+							<option value="dialtone">{{ i18n.callflows.disa.preconnect_audio.dialtone }}</option>
+							<option value="ringing">{{ i18n.callflows.disa.preconnect_audio.ringing }}</option>
+						{{/select}}
+					</select>
+				</div>
+				<div class="clear"/>
+			</div>
+			<div class="popup_field">
+				<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.disa.use_account_caller_id.help }}"></i>
+				<input type="checkbox"{{#unless data_disa.use_account_caller_id}} checked="checked"{{/unless}} id="disa_keep_original_caller_id">
+				{{ i18n.callflows.disa.use_account_caller_id.label }}
+			</div>
+			
 		</div>
 	</form>
 	<div class="buttons-center">
