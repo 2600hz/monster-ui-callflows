@@ -1,8 +1,7 @@
 define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
-		monster = require('monster'),
-		mask = require('mask');
+		monster = require('monster');
 
 	var app = {
 		requests: {
@@ -441,7 +440,8 @@ define(function(require){
 					$('#edit_link', device_html).hide();
 				}
 
-				device_html.find('#mac_address').mask("hh:hh:hh:hh:hh:hh", {placeholder:" "});
+
+				monster.ui.mask(device_html.find('#mac_address'), 'macAddress');
 
 				$('#owner_id', device_html).change(function() {
 					!$('#owner_id option:selected', device_html).val() ? $('#edit_link', device_html).hide() : $('#edit_link', device_html).show();
