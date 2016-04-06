@@ -578,11 +578,11 @@
 					<div class="input">
 						<select name="call_restriction.{{@key}}.action" class="medium" rel="popover">
 							{{#compare action '===' 'deny'}}
-								<option value="deny" selected>{{ ../../i18n.callflows.user.deny }}</option>
-								<option value="inherit">{{ ../../i18n.callflows.user.inherit }}</option>
+								<option value="deny" selected>{{ @root.i18n.callflows.user.deny }}</option>
+								<option value="inherit">{{ @root.i18n.callflows.user.inherit }}</option>
 							{{else}}
-								<option value="deny">{{ ../../i18n.callflows.user.deny }}</option>
-								<option value="inherit" selected>{{ ../../i18n.callflows.user.inherit }}</option>
+								<option value="deny">{{ @root.i18n.callflows.user.deny }}</option>
+								<option value="inherit" selected>{{ @root.i18n.callflows.user.inherit }}</option>
 							{{/compare}}
 						</select>
 					</div>

@@ -210,9 +210,9 @@
 						<div class="input">
 							<select name="call_restriction.{{ @key }}.action" class="medium" rel="popover">
 								{{#select this.value }}
-									<option value="allow">{{ ../../i18n.callflows.device.allow }}</option>
-									<option value="deny">{{ ../../i18n.callflows.device.deny }}</option>
-									<option value="inherit">{{ ../../i18n.callflows.device.inherit }}</option>
+									<option value="allow">{{ @root.i18n.callflows.device.allow }}</option>
+									<option value="deny">{{ @root.i18n.callflows.device.deny }}</option>
+									<option value="inherit">{{ @root.i18n.callflows.device.inherit }}</option>
 								{{/select}}
 							</select>
 						</div>
