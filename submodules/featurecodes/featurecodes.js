@@ -437,6 +437,23 @@ define(function(require){
 						return '*'+number;
 					}
 				},
+				'voicemail[single_mailbox_login]': {
+					name: self.i18n.active().callflows.featureCodes.single_mailbox_login,
+					icon: 'phone',
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'voicemail',
+					number_type: 'numbers',
+					data: {
+						action: 'check',
+						single_mailbox_login: true
+					},
+					enabled: false,
+					default_number: '98',
+					number: this.default_number,
+					build_regex: function(number) {
+						return '*'+number;
+					}
+				},
 				'voicemail[action="direct"]': {
 					name: self.i18n.active().callflows.featureCodes.direct_to_voicemail,
 					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
