@@ -92,7 +92,7 @@ define(function(require){
 
 				if(!$this.is(':checked') && action_wrapper.data('enabled') === true) {
 					action_wrapper.addClass('disabled');
-				} else if($this.is(':checked') && action_wrapper.data('enabled') === ''){
+				} else if($this.is(':checked') && action_wrapper.data('enabled') === false){
 					action_wrapper.addClass('enabled');
 				} else {
 					action_wrapper.removeClass('enabled');
