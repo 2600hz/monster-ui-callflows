@@ -633,7 +633,7 @@ define(function(require){
 				listSpareNumbers = [];
 
 			_.each(numbers, function(numberData, phoneNumber) {
-				if(numberData.hasOwnProperty('used_by') && numberData.used_by === '') {
+				if(!numberData.hasOwnProperty('used_by') || numberData.used_by === '') {
 					numberData.phoneNumber = phoneNumber;
 					listSpareNumbers.push(numberData);
 				}
