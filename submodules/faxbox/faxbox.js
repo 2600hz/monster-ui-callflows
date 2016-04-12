@@ -523,8 +523,8 @@ define(function(require){
 				var inbound = form_data.notifications.inbound.email.send_to,
 					outbound = form_data.notifications.outbound.email.send_to;
 
-				form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.split(',');
-				form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.split(',');
+				form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
+				form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
 			}
 
 			if (form_data.hasOwnProperty('smtp_permission_list')) {
@@ -533,7 +533,7 @@ define(function(require){
 				} else {
 					var list = form_data.smtp_permission_list;
 
-					form_data.smtp_permission_list  = list instanceof Array ? list.join(' ') : list.split(' ');
+					form_data.smtp_permission_list  = list instanceof Array ? list.join(',') : list.replace(/\s/g, '').split(',');
 				}
 			}
 
