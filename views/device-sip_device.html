@@ -55,7 +55,7 @@
 					<div class="clearfix">
 						<label for="mac_address">{{ i18n.callflows.device.device_mac_address }}</label>
 						<div class="input">
-							<input class="span4" id="mac_address" name="mac_address" type="text" placeholder="01:23:45:67:89:AB" value="{{ data.mac_address }}" rel="popover" required />
+							<input class="span4" id="mac_address" name="mac_address" type="text" placeholder="01:23:45:67:89:AB" value="{{ data.mac_address }}" rel="popover"/>
 							<span class="provisioner">
 								{{#if field_data.provisioner.isEnabled}}
 								<div>
@@ -63,6 +63,7 @@
 										Model&nbsp;&nbsp;
 										<select id="dropdown_brand" name="provision.endpoint_brand">
 											{{#select data.provision.endpoint_brand}}
+												<option value="none">{{@root.i18n.callflows.device.none}}</option>
 												{{#each field_data.provisioner.brands}}
 														<option value="{{ @key }}">{{ this.name }}</option>
 												{{/each}}

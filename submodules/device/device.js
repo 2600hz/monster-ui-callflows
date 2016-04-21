@@ -365,8 +365,6 @@ define(function(require){
 
 			if(dataGlobal.field_data.provisioner.isEnabled) {
 				var default_provision_data = {
-					endpoint_brand: 'yealink',
-					endpoint_model: 't22',
 					voicemail_beep: 1, //ie enabled
 					time_format: '12',
 					hotline: '',
@@ -485,7 +483,7 @@ define(function(require){
 
 						self.deviceCleanFormData(form_data);
 
-						if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand')) {
+						if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
 							// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
 							form_data.provision.endpoint_model = $('.dropdown_family[data-brand="'+form_data.provision.endpoint_brand+'"]', device_html).val();
 							form_data.provision.endpoint_family = $('#'+form_data.provision.endpoint_model, device_html).parents('optgroup').data('family');
@@ -606,9 +604,9 @@ define(function(require){
 		deviceSetProvisionerStuff: function(device_html, data) {
 			var self = this,
 				set_value = function(brand_name, model_name) {
+					device_html.find('.dropdown_family').hide();
 					if(brand_name in data.field_data.provisioner.brands) {
 						device_html.find('#dropdown_brand').val(brand_name);
-						device_html.find('.dropdown_family').hide();
 						device_html.find('.dropdown_family[data-brand="'+brand_name+'"]').show()
 																						 .val(model_name);
 					}
@@ -758,8 +756,15 @@ define(function(require){
 		},
 
 		deviceNormalizeData: function(data) {
-			if('provision' in data && data.provision.voicemail_beep !== 0) {
-				delete data.provision.voicemail_beep;
+			if(data.hasOwnProperty('provision')) {
+				if(data.provision.endpoint_brand === 'none') {
+					delete data.provision;
+				}
+				else {
+					if(data.provision.voicemail_beep !== 0) {
+						delete data.provision.voicemail_beep;
+					}
+				}
 			}
 
 			if(data.hasOwnProperty('media') && data.media.hasOwnProperty('fax_option') && data.media.fax_option === 'auto') {
