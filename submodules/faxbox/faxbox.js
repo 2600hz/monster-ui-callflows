@@ -377,9 +377,6 @@ define(function(require){
 						'fax_header': {
 							regex: word_reg
 						},
-						'custom_smtp_email_address': {
-							email: true
-						},
 						retries: {
 							regex: /^[0-4]/
 						}
