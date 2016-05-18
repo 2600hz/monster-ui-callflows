@@ -322,7 +322,7 @@ define(function(require){
 					rules: [
 						{
 							type: 'quantity',
-							maxSize: '12'
+							maxSize: '9999'
 						}
 					],
 					isUsable: 'true',
