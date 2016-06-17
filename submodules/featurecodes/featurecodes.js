@@ -547,7 +547,22 @@ define(function(require){
 					build_regex: function(number) {
 						return '^\\*'+number+'([0-9]*)$';
 					}
-				}
+				},
+				'move': {
+					name: self.i18n.active().callflows.featureCodes.callMove,
+					icon: 'phone',
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'move',
+					number_type: 'numbers',
+					data: {
+					},
+					enabled: false,
+					default_number: '6683',
+					number: this.default_number,
+					build_regex: function(number) {
+						return '*'+number;
+					}
+				},
 				/*'call_forward[action=on_busy_enable]': {
 					name: 'Enable Call-Forward on Busy',
 					icon: 'phone',
