@@ -18,3 +18,7 @@
 #featurecode_view .add-on .featurecode_enabled {
 	margin-top: 0;
 }
+
+#featurecode_view .add-on.empty {
+	border: 1px solid #dadada;
+}
