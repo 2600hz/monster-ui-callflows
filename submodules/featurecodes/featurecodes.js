@@ -318,6 +318,7 @@ define(function(require){
 						action: 'activate'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '72',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -334,6 +335,7 @@ define(function(require){
 						action: 'deactivate'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '73',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -350,6 +352,7 @@ define(function(require){
 						action: 'toggle'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '74',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -366,6 +369,7 @@ define(function(require){
 						action: 'update'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '56',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -383,6 +387,7 @@ define(function(require){
 						action: 'login'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '11',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -399,6 +404,7 @@ define(function(require){
 						action: 'logout'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '12',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -415,6 +421,7 @@ define(function(require){
 						action: 'toggle'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '13',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -431,6 +438,7 @@ define(function(require){
 						action: 'check'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '97',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -448,6 +456,7 @@ define(function(require){
 						single_mailbox_login: true
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '98',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -463,6 +472,7 @@ define(function(require){
 						action: 'compose'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '*',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -478,6 +488,7 @@ define(function(require){
 					data: {
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '0',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -494,6 +505,7 @@ define(function(require){
 						mode: 'full'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '67',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -510,6 +522,7 @@ define(function(require){
 						action: 'auto'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '3',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -526,6 +539,7 @@ define(function(require){
 						action: 'park'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '4',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -542,12 +556,29 @@ define(function(require){
 						action: 'retrieve'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '5',
 					number: this.default_number,
 					build_regex: function(number) {
 						return '^\\*'+number+'([0-9]*)$';
 					}
-				}
+				},
+				'move': {
+					name: self.i18n.active().callflows.featureCodes.callMove,
+					icon: 'phone',
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'move',
+					number_type: 'numbers',
+					data: {
+					},
+					enabled: false,
+					hasStar: false,
+					default_number: '6683',
+					number: this.default_number,
+					build_regex: function(number) {
+						return number;
+					}
+				},
 				/*'call_forward[action=on_busy_enable]': {
 					name: 'Enable Call-Forward on Busy',
 					icon: 'phone',
@@ -558,6 +589,7 @@ define(function(require){
 						action: 'on_busy_enable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '90',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -574,6 +606,7 @@ define(function(require){
 						action: 'on_busy_disable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '91',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -590,6 +623,7 @@ define(function(require){
 						action: 'no_answer_enable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '53',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -606,6 +640,7 @@ define(function(require){
 						action: 'no_answer_disable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '52',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -622,6 +657,7 @@ define(function(require){
 						action: 'enable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '78',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -638,6 +674,7 @@ define(function(require){
 						action: 'disable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '79',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -654,6 +691,7 @@ define(function(require){
 						action: 'toggle'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '76',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -670,6 +708,7 @@ define(function(require){
 						action: ''
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '411',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -686,6 +725,7 @@ define(function(require){
 						action: ''
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '60',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -702,6 +742,7 @@ define(function(require){
 						action: 'enable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '70',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -718,6 +759,7 @@ define(function(require){
 						action: 'disable'
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '71',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -735,6 +777,7 @@ define(function(require){
 						action: ''
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '43',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -752,6 +795,7 @@ define(function(require){
 						action: ''
 					},
 					enabled: false,
+					hasStar: true,
 					default_number: '1',
 					number: this.default_number,
 					build_regex: function(number) {

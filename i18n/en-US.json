@@ -807,7 +807,8 @@
 			"parking_cat": "Parking",
 			"valet": "Valet",
 			"retrieve": "Retrieve",
-			"single_mailbox_login": "Check Voicemail (auto login)"
+			"single_mailbox_login": "Check Voicemail (auto login)",
+			"callMove": "Move"
 		},
 		"hiddenCallflowWarning": "It looks like you're editing a callflow that wasn't meant to be edited by end-users. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break features in SmartPBX/Mobile or the Migration app, so make sure you know what you're doing!"
 	},
