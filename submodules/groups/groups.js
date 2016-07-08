@@ -7,7 +7,298 @@ define(function(require){
 		requests: {},
 
 		subscribe: {
-			'callflows.fetchActions': 'groupsDefineActions'
+			'callflows.fetchActions': 'groupsDefineActions',
+			'callflows.groups.edit': '_groupsEdit',
+		},
+
+		groupsRender: function(data, target, callbacks){
+			var self = this,
+				groups_html = $(monster.template(self, 'groups-edit', data)),
+				groupForm = groups_html.find('#group-form');
+
+			monster.ui.validate(groupForm, {
+				rules: {
+					'name': {
+						required: true
+					}
+				}
+			});
+
+			self.winkstartTabs(groups_html);
+
+			$('#tab_users > .rows', groups_html).sortable({
+				handle: '.column.first'
+			});
+
+			self.groupsRenderEndpointList(data, groups_html);
+
+			$('.group-save', groups_html).click(function(ev) {
+				ev.preventDefault();
+
+				if(monster.ui.valid(groupForm)) {
+					var form_data = monster.ui.getFormData('group-form');
+					self.groupsCleanFormData(form_data, data.field_data);
+
+					form_data.endpoints = {};
+
+					$('.rows .row:not(#row_no_data)', groups_html).each(function(k, v) {
+							form_data.endpoints[$(v).data('id')] = { 
+									type: $(v).data('type'),
+									weight: k+1
+							};
+					});
+
+					delete data.data.resources;
+					delete data.data.endpoints;
+
+					self.groupsSave(form_data, data, callbacks.save_success);
+				}
+				else {
+					monster.ui.alert(self.i18n.active().callflows.groups.there_were_errors_on_the_form);
+				}
+			});
+
+			$('.group-delete', groups_html).click(function(ev) {
+				ev.preventDefault();
+
+				monster.ui.confirm(self.i18n.active().callflows.groups.are_you_sure_you_want_to_delete, function() {
+					self.groupsDelete(data, callbacks.delete_success);
+				});
+			});
+
+			var add_user = function() {
+				var $user = $('#select_user_id', groups_html);
+
+				if($user.val() != 'empty_option_user') {
+					var user_id = $user.val();
+
+					$.each(data.field_data.users, function(k, v) {
+						if(user_id === v.id) {
+							var user_data = {
+								endpoint_id: user_id,
+								endpoint_type: 'user',
+								endpoint_name: v.first_name + ' ' + v.last_name,
+							};
+
+							data.data.endpoints.push(user_data);
+
+							data.data.endpoints.sort(function(a,b){
+								return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
+							});
+
+							self.groupsRenderEndpointList(data, groups_html);
+							$user.val('empty_option_user');
+						}
+					});
+				}
+			},
+			add_device = function() {
+					var $device = $('#select_device_id', groups_html);
+
+					if($device.val() != 'empty_option_device') {
+							var device_id = $device.val();
+
+							$.each(data.field_data.devices, function(k, v){
+									if(device_id === v.id) {
+											var device_data = {
+													endpoint_id: device_id,
+													endpoint_type: 'device',
+													endpoint_name: v.name,
+											};
+
+											data.data.endpoints.push(device_data);
+
+											data.data.endpoints.sort(function(a,b){
+													return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
+											});
+
+											self.groupsRenderEndpointList(data, groups_html);
+
+											$device.val('empty_option_device');
+									}
+
+							});
+					}
+			};
+
+			$('#select_user_id', groups_html).change(function() {
+				add_user();
+			});
+			$('#select_device_id', groups_html).change(function() {
+				add_device();
+			});
+
+			groups_html.find('#group-form').on('click', '.action_endpoint.delete', function() {
+				var endpoint_id = $(this).data('id');
+				//removes it from the grid
+				$('#row_endpoint_'+endpoint_id, groups_html).remove();
+				//re-add it to the dropdown
+				$('#option_endpoint_'+endpoint_id, groups_html).show();
+				//if grid empty, add no data line
+				if($('.rows .row', groups_html).size() === 0) {
+					$('.rows', groups_html).append(monster.template(self, 'groups-endpoint_row'));
+				}
+
+				/* TODO For some reason splice doesn't work and I don't have time to make it better for now */
+				var new_list = [];
+
+				$.each(data.data.endpoints, function(k, v) {
+					if(!(v.endpoint_id === endpoint_id)) {
+						new_list.push(v);
+					}
+				});
+
+				data.data.endpoints = new_list;
+			});
+
+			(target)
+				.empty()
+				.append(groups_html);
+		},
+
+		// Added for the subscribed event to avoid refactoring mediaEdit
+		_groupsEdit: function(args) {
+			var self = this;
+			self.groupsEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
+		},
+
+		groupsEdit: function(data, _parent, _target, _callbacks, data_defaults){
+			var self = this,
+				parent = _parent || $('#groups-content'),
+				target = _target || $('#groups-view', parent),
+				callbacks = {
+					save_success: _callbacks.save_success,
+					save_error: _callbacks.save_error,
+					delete_success: _callbacks.delete_success,
+					delete_error: _callbacks.delete_error,
+					after_render: _callbacks.after_render
+				},
+				defaults = {
+					data: $.extend(true, {
+						endpoints: {},
+						music_on_hold: {}
+					}, data_defaults || {}),
+					field_data: {}
+				};
+
+			monster.parallel({
+					'device_list': function(callback) {
+						self.callApi({
+							resource: 'device.list',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(data) {
+								defaults.field_data.devices = data.data;
+								callback(null, data)
+							}
+						});
+					},
+
+					'user_list': function(callback) {
+						self.callApi({
+							resource: 'user.list',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(data) {
+								defaults.field_data.users = data.data;
+								callback(null, data)
+							}
+						});
+					},
+
+					'groups_get': function(callback) {
+						if(typeof data === 'object' && data.id) {
+							self.callApi({
+								resource: 'group.get',
+								data: {
+									accountId: self.accountId,
+									groupId: data.id
+								},
+								success: function(data) {
+									callback(null, data)
+								}
+							});
+						}
+						else {
+							callback(null, {});
+						}
+					},
+				},
+				function(err, results) {
+					var render_data = defaults;
+
+					if(typeof data === 'object' && data.id) {
+						render_data = $.extend(true, defaults, results.groups_get);
+					}
+
+					render_data = self.groupsFormatData(render_data);
+
+					self.groupsRender(render_data, target, callbacks);
+				}
+			);
+		},
+
+		groupsRenderEndpointList: function(data, parent) {
+			var self = this;
+
+			$('.rows', parent).empty();
+
+			if('endpoints' in data.data && data.data.endpoints.length > 0) {
+				$.each(data.data.endpoints, function(k, item){
+					$('.rows', parent).append(monster.template(self, 'groups-endpoint_row', item));
+					$('#option_endpoint_'+item.endpoint_id, parent).hide();
+				});
+			}
+			else {
+				$('.rows', parent).empty()
+								  .append(monster.template(self, 'groups-endpoint_row'));
+			}
+		},
+
+		groupsCleanFormData: function(form_data, field_data) {
+			delete form_data.extra;
+		},
+
+		groupsFormatData: function(data) {
+			var user_item,
+				endpoint_item,
+				list_endpoint = [];
+
+			$.each(data.field_data.users, function(k, v) {
+				if(v.id in data.data.endpoints) {
+					endpoint_item = {
+						endpoint_type: 'user',
+						endpoint_id: v.id,
+						endpoint_name: v.first_name + ' ' + v.last_name,
+						endpoint_weight: data.data.endpoints[v.id].weight || 0
+					};
+
+					list_endpoint.push(endpoint_item);
+				}
+			});
+
+			$.each(data.field_data.devices, function(k, v) {
+				if(v.id in data.data.endpoints) {
+					endpoint_item = {
+						endpoint_type: 'device',
+						endpoint_id: v.id,
+						endpoint_name: v.name,
+						endpoint_weight: data.data.endpoints[v.id].weight || 0
+					};
+
+					list_endpoint.push(endpoint_item);
+				}
+			});
+
+			list_endpoint.sort(function(a,b){
+				return a.endpoint_weight - b.endpoint_weight;
+			});
+
+			data.data.endpoints = list_endpoint;
+
+			return data;
 		},
 
 		groupsDefineActions: function(args) {
@@ -39,6 +330,23 @@ define(function(require){
 						self.groupsEditRingGroup(node, callback);
 					}
 				},
+				'groups': {
+					name: self.i18n.active().callflows.groups.title,
+					module: 'groups',
+					listEntities: function(callback) {
+						self.callApi({
+							resource: 'group.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate:false }
+							},
+							success: function(data, status) {
+								callback && callback(data.data);
+							}
+						});
+					},
+					editEntity: 'callflows.groups.edit'
+				},
 				'page_group[]': {
 					name: self.i18n.active().oldCallflows.page_group,
 					icon: 'ring_group',
@@ -62,7 +370,7 @@ define(function(require){
 					edit: function(node, callback) {
 						self.groupsEditPageGroup(node, callback);
 					}
-				},
+				}
 			});
 		},
 
@@ -794,6 +1102,59 @@ define(function(require){
 					callback && callback(data.data);
 				}
 			});
+		},
+
+		groupsNormalizeData: function(form_data) {
+			delete form_data.users;
+			return form_data;
+		},
+		
+		groupsSave: function(form_data, data, success, error) {
+			var self = this,
+				normalized_data = self.groupsNormalizeData($.extend(true, {}, data.data, form_data));
+
+			if (typeof data.data === 'object' && data.data.id) {
+				self.callApi({
+					resource: 'group.update',
+					data: {
+						accountId: self.accountId,
+						groupId: data.data.id,
+						data: normalized_data
+					},
+					success: function(_data) {
+						success(_data.data, status, 'update');
+					}
+				});
+			}
+			else {
+				self.callApi({
+					resource: 'group.create',
+					data: {
+						accountId: self.accountId,
+						data: normalized_data
+					},
+					success: function(_data) {
+						success(_data.data, status, 'create');
+					}
+				});
+			}
+		},
+
+		groupsDelete: function(data, callback) {
+			var self = this;
+
+			if(typeof data.data == 'object' && data.data.id) {
+				self.callApi({
+					resource: 'group.delete',
+					data: {
+						accountId: self.accountId,
+						groupId: data.data.id
+					},
+					success: function(_data) {
+						callback && callback(_data, status);
+					}
+				});
+			}
 		}
 	};
 

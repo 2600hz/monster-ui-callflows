@@ -1,0 +1,77 @@
+<div>
+	<div>
+		<div class="whapp-header clearfix">
+			{{#if data.id}}
+				<h1>{{ @root.i18n.callflows.groups.edit_group }}</h1>
+			{{else}}
+				<h1>{{ @root.i18n.callflows.groups.create_group }}</h1>
+			{{/if}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ @root.i18n.callflows.groups.basic }}</button>
+				<button class="btn black advanced">{{ @root.i18n.callflows.groups.advanced }}</button>
+			</div>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs" data-tabs="tabs">
+			<li class="active"><a href="#basic">{{ @root.i18n.callflows.groups.basic }}</a></li>
+		</ul>
+		<form id="group-form" action="" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ @root.i18n.callflows.groups.name }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ @root.i18n.callflows.groups.name }}" value="{{data.name}}"/>
+						</div>
+					</div>
+
+					<div class="row">
+						<div id="table_wrapper">
+							<div id="tab_users">
+								<div class="row title">
+									<div class="column first">{{ @root.i18n.callflows.groups.endpoints }}</div>
+									<div class="column second">{{ @root.i18n.callflows.groups.remove }}</div>
+								</div>
+								<div class="rows">
+								</div>
+							</div>
+
+							<div class="add_endpoint_wrapper">
+								<div class="add_endpoint">
+									<div class="add_endpoint_title"><span class="icon user"/>{{ @root.i18n.callflows.groups.add_user }}</div>
+									<div class="add_content_wrapper">
+										<select name="extra.select_user_id" id="select_user_id">
+											<option id="empty_option_user" value="empty_option_user">-- {{ @root.i18n.callflows.groups.select }} --</option>
+											{{#each field_data.users}}
+												<option value="{{id}}" id="option_endpoint_{{id}}">{{first_name}} {{last_name}}</option>
+											{{/each}}
+										</select>
+									</div>
+								</div>
+
+								<div class="add_endpoint">
+									<div class="add_endpoint_title"><span class="icon device"/>{{ @root.i18n.callflows.groups.add_device }}</div>
+									<div class="add_content_wrapper">
+										<select name="extra.select_device_id" id="select_device_id">
+											<option id="empty_option_device" value="empty_option_device">-- {{ @root.i18n.callflows.groups.select }} --</option>
+											{{#each field_data.devices}}
+												<option value="{{id}}" id="option_endpoint_{{id}}">{{name}}</option>
+											{{/each}}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="buttons-right">
+			{{#if data.id}}
+				<button class="monster-button monster-button-danger group-delete">{{ @root.i18n.callflows.groups.delete }}</button>
+			{{/if}}
+			<button class="monster-button monster-button-success success group-save">{{ @root.i18n.callflows.groups.save }}</button>
+		</div>
+	</div>
+</div>

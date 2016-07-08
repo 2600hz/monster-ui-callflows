@@ -347,6 +347,24 @@
 			}
 		},
 		"groups": {
+			"title": "Groups",
+			"edit_group": "Edit Group",
+			"create_group": "Create Group",
+			"basic": "Basic",
+			"advanced": "Advanced",
+			"name": "Name",
+			"endpoints": "Endpoints",
+			"remove": "Remove",
+			"add_user": "Add User",
+			"select": "Select",
+			"first_name": "First Name",
+			"last_name": "Last Name",
+			"add_device": "Add Device",
+			"delete": "Delete",
+			"save": "Save",
+			"there_are_currently_no_endpoint": "There is currently no endpoint in this group",
+			"there_were_errors_on_the_form": "There were errors on the form, please correct!",
+			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this group?"
 		},
 		"media": {
 			"play_media": "Play Media",
