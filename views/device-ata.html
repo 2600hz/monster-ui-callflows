@@ -1,0 +1,259 @@
+<div>
+	<div>
+		<div class="whapp-header clearfix">
+			{{#if data.id}}
+				<h1>{{ i18n.callflows.device.edit_ata }}</h1>
+			{{else}}
+				<h1>{{ i18n.callflows.device.add_a_ata }}</h1>
+			{{/if}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.device.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.device.advanced }}</button>
+			</div>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs" data-tabs="tabs">
+			<li class="active"><a href="#basic">{{ i18n.callflows.device.basic }}</a></li>
+			<li><a href="#caller_id">{{ i18n.callflows.device.caller_id }}</a></li>
+			<li><a href="#sip_settings">{{ i18n.callflows.device.sip_settings }}</a></li>
+			<li><a href="#options">{{ i18n.callflows.device.options }}</a></li>
+			<li><a href="#restrictions">{{ i18n.callflows.device.restrictions }}</a></li>
+		</ul>
+		<form id="device-form" action="" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.device.device_nickname }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.name }}" rel="popover" data-content="{{ i18n.callflows.device.name_data_content }}" required/>
+						</div>
+					</div>
+
+					{{#unless field_data.hide_owner}}
+						<div class="clearfix">
+							<label for="owner_id">{{ i18n.callflows.device.assign_to }}</label>
+							<div class="input">
+								<span rel="popover" data-content="{{ i18n.callflows.device.belongs_to_data_content }}">
+									<select name="owner_id" id="owner_id" class="medium">
+										{{#select data.owner_id}}
+											{{#each field_data.users}}
+												<option value="{{id}}" id="{{id}}">{{first_name}} {{last_name}}</option>
+											{{/each}}
+										{{/select}}
+									</select>
+									<div class="edit_create">
+										<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.device.edit }}</a>
+										<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.device.create }}</a>
+									</div>
+								</span>
+							</div>
+						</div>
+					{{/unless}}
+
+					<div class="clearfix">
+						<label for="mac_address">{{ i18n.callflows.device.device_mac_address }}</label>
+						<div class="input">
+							<input class="span4" id="mac_address" name="mac_address" type="text" placeholder="01:23:45:67:89:AB" value="{{ data.mac_address }}" rel="popover" data-content="{{ i18n.callflows.device.device_mac_address_data_content }}"/>
+							<span class="provisioner"></span>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.device.enabled_data_content }}">
+											<input type="checkbox" id="enabled" name="enabled"{{#if data.enabled}} checked="checked"{{/if}}/>
+											<span>{{ i18n.callflows.device.enabled }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div id="caller_id">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.device.presence_id }}</label>
+						<div class="input">
+							<input class="span4" id="presence_id" name="presence_id" type="text" placeholder="{{ i18n.callflows.device.presence_id_placeholder }}" value="{{ data.presence_id }}" rel="popover" data-content="{{ i18n.callflows.device.presence_id_help }}"/>
+						</div>
+					</div>
+
+					<h3>{{ i18n.callflows.device.in_house_calls }}</h3>
+					<div class="clearfix">
+						<label for="caller_id_name_internal">{{ i18n.callflows.device.caller_id_name }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.internal.name }}"  rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content }}" />
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="caller_id_number_internal">{{ i18n.callflows.device.caller_id_number }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content }}"/>
+						</div>
+					</div>
+					<hr />
+
+					<h3>{{ i18n.callflows.device.outbound_calls }}</h3>
+					<div class="clearfix">
+						<label for="caller_id_name_external">{{ i18n.callflows.device.caller_id_name }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.external.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content2 }}" />
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="caller_id_number_external">{{ i18n.callflows.device.caller_id_number }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.external.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content2 }}"/>
+						</div>
+					</div>
+					<hr />
+
+					<h3>{{ i18n.callflows.device.emergency }}</h3>
+					<div class="clearfix">
+						<label for="caller_id_name_emergency">{{ i18n.callflows.device.caller_id_name }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.emergency.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content3 }}" />
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
+						<div class="input">
+							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content3 }}"/>
+						</div>
+					</div>
+				</div>
+
+
+				<div id="sip_settings">
+					<div class="clearfix">
+						<label for="sip_realm">{{ i18n.callflows.device.realm }}</label>
+						<div class="input">
+							<span class="uneditable-input">{{ field_data.sip.realm }}</span>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="sip_method">{{ i18n.callflows.device.authentication_method }}</label>
+						<div class="input">
+							<select name="sip.method" id="sip_method" class="medium" rel="popover" data-content="{{ i18n.callflows.device.authentication_method_data_content }}">
+								{{#select data.sip.method}}
+									{{#each field_data.sip.methods}}
+										<option value="{{ @key }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</div>
+
+					<div id="ip_block" class="clearfix">
+						<div class="clearfix">
+							<label for="sip_ip">{{ i18n.callflows.device.ip_address }}</label>
+							<div class="input">
+								<input class="span4" id="sip_ip" name="sip.ip" type="text" placeholder="255.255.255.255" value="{{ data.sip.ip }}" rel="popover" data-content="{{ i18n.callflows.device.ip_address_data_content }}"/>
+							</div>
+						</div>
+					</div>
+
+					<div id="username_block" class="clearfix">
+						<div class="clearfix">
+							<label for="sip_username">{{ i18n.callflows.device.username }}</label>
+							<div class="input">
+								<input class="span4" id="sip_username" name="sip.username" type="text" placeholder="{{ i18n.callflows.device.username }}" value="{{ data.sip.username }}" rel="popover" data-content="{{ i18n.callflows.device.username_data_content }}" required/>
+							</div>
+						</div>
+
+						<div class="clearfix">
+							<label for="sip_password">{{ i18n.callflows.device.password }}</label>
+							<div class="input">
+								<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="sip_invite_format">{{ i18n.callflows.device.invite_format }}</label>
+						<div class="input">
+							<select name="sip.invite_format" id="sip_invite_format" class="medium" rel="popover" data-content="{{ i18n.callflows.device.invite_format_data_content }}">
+								{{#select data.sip.invite_format}}
+									{{#each field_data.sip.invite_formats}}
+										<option value="{{ @key }}">{{ this }}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="sip_expire_seconds">{{ i18n.callflows.device.expire_seconds }}</label>
+						<div class="input">
+							<input class="span4" id="sip_expire_seconds" name="sip.expire_seconds" type="text" placeholder="{{ i18n.callflows.device.expire_seconds }}" value="{{ data.sip.expire_seconds }}" rel="popover" data-content="{{ i18n.callflows.device.expire_seconds_data_content }}" required/>
+						</div>
+					</div>
+				</div>
+
+				<div id="options">
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.device.hide_from_contact_list_data_content }}">
+											<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude"{{#if data.contact_list.exclude}} checked="checked"{{/if}} />
+											<span>{{ i18n.callflows.device.hide_from_contact_list }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div id="restrictions">
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.device.closed_groups_data_content }}">
+											<input type="checkbox" name="extra.closed_groups"{{#compare data.call_restriction.closed_groups.action "===" "deny"}} checked="checked"{{/compare}}/>
+											<span>{{ i18n.callflows.device.closed_groups }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					{{#each field_data.call_restriction}}
+					<div class="clearfix">
+						<label>{{ this.friendly_name }}</label>
+						<div class="input">
+							<select name="call_restriction.{{ @key }}.action" class="medium" rel="popover">
+								{{#select this.value }}
+									<option value="allow">{{ @root.i18n.callflows.device.allow }}</option>
+									<option value="deny">{{ @root.i18n.callflows.device.deny }}</option>
+									<option value="inherit">{{ @root.i18n.callflows.device.inherit }}</option>
+								{{/select}}
+							</select>
+						</div>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</form>
+		<div class="buttons-right">
+			{{#if data.id}}
+				<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
+			{{/if}}
+			<button class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
+		</div>
+	</div>
+</div>
