@@ -342,10 +342,8 @@ define(function(require){
 
 		vmboxDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
-
-			$.extend(callflow_nodes, {
-				'voicemail[id=*]': {
+				callflow_nodes = args.actions,
+				editVoicemailNode = {
 					name: self.i18n.active().callflows.vmbox.voicemail,
 					icon: 'voicemail',
 					category: self.i18n.active().oldCallflows.basic_cat,
@@ -438,7 +436,12 @@ define(function(require){
 						});
 					},
 					editEntity: 'callflows.vmbox.edit'
-				},
+				};
+
+			$.extend(callflow_nodes, {
+				'voicemail[id=*]': editVoicemailNode,
+
+				'voicemail[id=*,action=compose]': editVoicemailNode,
 
 				'voicemail[action=check]': {
 					name: self.i18n.active().callflows.vmbox.check_voicemail,
