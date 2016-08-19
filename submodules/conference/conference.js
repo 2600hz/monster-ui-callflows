@@ -265,13 +265,13 @@ define(function(require){
 					'member.pins_string': {
 						regex: /^[a-z0-9A-Z,\s]*$/
 					},
-					'member.numbers_string': {
+					'conference_numbers_string': {
 						regex: /^[0-9,\s]*$/
 					}
 				},
 				messages: {
 					'member.pins_string': { regex: self.i18n.active().callflows.conference.validation.member_pins_string },
-					'member.numbers_string': { regex: self.i18n.active().callflows.conference.validation.member_numbers_string }
+					'conference_numbers_string': { regex: self.i18n.active().callflows.conference.validation.member_numbers_string }
 				}
 			});
 
@@ -396,14 +396,6 @@ define(function(require){
 		},
 
 		conferenceMigrateData: function(data) {
-			if($.isArray(data.conference_numbers)) {
-				if(data.member.numbers == undefined) {
-					data.member.numbers = data.conference_numbers;
-				}
-
-				delete data.conference_numbers;
-			}
-
 			if(data.member_play_name) {
 				if(data.play_name_on_join == undefined) {
 					data.play_name_on_join = data.member_play_name;
@@ -437,8 +429,8 @@ define(function(require){
 					data.member.pins_string = data.member.pins.join(', ');
 				}
 
-				if($.isArray(data.member.numbers)) {
-					data.member.numbers_string = data.member.numbers.join(', ');
+				if($.isArray(data.conference_numbers)) {
+					data.conference_numbers_string = data.conference_numbers.join(', ');
 				}
 			}
 
@@ -460,7 +452,7 @@ define(function(require){
 				}
 			});
 
-			form_data.member.numbers = $.map(form_data.member.numbers_string.split(','), function(val) {
+			form_data.conference_numbers = $.map(form_data.conference_numbers_string.split(','), function(val) {
 				var number = $.trim(val);
 
 				if(number != '') {
@@ -546,8 +538,8 @@ define(function(require){
 		conferenceFixArrays: function(merged_data, form_data) {
 			var self = this;
 
-			if('member' in form_data && 'numbers' in form_data.member) {
-				merged_data.member.numbers = form_data.member.numbers;
+			if('conference_numbers' in form_data) {
+				merged_data.conference_numbers = form_data.conference_numbers;
 			}
 
 			return merged_data;
@@ -558,7 +550,7 @@ define(function(require){
 				delete data.member.pins;
 			}
 
-			if(!data.member.numbers.length) {
+			if(data.hasOwnProperty('member') && data.member.hasOwnProperty('numbers') && !data.member.numbers.length) {
 				delete data.member.numbers;
 			}
 
@@ -567,7 +559,7 @@ define(function(require){
 			}
 
 			delete data.member.pins_string;
-			delete data.member.numbers_string;
+			delete data.conference_numbers_string;
 
 			return data;
 		},
