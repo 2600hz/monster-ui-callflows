@@ -3,6 +3,22 @@ define(function(require){
 		_ = require('underscore'),
 		monster = require('monster');
 
+	require([
+		'./submodules/misc/misc',
+		'./submodules/conference/conference',
+		'./submodules/device/device',
+		'./submodules/directory/directory',
+		'./submodules/faxbox/faxbox',
+		'./submodules/groups/groups',
+		'./submodules/media/media',
+		'./submodules/menu/menu',
+		'./submodules/resource/resource',
+		'./submodules/timeofday/timeofday',
+		'./submodules/user/user',
+		'./submodules/vmbox/vmbox',
+		'./submodules/featurecodes/featurecodes',
+	]);
+
 	var app = {
 		name: 'callflows',
 
