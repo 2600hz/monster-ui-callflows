@@ -49,7 +49,7 @@ define(function(require){
 				ev.preventDefault();
 				window.location.href = self.apiUrl + (self.apiUrl.substring(self.apiUrl.length-1) != '/' ? '/' : '') + 'accounts/' +
 									   self.accountId + '/media/' +
-									   data.data.id + '/raw?auth_token=' + self.authToken;
+									   data.data.id + '/raw?auth_token=' + self.getAuthToken();
 			});
 
 			$('#file', media_html).bind('change', function(evt){
