@@ -1199,14 +1199,6 @@
 	display: block;
 }
 
-.callflows-port .tabs:before,
-.callflows-port .pills:before,
-..callflows-port tabs:after,
-.callflows-port .pills:after {
-	content: "";
-	display: table;
-}
-
 .callflows-port .tabs:after,
 .callflows-port .pills:after {
 	clear: both;
