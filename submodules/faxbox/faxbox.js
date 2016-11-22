@@ -221,7 +221,7 @@ define(function(require){
 				},
 				function(err, results) {
 					if (!data.hasOwnProperty('id')) {
-						if (Object.keys(results.current_user).length === 0) {
+						if (_.size(results.current_user) === 0) {
 							results.faxbox = $.extend(true, self.faxboxGetDefaultSettings(), results.faxbox);
 						}
 						else {
