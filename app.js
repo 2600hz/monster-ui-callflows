@@ -795,9 +795,11 @@ define(function(require){
 				branch.key_caption = self.actions[parent.actionName].key_caption(branch, self.flow.caption_map);
 			}
 
-			$.each(json.children, function(key, child) {
-				branch = self.buildFlow(child, branch, id, key);
-			});
+			if(json.hasOwnProperty('children')) {
+				$.each(json.children, function(key, child) {
+					branch = self.buildFlow(child, branch, id, key);
+				});
+			}
 
 			parent.addChild(branch);
 
