@@ -416,11 +416,13 @@ define(function(require){
 			function(err, results) {
 				var render_data = defaults;
 				if(typeof data === 'object' && data.id) {
-					$.each(results.user_get.call_restriction, function(k, v) {
-						if (defaults.field_data.call_restriction.hasOwnProperty(k)) {
-							defaults.field_data.call_restriction[k].action = v.action;
-						}
-					});
+					if(results.user_get.hasOwnProperty('call_restriction')) {
+						$.each(results.user_get.call_restriction, function(k, v) {
+							if (defaults.field_data.call_restriction.hasOwnProperty(k)) {
+								defaults.field_data.call_restriction[k].action = v.action;
+							}
+						});
+					}
 
 					render_data = $.extend(true, defaults, { data: results.user_get });
 				}
