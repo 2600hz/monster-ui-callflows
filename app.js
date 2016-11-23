@@ -605,10 +605,12 @@ define(function(require){
 			}
 
 			if(!self.appFlags.showAllCallflows) {
-				// Dirty way to filter out both Smart PBX and Qubicle callfows
 				$.extend(true, apiData, {
 					filters: {
-						'filter_not_ui_metadata.origin': 'voip&filter_not_ui_metadata.origin=callqueues'
+						'filter_not_ui_metadata.origin': [
+							'voip',
+							'callqueues'
+						]
 					}
 				});
 			}
