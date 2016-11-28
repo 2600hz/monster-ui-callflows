@@ -1236,10 +1236,22 @@ define(function(require){
 						callflow: self.actions[node.actionName]
 					}));
 
-					$('.module', node_html).click(function() {
-						self.actions[node.actionName].edit(node, function() {
-							self.repaintFlow();
-						});
+					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end. 
+					// So we set a 500ms timer that will prevent any other interaction with the callflow element.
+					var isAlreadyClicked = false;
+
+					node_html.find('.module').on('click', function() {
+						if(!isAlreadyClicked) {
+							self.actions[node.actionName].edit(node, function() {
+								self.repaintFlow();
+							});
+
+							isAlreadyClicked = true;
+
+							setTimeout(function() {
+								isAlreadyClicked = false;
+							}, 500);
+						}
 					});
 				}
 
