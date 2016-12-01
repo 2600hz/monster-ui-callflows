@@ -173,18 +173,20 @@ define(function(require){
 
 				monster.pub('callflows.media.editPopup', {
 					data: _data,
-					callback: function(_data) {
+					callback: function(dataMedia) {
 						/* Create */
+						dataMedia.name = '[UPL] ' + dataMedia.name;
+
 						if(!_id) {
-							$('#media_greeting', menu_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.name +'</option>')
-							$('#media_greeting', menu_html).val(_data.data.id);
+							$('#media_greeting', menu_html).append('<option id="'+ dataMedia.id  +'" value="'+ dataMedia.id +'">'+ dataMedia.name +'</option>')
+							$('#media_greeting', menu_html).val(dataMedia.id);
 
 							$('#edit_link_media', menu_html).show();
 						}
 						else {
 							/* Update */
-							if('id' in _data.data) {
-								$('#media_greeting #'+_data.data.id, menu_html).text(_data.data.name);
+							if(dataMedia.hasOwnProperty('id')) {
+								$('#media_greeting #'+dataMedia.id, menu_html).text(dataMedia.name);
 							}
 							/* Delete */
 							else {
