@@ -699,7 +699,11 @@
 					"name": "Please only enter alphanumeric characters, space or comma",
 					"number": "Please enter a valid phone number"
 				}
-			}
+			},
+			"__version": "4.0",
+			"__comment": "UI-2475: add a failover option to callforward",
+			"failover_callforward": "Failover",
+			"failover_callforward_content": "When checked, if all this user's devices are unregistered, then the system will automatically call-forward (even if the Enable Call-Forward setting isn't enabled)"
 		},
 		"vmbox": {
 			"voicemail": "Voicemail",

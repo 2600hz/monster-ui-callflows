@@ -351,6 +351,21 @@
 				</div>
 
 				<div class="clearfix">
+					<div class="input">
+						<ul class="inputs-list">
+							<li>
+								<label>
+									<span rel="popover" data-content="{{ i18n.callflows.user.failover_callforward_content }}">
+										<input type="checkbox" id="call_forward_failover" name="call_forward.failover"{{#if data.call_forward.failover}} checked="checked"{{/if}}/>
+										<span>{{ i18n.callflows.user.failover_callforward }}</span>
+									</span>
+								</label>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix">
 					<label for="call_forward_number">{{ i18n.callflows.user.redirect_calls_to }}</label>
 					<div class="input">
 						<input class="span4" id="call_forward_number" name="call_forward.number" type="text" placeholder="+1415555555" value="{{data.call_forward.number}}" rel="popover" data-content="{{ i18n.callflows.user.redirect_calls_to_data_content }}"/>
