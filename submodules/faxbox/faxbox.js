@@ -517,11 +517,15 @@ define(function(require){
 
 		faxboxNormalizedData: function(form_data) {
 			if (form_data.hasOwnProperty('notifications')) {
-				var inbound = form_data.notifications.inbound.email.send_to,
-					outbound = form_data.notifications.outbound.email.send_to;
+				if(form_data.notifications.hasOwnProperty('inbound') && form_data.notifications.inbound.hasOwnProperty('email')) {
+					var inbound = form_data.notifications.inbound.email.send_to;
+					form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
+				}
 
-				form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
-				form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
+				if(form_data.notifications.hasOwnProperty('outbound') && form_data.notifications.outbound.hasOwnProperty('email')) {
+					var outbound = form_data.notifications.outbound.email.send_to;
+					form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
+				}
 			}
 
 			if (form_data.hasOwnProperty('smtp_permission_list')) {
