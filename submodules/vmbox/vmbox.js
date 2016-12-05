@@ -343,105 +343,109 @@ define(function(require){
 		vmboxDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions,
-				editVoicemailNode = {
-					name: self.i18n.active().callflows.vmbox.voicemail,
-					icon: 'voicemail',
-					category: self.i18n.active().oldCallflows.basic_cat,
-					module: 'voicemail',
-					tip: self.i18n.active().callflows.vmbox.voicemail_tip,
-					data: {
-						id: 'null'
-					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '1'
-						}
-					],
-					isUsable: 'true',
-					weight: 50,
-					caption: function(node, caption_map) {
-						var id = node.getMetadata('id'),
-							returned_value = '';
+				getVoicemailNode = function(typeVM) {
+					var strToUse = typeVM === 'compose' ? 'voicemail_compose' : 'voicemail';
 
-						if(id in caption_map) {
-							returned_value = caption_map[id].name;
-						}
+					return {
+						name: self.i18n.active().callflows.vmbox[strToUse],
+						icon: 'voicemail',
+						category: typeVM === 'compose' ? self.i18n.active().oldCallflows.advanced_cat : self.i18n.active().oldCallflows.basic_cat,
+						module: 'voicemail',
+						tip: self.i18n.active().callflows.vmbox[strToUse + '_tip'],
+						data: {
+							id: 'null'
+						},
+						rules: [
+							{
+								type: 'quantity',
+								maxSize: '1'
+							}
+						],
+						isUsable: 'true',
+						weight: 50,
+						caption: function(node, caption_map) {
+							var id = node.getMetadata('id'),
+								returned_value = '';
 
-						return returned_value;
-					},
-					edit: function(node, callback) {
-						var _this = this;
+							if(id in caption_map) {
+								returned_value = caption_map[id].name;
+							}
 
-						self.vmboxList(function(data) {
-								var popup, popup_html;
+							return returned_value;
+						},
+						edit: function(node, callback) {
+							var _this = this;
 
-								popup_html = $(monster.template(self, 'vmbox-callflowEdit', {
-									items: monster.util.sort(data),
-									selected: node.getMetadata('id') || ''
-								}));
+							self.vmboxList(function(data) {
+									var popup, popup_html;
 
-								if($('#vmbox_selector option:selected', popup_html).val() == undefined) {
-									$('#edit_link', popup_html).hide();
-								}
+									popup_html = $(monster.template(self, 'vmbox-callflowEdit', {
+										items: monster.util.sort(data),
+										selected: node.getMetadata('id') || ''
+									}));
 
-								$('.inline_action', popup_html).click(function(ev) {
-									var _data = ($(this).data('action') == 'edit') ?
-													{ id: $('#vmbox_selector', popup_html).val() } : {};
+									if($('#vmbox_selector option:selected', popup_html).val() == undefined) {
+										$('#edit_link', popup_html).hide();
+									}
 
-									ev.preventDefault();
+									$('.inline_action', popup_html).click(function(ev) {
+										var _data = ($(this).data('action') == 'edit') ?
+														{ id: $('#vmbox_selector', popup_html).val() } : {};
 
-									self.vmboxPopupEdit({
-										data: _data, 
-										callback: function(vmbox) {
-											node.setMetadata('id', vmbox.id || 'null');
+										ev.preventDefault();
 
-											node.caption = vmbox.name || '';
+										self.vmboxPopupEdit({
+											data: _data, 
+											callback: function(vmbox) {
+												node.setMetadata('id', vmbox.id || 'null');
 
-											popup.dialog('close');
+												node.caption = vmbox.name || '';
+
+												popup.dialog('close');
+											}
+										});
+									});
+
+									$('#add', popup_html).click(function() {
+										node.setMetadata('id', $('#vmbox_selector', popup_html).val());
+
+										node.caption = $('#vmbox_selector option:selected', popup_html).text();
+
+										popup.dialog('close');
+									});
+
+									popup = monster.ui.dialog(popup_html, {
+										title: self.i18n.active().callflows.vmbox.voicemail_title,
+										minHeight: '0',
+										beforeClose: function() {
+											if(typeof callback == 'function') {
+												callback();
+											}
 										}
 									});
-								});
-
-								$('#add', popup_html).click(function() {
-									node.setMetadata('id', $('#vmbox_selector', popup_html).val());
-
-									node.caption = $('#vmbox_selector option:selected', popup_html).text();
-
-									popup.dialog('close');
-								});
-
-								popup = monster.ui.dialog(popup_html, {
-									title: self.i18n.active().callflows.vmbox.voicemail_title,
-									minHeight: '0',
-									beforeClose: function() {
-										if(typeof callback == 'function') {
-											callback();
-										}
-									}
-								});
-							}
-						);
-					},
-					listEntities: function(callback) {
-						self.callApi({
-							resource: 'voicemail.list',
-							data: {
-								accountId: self.accountId,
-								filters: { paginate:false }
-							},
-							success: function(data, status) {
-								callback && callback(data.data);
-							}
-						});
-					},
-					editEntity: 'callflows.vmbox.edit'
+								}
+							);
+						},
+						listEntities: function(callback) {
+							self.callApi({
+								resource: 'voicemail.list',
+								data: {
+									accountId: self.accountId,
+									filters: { paginate:false }
+								},
+								success: function(data, status) {
+									callback && callback(data.data);
+								}
+							});
+						},
+						editEntity: 'callflows.vmbox.edit'
+					}
 				};
 
 			$.extend(callflow_nodes, {
-				'voicemail[id=*]': editVoicemailNode,
+				'voicemail[id=*]': getVoicemailNode('normal'),
 
-				'voicemail[id=*,action=compose]': editVoicemailNode,
+				'voicemail[id=*,action=compose]': getVoicemailNode('compose'),
 
 				'voicemail[action=check]': {
 					name: self.i18n.active().callflows.vmbox.check_voicemail,
