@@ -343,15 +343,12 @@ define(function(require){
 		vmboxDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions,
-				getVoicemailNode = function(typeVM) {
-					var strToUse = typeVM === 'compose' ? 'voicemail_compose' : 'voicemail';
-
-					return {
-						name: self.i18n.active().callflows.vmbox[strToUse],
+				getVoicemailNode = function(hasCategory) {
+					var action = {
+						name: self.i18n.active().callflows.vmbox.voicemail,
 						icon: 'voicemail',
-						category: typeVM === 'compose' ? self.i18n.active().oldCallflows.advanced_cat : self.i18n.active().oldCallflows.basic_cat,
 						module: 'voicemail',
-						tip: self.i18n.active().callflows.vmbox[strToUse + '_tip'],
+						tip: self.i18n.active().callflows.vmbox.voicemail_tip,
 						data: {
 							id: 'null'
 						},
@@ -439,13 +436,23 @@ define(function(require){
 							});
 						},
 						editEntity: 'callflows.vmbox.edit'
+					};
+
+					if(hasCategory) {
+						action.category = self.i18n.active().oldCallflows.basic_cat;
 					}
+
+					return action;
 				};
 
 			$.extend(callflow_nodes, {
-				'voicemail[id=*]': getVoicemailNode('normal'),
+				// some old nodes won't have an action set, so we need a node to support no "action"
+				// this is also the node we want to use when we drag it onto a callflow as we want the back-end to use the default action set in the schemas
+				'voicemail[id=*]': getVoicemailNode(true),
 
-				'voicemail[id=*,action=compose]': getVoicemailNode('compose'),
+				// the default action being "compose", the front-end needs a node handling the "compose" action. 
+				// but we set the flag to false so we don't have 2 times the same node in the right list of actions
+				'voicemail[id=*,action=compose]': getVoicemailNode(false),
 
 				'voicemail[action=check]': {
 					name: self.i18n.active().callflows.vmbox.check_voicemail,
