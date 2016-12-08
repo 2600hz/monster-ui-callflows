@@ -63,9 +63,11 @@
 						<label for="tts_text">{{ i18n.callflows.media.text }}</label>
 						<div class="input">
 							{{#if data.tts}}
-								<input class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}" value="{{data.tts.text}}"/>
+								<textarea class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}">
+									{{data.tts.text}}
+								</textarea>
 							{{else}}
-								<input class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}" />
+								<textarea class="span6" id="tts_text" name="tts.text" type="text" placeholder="{{ i18n.callflows.media.text_placeholder }}" />
 							{{/if}}
 						</div>
 					</div>
