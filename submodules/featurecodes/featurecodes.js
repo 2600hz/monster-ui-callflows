@@ -103,11 +103,23 @@ define(function(require){
 			});
 
 			template.find('.featurecode-save').on('click', function(e) {
+				var $this = $(this);
 				e.preventDefault();
-			//$('.featurecode-save', template).click(function() {
-				var formData = self.featureCodeCleanFormData(template, actions);
+				if(!$this.hasClass('disabled')) {
+					var formData = self.featureCodeCleanFormData(template, actions);
 
-				self.featureCodeMassUpdate(formData);
+					$this.addClass('disabled');
+
+					self.featureCodeMassUpdate(formData, function() {
+						toastr.success(self.i18n.active().callflows.featureCodes.successUpdate);
+						$this.removeClass('disabled');
+
+						self.featureCodeRender();
+					},
+					function() {
+						$this.removeClass('disabled');
+					});
+				}
 			});
 		},
 
@@ -242,7 +254,7 @@ define(function(require){
 			});
 		},
 
-		featureCodeMassUpdate: function(form_data) {
+		featureCodeMassUpdate: function(form_data, callback, errorCallback) {
 			var self = this,
 				count = form_data.created_callflows.length + form_data.deleted_callflows.length + form_data.updated_callflows.length;
 
@@ -294,12 +306,11 @@ define(function(require){
 				});
 
 				monster.parallel(parallelRequests, function(err, results) {
-					toastr.success(self.i18n.active().callflows.featureCodes.successUpdate);
-
-					self.featureCodeRender();
+					callback && callback();
 				});
 			}
 			else {
+				errorCallback && errorCallback();
 				toastr.error(self.i18n.active().callflows.featureCodes.nothing_to_save);
 			}
 		},

@@ -478,21 +478,27 @@ define(function(require){
 				$('.device-save', device_html).click(function(ev) {
 					ev.preventDefault();
 
-					if(monster.ui.valid(deviceForm)) {
-						var form_data = monster.ui.getFormData('device-form');
+					var $this = $(this);
 
-						self.deviceCleanFormData(form_data);
+					if(!$this.hasClass('disabled')) {
+						$this.addClass('disabled');
+						if(monster.ui.valid(deviceForm)) {
+							var form_data = monster.ui.getFormData('device-form');
 
-						if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
-							// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
-							form_data.provision.endpoint_model = $('.dropdown_family[data-brand="'+form_data.provision.endpoint_brand+'"]', device_html).val();
-							form_data.provision.endpoint_family = $('#'+form_data.provision.endpoint_model, device_html).parents('optgroup').data('family');
+							self.deviceCleanFormData(form_data);
+
+							if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
+								// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
+								form_data.provision.endpoint_model = $('.dropdown_family[data-brand="'+form_data.provision.endpoint_brand+'"]', device_html).val();
+								form_data.provision.endpoint_family = $('#'+form_data.provision.endpoint_model, device_html).parents('optgroup').data('family');
+							}
+
+							self.deviceSave(form_data, data, callbacks.save_success);
 						}
-
-						self.deviceSave(form_data, data, callbacks.save_success);
-					}
-					else {
-						monster.ui.alert('error', self.i18n.active().callflows.device.there_were_errors_on_the_form);
+						else {
+							$this.removeClass('disabled');
+							monster.ui.alert('error', self.i18n.active().callflows.device.there_were_errors_on_the_form);
+						}
 					}
 				});
 
