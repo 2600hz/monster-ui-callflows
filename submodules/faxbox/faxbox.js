@@ -394,8 +394,23 @@ define(function(require){
 					}
 				});
 
-				if (monster.ui.valid(form_html)) {
-					self.faxboxSave(form_data, data.faxbox, callbacks.save_success, callbacks.save_error);
+				var $this = $(this);
+
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
+
+					if (monster.ui.valid(form_html)) {
+						self.faxboxSave(form_data, data.faxbox, function(data) {
+							$this.removeClass('disabled');
+							callbacks && callbacks.hasOwnProperty('save_success') && callbacks.save_success(data);
+						}, function(data) {
+							$this.removeClass('disabled');
+							callbacks && callbacks.hasOwnProperty('save_error') && callbacks.save_error(data);
+						});
+					}
+					else {
+						$this.removeClass('disabled');
+					}
 				}
 			});
 

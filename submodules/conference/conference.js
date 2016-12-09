@@ -325,23 +325,31 @@ define(function(require){
 
 			$('.conference-save', conference_html).click(function(ev) {
 				ev.preventDefault();
+				var $this = $(this);
 
-				if (monster.ui.valid(conference_form)) {
-					var form_data = monster.ui.getFormData('conference_form');
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
+					if (monster.ui.valid(conference_form)) {
+						var form_data = monster.ui.getFormData('conference_form');
 
-					self.conferenceCleanFormData(form_data);
+						self.conferenceCleanFormData(form_data);
 
-					data.data.member.pins = form_data.member.pins;
+						data.data.member.pins = form_data.member.pins;
 
-					if('field_data' in data) {
-						delete data.field_data;
+						if('field_data' in data) {
+							delete data.field_data;
+						}
+
+						self.conferenceSave(form_data, data, callbacks.save_success, function(data) {
+							$this.removeClass('disabled');
+							callbacks && callbacks.hasOwnProperty('save_error') && callbacks.save_error(data);
+						});
 					}
-
-					self.conferenceSave(form_data, data, callbacks.save_success, callbacks.save_error);
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert(self.i18n.active().callflows.conference.there_were_errors_on_the_form);
+					};
 				}
-				else {
-					monster.ui.alert(self.i18n.active().callflows.conference.there_were_errors_on_the_form);
-				};
 			});
 
 			$('.conference-delete', conference_html).click(function(ev) {
