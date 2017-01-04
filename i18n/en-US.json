@@ -817,7 +817,20 @@
 			"single_mailbox_login": "Check Voicemail (auto login)",
 			"callMove": "Move"
 		},
-		"hiddenCallflowWarning": "It looks like you're editing a callflow that wasn't meant to be edited by end-users. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break features in SmartPBX/Mobile or the Migration app, so make sure you know what you're doing!"
+		"hiddenCallflowWarning": "It looks like you're editing a callflow that wasn't meant to be edited by end-users. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break features in SmartPBX/Mobile or the Migration app, so make sure you know what you're doing!",
+
+		"__comment": "UI-2216: adding blacklists",
+		"__version": "v4.0",
+
+		"blacklist": {
+			"title": "Blacklist",
+			"addNumber": "Add Number",
+			"create": "Create Blacklist",
+			"edit": "Edit Blacklist",
+			"name": "Name",
+			"listNumbers": "List of existing numbers",
+			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?"
+		}
 	},
 	"oldCallflows": {
 		"call_forwarding_cat": "Call Forwarding",
