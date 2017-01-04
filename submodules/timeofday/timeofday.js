@@ -293,25 +293,32 @@ define(function(require){
 			$('.timeofday-save', timeofday_html).click(function(ev) {
 				ev.preventDefault();
 
-				if(monster.ui.valid(timeofdayForm)) {
-					var form_data = monster.ui.getFormData('timeofday-form');
+				var $this = $(this);
 
-					form_data.wdays = [];
-					data.data.wdays = [];
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
 
-					$('.fake_checkbox.checked', timeofday_html).each(function() {
-						form_data.wdays.push($(this).data('value'));
-					});
+					if(monster.ui.valid(timeofdayForm)) {
+						var form_data = monster.ui.getFormData('timeofday-form');
 
-					form_data.interval = $('#cycle', timeofday_html).val() == 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
-					form_data.start_date = timeofday_html.find('#start_date').datepicker('getDate');
-					form_data = self.timeofdayCleanFormData(form_data);
+						form_data.wdays = [];
+						data.data.wdays = [];
 
-					self.timeofdaySave(form_data, data, callbacks.save_success);
+						$('.fake_checkbox.checked', timeofday_html).each(function() {
+							form_data.wdays.push($(this).data('value'));
+						});
+
+						form_data.interval = $('#cycle', timeofday_html).val() == 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
+						form_data.start_date = timeofday_html.find('#start_date').datepicker('getDate');
+						form_data = self.timeofdayCleanFormData(form_data);
+
+						self.timeofdaySave(form_data, data, callbacks.save_success);
+					}
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert('error', self.i18n.active().callflows.timeofday.there_were_errors_on_the_form);
+					}
 				}
-				else {
-					monster.ui.alert('error', self.i18n.active().callflows.timeofday.there_were_errors_on_the_form);
-				};
 			});
 
 			$('.timeofday-delete', timeofday_html).click(function(ev) {

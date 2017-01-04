@@ -37,28 +37,33 @@ define(function(require){
 
 			$('.directory-save', directory_html).click(function(ev) {
 				ev.preventDefault();
+				var $this = $(this);
 
-				if(monster.ui.valid(directoryForm)) {
-					var form_data = monster.ui.getFormData('directory-form');
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
+					if(monster.ui.valid(directoryForm)) {
+						var form_data = monster.ui.getFormData('directory-form');
 
-					self.directoryCleanFormData(form_data);
+						self.directoryCleanFormData(form_data);
 
-					var old_list = {},
-						new_list = {};
+						var old_list = {},
+							new_list = {};
 
-					$('.rows .row:not(#row_no_data)', directory_html).each(function() {
-						new_list[$(this).data('id')] = $('#user_callflow_id', $(this)).val();
-					});
+						$('.rows .row:not(#row_no_data)', directory_html).each(function() {
+							new_list[$(this).data('id')] = $('#user_callflow_id', $(this)).val();
+						});
 
-					data.field_data.user_list = {
-						old_list: data.field_data.old_list,
-						new_list: new_list
-					};
+						data.field_data.user_list = {
+							old_list: data.field_data.old_list,
+							new_list: new_list
+						};
 
-					self.directorySave(form_data, data, callbacks.save_success);
-				}
-				else {
-					monster.ui.alert(self.i18n.active().callflows.directory.there_were_errors_on_the_form);
+						self.directorySave(form_data, data, callbacks.save_success);
+					}
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert(self.i18n.active().callflows.directory.there_were_errors_on_the_form);
+					}
 				}
 			});
 

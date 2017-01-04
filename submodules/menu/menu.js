@@ -201,19 +201,26 @@ define(function(require){
 			$('.menu-save', menu_html).click(function(ev) {
 				ev.preventDefault();
 
-				if(monster.ui.valid(menuForm)) {
-					var form_data = monster.ui.getFormData('menu-form');
+				var $this = $(this);
 
-					self.menuCleanFormData(form_data);
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
 
-					if('field_data' in data) {
-						delete data.field_data;
+					if(monster.ui.valid(menuForm)) {
+						var form_data = monster.ui.getFormData('menu-form');
+
+						self.menuCleanFormData(form_data);
+
+						if('field_data' in data) {
+							delete data.field_data;
+						}
+
+						self.menuSave(form_data, data, callbacks.save_success);
 					}
-
-					self.menuSave(form_data, data, callbacks.save_success);
-				}
-				else {
-					monster.ui.alert('error', self.i18n.active().callflows.menu.there_were_errors_on_the_form);
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert('error', self.i18n.active().callflows.menu.there_were_errors_on_the_form);
+					}
 				}
 			});
 

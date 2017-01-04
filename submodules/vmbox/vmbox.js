@@ -202,19 +202,20 @@ define(function(require){
 				monster.pub('callflows.user.popupEdit', {
 					data: _data,
 					callback: function(_data) {
+						console.log(_data);
 						/* Create */
 						if(!_id) {
-							$('#owner_id', vmbox_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.first_name + ' ' + _data.data.last_name  +'</option>')
-							$('#owner_id', vmbox_html).val(_data.data.id);
+							$('#owner_id', vmbox_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.first_name + ' ' + _data.last_name  +'</option>')
+							$('#owner_id', vmbox_html).val(_data.id);
 
 							$('#edit_link', vmbox_html).show();
-							$('#timezone', vmbox_html).val(_data.data.timezone);
+							$('#timezone', vmbox_html).val(_data.timezone);
 						}
 						else {
 							/* Update */
-							if('id' in _data.data) {
-								$('#owner_id #'+_data.data.id, vmbox_html).text(_data.data.first_name + ' ' + _data.data.last_name);
-								$('#timezone', vmbox_html).val(_data.data.timezone);
+							if('id' in _data) {
+								$('#owner_id #'+_data.data.id, vmbox_html).text(_data.first_name + ' ' + _data.last_name);
+								$('#timezone', vmbox_html).val(_data.timezone);
 							}
 							/* Delete */
 							else {
@@ -270,16 +271,25 @@ define(function(require){
 			$('.vmbox-save', vmbox_html).click(function(ev) {
 				ev.preventDefault();
 
-				if(monster.ui.valid(vmboxForm)) {
-					var form_data = monster.ui.getFormData('vmbox-form');
+				var $this = $(this);
 
-					/* self.clean_form_data(form_data); */
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
 
-					if('field_data' in data) {
-						delete data.field_data;
+					if(monster.ui.valid(vmboxForm)) {
+						var form_data = monster.ui.getFormData('vmbox-form');
+
+						/* self.clean_form_data(form_data); */
+
+						if('field_data' in data) {
+							delete data.field_data;
+						}
+
+						self.vmboxSave(form_data, data, callbacks.save_success);
 					}
-
-					self.vmboxSave(form_data, data, callbacks.save_success);
+					else {
+						$this.removeClass('disabled');
+					}
 				}
 			});
 

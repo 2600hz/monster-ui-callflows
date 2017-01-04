@@ -35,26 +35,33 @@ define(function(require){
 			$('.group-save', groups_html).click(function(ev) {
 				ev.preventDefault();
 
-				if(monster.ui.valid(groupForm)) {
-					var form_data = monster.ui.getFormData('group-form');
-					self.groupsCleanFormData(form_data, data.field_data);
+				var $this = $(this);
 
-					form_data.endpoints = {};
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
 
-					$('.rows .row:not(#row_no_data)', groups_html).each(function(k, v) {
-							form_data.endpoints[$(v).data('id')] = { 
-									type: $(v).data('type'),
-									weight: k+1
-							};
-					});
+					if(monster.ui.valid(groupForm)) {
+						var form_data = monster.ui.getFormData('group-form');
+						self.groupsCleanFormData(form_data, data.field_data);
 
-					delete data.data.resources;
-					delete data.data.endpoints;
+						form_data.endpoints = {};
 
-					self.groupsSave(form_data, data, callbacks.save_success);
-				}
-				else {
-					monster.ui.alert(self.i18n.active().callflows.groups.there_were_errors_on_the_form);
+						$('.rows .row:not(#row_no_data)', groups_html).each(function(k, v) {
+								form_data.endpoints[$(v).data('id')] = { 
+										type: $(v).data('type'),
+										weight: k+1
+								};
+						});
+
+						delete data.data.resources;
+						delete data.data.endpoints;
+
+						self.groupsSave(form_data, data, callbacks.save_success);
+					}
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert(self.i18n.active().callflows.groups.there_were_errors_on_the_form);
+					}
 				}
 			});
 

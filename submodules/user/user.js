@@ -528,71 +528,78 @@ define(function(require){
 			$('.user-save', user_html).click(function(ev) {
 				ev.preventDefault();
 
-				if (monster.ui.valid(user_form)) {
-					var form_data = monster.ui.getFormData('user-form');
+				var $this = $(this);
 
-					if(form_data.enable_pin === false) {
-						delete data.data.queue_pin;
-						delete data.data.record_call;
-					}
+				if(!$this.hasClass('disabled')) {
+					$this.addClass('disabled');
 
-					self.userCleanFormData(form_data);
+					if (monster.ui.valid(user_form)) {
+						var form_data = monster.ui.getFormData('user-form');
 
-					if('field_data' in data) {
-						delete data.field_data;
-					}
+						if(form_data.enable_pin === false) {
+							delete data.data.queue_pin;
+							delete data.data.record_call;
+						}
 
-					self.callApi({
-						resource: 'account.get',
-						data: {
-							accountId: self.accountId
-						},
-						success: function(_data, status) {
-							if(form_data.priv_level == 'admin') {
-								form_data.apps = form_data.apps || {};
-								if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
-									form_data.apps['voip'] = {
-										label: self.i18n.active().callflows.user.voip_services_label,
-										icon: 'device',
-										api_url: monster.config.api.default
+						self.userCleanFormData(form_data);
+
+						if('field_data' in data) {
+							delete data.field_data;
+						}
+
+						self.callApi({
+							resource: 'account.get',
+							data: {
+								accountId: self.accountId
+							},
+							success: function(_data, status) {
+								if(form_data.priv_level == 'admin') {
+									form_data.apps = form_data.apps || {};
+									if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
+										form_data.apps['voip'] = {
+											label: self.i18n.active().callflows.user.voip_services_label,
+											icon: 'device',
+											api_url: monster.config.api.default
+										}
 									}
 								}
-							}
-							else if(form_data.priv_level == 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
-								form_data.apps = form_data.apps || {};
-								if(!('userportal' in form_data.apps)) {
-									form_data.apps['userportal'] = {
-										label: self.i18n.active().callflows.user.user_portal_label,
-										icon: 'userportal',
-										api_url: monster.config.api.default
+								else if(form_data.priv_level == 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
+									form_data.apps = form_data.apps || {};
+									if(!('userportal' in form_data.apps)) {
+										form_data.apps['userportal'] = {
+											label: self.i18n.active().callflows.user.user_portal_label,
+											icon: 'userportal',
+											api_url: monster.config.api.default
+										}
 									}
 								}
-							}
 
-							self.userSave(form_data, data, function(data, status, action) {
-								if(action == 'create') {
-									self.userAcquireDevice(data, function() {
+								self.userSave(form_data, data, function(data, status, action) {
+									if(action == 'create') {
+										self.userAcquireDevice(data, function() {
+											if(typeof callbacks.save_success == 'function') {
+												callbacks.save_success(data, status, action);
+											}
+										}, function() {
+											if(typeof callbacks.save_error == 'function') {
+												callbacks.save_error(data, status, action);
+											}
+										});
+									}
+									else {
 										if(typeof callbacks.save_success == 'function') {
 											callbacks.save_success(data, status, action);
 										}
-									}, function() {
-										if(typeof callbacks.save_error == 'function') {
-											callbacks.save_error(data, status, action);
-										}
-									});
-								}
-								else {
-									if(typeof callbacks.save_success == 'function') {
-										callbacks.save_success(data, status, action);
 									}
-								}
-							// }, winkstart.error_message.process_error(callbacks.save_error));
-							});
-						}
-					});
-				}
-				else {
-					monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
+								// }, winkstart.error_message.process_error(callbacks.save_error));
+								});
+							}
+						});
+					}
+					else {
+						$this.removeClass('disabled');
+						monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
+					}
 				}
 			});
 
