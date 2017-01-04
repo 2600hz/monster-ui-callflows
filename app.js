@@ -5,6 +5,7 @@ define(function(require){
 
 	require([
 		'./submodules/misc/misc',
+		'./submodules/blacklist/blacklist',
 		'./submodules/conference/conference',
 		'./submodules/device/device',
 		'./submodules/directory/directory',
@@ -16,7 +17,7 @@ define(function(require){
 		'./submodules/timeofday/timeofday',
 		'./submodules/user/user',
 		'./submodules/vmbox/vmbox',
-		'./submodules/featurecodes/featurecodes',
+		'./submodules/featurecodes/featurecodes'
 	]);
 
 	var app = {
@@ -36,7 +37,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['misc', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes'],
+		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes'],
 
 		appFlags: {
 			flow: {},

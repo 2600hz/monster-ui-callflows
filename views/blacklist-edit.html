@@ -1,0 +1,50 @@
+<div>
+	<div id="blacklist_wrapper">
+		<div class="whapp-header clearfix">
+			<h1>{{#if data.id}}{{ i18n.callflows.blacklist.edit }}{{else}}{{ i18n.callflows.blacklist.create }}{{/if}}</h1>
+		</div>
+
+		<div>
+			<form id="blacklist-form" action="#" method="post">
+				<div class="pill-content">
+					<div class="active basic_view" id="basic">
+						<div class="clearfix">
+							<label for="blacklistname">{{ i18n.callflows.blacklist.name }}</label>
+							<div class="input">
+								<input class="span4" id="blacklistname" name="name" type="text" value="{{data.name}}"/>
+							</div>
+						</div>
+
+						<div class="list-numbers">
+							<h4>{{ i18n.callflows.blacklist.listNumbers }}</h4>
+							<div class="add-number">
+								<div class="number-wrapper placeholder">
+									<div class="create-text">
+										<i class="icon-plus-sign"></i>
+										{{ i18n.callflows.blacklist.addNumber }}
+									</div>
+									
+									<div class="create-inputs">
+										<input type="text" id="number_value" name="extra.numberValue" class="input-medium">
+										<button class="monster-button-primary" id="add_number">{{ i18n.add }}</button>
+										<a href="javascript:void(0);" id="cancel_number">{{ i18n.cancel }}</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="saved-numbers">
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+
+			<div class="buttons-right">
+				{{#if data.id}}
+					<button class="monster-button monster-button-danger blacklist-delete">{{ i18n.delete }}</button>
+				{{/if}}
+				<button class="monster-button monster-button-success blacklist-save">{{ i18n.save }}</button>
+			</div>
+		</div>
+	</div>
+</div>

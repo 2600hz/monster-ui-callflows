@@ -1,3 +1,4 @@
+@import url('../submodules/blacklist/blacklist.css');
 @import url('../submodules/device/device.css');
 @import url('../submodules/user/user.css');
 @import url('../submodules/misc/misc.css');
@@ -1375,8 +1376,8 @@
 	display: inline-block;
 	margin: 10px;
 	text-align: center;
-	width: 140px;
-	height: 140px;
+	width: 120px;
+	height: 120px;
 	padding: 0px;
 	font-size: 20px;
 	cursor: pointer;
@@ -1386,8 +1387,8 @@
 	vertical-align: top;
 }
 #callflow_container .entity-manager .entity-element.callflow-element {
-	width: 300px;
-	height: 300px;
+	width: 260px;
+	height: 260px;
 	float: left;
 	font-size: 50px;
 	font-weight: 300;
