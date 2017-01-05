@@ -378,15 +378,35 @@ define(function(require){
 			var self = this,
 				silenceMediaId = 'silence_stream://300000';
 			self.loadAccountSettingsData(function(accountSettingsData) {
-				var template = $(monster.template(self, 'accountSettings', $.extend(true, { silenceMedia: silenceMediaId }, accountSettingsData)));
+				var template = $(monster.template(self, 'accountSettings', $.extend(true, { silenceMedia: silenceMediaId }, accountSettingsData))),
+					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
 				template.find('.cid-number-select').chosen({ search_contains: true, width: '220px' });
 				container.empty().append(template);
-				self.bindAccountSettingsEvents(template, accountSettingsData);
+				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
 		},
 
-		bindAccountSettingsEvents: function(template, data) {
+		renderBlacklists: function(template, accountSettingsData) {
+			var self = this,
+				items = [],
+				selectedBlacklists = [];
+
+			_.each(accountSettingsData.blacklists, function(blacklist) {
+				items.push({
+					key: blacklist.id,
+					value: blacklist.name
+				});
+			});
+			selectedBlacklists = _.filter(items, function(bl) {
+				return (accountSettingsData.account.blacklists || []).indexOf(bl.key) >= 0;
+			});
+
+			// we return it so we can use the getSelectedItems() method later
+			return monster.ui.linkedColumns(template.find('.blacklists-wrapper'), items, selectedBlacklists);
+		},
+
+		bindAccountSettingsEvents: function(template, data, widgetBlacklist) {
 			var self = this,
 				// account = args.account,
 				mediaToUpload,
@@ -491,6 +511,8 @@ define(function(require){
 					delete newData.caller_id.external.number;
 				}
 
+				newData.blacklists = widgetBlacklist.getSelectedItems();
+
 				self.callApi({
 					resource: 'account.update',
 					data: {
@@ -537,6 +559,17 @@ define(function(require){
 						},
 						success: function(data, status) {
 							parallelCallback && parallelCallback(null, data.data.numbers);
+						}
+					});
+				},
+				blacklists: function(parallelCallback) {
+					self.callApi({
+						resource: 'blacklist.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data, status) {
+							parallelCallback && parallelCallback(null, data.data);
 						}
 					});
 				}

@@ -782,6 +782,9 @@
 				"emptyUploadAlert": "Please select a file to upload",
 				"fileTooBigAlert": "You can not upload a file with a size exceeding 5MB",
 				"audioUploadButton": "Browse"
+			},
+			"blacklist": {
+				"title": "Blacklists"
 			}
 		},
 		"__comment": "UI-1667: Adding way to customize Feature codes",
@@ -829,7 +832,8 @@
 			"edit": "Edit Blacklist",
 			"name": "Name",
 			"listNumbers": "List of existing numbers",
-			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?"
+			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?",
+			"help": "In order to activate this blacklist, head to the Account Settings section."
 		}
 	},
 	"oldCallflows": {
