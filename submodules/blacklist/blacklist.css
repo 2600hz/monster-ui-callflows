@@ -70,3 +70,10 @@
 #blacklist_wrapper .number-wrapper.placeholder .create-text {
 	display: inherit;
 }
+
+#blacklist_wrapper .help-text-icon {
+	color: white;
+	margin-right: 10px;
+	margin-left: 100px;
+	margin-top :15px;
+}
