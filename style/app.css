@@ -1507,6 +1507,11 @@
 	border-top: solid 1px #c0c0c9;
 }
 /* Blacklist part */
+/* We can't name space it because some dialogs from callflow use the clear... If we were to change it we'd have to update those popups too */
+.clear {
+	clear: both;
+}
+
 #callflow_container .blacklists-wrapper {
 	padding: 20px;
 	background: #FFF;

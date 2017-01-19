@@ -11,7 +11,9 @@
         <div class="icon darkgrey phone" />     <-- Show a picture of a phone and explicitly force it to appear in dark grey -->
 */
 
-#callflow_container .icon {
+/* Can't namespace as it's also used outside of the callflow container scope: in dialogs; */
+
+.icon {
     display: inline-block;
     width: 32px;
     height: 32px;
@@ -21,1306 +23,1306 @@
     vertical-align: middle;
 }
 
-#callflow_container .icon.medium {
+.icon.medium {
     width: 24px;
     height: 24px;
     background-image: url(static/images/icons/icons_24x24_gradient.png);
 }
 
 /* Color overrides */
-#callflow_container .icon.gradient {
+.icon.gradient {
     background-image: url(static/images/icons/icons_32x32_gradient.png);
 }
 
-#callflow_container .icon.blue {
+.icon.blue {
     background-image: url(static/images/icons/icons_32x32_blue.png);
 }
 
-#callflow_container .icon.darkgrey {
+.icon.darkgrey {
     background-image: url(static/images/icons/icons_32x32_darkgrey.png);
 }
 
-#callflow_container .icon.green {
+.icon.green {
     background-image: url(static/images/icons/icons_32x32_green.png);
 }
 
-#callflow_container .icon.lightgrey {
+.icon.lightgrey {
     background-image: url(static/images/icons/icons_32x32_lightgrey.png);
 }
 
-#callflow_container .icon.red {
+.icon.red {
     background-image: url(static/images/icons/icons_32x32_red.png);
 }
 
-#callflow_container .icon.white {
+.icon.white {
     background-image: url(static/images/icons/icons_32x32_white.png);
 }
 
-#callflow_container .icon.yellow {
+.icon.yellow {
     background-image: url(static/images/icons/icons_32x32_yellow.png);
 }
 
-#callflow_container .icon.medium.blue {
+.icon.medium.blue {
     background-image: url(static/images/icons/icons_24x24_blue.png);
 }
 
-#callflow_container .icon.medium.red {
+.icon.medium.red {
     background-image: url(static/images/icons/icons_24x24_blue.png);
 }
 
-#callflow_container .icon.medium.gradient {
+.icon.medium.gradient {
     background-image: url(static/images/icons/icons_24x24_blue.png);
 }
 
 /************** ICONS APPNAV *****/
 
-#callflow_container .icon.voip_services { /* 4, 5 */
+.icon.voip_services { /* 4, 5 */
     background-position: -128px -160px;
 }
 
-#callflow_container .icon.cluster_manager { /* 23, 0 */
+.icon.cluster_manager { /* 23, 0 */
     background-position: -730px 0px;
 }
 
-#callflow_container .icon.connectivity { /* 8, 13 */
+.icon.connectivity { /* 8, 13 */
     background-position: -256px -416px;
 }
 
-#callflow_container .icon.dashboard { /* 10, 13 */
+.icon.dashboard { /* 10, 13 */
     background-position: -320px -416px;
 }
 
-#callflow_container .icon.user_portal {
+.icon.user_portal {
     background-position: -478px -192px;
 }
 
-#callflow_container .icon.userportal {
+.icon.userportal {
     background-position: -478px -192px;
 }
 
 /************** ICONS SUBNAV *****/
 
-#callflow_container .icon.account { /* 0, 11 */
+.icon.account { /* 0, 11 */
     background-position: 0 -357px;
 }
 
-#callflow_container .icon.callflow { /* 5, 0 */
+.icon.callflow { /* 5, 0 */
     background-position: -160px -5px;
 }
 
-#callflow_container .icon.conference { /* 14, 3 */
+.icon.conference { /* 14, 3 */
     background-position: -448px -101px;
 }
 
-#callflow_container .icon.device { /* 16, 5 */
+.icon.device { /* 16, 5 */
     background-position: -512px -165px;
 }
 
-#callflow_container .icon.media { /* 10, 9 */
+.icon.media { /* 10, 9 */
     background-position: -320px -293px;
 }
 
-#callflow_container .icon.play { /* 10, 9 */
+.icon.play { /* 10, 9 */
     background-position: -320px -293px;
 }
 
-#callflow_container .icon.menu1 { /* 20, 5 */
+.icon.menu1 { /* 20, 5 */
     background-position: -640px -165px;
 }
 
-#callflow_container .icon.registration { /* 18, 7 */
+.icon.registration { /* 18, 7 */
     background-position: -576px -229px;
 }
 
-#callflow_container .icon.resource { /* 0, 7 */
+.icon.resource { /* 0, 7 */
     background-position: 0 -229px ;
 }
 
-#callflow_container .icon.offnet { /* 0, 7 */
+.icon.offnet { /* 0, 7 */
     background-position: 0 -229px ;
 }
 
-#callflow_container .icon.user { /* 17, 6 */
+.icon.user { /* 17, 6 */
     background-position: -544px -197px;
 }
 
-#callflow_container .icon.vmbox { /* 30, 5 */
+.icon.vmbox { /* 30, 5 */
     background-position: -960px -160px;
 }
 
-#callflow_container .icon.voicemail { /* 30, 5 */
+.icon.voicemail { /* 30, 5 */
     background-position: -960px -165px;
 }
 
-#callflow_container .icon.timeofday { /* 15, 8 */
+.icon.timeofday { /* 15, 8 */
     background-position: -448px -229px;
 }
 
-#callflow_container .icon.temporal_route { /* 15, 8 */
+.icon.temporal_route { /* 15, 8 */
     background-position: -448px -229px;
 }
 
-#callflow_container .icon.ring_group { /* 10, 5 Needs to change to a better one */
+.icon.ring_group { /* 10, 5 Needs to change to a better one */
     background-position: -320px -165px;
 }
 
-#callflow_container .icon.settings {
+.icon.settings {
     background-position: -480px -131px;
 }
 
-#callflow_container .icon.advanced {
+.icon.advanced {
     background-position: -576px -421px;
 }
 
 /************** ICONS ************/
-#callflow_container .icon.phone {
+.icon.phone {
     background-position: -507px -161px;
 }
 
-#callflow_container .icon.active_phone {
+.icon.active_phone {
     background-position: -192px -163px;
 }
 
-#callflow_container .icon.cellphone {
+.icon.cellphone {
     background-position: 5px -163px;
 }
 
-#callflow_container .icon.landline {
+.icon.landline {
     background-position: -192px -165px;
 }
 
-#callflow_container .icon.sip_device {
+.icon.sip_device {
     background-position: -511px -165px;
 }
 
-#callflow_container .icon.softphone {
+.icon.softphone {
     background-position: -640px -165px;
 }
 
-#callflow_container .icon.legal {
+.icon.legal {
     background-position: -736px -323px;
 }
 
-#callflow_container .icon.help {
+.icon.help {
     background-position: -608px -195px;
 }
 
-#callflow_container .icon.book {
+.icon.book {
     background-position: -320px -355px;
 }
 
-#callflow_container .icon.small_edit {
+.icon.small_edit {
     background-position: -368px -64px;
 }
 
-#callflow_container .icon.download {
+.icon.download {
     background-position: -732px -0px;
 }
 
-#callflow_container .icon.trash {
+.icon.trash {
     background-position: -32px -64px;
 }
 
-#callflow_container .icon.queue {
+.icon.queue {
     background-position: -384px -418px;
 }
 
-#callflow_container .icon.support {
+.icon.support {
     background-position: -416px -195px;
 }
 
-#callflow_container .icon.price_tag {
+.icon.price_tag {
     background-position: -416px -259px;
 }
 
-#callflow_container .icon.sip {
+.icon.sip {
     background-position: -705px -160px;
 }
 
-#callflow_container .icon.audio {
+.icon.audio {
     background-position: -320px -293px;
 }
 
-#callflow_container .icon.video {
+.icon.video {
     background-position: -96px -389px;
 }
 
-#callflow_container .icon.fax {
+.icon.fax {
     background-position: -512px -353px;
 }
 
-#callflow_container .icon.cc {
+.icon.cc {
     background-position: -577px -357px;
 }
 
-#callflow_container .icon.cdr {
+.icon.cdr {
     background-position: -192px -165px;
 }
 
-#callflow_container .icon.billing {
+.icon.billing {
     background-position: -769px -357px;
 }
 
-#callflow_container .icon.location {
+.icon.location {
     background-position: -24px -255px;
 }
 
-#callflow_container .icon.limit {
+.icon.limit {
     background-position: -830px -290px;
 }
 
-#callflow_container .icon.charge {
+.icon.charge {
     background-position: -192px -356px;
 }
 
-#callflow_container .icon.monitoring {
+.icon.monitoring {
     background-position: -321px -419px;
 }
 
-#callflow_container .icon.robot {
+.icon.robot {
     background-position: -736px -387px;
 }
 
-#callflow_container .icon.rightarrow {
+.icon.rightarrow {
     background-position: -860px -2px;
 }
 
-#callflow_container .icon.cart {
+.icon.cart {
     background-position: -700px -292px;
 }
 
-#callflow_container .icon.authentication {
+.icon.authentication {
     background-position: 0 -290px;
 }
 
-#callflow_container .icon.recharge {
+.icon.recharge {
     background-position: -473px 0;
 }
 
-#callflow_container .icon.dollar {
+.icon.dollar {
     background-position: -960px -419px;
 }
 
-#callflow_container .icon.search {
+.icon.search {
     background-position: -895px -424px;
 }
 
-#callflow_container .icon.question {
+.icon.question {
     background-position: -131px -40px;
 }
 
-#callflow_container .icon.puzzle {
+.icon.puzzle {
     background-position: -480px -451px;
 }
 
-#callflow_container .icon.account {
+.icon.account {
     background-position: 0 -357px;
 }
 
-#callflow_container .icon.credit_card {
+.icon.credit_card {
     background-position: -577px -357px;
 }
 
-#callflow_container .icon.billing {
+.icon.billing {
     background-position: -769px -357px;
 }
 
 
-#callflow_container .icon.authentication {
+.icon.authentication {
     background-position: 0 -290px;
 }
 
-#callflow_container .icon.location {
+.icon.location {
     background-position: -32px -260px;
 }
 
-#callflow_container .icon.limit {
+.icon.limit {
     background-position: -830px -290px;
 }
 
-#callflow_container .icon.monitoring {
+.icon.monitoring {
     background-position: -321px -419px;
 }
 
-#callflow_container .icon.robot {
+.icon.robot {
     background-position: -736px -387px;
 }
 
-#callflow_container .icon.search {
+.icon.search {
     background-position: -895px -424px;
 }
 
-#callflow_container .icon.v_phone {
+.icon.v_phone {
     background-position: -448px -163px;
 }
 
-#callflow_container .icon.hotdesk_login {
+.icon.hotdesk_login {
     background-position: -64px -288px;
 }
 
-#callflow_container .icon.hotdesk_logout {
+.icon.hotdesk_logout {
     background-position: 0 -288px;
 }
 
-#callflow_container .icon.hotdesk_toggle {
+.icon.hotdesk_toggle {
     background-position: -288px 0px;
 }
 
 /**** The 'real' icons ****/
 
-#callflow_container .icon.crossed_arrow {
+.icon.crossed_arrow {
     background-position: -32px 0px;
 }
 
-#callflow_container .icon.loop1 {
+.icon.loop1 {
     background-position: -96px 0px;
 }
 
-#callflow_container .icon.squiggly_arrow {
+.icon.squiggly_arrow {
     background-position: -160px 0px;
 }
 
-#callflow_container .icon.crossed_loop {
+.icon.crossed_loop {
     background-position: -224px 0px;
 }
 
-#callflow_container .icon.refresh {
+.icon.refresh {
     background-position: -288px 0px;
 }
 
-#callflow_container .icon.stair_arrow {
+.icon.stair_arrow {
     background-position: -352px 0px;
 }
 
-#callflow_container .icon.uturn_arrow {
+.icon.uturn_arrow {
     background-position: -416px 0px;
 }
 
-#callflow_container .icon.loop2 {
+.icon.loop2 {
     background-position: -480px 0px;
 }
 
-#callflow_container .icon.loop3 {
+.icon.loop3 {
     background-position: -544px 0px;
 }
 
-#callflow_container .icon.to_cloud {
+.icon.to_cloud {
     background-position: -608px 0px;
 }
 
-#callflow_container .icon.from_cloud {
+.icon.from_cloud {
     background-position: -672px 0px;
 }
 
-#callflow_container .icon.box_arrow_down {
+.icon.box_arrow_down {
     background-position: -736px 0px;
 }
 
-#callflow_container .icon.map_arrow {
+.icon.map_arrow {
     background-position: -800px 0px;
 }
 
-#callflow_container .icon.right_arrow {
+.icon.right_arrow {
     background-position: -864px 0px;
 }
 
-#callflow_container .icon.left_arrow {
+.icon.left_arrow {
     background-position: -928px 0px;
 }
 
-#callflow_container .icon.right_turn {
+.icon.right_turn {
     background-position: -992px 0px;
 }
 
-#callflow_container .icon.magnify {
+.icon.magnify {
     background-position: 0px -32px;
 }
 
-#callflow_container .icon.magnify_circle {
+.icon.magnify_circle {
     background-position: -64px -32px;
 }
 
-#callflow_container .icon.question_circle {
+.icon.question_circle {
     background-position: -128px -32px;
 }
 
-#callflow_container .icon.minus_circle {
+.icon.minus_circle {
     background-position: -192px -32px;
 }
 
-#callflow_container .icon.plus_circle {
+.icon.plus_circle {
     background-position: -256px -32px;
 }
 
-#callflow_container .icon.wifi_circle {
+.icon.wifi_circle {
     background-position: -320px -32px;
 }
 
-#callflow_container .icon.exclaim_circle {
+.icon.exclaim_circle {
     background-position: -384px -32px;
 }
 
-#callflow_container .icon.info_circle {
+.icon.info_circle {
     background-position: -448px -32px;
 }
 
-#callflow_container .icon.right_arrow_circle {
+.icon.right_arrow_circle {
     background-position: -512px -32px;
 }
 
-#callflow_container .icon.down_arrow_circle {
+.icon.down_arrow_circle {
     background-position: -576px -32px;
 }
 
-#callflow_container .icon.left_arrow_circle {
+.icon.left_arrow_circle {
     background-position: -640px -32px;
 }
 
-#callflow_container .icon.up_arrow_circle {
+.icon.up_arrow_circle {
     background-position: -704px -32px;
 }
 
-#callflow_container .icon.short_right_arrow_circle {
+.icon.short_right_arrow_circle {
     background-position: -768px -32px;
 }
 
-#callflow_container .icon.short_left_arrow_circle {
+.icon.short_left_arrow_circle {
     background-position: -832px -32px;
 }
 
-#callflow_container .icon.check_circle {
+.icon.check_circle {
     background-position: -896px -32px;
 }
 
-#callflow_container .icon.x_circle {
+.icon.x_circle {
     background-position: -960px -32px;
 }
 
-#callflow_container .icon.trash1 {
+.icon.trash1 {
     background-position: -32px -64px;
 }
 
-#callflow_container .icon.recycle {
+.icon.recycle {
     background-position: -96px -64px;
 }
 
-#callflow_container .icon.trash2 {
+.icon.trash2 {
     background-position: -160px -64px;
 }
 
-#callflow_container .icon.wind {
+.icon.wind {
     background-position: -224px -64px;
 }
 
-#callflow_container .icon.bluetooth {
+.icon.bluetooth {
     background-position: -288px -64px;
 }
 
-#callflow_container .icon.home1 {
+.icon.home1 {
     background-position: -352px -64px;
 }
 
-#callflow_container .icon.home2 {
+.icon.home2 {
     background-position: -416px -64px;
 }
 
-#callflow_container .icon.speaker_off {
+.icon.speaker_off {
     background-position: -480px -64px;
 }
 
-#callflow_container .icon.speaker_on {
+.icon.speaker_on {
     background-position: -544px -64px;
 }
 
-#callflow_container .icon.battery_empty {
+.icon.battery_empty {
     background-position: -608px -64px;
 }
 
-#callflow_container .icon.battery_full {
+.icon.battery_full {
     background-position: -672px -64px;
 }
 
-#callflow_container .icon.power {
+.icon.power {
     background-position: -736px -64px;
 }
 
-#callflow_container .icon.on {
+.icon.on {
     background-position: -800px -64px;
 }
 
-#callflow_container .icon.check_box {
+.icon.check_box {
     background-position: -864px -64px;
 }
 
-#callflow_container .icon.check {
+.icon.check {
     background-position: -928px -64px;
 }
 
-#callflow_container .icon.x {
+.icon.x {
     background-position: -992px -64px;
 }
 
-#callflow_container .icon.human_chat {
+.icon.human_chat {
     background-position: 0px -96px;
 }
 
-#callflow_container .icon.chat1 {
+.icon.chat1 {
     background-position: -64px -96px;
 }
 
-#callflow_container .icon.dot_chat {
+.icon.dot_chat {
     background-position: -128px -96px;
 }
 
-#callflow_container .icon.chat_box {
+.icon.chat_box {
     background-position: -192px -96px;
 }
 
-#callflow_container .icon.chat_circle {
+.icon.chat_circle {
     background-position: -256px -96px;
 }
 
-#callflow_container .icon.chat_bubble {
+.icon.chat_bubble {
     background-position: -320px -96px;
 }
 
-#callflow_container .icon.chat_bubble2 {
+.icon.chat_bubble2 {
     background-position: -384px -96px;
 }
 
-#callflow_container .icon.convo_chat {
+.icon.convo_chat {
     background-position: -448px -96px;
 }
 
-#callflow_container .icon.line_globe {
+.icon.line_globe {
     background-position: -512px -96px;
 }
 
-#callflow_container .icon.saturn {
+.icon.saturn {
     background-position: -576px -96px;
 }
 
-#callflow_container .icon.earth {
+.icon.earth {
     background-position: -640px -100px;
 }
 
-#callflow_container .icon.globe_stand {
+.icon.globe_stand {
     background-position: -704px -96px;
 }
 
-#callflow_container .icon.thumb_up {
+.icon.thumb_up {
     background-position: -768px -96px;
 }
 
-#callflow_container .icon.thumb_down {
+.icon.thumb_down {
     /* background-position: -832px -96px; */
     background-position: -832px -99px;
 }
 
-#callflow_container .icon.peace_sign {
+.icon.peace_sign {
     background-position: -896px -96px;
 }
 
-#callflow_container .icon.hand {
+.icon.hand {
     /* background-position: -960px -96px; */
     background-position: -960px -99px;
 }
 
-#callflow_container .icon.wrench_left {
+.icon.wrench_left {
     background-position: -32px -128px;
 }
 
-#callflow_container .icon.wrench_right {
+.icon.wrench_right {
     background-position: -96px -128px;
 }
 
-#callflow_container .icon.wrench3 {
+.icon.wrench3 {
     background-position: -160px -128px;
 }
 
-#callflow_container .icon.gavel {
+.icon.gavel {
     background-position: -224px -128px;
 }
 
-#callflow_container .icon.wrench_hammer {
+.icon.wrench_hammer {
     background-position: -288px -128px;
 }
 
-#callflow_container .icon.hammer {
+.icon.hammer {
     background-position: -352px -128px;
 }
 
-#callflow_container .icon.wrench_screw {
+.icon.wrench_screw {
     background-position: -416px -128px;
 }
 
-#callflow_container .icon.settings1 {
+.icon.settings1 {
     background-position: -480px -128px;
 }
 
-#callflow_container .icon.settings2 {
+.icon.settings2 {
     background-position: -544px -128px;
 }
 
-#callflow_container .icon.settings3 {
+.icon.settings3 {
     background-position: -608px -128px;
 }
 
-#callflow_container .icon.comb {
+.icon.comb {
     background-position: -672px -128px;
 }
 
-#callflow_container .icon.pencil {
+.icon.pencil {
     background-position: -736px -128px;
 }
 
-#callflow_container .icon.paperclip1 {
+.icon.paperclip1 {
     background-position: -800px -128px;
 }
 
-#callflow_container .icon.paperclip2 {
+.icon.paperclip2 {
     background-position: -864px -128px;
 }
 
-#callflow_container .icon.scissors {
+.icon.scissors {
     background-position: -928px -128px;
 }
 
-#callflow_container .icon.bow_arrow {
+.icon.bow_arrow {
     background-position: -992px -128px;
 }
 
-#callflow_container .icon.iphone {
+.icon.iphone {
     background-position: 0px -160px;
 }
 
-#callflow_container .icon.handset1 {
+.icon.handset1 {
     background-position: -64px -160px;
 }
 
-#callflow_container .icon.handset2 {
+.icon.handset2 {
     background-position: -128px -160px;
 }
 
-#callflow_container .icon.handset3 {
+.icon.handset3 {
     background-position: -192px -160px;
 }
 
-#callflow_container .icon.phone_set1 {
+.icon.phone_set1 {
     background-position: -256px -160px;
 }
 
-#callflow_container .icon.phone_trio {
+.icon.phone_trio {
     background-position: -320px -160px;
 }
 
-#callflow_container .icon.handset4 {
+.icon.handset4 {
     background-position: -384px -160px;
 }
 
-#callflow_container .icon.cordless1 {
+.icon.cordless1 {
     background-position: -448px -160px;
 }
 
-#callflow_container .icon.cordless2 {
+.icon.cordless2 {
     background-position: -512px -160px;
 }
 
-#callflow_container .icon.mobile1 {
+.icon.mobile1 {
     background-position: -576px -160px;
 }
 
-#callflow_container .icon.dial_pad1 {
+.icon.dial_pad1 {
     background-position: -640px -160px;
 }
 
-#callflow_container .icon.dial_pad2 {
+.icon.dial_pad2 {
     background-position: -704px -160px;
 }
 
-#callflow_container .icon.two_circles {
+.icon.two_circles {
     background-position: -768px -160px;
 }
 
-#callflow_container .icon.headset {
+.icon.headset {
     background-position: -832px -160px;
 }
 
-#callflow_container .icon.mail1 {
+.icon.mail1 {
     background-position: -896px -160px;
 }
 
-#callflow_container .icon.mail2 {
+.icon.mail2 {
     background-position: -960px -160px;
 }
 
-#callflow_container .icon.person_run {
+.icon.person_run {
     background-position: -32px -192px;
 }
 
-#callflow_container .icon.person_walk {
+.icon.person_walk {
     background-position: -96px -192px;
 }
 
-#callflow_container .icon.man_stand {
+.icon.man_stand {
     background-position: -160px -192px;
 }
 
-#callflow_container .icon.woman_stand {
+.icon.woman_stand {
     background-position: -224px -192px;
 }
 
-#callflow_container .icon.person_yay {
+.icon.person_yay {
     background-position: -288px -192px;
 }
 
-#callflow_container .icon.open_arms {
+.icon.open_arms {
     background-position: -352px -192px;
 }
 
-#callflow_container .icon.tech_support {
+.icon.tech_support {
     background-position: -416px -192px;
 }
 
-#callflow_container .icon.head1 {
+.icon.head1 {
     /* background-position: -480px -192px; */
     background-position: -478px -196px;
 }
 
-#callflow_container .icon.head2 {
+.icon.head2 {
     background-position: -544px -192px;
 }
 
-#callflow_container .icon.head3 {
+.icon.head3 {
     background-position: -608px -192px;
 }
 
-#callflow_container .icon.smiley {
+.icon.smiley {
     background-position: -672px -192px;
 }
 
-#callflow_container .icon.skull1 {
+.icon.skull1 {
     background-position: -736px -192px;
 }
 
-#callflow_container .icon.skull2 {
+.icon.skull2 {
     background-position: -800px -192px;
 }
 
-#callflow_container .icon.baby {
+.icon.baby {
     background-position: -864px -192px;
 }
 
-#callflow_container .icon.mouth_face {
+.icon.mouth_face {
     background-position: -928px -192px;
 }
 
-#callflow_container .icon.sad_face {
+.icon.sad_face {
     background-position: -992px -192px;
 }
 
-#callflow_container .icon.internet_box {
+.icon.internet_box {
     background-position: 0px -224px;
 }
 
-#callflow_container .icon.black_box {
+.icon.black_box {
     background-position: -64px -224px;
 }
 
-#callflow_container .icon.scale {
+.icon.scale {
     background-position: -128px -224px;
 }
 
-#callflow_container .icon.compass {
+.icon.compass {
     background-position: -192px -224px;
 }
 
-#callflow_container .icon.stopwatch1 {
+.icon.stopwatch1 {
     background-position: -256px -224px;
 }
 
-#callflow_container .icon.stopwatch2 {
+.icon.stopwatch2 {
     background-position: -320px -224px;
 }
 
-#callflow_container .icon.clock1 {
+.icon.clock1 {
     background-position: -384px -224px;
 }
 
-#callflow_container .icon.clock2 {
+.icon.clock2 {
     background-position: -448px -224px;
 }
 
-#callflow_container .icon.internet1 {
+.icon.internet1 {
     background-position: -512px -224px;
 }
 
-#callflow_container .icon.internet2 {
+.icon.internet2 {
     background-position: -576px -224px;
 }
 
-#callflow_container .icon.internet3 {
+.icon.internet3 {
     background-position: -640px -224px;
 }
 
-#callflow_container .icon.outlet1 {
+.icon.outlet1 {
     background-position: -704px -224px;
 }
 
-#callflow_container .icon.outlet2 {
+.icon.outlet2 {
     background-position: -768px -224px;
 }
 
-#callflow_container .icon.lightbulb_off {
+.icon.lightbulb_off {
     background-position: -832px -224px;
 }
 
-#callflow_container .icon.lightbulb_on {
+.icon.lightbulb_on {
     background-position: -896px -224px;
 }
 
-#callflow_container .icon.semi_circle {
+.icon.semi_circle {
     background-position: -960px -224px;
 }
 
-#callflow_container .icon.place {
+.icon.place {
     background-position: -32px -256px;
 }
 
-#callflow_container .icon.bell1 {
+.icon.bell1 {
     background-position: -96px -256px;
 }
 
-#callflow_container .icon.bell2 {
+.icon.bell2 {
     background-position: -160px -256px;
 }
 
-#callflow_container .icon.flag1 {
+.icon.flag1 {
     background-position: -224px -256px;
 }
 
-#callflow_container .icon.arrow_sign {
+.icon.arrow_sign {
     background-position: -288px -256px;
 }
 
-#callflow_container .icon.tag1 {
+.icon.tag1 {
     background-position: -352px -256px;
 }
 
-#callflow_container .icon.price_tag {
+.icon.price_tag {
     background-position: -416px -256px;
 }
 
-#callflow_container .icon.piggy_bank {
+.icon.piggy_bank {
     background-position: -480px -256px;
 }
 
-#callflow_container .icon.eyelash {
+.icon.eyelash {
     background-position: -544px -256px;
 }
 
-#callflow_container .icon.glasses {
+.icon.glasses {
     background-position: -608px -256px;
 }
 
-#callflow_container .icon.plane {
+.icon.plane {
     background-position: -672px -256px;
 }
 
-#callflow_container .icon.luggage1 {
+.icon.luggage1 {
     background-position: -736px -256px;
 }
 
-#callflow_container .icon.luggage2 {
+.icon.luggage2 {
     background-position: -800px -256px;
 }
 
-#callflow_container .icon.exclamation1 {
+.icon.exclamation1 {
     background-position: -864px -256px;
 }
 
-#callflow_container .icon.storm1 {
+.icon.storm1 {
     background-position: -928px -256px;
 }
 
-#callflow_container .icon.shirt1 {
+.icon.shirt1 {
     background-position: -992px -256px;
 }
 
-#callflow_container .icon.lock {
+.icon.lock {
     background-position: 0px -288px;
 }
 
-#callflow_container .icon.unlock {
+.icon.unlock {
     background-position: -64px -288px;
 }
 
-#callflow_container .icon.key {
+.icon.key {
     background-position: -128px -288px;
 }
 
-#callflow_container .icon.lightning1 {
+.icon.lightning1 {
     background-position: -192px -288px;
 }
 
-#callflow_container .icon.music1 {
+.icon.music1 {
     background-position: -256px -288px;
 }
 
-#callflow_container .icon.music2 {
+.icon.music2 {
     background-position: -320px -288px;
 }
 
-#callflow_container .icon.music3 {
+.icon.music3 {
     background-position: -384px -288px;
 }
 
-#callflow_container .icon.infinity {
+.icon.infinity {
     background-position: -448px -288px;
 }
 
-#callflow_container .icon.mic1 {
+.icon.mic1 {
     background-position: -512px -288px;
 }
 
-#callflow_container .icon.speaker1 {
+.icon.speaker1 {
     background-position: -576px -288px;
 }
 
-#callflow_container .icon.mic2 {
+.icon.mic2 {
     background-position: -640px -288px;
 }
 
-#callflow_container .icon.shop_cart {
+.icon.shop_cart {
     background-position: -704px -288px;
 }
 
-#callflow_container .icon.toxic1 {
+.icon.toxic1 {
     background-position: -768px -288px;
 }
 
-#callflow_container .icon.exclamation2 {
+.icon.exclamation2 {
     background-position: -832px -288px;
 }
 
-#callflow_container .icon.gift1 {
+.icon.gift1 {
     background-position: -896px -288px;
 }
 
-#callflow_container .icon.bird_fly {
+.icon.bird_fly {
     background-position: -960px -288px;
 }
 
-#callflow_container .icon.bird_stand {
+.icon.bird_stand {
     background-position: -32px -320px;
 }
 
-#callflow_container .icon.ying_yang {
+.icon.ying_yang {
     background-position: -96px -320px;
 }
 
-#callflow_container .icon.hand_out {
+.icon.hand_out {
     background-position: -160px -320px;
 }
 
-#callflow_container .icon.thumb_up2 {
+.icon.thumb_up2 {
     background-position: -224px -320px;
 }
 
-#callflow_container .icon.tree {
+.icon.tree {
     background-position: -288px -320px;
 }
 
-#callflow_container .icon.plant {
+.icon.plant {
     background-position: -352px -320px;
 }
 
-#callflow_container .icon.paint_roller {
+.icon.paint_roller {
     background-position: -416px -320px;
 }
 
-#callflow_container .icon.paint1 {
+.icon.paint1 {
     background-position: -480px -320px;
 }
 
-#callflow_container .icon.winners_cup {
+.icon.winners_cup {
     background-position: -544px -320px;
 }
 
-#callflow_container .icon.stein {
+.icon.stein {
     background-position: -608px -320px;
 }
 
-#callflow_container .icon.martini {
+.icon.martini {
     background-position: -672px -320px;
 }
 
-#callflow_container .icon.scale1 {
+.icon.scale1 {
     background-position: -736px -320px;
 }
 
-#callflow_container .icon.dice {
+.icon.dice {
     background-position: -800px -320px;
 }
 
-#callflow_container .icon.weight {
+.icon.weight {
     background-position: -864px -320px;
 }
 
-#callflow_container .icon.guitar {
+.icon.guitar {
     background-position: -928px -320px;
 }
 
-#callflow_container .icon.tie {
+.icon.tie {
     background-position: -992px -320px;
 }
 
-#callflow_container .icon.polaroid {
+.icon.polaroid {
     background-position: 0px -352px;
 }
 
-#callflow_container .icon.painting {
+.icon.painting {
     background-position: -64px -352px;
 }
 
-#callflow_container .icon.calendar {
+.icon.calendar {
     background-position: -128px -352px;
 }
 
-#callflow_container .icon.receipt {
+.icon.receipt {
     background-position: -192px -352px;
 }
 
-#callflow_container .icon.calculator1 {
+.icon.calculator1 {
     background-position: -256px -352px;
 }
 
-#callflow_container .icon.book {
+.icon.book {
     background-position: -320px -352px;
 }
 
-#callflow_container .icon.upload {
+.icon.upload {
     background-position: -384px -352px;
 }
 
-#callflow_container .icon.black_paper {
+.icon.black_paper {
     background-position: -448px -352px;
 }
 
-#callflow_container .icon.printer1 {
+.icon.printer1 {
     background-position: -512px -352px;
 }
 
-#callflow_container .icon.credit_card {
+.icon.credit_card {
     background-position: -576px -352px;
 }
 
-#callflow_container .icon.right_arrow_box {
+.icon.right_arrow_box {
     background-position: -640px -352px;
 }
 
-#callflow_container .icon.hand_box {
+.icon.hand_box {
     background-position: -704px -352px;
 }
 
-#callflow_container .icon.id {
+.icon.id {
     background-position: -768px -352px;
 }
 
-#callflow_container .icon.arrow_up_box {
+.icon.arrow_up_box {
     background-position: -832px -352px;
 }
 
-#callflow_container .icon.arrow_down_box {
+.icon.arrow_down_box {
     background-position: -896px -352px;
 }
 
-#callflow_container .icon.notepad {
+.icon.notepad {
     background-position: -960px -352px;
 }
 
-#callflow_container .icon.camera1 {
+.icon.camera1 {
     background-position: -32px -384px;
 }
 
-#callflow_container .icon.camera2 {
+.icon.camera2 {
     background-position: -96px -384px;
 }
 
-#callflow_container .icon.ipod {
+.icon.ipod {
     background-position: -160px -384px;
 }
 
-#callflow_container .icon.ipad {
+.icon.ipad {
     background-position: -224px -384px;
 }
 
-#callflow_container .icon.laptop {
+.icon.laptop {
     background-position: -288px -384px;
 }
 
-#callflow_container .icon.monitor1 {
+.icon.monitor1 {
     background-position: -352px -384px;
 }
 
-#callflow_container .icon.monitor2 {
+.icon.monitor2 {
     background-position: -416px -384px;
 }
 
-#callflow_container .icon.monitor3 {
+.icon.monitor3 {
     background-position: -480px -384px;
 }
 
-#callflow_container .icon.television {
+.icon.television {
     background-position: -544px -384px;
 }
 
-#callflow_container .icon.keyboard {
+.icon.keyboard {
     background-position: -608px -384px;
 }
 
-#callflow_container .icon.calculator2 {
+.icon.calculator2 {
     background-position: -672px -384px;
 }
 
-#callflow_container .icon.robot {
+.icon.robot {
     background-position: -736px -384px;
 }
 
-#callflow_container .icon.usb_drive {
+.icon.usb_drive {
     background-position: -800px -384px;
 }
 
-#callflow_container .icon.printer2 {
+.icon.printer2 {
     background-position: -864px -384px;
 }
 
-#callflow_container .icon.floppy {
+.icon.floppy {
     background-position: -928px -384px;
 }
 
-#callflow_container .icon.graph1_box {
+.icon.graph1_box {
     /*background-position: 0px -416px;*/
     background-position: -3px -420px;
 }
 
-#callflow_container .icon.barcode {
+.icon.barcode {
     background-position: -64px -416px;
 }
 
-#callflow_container .icon.outline1 {
+.icon.outline1 {
     background-position: -128px -416px;
 }
 
-#callflow_container .icon.outline2 {
+.icon.outline2 {
     background-position: -192px -416px;
 }
 
-#callflow_container .icon.graph2 {
+.icon.graph2 {
     background-position: -256px -416px;
 }
 
-#callflow_container .icon.graph3 {
+.icon.graph3 {
     background-position: -320px -416px;
 }
 
-#callflow_container .icon.circle_graph {
+.icon.circle_graph {
     background-position: -384px -416px;
 }
 
-#callflow_container .icon.display1 {
+.icon.display1 {
     background-position: -448px -416px;
 }
 
-#callflow_container .icon.outline3 {
+.icon.outline3 {
     background-position: -512px -416px;
 }
 
-#callflow_container .icon.connector1 {
+.icon.connector1 {
     background-position: -576px -416px;
 }
 
-#callflow_container .icon.graph4_box {
+.icon.graph4_box {
     background-position: -640px -416px;
 }
 
-#callflow_container .icon.graph5_box {
+.icon.graph5_box {
     background-position: -704px -416px;
 }
 
-#callflow_container .icon.circle_stack {
+.icon.circle_stack {
     background-position: -768px -416px;
 }
 
-#callflow_container .icon.square_stack {
+.icon.square_stack {
     background-position: -832px -416px;
 }
 
-#callflow_container .icon.rolodex {
+.icon.rolodex {
     background-position: -896px -416px;
 }
 
-#callflow_container .icon.heart {
+.icon.heart {
     background-position: -32px -448px;
 }
 
-#callflow_container .icon.eye {
+.icon.eye {
     background-position: -96px -448px;
 }
 
-#callflow_container .icon.target1 {
+.icon.target1 {
     background-position: -160px -448px;
 }
 
-#callflow_container .icon.bold_target {
+.icon.bold_target {
     background-position: -224px -448px;
 }
 
-#callflow_container .icon.star {
+.icon.star {
     background-position: -288px -448px;
 }
 
-#callflow_container .icon.line_circle {
+.icon.line_circle {
     background-position: -352px -448px;
 }
 
-#callflow_container .icon.star_burst1 {
+.icon.star_burst1 {
     background-position: -416px -448px;
 }
 
-#callflow_container .icon.puzzle1 {
+.icon.puzzle1 {
     background-position: -480px -448px;
 }
 
-#callflow_container .icon.puzzle2 {
+.icon.puzzle2 {
     background-position: -544px -448px;
 }
 
-#callflow_container .icon.puzzle3 {
+.icon.puzzle3 {
     background-position: -608px -448px;
 }
 
-#callflow_container .icon.puzzle4 {
+.icon.puzzle4 {
     background-position: -672px -448px;
 }
 
-#callflow_container .icon.black_cloud {
+.icon.black_cloud {
     background-position: -736px -448px;
 }
 
-#callflow_container .icon.outline_cloud {
+.icon.outline_cloud {
     background-position: -800px -448px;
 }
 
-#callflow_container .icon.asterisk1 {
+.icon.asterisk1 {
     background-position: -864px -448px;
 }
 
-#callflow_container .icon.asterisk2 {
+.icon.asterisk2 {
     background-position: -928px -448px;
 }
 
-#callflow_container .icon.starburst2 {
+.icon.starburst2 {
     background-position: -992px -448px;
 }
 
