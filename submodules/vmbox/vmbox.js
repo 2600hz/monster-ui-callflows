@@ -128,9 +128,20 @@ define(function(require){
 			});
 		},
 
+		vmboxFormatData: function(data) {
+			var self = this;
+
+			data.data.extra = data.data.extra || {};
+
+			data.data.extra.recipients = data.data.notify_email_addresses.toString();
+
+			return data;
+		},
+
 		vmboxRender: function(data, target, callbacks) {
 			var self = this,
-				vmbox_html = $(monster.template(self, 'vmbox-edit', data)),
+				formattedData = self.vmboxFormatData(data),
+				vmbox_html = $(monster.template(self, 'vmbox-edit', formattedData)),
 				vmboxForm = vmbox_html.find('#vmbox-form');
 
 			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone||'inherit', {inherit: self.i18n.active().defaultTimezone});
@@ -268,6 +279,16 @@ define(function(require){
 			});
 
 
+			var validateEmail = function (email) {
+					var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+					return re.test(email);
+				},
+				getRecipients = function() {
+					var list = $('#recipients_list', vmbox_html).val().replace(/\s+/g, '').split(',');
+
+					return list.filter(function(email) { return validateEmail(email) });
+				};
+
 			$('.vmbox-save', vmbox_html).click(function(ev) {
 				ev.preventDefault();
 
@@ -278,6 +299,8 @@ define(function(require){
 
 					if(monster.ui.valid(vmboxForm)) {
 						var form_data = monster.ui.getFormData('vmbox-form');
+
+						form_data.notify_email_addresses = getRecipients();
 
 						/* self.clean_form_data(form_data); */
 
@@ -308,7 +331,7 @@ define(function(require){
 
 		vmboxSave: function(form_data, data, success, error) {
 			var self = this,
-				normalized_data = self.vmboxNormalizeData($.extend(true, {}, data.data, form_data));
+				normalized_data = self.vmboxNormalizeData($.extend(true, {}, data.data, form_data), form_data);
 
 			if(typeof data.data == 'object' && data.data.id) {
 				self.vmboxUpdate(normalized_data, function(_data, status) {
@@ -326,28 +349,31 @@ define(function(require){
 			}
 		},
 
-		vmboxNormalizeData: function(form_data) {
-			if(!form_data.owner_id) {
-				delete form_data.owner_id;
+		vmboxNormalizeData: function(mergedData, formData) {
+			if(!mergedData.owner_id) {
+				delete mergedData.owner_id;
 			}
 
-			if(!form_data.media.unavailable) {
-				delete form_data.media.unavailable;
+			if(!mergedData.media.unavailable) {
+				delete mergedData.media.unavailable;
 			}
 
-			if(form_data.pin === '') {
-				delete form_data.pin;
+			if(mergedData.pin === '') {
+				delete mergedData.pin;
 			}
 
-			if(form_data.timezone && form_data.timezone === 'inherit') {
-				delete form_data.timezone;
+			if(mergedData.timezone && mergedData.timezone === 'inherit') {
+				delete mergedData.timezone;
 			}
 
-			form_data.not_configurable = !form_data.extra.allow_configuration;
+			mergedData.not_configurable = !mergedData.extra.allow_configuration;
 
-			delete form_data.extra;
+			// extend doesn't override arrays...
+			mergedData.notify_email_addresses = formData.notify_email_addresses;
 
-			return form_data;
+			delete mergedData.extra;
+
+			return mergedData;
 		},
 
 		vmboxDefineActions: function(args) {
