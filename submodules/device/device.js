@@ -428,7 +428,7 @@ define(function(require){
 				}
 
 				/* Do device type specific things here */
-				if($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile']) > -1) {
+				if($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile', 'ata']) > -1) {
 					monster.ui.protectField(device_html.find('#sip_password'), device_html);
 				}
 
