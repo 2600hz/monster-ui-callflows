@@ -133,7 +133,7 @@ define(function(require){
 
 			data.data.extra = data.data.extra || {};
 
-			data.data.extra.recipients = data.data.notify_email_addresses.toString();
+			data.data.extra.recipients = (data.data.notify_email_addresses || []).toString();
 
 			return data;
 		},
