@@ -101,6 +101,28 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="settings-section">
+				<div class="section-title">{{ i18n.callflows.accountSettings.voicemailFormat.title }}</div>
+				<div class="section-content">
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.voicemailFormat.dropdownLabel }}</label>
+						<div class="controls">
+							<select name="voicemail.extension" class="media-dropdown">
+								<option value="" {{#unless account.voicemail.extension}}selected{{/unless}}>
+									{{ i18n.callflows.accountSettings.voicemailFormat.default }}
+								</option>
+								<option value="mp3" {{#compare account.voicemail.extension '===' 'mp3'}}selected{{/compare}}>
+									mp3
+								</option>
+								<option value="wav" {{#compare account.voicemail.extension '===' 'wav'}}selected{{/compare}}>
+									wav
+								</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="action-bar clearfix">
 				<button type="button" class="monster-button-success account-settings-update pull-right">{{i18n.update}}</button>
 			</div>

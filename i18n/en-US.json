@@ -734,6 +734,8 @@
 			"pin_number_data_content": "Enter the PIN Number of this voicemail box (must be at least 4 digits)",
 			"unavailable_message": "Unavailable Message",
 			"unavailable_message_data_content": "Select the Unavailable message that you want to use for this this device. If you select - Not set -, then no media file will be played.",
+			"voicemailFormat": "Voicemail Format",
+			"voicemailFormatDefault": "Default",
 			"timezone": "Timezone",
 			"already_setup": "Already Setup",
 			"already_setup_data_content": "Is this voicemail box already considered initialized? If not, the first time the user logs in they will be forced to change their PIN and setup a greeting.",
@@ -782,6 +784,11 @@
 				"emptyUploadAlert": "Please select a file to upload",
 				"fileTooBigAlert": "You can not upload a file with a size exceeding 5MB",
 				"audioUploadButton": "Browse"
+			},
+			"voicemailFormat": {
+				"title": "Account's Voicemail Format",
+				"dropdownLabel": "Message Format:",
+				"default": "Default"
 			}
 		},
 		"__comment": "UI-1667: Adding way to customize Feature codes",

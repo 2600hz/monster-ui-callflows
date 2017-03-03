@@ -61,7 +61,7 @@
 					</div>
 
 					<div class="clearfix">
-						<label for="media_unavailable">{{ i18n.callflows.vmbox.unavailable_message }}</label>
+                                                    <label for="media_unavailable">{{ i18n.callflows.vmbox.unavailable_message }}</label>
 						<div class="input">
 							<span rel="popover" data-content="{{ i18n.callflows.vmbox.unavailable_message_data_content }}">
 								<select name="media.unavailable" id="media_unavailable" class="medium" >
@@ -87,6 +87,23 @@
 						<label for="timezone">{{ i18n.callflows.vmbox.timezone }}</label>
 						<div class="input">
 							<select name="timezone" id="timezone">
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="media_extension">{{ i18n.callflows.vmbox.voicemailFormat }}</label>
+						<div class="input">
+							<select name="media_extension" id="media_extension">
+                                                            <option value="" {{#unless data.media_extension}}selected{{/unless}}>
+                                                                    {{ i18n.callflows.vmbox.voicemailFormatDefault }}
+                                                            </option>
+                                                            <option value="mp3" {{#compare data.media_extension '===' 'mp3'}}selected{{/compare}}>
+                                                                    mp3
+                                                            </option>
+                                                            <option value="wav" {{#compare data.media_extension '===' 'wav'}}selected{{/compare}}>
+                                                                    wav
+                                                            </option>
 							</select>
 						</div>
 					</div>
