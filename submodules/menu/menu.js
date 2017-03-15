@@ -400,7 +400,7 @@ define(function(require){
 							var popup, popup_html;
 
 							popup_html = $(monster.template(self, 'menu-callflowEdit', {
-								items: monster.util.sort(menus),
+								items: _.sortBy(menus, 'name'),
 								selected: node.getMetadata('id') || ''
 							}));
 

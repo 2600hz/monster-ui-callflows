@@ -472,7 +472,7 @@ define(function(require){
 							var popup, popup_html;
 
 							popup_html = $(monster.template(self, 'directory-callflowEdit', {
-								items: monster.util.sort(directories),
+								items: _.sortBy(directories, 'name'),
 								selected: node.getMetadata('id') || ''
 							}));
 

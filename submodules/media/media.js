@@ -350,7 +350,7 @@ define(function(require){
 							var popup, popup_html;
 
 							popup_html = $(monster.template(self, 'media-callflowEdit', {
-								items: monster.util.sort(medias),
+								items: _.sortBy(medias, 'name'),
 								selected: node.getMetadata('id') || ''
 							}));
 

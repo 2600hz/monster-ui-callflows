@@ -62,7 +62,7 @@ define(function(require){
 									value: node.getMetadata('timeout') || '20'
 								},
 								objects: {
-									items: monster.util.sort(users),
+									items: _.sortBy(users, 'name'),
 									selected: node.getMetadata('id') || ''
 								}
 							}));

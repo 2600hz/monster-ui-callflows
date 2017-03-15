@@ -107,7 +107,7 @@ define(function(require){
 								popup_html = $(monster.template(self, 'callflow-edit_dialog', {
 									objects: {
 										type: 'callflow',
-										items: monster.util.sort(_data),
+										items: _.sortBy(_data, 'name'),
 										selected: node.getMetadata('id') || ''
 									}
 								}));

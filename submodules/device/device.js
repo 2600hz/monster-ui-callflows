@@ -1130,7 +1130,7 @@ define(function(require){
 									value: node.getMetadata('timeout') || '20'
 								},
 								objects: {
-									items: monster.util.sort(devices),
+									items: _.sortBy(devices, 'name'),
 									selected: node.getMetadata('id') || ''
 								}
 							}));

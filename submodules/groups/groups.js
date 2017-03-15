@@ -413,7 +413,7 @@ define(function(require){
 					}
 				});
 
-				unselected_devices = monster.util.sort(unselected_devices);
+				unselected_devices = _.sortBy(unselected_devices, 'name');
 
 				self.groupsGroupList(function(_data) {
 					$.each(_data, function(i, obj) {
@@ -427,7 +427,7 @@ define(function(require){
 						}
 					});
 
-					unselected_groups = monster.util.sort(unselected_groups);
+					unselected_groups = _.sortBy(unselected_groups, 'name');
 
 					self.groupsUserList(function(_data) {
 						$.each(_data, function(i, obj) {
@@ -441,7 +441,7 @@ define(function(require){
 								unselected_users.push(obj);
 							}
 						});
-						unselected_users = monster.util.sort(unselected_users);
+						unselected_users = _.sortBy(unselected_users, 'name');
 
 						popup_html = $(monster.template(self, 'groups-page_group_dialog', {
 							form: {
@@ -699,7 +699,7 @@ define(function(require){
 					}
 				});
 
-				unselected_devices = monster.util.sort(unselected_devices);
+				unselected_devices = _.sortBy(unselected_devices, 'name');
 
 				self.groupsGroupList(function(_data) {
 					$.each(_data, function(i, obj) {
@@ -715,7 +715,7 @@ define(function(require){
 						}
 					});
 
-					unselected_groups = monster.util.sort(unselected_groups);
+					unselected_groups = _.sortBy(unselected_groups, 'name');
 
 					self.groupsUserList(function(_data, status) {
 						$.each(_data, function(i, obj) {
@@ -732,7 +732,7 @@ define(function(require){
 							}
 						});
 
-						unselected_users = monster.util.sort(unselected_users);
+						unselected_users = _.sortBy(unselected_users, 'name');
 
 						self.groupsMediaList(function(_data) {
 							var media_array = _data.sort(function(a,b) {

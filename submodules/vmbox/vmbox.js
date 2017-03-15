@@ -413,7 +413,7 @@ define(function(require){
 									var popup, popup_html;
 
 									popup_html = $(monster.template(self, 'vmbox-callflowEdit', {
-										items: monster.util.sort(data),
+										items: _.sortBy(data, 'name'),
 										selected: node.getMetadata('id') || ''
 									}));
 

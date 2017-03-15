@@ -48,7 +48,7 @@ define(function(require){
 
 						self.faxboxList(function(data, status) {
 							var popup_html = $(monster.template(self, 'faxbox-callflowEdit', {
-									items: monster.util.sort(data),
+									items: _.sortBy(data, 'name'),
 									selected: node.getMetadata('id') || ''
 								})),
 								popup;

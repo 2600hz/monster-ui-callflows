@@ -505,7 +505,7 @@ define(function(require){
 							rules.push({ id: '_', name: self.i18n.active().callflows.timeofday.all_other_times });
 
 							popup_html = $(monster.template(self, 'timeofday-callflowKey', {
-								items: monster.util.sort(rules),
+								items: _.sortBy(rules, 'name'),
 								selected: child_node.key
 							}));
 
