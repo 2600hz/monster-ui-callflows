@@ -47,7 +47,7 @@ define(function(require){
 					edit: function(node, callback) {
 						self.conferenceList(function(data, status) {
 							var popup_html = $(monster.template(self, 'conference-callflowEdit', {
-									items: monster.util.sort(data),
+									items: _.sortBy(data, 'name'),
 									selected: node.getMetadata('id') || ''
 								})),
 								popup;
