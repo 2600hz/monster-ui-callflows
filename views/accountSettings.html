@@ -87,11 +87,22 @@
 								<option value="{{silenceMedia}}" {{#compare account.music_on_hold.media_id '===' silenceMedia}}selected{{/compare}}>
 									{{ i18n.callflows.accountSettings.musicOnHold.silence }}
 								</option>
+								<option value="shoutcast" {{#if extra.isShoutcast}}selected{{/if}}>
+									{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}
+								</option>
 								{{#each mediaList}}
 									<option value="{{this.id}}" {{#compare ../account.music_on_hold.media_id '===' this.id}}selected{{/compare}}>{{this.name}}</option>
 								{{/each}}
 							</select>
 							<button type="button" class="monster-button-primary upload-toggle" data-toggle="button">{{ i18n.upload }}</button>
+						</div>
+					</div>
+					<div class="shoutcast-div{{#if extra.isShoutcast}} active{{/if}}">
+						<div class="control-group">
+							<label class="control-label">{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLHelp }}" data-placement="top" data-toggle="tooltip"></i></label>
+							<div class="controls">
+								<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{account.music_on_hold.media_id}}"/>
+							</div>
 						</div>
 					</div>
 					<div class="upload-div">
