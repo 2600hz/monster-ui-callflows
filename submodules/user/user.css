@@ -139,6 +139,14 @@
 	font-weight: bold;
 }
 
+.callflows-port #user-form .shoutcast-div {
+	display: none;
+}
+
+.callflows-port #user-form .shoutcast-div.active {
+	display: block;
+}
+
 /* Hotdesk devices */
 .callflows-port #user-form #hotdesk_devices {
 	/*width: 400px;*/
