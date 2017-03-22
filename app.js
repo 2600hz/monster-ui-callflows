@@ -375,16 +375,38 @@ define(function(require){
 		},
 
 		renderAccountSettings: function(container) {
-			var self = this,
-				silenceMediaId = 'silence_stream://300000';
+			var self = this;
+
 			self.loadAccountSettingsData(function(accountSettingsData) {
-				var template = $(monster.template(self, 'accountSettings', $.extend(true, { silenceMedia: silenceMediaId }, accountSettingsData))),
+				var formattedData = self.formatAccountSettingsData(accountSettingsData),
+					template = $(monster.template(self, 'accountSettings', formattedData)),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
+
+				monster.ui.tooltips(template);
 
 				template.find('.cid-number-select').chosen({ search_contains: true, width: '220px' });
 				container.empty().append(template);
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
+		},
+
+		formatAccountSettingsData: function(data) {
+			var formattedData = data;
+
+			formattedData.silenceMedia = 'silence_stream://300000';
+
+			formattedData.extra = formattedData.extra || {};
+			formattedData.extra.isShoutcast = false;
+
+			if (formattedData.account.hasOwnProperty('music_on_hold') && formattedData.account.music_on_hold.hasOwnProperty('media_id')) {
+				if (formattedData.account.music_on_hold.media_id.indexOf('://') >= 0) {
+					if (formattedData.account.music_on_hold.media_id !== formattedData.silenceMedia) {
+						formattedData.extra.isShoutcast = true;
+					}
+				}
+			}
+
+			return formattedData;
 		},
 
 		renderBlacklists: function(template, accountSettingsData) {
@@ -423,6 +445,19 @@ define(function(require){
 					}
 				};
 
+			monster.ui.validate(template.find('#account_settings_form'), {
+				rules: {
+					'extra.shoutcastUrl': {
+						protocol: true,
+						required: true
+					}
+				}
+			});
+
+			template.find('.media-dropdown').on('change', function() {
+				template.find('.shoutcast-div').toggleClass('active', $(this).val() === 'shoutcast').find('input').val('');
+			});
+
 			template.find('.upload-input').fileUpload({
 				inputOnly: true,
 				wrapperClass: 'file-upload input-append',
@@ -454,6 +489,7 @@ define(function(require){
 			});
 
 			template.find('.upload-submit').on('click', function() {
+				template.find('.shoutcast-div').removeClass('active');
 				if(mediaToUpload) {
 					self.callApi({
 						resource: 'media.create',
@@ -498,31 +534,38 @@ define(function(require){
 			});
 
 			template.find('.account-settings-update').on('click', function() {
-				var formData = monster.ui.getFormData('account_settings_form'),
-					newData = $.extend(true, {}, data.account, formData);
+				if (monster.ui.valid(template.find('#account_settings_form'))) {
+					var formData = monster.ui.getFormData('account_settings_form'),
+						newData = $.extend(true, {}, data.account, formData);
 
-				if(formData.music_on_hold.media_id === '') {
-					delete newData.music_on_hold.media_id;
-				}
-				if(formData.caller_id.external.name === '') {
-					delete newData.caller_id.external.name;
-				}
-				if(formData.caller_id.external.number === '') {
-					delete newData.caller_id.external.number;
-				}
-
-				newData.blacklists = widgetBlacklist.getSelectedItems();
-
-				self.callApi({
-					resource: 'account.update',
-					data: {
-						accountId: newData.id,
-						data: newData
-					},
-					success: function(data, status) {
-						self.render();
+					if (formData.music_on_hold.media_id === '') {
+						delete newData.music_on_hold.media_id;
+					} else if (formData.music_on_hold.media_id === 'shoutcast') {
+						newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
 					}
-				});
+
+					if (formData.caller_id.external.name === '') {
+						delete newData.caller_id.external.name;
+					}
+					if (formData.caller_id.external.number === '') {
+						delete newData.caller_id.external.number;
+					}
+
+					newData.blacklists = widgetBlacklist.getSelectedItems();
+
+					delete newData.extra;
+
+					self.callApi({
+						resource: 'account.update',
+						data: {
+							accountId: newData.id,
+							data: newData
+						},
+						success: function(data, status) {
+							self.render();
+						}
+					});
+				}
 			});
 		},
 

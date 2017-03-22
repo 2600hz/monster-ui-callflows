@@ -784,7 +784,11 @@
 				"default": "Default Music",
 				"emptyUploadAlert": "Please select a file to upload",
 				"fileTooBigAlert": "You can not upload a file with a size exceeding 5MB",
-				"audioUploadButton": "Browse"
+				"audioUploadButton": "Browse",
+				"__comment": "UI-2654: Allow shoutcast URL for MoH",
+				"__version": "v4.1",
+				"shoutcastURL": "Stream URL",
+				"shoutcastURLHelp": "You can type any URL including :// (http, https, shout...)"
 			},
 			"blacklist": {
 				"title": "Blacklists"
