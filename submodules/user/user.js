@@ -355,6 +355,10 @@ define(function(require){
 									{
 										id: 'silence_stream://300000',
 										name: self.i18n.active().callflows.user.silence
+									},
+									{
+										id: 'shoutcast',
+										name: self.i18n.active().callflows.accountSettings.musicOnHold.shoutcastURL
 									}
 								);
 							}
@@ -425,6 +429,21 @@ define(function(require){
 					}
 
 					render_data = $.extend(true, defaults, { data: results.user_get });
+
+					render_data.extra = render_data.extra || {};
+					render_data.extra.isShoutcast = false;
+
+					// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism, 
+					// but we also need to store the  value so we can display it
+					if (render_data.data.hasOwnProperty('music_on_hold') && render_data.data.music_on_hold.hasOwnProperty('media_id')) {
+						if (render_data.data.music_on_hold.media_id.indexOf('://') >= 0) {
+							if (render_data.data.music_on_hold.media_id !== 'silence_stream://300000') {
+								render_data.extra.isShoutcast = true;
+								render_data.extra.shoutcastValue = render_data.data.music_on_hold.media_id;
+								render_data.data.music_on_hold.media_id = 'shoutcast';
+							}
+						}
+					}
 				}
 
 				self.userRender(render_data, target, callbacks);
@@ -447,6 +466,9 @@ define(function(require){
 
 			monster.ui.validate(user_form, {
 				rules: {
+					"extra.shoutcastUrl": {
+						protocol: true
+					},
 					username: {
 						required: true,
 						minlength: 3,
@@ -464,6 +486,7 @@ define(function(require){
 						maxlength: 256,
 						regex: /^[0-9a-zA-Z\s\-\']+$/
 					},
+
 					email: {
 						required: true,
 						email: true
@@ -539,6 +562,10 @@ define(function(require){
 						if(form_data.enable_pin === false) {
 							delete data.data.queue_pin;
 							delete data.data.record_call;
+						}
+
+						if(form_data.music_on_hold.media_id === 'shoutcast') {
+							form_data.music_on_hold.media_id = user_html.find('.shoutcast-url-input').val();
 						}
 
 						self.userCleanFormData(form_data);
@@ -617,6 +644,8 @@ define(function(require){
 
 			$('#music_on_hold_media_id', user_html).change(function() {
 				!$('#music_on_hold_media_id option:selected', user_html).val() ? $('#edit_link_media', user_html).hide() : $('#edit_link_media', user_html).show();
+
+				user_html.find('.shoutcast-div').toggleClass('active', $(this).val() === 'shoutcast');
 			});
 
 			$('.inline_action_media', user_html).click(function(ev) {
