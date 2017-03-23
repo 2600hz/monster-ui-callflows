@@ -271,6 +271,13 @@
 						</div>
 					</div>
 
+					<div class="clearfix shoutcast-div{{#if extra.isShoutcast}} active{{/if}}">
+						<label for="extra.shoutcastUrl">{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}</label>
+						<div class="input">
+							<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{extra.shoutcastValue}}" rel="popover" data-content="{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLHelp }}"/>
+						</div>
+					</div>
+
 					<div class="clearfix">
 						<label for="media_peer_to_peer">{{ i18n.callflows.device.peer_to_peer_audio }}</label>
 						<div class="input">

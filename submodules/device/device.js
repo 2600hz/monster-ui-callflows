@@ -280,6 +280,10 @@ define(function(require){
 										{
 											id: 'silence_stream://300000',
 											name: self.i18n.active().callflows.device.silence
+										},
+										{
+											id: 'shoutcast',
+											name: self.i18n.active().callflows.accountSettings.musicOnHold.shoutcastURL
 										}
 									);
 
@@ -378,6 +382,21 @@ define(function(require){
 				dataGlobal.data.provision = $.extend(true, {}, default_provision_data, dataGlobal.data.provision);
 			}
 
+			dataGlobal.extra = dataGlobal.extra || {};
+			dataGlobal.extra.isShoutcast = false;
+
+			// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism, 
+			// but we also need to store the  value so we can display it
+			if (dataGlobal.data.hasOwnProperty('music_on_hold') && dataGlobal.data.music_on_hold.hasOwnProperty('media_id')) {
+				if (dataGlobal.data.music_on_hold.media_id.indexOf('://') >= 0) {
+					if (dataGlobal.data.music_on_hold.media_id !== 'silence_stream://300000') {
+						dataGlobal.extra.isShoutcast = true;
+						dataGlobal.extra.shoutcastValue = dataGlobal.data.music_on_hold.media_id;
+						dataGlobal.data.music_on_hold.media_id = 'shoutcast';
+					}
+				}
+			}
+
 			return dataGlobal;
 		},
 
@@ -386,7 +405,8 @@ define(function(require){
 				sip_uri: {},
 				sip_device : {
 					'mac_address': { mac: true },
-					'sip_expire_seconds': {	digits: true }
+					'sip_expire_seconds': {	digits: true },
+					'extra.shoutcastUrl': { protocol: true }
 				},
 				fax : {
 					'mac_address': { mac: true },
@@ -398,11 +418,13 @@ define(function(require){
 				},
 				landline: {},
 				softphone: {
-					'sip_expire_seconds': {	digits: true }
+					'sip_expire_seconds': {	digits: true },
+					'extra.shoutcastUrl': { protocol: true }
 				},
 				mobile: {
 					'mdn': { digits: true },
-					'sip_expire_seconds': {	digits: true }
+					'sip_expire_seconds': {	digits: true },
+					'extra.shoutcastUrl': { protocol: true }
 				}
 			};
 
@@ -485,6 +507,10 @@ define(function(require){
 						if(monster.ui.valid(deviceForm)) {
 							var form_data = monster.ui.getFormData('device-form');
 
+							if(form_data.music_on_hold.media_id === 'shoutcast') {
+								form_data.music_on_hold.media_id = device_html.find('.shoutcast-url-input').val();
+							}
+
 							self.deviceCleanFormData(form_data);
 
 							if(form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
@@ -536,6 +562,8 @@ define(function(require){
 
 				$('#music_on_hold_media_id', device_html).change(function() {
 					!$('#music_on_hold_media_id option:selected', device_html).val() ? $('#edit_link_media', device_html).hide() : $('#edit_link_media', device_html).show();
+
+					device_html.find('.shoutcast-div').toggleClass('active', $(this).val() === 'shoutcast');
 				});
 
 				$('.inline_action_media', device_html).click(function(ev) {

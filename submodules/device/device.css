@@ -88,3 +88,11 @@
 	margin-bottom: 10px;
 	padding: 4px 6px;
 }
+
+.callflows-port #device-form .shoutcast-div {
+	display: none;
+}
+
+.callflows-port #device-form .shoutcast-div.active {
+	display: block;
+}
