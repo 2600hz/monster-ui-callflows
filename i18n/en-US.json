@@ -840,7 +840,7 @@
 			"name": "Name",
 			"listNumbers": "List of existing numbers",
 			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?",
-			"help": "In order to activate this blacklist, head to the Account Settings section."
+			"help": "In order to activate this blacklist, head to the Account Settings section.If you want to block Anonymous calls, try adding 0000000000 as a blocked number."
 		}
 	},
 	"oldCallflows": {
