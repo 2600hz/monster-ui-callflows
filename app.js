@@ -587,7 +587,7 @@ define(function(require){
 					$mainContent = container.find('.callflow-content'),
 					$tools = container.find('.tools'),
 					$flowChart = container.find('.flowchart'),
-					contentHeight = window.innerHeight - $('#main_topbar').outerHeight(),
+					contentHeight = window.innerHeight - $('.core-topbar-wrapper').outerHeight(),
 					contentHeightPx = contentHeight + 'px',
 					innerContentHeightPx = (contentHeight-71) + 'px';
 
