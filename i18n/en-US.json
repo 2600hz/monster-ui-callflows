@@ -995,6 +995,12 @@
 		"callflowsTitle": "Callflows",
 		"backButton": "Return to Callflows Home",
 		"accountTitle": "Account Settings",
-		"featureCodeTitle": "Feature Codes"
+		"featureCodeTitle": "Feature Codes",
+		"__comment": "UI-2612: add toggle to hide/view system callflows",
+		"__version": "v4.1",
+		"showSystemCallflows": {
+			"title": "Show All Callflows",
+			"help": "As an admin, you're allowed to see all the existing callflows in this page. This include \"Applications\" Callflows that are created by other apps, but that you don't necesserarily want to update. If you wish to reduce clutter, you can switch this off to hide these callflows."
+		}
 	}
 }

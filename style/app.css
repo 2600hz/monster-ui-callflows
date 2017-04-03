@@ -1442,6 +1442,18 @@
 	float: right;
 }
 
+#callflow_container .entity-header .superadmin-mode {
+	float: right;
+	line-height: 35px;
+	margin-right: 50px;
+	display: inline-block;
+}
+
+#callflow_container .entity-header .superadmin-mode .switch-title {
+	color: #22a5ff;
+	margin-right: 5px;
+}
+
 #callflow_container .entity-content {
 	padding: 20px 40px;
 }

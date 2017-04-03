@@ -16,7 +16,19 @@
 	<div class="callflow-content listing-mode">
 		<div class="entity-header">
 			<div class="entity-title">{{ i18n.entityManager.callflowsTitle }}</div>
+			
 			<button type="button" class="back-button monster-button-secondary">{{ i18n.entityManager.backButton }}</button>
+			{{#if canToggleCallflows}}
+				<div class="superadmin-mode">
+					<span class="switch-title">
+						<i class="help-popover fa fa-question-circle" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.entityManager.showSystemCallflows.help }}"></i>
+						{{ i18n.entityManager.showSystemCallflows.title }}
+					</span>
+					{{#monsterSwitch}}
+						<input type="checkbox" id="switch_role" {{#if hasAllCallflows}} checked{{/if}} />
+					{{/monsterSwitch}}
+				</div>
+			{{/if}}
 		</div>
 		<div class="callflow-view clearfix">
 			<div class="real-content"> 

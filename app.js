@@ -84,9 +84,14 @@ define(function(require){
 
 		renderCallflows: function(container){
 			var self = this,
-				callflowsTemplate = $(monster.template(self, 'callflow-manager'));
+				callflowsTemplate = $(monster.template(self, 'callflow-manager', {
+					canToggleCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
+					hasAllCallflows: self.appFlags.showAllCallflows
+				}));
 
-			self.bindCallflowsEvents(callflowsTemplate);
+			self.bindCallflowsEvents(callflowsTemplate, container);
+
+			monster.ui.tooltips(callflowsTemplate);
 
 			self.repaintList({
 				template: callflowsTemplate,
@@ -102,12 +107,18 @@ define(function(require){
 			});
 		},
 
-		bindCallflowsEvents: function(template) {
+		bindCallflowsEvents: function(template, container) {
 			var self = this,
 				callflowList = template.find('.list-container .list'),
 				isLoading = false,
 				loader = $('<li class="content-centered list-loader"> <i class="fa fa-spinner fa-spin"></i></li>'),
 				searchLink = $(monster.template(self, 'callflowList-searchLink'));
+
+			template.find('.superadmin-mode #switch_role').on('change', function(e) {
+				self.appFlags.showAllCallflows = $(this).is(':checked');
+
+				self.renderCallflows(container);
+			});
 
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
@@ -225,6 +236,7 @@ define(function(require){
 				template = args.template,
 				actions = args.actions,
 				editEntity = function(type, id) {
+
 					monster.pub(actions[type].editEntity, {
 						data: id ? { id: id } : {},
 						parent: template,
