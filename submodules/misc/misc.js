@@ -740,6 +740,66 @@ define(function(require){
 						});
 					}
 				},
+
+				'tts[]': {
+					name: self.i18n.active().callflows.tts.name,
+					icon: 'chat_circle',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'tts',
+					tip: self.i18n.active().callflows.tts.tip,
+					data: {
+						text: ''
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 45,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						var popup, popup_html;
+
+						popup_html = $(monster.template(self, 'misc-tts', {
+							data_tts: {
+								'text': node.getMetadata('text'),
+								'language': node.getMetadata('language'),
+								'voice': node.getMetadata('voice')
+							}
+						}));
+
+						monster.ui.tooltips(popup_html);
+
+						$('#add', popup_html).click(function() {
+							var setData = function(field, value) {
+								if (value !== 'default') {
+									node.setMetadata(field, value);
+								} else {
+									node.deleteMetadata(field);
+								}
+							};
+
+							setData('text', $('#tts_text_input', popup_html).val());
+							setData('language', $('#tts_language_input', popup_html).val());
+							setData('voice', $('#tts_voice_input', popup_html).val());
+
+							popup.dialog('close');
+						});
+
+						popup = monster.ui.dialog(popup_html, {
+							title: self.i18n.active().callflows.tts.title,
+							beforeClose: function() {
+								if (typeof callback === 'function') {
+									callback();
+								}
+							}
+						});
+					}
+				},
 				'response[]': {
 					name: self.i18n.active().oldCallflows.response,
 					icon: 'rightarrow',

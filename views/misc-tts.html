@@ -1,0 +1,41 @@
+<div class="dialog_popup callflows-port">
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="tts_text_input">{{ i18n.callflows.tts.text.label }}</label>
+				<textarea id="tts_text_input">{{ data_tts.text }}</textarea>
+			</div>
+			<div class="popup_field">
+				<label for="tts_voice_input">
+					{{ i18n.callflows.tts.voice.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="tts_voice_input">
+						{{#select data_tts.voice}}
+							<option value="default">{{ i18n.callflows.tts.default }}</option>
+							<option value="male">{{ i18n.callflows.tts.voice.male }}</option>
+							<option value="female">{{ i18n.callflows.tts.voice.female }}</option>
+						{{/select}}
+					</select>
+				</div>
+			</div>
+			<div class="popup_field">
+				<label for="tts_language_input">
+					{{ i18n.callflows.tts.language.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="tts_language_input">
+						{{#select data_tts.language}}
+							<option value="default">{{ i18n.callflows.tts.default }}</option>
+							<option value="en-us">{{ i18n.callflows.tts.language.en }}</option>
+							<option value="fr-fr">{{ i18n.callflows.tts.language.fr }}</option>
+						{{/select}}
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>

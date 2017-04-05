@@ -842,6 +842,28 @@
 			"listNumbers": "List of existing numbers",
 			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?",
 			"help": "In order to activate this blacklist, head to the Account Settings section.If you want to block Anonymous calls, try adding 0000000000 as a blocked number."
+		},
+
+		"__comment": "UI-2216: adding tts to adv. callflows",
+		"__version": "v4.0",
+		"tts": {
+			"default": "Default",
+			"title": "Text To Speech",
+			"name": "TTS",
+			"tip": "TTS allows you to enter a text that will be spoken by a Text-To-Speech engine over the phone.",
+			"voice": {
+				"label": "Voice",
+				"female": "Female",
+				"male": "Male"
+			},
+			"language": {
+				"label": "Language",
+				"en": "English",
+				"fr": "French"
+			},
+			"text": {
+				"label": "Text"
+			}
 		}
 	},
 	"oldCallflows": {
