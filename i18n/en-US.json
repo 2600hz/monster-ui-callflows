@@ -231,6 +231,7 @@
 				"help": "If 'checked' then the caller id of the call to disa will be used on the outbound call"
 			},
 			"preconnect_audio": {
+				"label": "Preconnect Audio",
 				"help": "This sets what the user should hear after entering a destination number until the outbound call is established",
 				"ringing": "Ringing",
 				"dialtone": "Dialtone"
