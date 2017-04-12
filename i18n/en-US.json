@@ -864,6 +864,18 @@
 			"text": {
 				"label": "Text"
 			}
+		},
+
+		"__comment": "UI-439: adding sleep to adv. callflows",
+		"__version": "v4.1",
+		"sleep": {
+			"default": "Default",
+			"title": "Sleep",
+			"name": "Sleep",
+			"tip": "Allows you to set a pause before continuing the callflow.",
+			"duration": {
+				"label": "Duration (s)"
+			}
 		}
 	},
 	"oldCallflows": {

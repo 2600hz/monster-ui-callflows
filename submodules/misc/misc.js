@@ -741,6 +741,63 @@ define(function(require){
 					}
 				},
 
+				'sleep[]': {
+					name: self.i18n.active().callflows.sleep.name,
+					icon: 'dot_chat',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'sleep',
+					tip: self.i18n.active().callflows.sleep.tip,
+					data: {
+						duration: '',
+						unit: 's'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 47,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						var popup, popup_html;
+
+						popup_html = $(monster.template(self, 'misc-sleep', {
+							data_sleep: {
+								'duration': node.getMetadata('duration')
+							}
+						}));
+
+						monster.ui.tooltips(popup_html);
+
+						$('#add', popup_html).click(function() {
+							var setData = function(field, value) {
+								if (value !== 'default') {
+									node.setMetadata(field, value);
+								} else {
+									node.deleteMetadata(field);
+								}
+							};
+
+							setData('duration', $('#sleep_duration_input', popup_html).val());
+
+							popup.dialog('close');
+						});
+
+						popup = monster.ui.dialog(popup_html, {
+							title: self.i18n.active().callflows.sleep.title,
+							beforeClose: function() {
+								if (typeof callback === 'function') {
+									callback();
+								}
+							}
+						});
+					}
+				},
+
 				'tts[]': {
 					name: self.i18n.active().callflows.tts.name,
 					icon: 'chat_circle',
