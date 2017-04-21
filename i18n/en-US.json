@@ -876,6 +876,17 @@
 			"duration": {
 				"label": "Duration (s)"
 			}
+		},
+
+		"__comment": "UI-439: adding sleep to adv. callflows",
+		"__version": "v4.0",
+		"pageGroup": {
+			"audio": {
+				"label": "Audio",
+				"help": "What kind of audio for the group members",
+				"oneWay": "One-way",
+				"twoWay": "Two-way"
+			}
 		}
 	},
 	"oldCallflows": {
