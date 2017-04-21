@@ -5,6 +5,16 @@
 			<input id="name" type="text" value="{{form.name}}"/>
 			<div class="clear"/>
 		</div>
+		<div class="popup_field">
+			<label>{{ i18n.callflows.pageGroup.audio.label }}</label>
+			<select id="audio" name="audio">
+				{{#select form.audio}}
+					<option value="one-way">{{ i18n.callflows.pageGroup.audio.oneWay }}</option>
+					<option value="two-way">{{ i18n.callflows.pageGroup.audio.twoWay }}</option>
+				{{/select}}
+			</select>
+			<div class="clear"/>
+		</div>
 	</div>
 	<div id="two_columns">
 		<div class="wrapper">

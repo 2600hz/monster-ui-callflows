@@ -445,7 +445,8 @@ define(function(require){
 
 						popup_html = $(monster.template(self, 'groups-page_group_dialog', {
 							form: {
-								name: node.getMetadata('name') || ''
+								name: node.getMetadata('name') || '',
+								audio: node.getMetadata('audio') || 'one-way'
 							}
 						}));
 						$.each(unselected_groups, function() {
@@ -553,6 +554,7 @@ define(function(require){
 
 						$('#save_ring_group', popup_html).click(function() {
 							var name = $('#name', popup_html).val();
+							var audio = $('#audio', popup_html).val();
 
 							endpoints = [];
 
@@ -564,6 +566,7 @@ define(function(require){
 
 							node.setMetadata('endpoints', endpoints);
 							node.setMetadata('name', name);
+							node.setMetadata('audio', audio);
 
 							node.caption = name;
 
