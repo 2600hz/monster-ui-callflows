@@ -887,6 +887,13 @@
 				"oneWay": "One-way",
 				"twoWay": "Two-way"
 			}
+		},
+		"missedCallAlert": {
+			"title": "Missed Call Alert",
+			"tip": "Allows users to receive an email notification for unanswered inbound calls that do not result in a voicemail message.",
+			"emails": "Emails",
+			"emailsHelp": "List of email addresses separated by a comma that will receive a notification",
+			"popupTitle": "Missed Call Alert"
 		}
 	},
 	"oldCallflows": {
