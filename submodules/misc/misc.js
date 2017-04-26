@@ -952,7 +952,110 @@ define(function(require){
 							});
 						});
 					}
+				},
+				'missed_call_alert[]': {
+					name: self.i18n.active().callflows.missedCallAlert.title,
+					icon: 'bell1',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'missed_call_alert',
+					tip: self.i18n.active().callflows.missedCallAlert.tip,
+					data: {
+						name: ''
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 31,
+					caption: function() {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscEditMissedCallAlerts(node, callback);
+					}
 				}
+			});
+		},
+
+		miscEditMissedCallAlerts: function(node, callback) {
+			var self = this,
+				recipients = node.getMetadata('recipients'),
+				mapUsers = {},
+				selectedEmails = [],
+				popup;
+
+			_.each(recipients, function(recipient) {
+				if (recipient.type === 'user') {
+					mapUsers[recipient.id] = recipient;
+				} else if (recipient.type === 'email') {
+					selectedEmails.push(recipient.id);
+				}
+			});
+
+			self.miscUserList(function(users) {
+				var items = [],
+					selectedItems = [];
+
+				_.each(users, function(user) {
+					var formattedUser = {
+						key: user.id,
+						value: user.first_name + ' ' + user.last_name
+					};
+
+					items.push(formattedUser);
+
+					if (mapUsers.hasOwnProperty(user.id)) {
+						selectedItems.push(formattedUser);
+					}
+				});
+
+				var template = $(monster.template(self, 'misc-missedCallAlert-dialog', { emails: selectedEmails.toString() })),
+					widget = monster.ui.linkedColumns(template.find('.items-selector-wrapper'), items, selectedItems, {
+						i18n: {
+							columnsTitles: {
+								available: self.i18n.active().callflows.missedCallAlert.unselectedUsers,
+								selected: self.i18n.active().callflows.missedCallAlert.selectedUsers
+							}
+						},
+						containerClasses: 'skinny'
+					});
+
+				template.find('#save_missed_call_alerts').on('click', function() {
+					var recipients = [],
+						emails = template.find('#emails').val();
+
+					emails = emails.replace(/\s/g, '').split(',');
+
+					_.each(emails, function(email) {
+						recipients.push({
+							type: 'email',
+							id: email
+						});
+					});
+
+					_.each(widget.getSelectedItems(), function(id) {
+						recipients.push({
+							type: 'user',
+							id: id
+						});
+					});
+
+					node.setMetadata('recipients', recipients);
+
+					popup.dialog('close');
+				});
+
+				popup = monster.ui.dialog(template, {
+					title: self.i18n.active().callflows.missedCallAlert.popupTitle,
+					beforeClose: function() {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				});
 			});
 		},
 

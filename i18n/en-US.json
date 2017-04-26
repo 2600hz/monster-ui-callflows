@@ -891,9 +891,12 @@
 		"missedCallAlert": {
 			"title": "Missed Call Alert",
 			"tip": "Allows users to receive an email notification for unanswered inbound calls that do not result in a voicemail message.",
+			"help": "This feature allows you to let users receive email notification for unanswered inbound calls that do not result in a voicemail message. Please type a list of emails, separated by commas, or select users from the list below, then press Save, to create a callflow with this feature.",
 			"emails": "Emails",
 			"emailsHelp": "List of email addresses separated by a comma that will receive a notification",
-			"popupTitle": "Missed Call Alert"
+			"popupTitle": "Missed Call Alert",
+			"unselectedUsers": "Unselected Users",
+			"selectedUsers": "Selected Users"
 		}
 	},
 	"oldCallflows": {
