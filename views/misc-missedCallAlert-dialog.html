@@ -1,0 +1,19 @@
+<div id="missed_call_alert_popup" class="dialog_popup missed-call-alert callflows-port">
+	{{#monsterText}}
+		{{ i18n.callflows.missedCallAlert.help }}
+	{{/monsterText}}
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="emails">{{ i18n.callflows.missedCallAlert.emails }} </label>
+				<textarea id="emails">{{emails}}</textarea>
+			</div>
+		</div>
+	</form>
+
+	<div class="items-selector-wrapper"></div>
+
+	<div class="buttons-center">
+		<button class="monster-button monster-button-primary" id="save_missed_call_alerts">{{ i18n.save }}</button>
+	</div>
+</div>

@@ -176,3 +176,16 @@
 .callflows-port#fax_callflow_popup #t_38_checkbox {
 	margin-top: 8px;
 }
+
+/* Missed call alert */
+#missed_call_alert_popup {
+	width: 540px;
+}
+#missed_call_alert_popup .buttons-center {
+	margin-top: 10px;
+}
+
+#missed_call_alert_popup form {
+	margin-bottom: 0;
+	margin-top: 20px;
+}
