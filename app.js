@@ -1533,19 +1533,15 @@ define(function(require){
 			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first();
 
 			$('.tool', tools).hover(
-				function () {
-					$(this).addClass('active');
-					$('.tool_name', '#callflow-view').removeClass('active');
-					$('.tool_name', $(this)).addClass('active');
-					if($(this).attr('help')) {
-						$('#help_box', help_box).html($(this).attr('help'));
-						$('.callflow_helpbox_wrapper', '#callflow-view').css('top', $(this).offset().top - 72)
-																		.show();
+				function() {
+					var $this = $(this);
+					if ($this.attr('help')) {
+						tools.find('.callflow_helpbox_wrapper #help_box').html($this.attr('help'));
+						tools.find('.callflow_helpbox_wrapper').css('top', $this.offset().top).css('left', $('#ws_cf_tools').offset().left - 162).show();
 					}
 				},
 				function () {
-					$(this).removeClass('active');
-					$('.callflow_helpbox_wrapper', '#callflow-view').hide();
+					tools.find('.callflow_helpbox_wrapper').hide();
 				}
 			);
 
