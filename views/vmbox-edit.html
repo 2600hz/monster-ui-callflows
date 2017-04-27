@@ -92,6 +92,20 @@
 					</div>
 
 					<div class="clearfix">
+						<label for="media_extension">{{ i18n.callflows.vmbox.extension }}</label>
+						<div class="input">
+							<select name="media_extension" id="media_extension">
+								{{#select data.media_extension}}
+									<option value="default">{{ i18n.callflows.vmbox.default }}</option>
+									<option value="mp3">{{ i18n.callflows.vmbox.mp3 }}</option>
+									<!-- <option value="mp4">{{ i18n.callflows.vmbox.mp4 }}</option> -->
+									<option value="wav">{{ i18n.callflows.vmbox.wav }}</option>
+								{{/select}}
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix">
 						<div class="input">
 							<ul class="inputs-list">
 								<li>
