@@ -366,6 +366,10 @@ define(function(require){
 				delete mergedData.timezone;
 			}
 
+			if (mergedData.media_extension === 'default') {
+				delete mergedData.media_extension;
+			}
+
 			mergedData.not_configurable = !mergedData.extra.allow_configuration;
 
 			// extend doesn't override arrays...
