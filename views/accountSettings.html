@@ -114,6 +114,25 @@
 			</div>
 
 			<div class="settings-section">
+				<div class="section-title">{{ i18n.callflows.accountSettings.preflow.title }}</div>
+				<div class="section-content">
+					<div class="control-group">
+						<label class="control-label">{{ i18n.callflows.accountSettings.preflow.dropdownLabel }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.preflow.help }}" data-placement="top" data-toggle="tooltip"></i></label>
+						<div class="controls">
+							<select name="preflow.always" class="preflow-callflows-dropdown">
+								{{#select account.preflow.always}}
+									<option value="_disabled">{{ i18n.callflows.accountSettings.preflow.empty }}</option>
+									{{#each extra.preflowCallflows}}
+										<option value="{{id}}">{{friendlyName}}</option>
+									{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="settings-section">
 				<div class="section-title">{{ i18n.callflows.accountSettings.blacklist.title }}</div>
 				<div class="section-content">
 					<div class="blacklists-wrapper">
