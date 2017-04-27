@@ -396,7 +396,7 @@ define(function(require){
 
 				monster.ui.tooltips(template);
 
-				template.find('.cid-number-select').chosen({ search_contains: true, width: '220px' });
+				template.find('.cid-number-select, .preflow-callflows-dropdown').chosen({ search_contains: true, width: '220px' });
 				container.empty().append(template);
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
@@ -409,6 +409,20 @@ define(function(require){
 
 			formattedData.extra = formattedData.extra || {};
 			formattedData.extra.isShoutcast = false;
+
+			formattedData.extra.preflowCallflows = [];
+			_.each(formattedData.callflows, function(callflow) {
+				if (callflow.featurecode === false && callflow.numbers && callflow.numbers.length && callflow.numbers.indexOf('no_match') < 0) {
+					formattedData.extra.preflowCallflows.push({
+						id: callflow.id,
+						friendlyName: callflow.name || callflow.numbers.toString()
+					});
+				}
+			});
+
+			formattedData.extra.preflowCallflows = _.sortBy(formattedData.extra.preflowCallflows, 'friendlyName');
+
+			delete formattedData.callflows;
 
 			if (formattedData.account.hasOwnProperty('music_on_hold') && formattedData.account.music_on_hold.hasOwnProperty('media_id')) {
 				if (formattedData.account.music_on_hold.media_id.indexOf('://') >= 0) {
@@ -563,6 +577,10 @@ define(function(require){
 						delete newData.caller_id.external.number;
 					}
 
+					if (formData.preflow.always === '_disabled') {
+						delete newData.preflow.always;
+					}
+
 					newData.blacklists = widgetBlacklist.getSelectedItems();
 
 					delete newData.extra;
@@ -595,11 +613,28 @@ define(function(require){
 						}
 					});
 				},
+				callflows: function(parallelCallback) {
+					self.callApi({
+						resource: 'callflow.list',
+						data: {
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
+						},
+						success: function(data, status) {
+							parallelCallback && parallelCallback(null, data.data);
+						}
+					});
+				},
 				mediaList: function(parallelCallback) {
 					self.callApi({
 						resource: 'media.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(data, status) {
 							parallelCallback && parallelCallback(null, data.data);
@@ -621,7 +656,10 @@ define(function(require){
 					self.callApi({
 						resource: 'blacklist.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(data, status) {
 							parallelCallback && parallelCallback(null, data.data);

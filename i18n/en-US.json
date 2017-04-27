@@ -793,6 +793,12 @@
 			},
 			"blacklist": {
 				"title": "Blacklists"
+			},
+			"preflow": {
+				"title": "Preflow",
+				"help": "Preflow is an option to execute a callflow before any other callflow. It is set on the account level and will apply on any call using callflow for that account. It can be useful to activate call recording, or the missed call alert feature for example.",
+				"dropdownLabel": "Select Callflow",
+				"empty": "- None -"
 			}
 		},
 		"__comment": "UI-1667: Adding way to customize Feature codes",
