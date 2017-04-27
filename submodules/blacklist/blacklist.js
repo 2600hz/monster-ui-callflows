@@ -76,14 +76,14 @@ define(function(require){
 				addNumber = function(e) {
 					var number = template.find('#number_value').val();
 
-					if(number) {
-						$('.list-numbers .saved-numbers', template).prepend(monster.template(self,'blacklist-addNumber', { number: number }));
+					if (number) {
+						$('.list-numbers .saved-numbers', template).prepend(monster.template(self, 'blacklist-addNumber', { number: number }));
 
 						$('#number_value', template).val('');
 					}
 				};
 
-			$('.number-wrapper.placeholder:not(.active)', template).click(function() {
+			$('.number-wrapper.placeholder:not(.active)', template).on('click', function() {
 				var $this = $(this);
 
 				$this.addClass('active');
@@ -91,14 +91,15 @@ define(function(require){
 				$('#number_value', template).focus();
 			});
 
-			$('#add_number', template).click(function() {
-				addNumber();
+			$('#add_number', template).on('click', function(e) {
+				e.preventDefault();
+				addNumber(e);
 			});
 
 			$('.add-number', template).bind('keypress', function(e) {
 				var code = e.keyCode || e.which;
 
-				if(code === 13) {;
+				if (code === 13) {
 					addNumber(e);
 				}
 			});
@@ -107,14 +108,14 @@ define(function(require){
 				$(this).parents('.number-wrapper').remove();
 			});
 
-			$('#cancel_number', template).click(function(e) {
+			$('#cancel_number', template).on('click', function(e) {
 				e.stopPropagation();
 
 				$('.number-wrapper.placeholder.active', template).removeClass('active');
 				$('#number_value', template).val('');
 			});
 
-			$('.blacklist-save', template).click(function() {
+			$('.blacklist-save', template).on('click', function() {
 				var formData = form2object('blacklist-form'),
 					cleanData = self.blacklistCleanFormData(formData),
 					mapNumbers = {};
@@ -126,14 +127,14 @@ define(function(require){
 
 				cleanData.numbers = mapNumbers;
 
-				if(data.id) {
+				if (data.id) {
 					cleanData.id = data.id;
 				}
 
 				self.blacklistSave(cleanData, callbacks.save_success);
 			});
 
-			$('.blacklist-delete', template).click(function() {
+			$('.blacklist-delete', template).on('click', function() {
 				monster.ui.confirm(self.i18n.active().callflows.blacklist.are_you_sure_you_want_to_delete, function() {
 					self.blacklistDelete(data.id, callbacks.delete_success);
 				});
