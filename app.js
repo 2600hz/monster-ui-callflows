@@ -471,6 +471,12 @@ define(function(require){
 					}
 				};
 
+			template.find('.account-settings-tabs a').click(function(e) {
+				e.preventDefault();
+
+				$(this).tab('show');
+			});
+
 			monster.ui.validate(template.find('#account_settings_form'), {
 				rules: {
 					'extra.shoutcastUrl': {

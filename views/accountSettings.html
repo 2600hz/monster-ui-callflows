@@ -5,137 +5,153 @@
 	</div>
 	<div class="entity-content">
 		<form id="account_settings_form" class="form-horizontal">
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleInbound }}</div>
-				<div class="section-content">
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-						<div class="controls">
-							<input type="text" name="caller_id.internal.name" value="{{account.caller_id.internal.name}}"/>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-						<div class="controls">
-						<select name="caller_id.internal.number" class="cid-number-select">
-							<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-							{{#each numberList}}
-								<option value="{{@key}}" {{#compare ../account.caller_id.internal.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-							{{/each}}
-						</select>
-						</div>
-					</div>
-				</div>
+			<div class="tab-bar">
+				<ul class="nav nav-tabs account-settings-tabs">
+					<li class="tab-overview active"><a href="#account_settings_caller_id">Caller-ID</a></li>
+					<li class="tab-overview"><a href="#account_settings_blacklist">Blacklist</a></li>
+					<li class="tab-overview"><a href="#account_settings_misc">Misc</a></li>
+				</ul>
 			</div>
 
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleOutbound }}</div>
-				<div class="section-content">
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-						<div class="controls">
-							<input type="text" name="caller_id.external.name" value="{{account.caller_id.external.name}}"/>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-						<div class="controls">
-						<select name="caller_id.external.number" class="cid-number-select">
-							<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-							{{#each numberList}}
-								<option value="{{@key}}" {{#compare ../account.caller_id.external.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-							{{/each}}
-						</select>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleEmergency }}</div>
-				<div class="section-content">
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-						<div class="controls">
-							<input type="text" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-						<div class="controls">
-						<select name="caller_id.emergency.number" class="cid-number-select">
-							<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-							{{#each numberList}}
-								<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-							{{/each}}
-						</select>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.musicOnHold.title }}</div>
-				<div class="section-content">
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.musicOnHold.dropdownLabel }}</label>
-						<div class="controls">
-							<select name="music_on_hold.media_id" class="media-dropdown">
-								<option value="" {{#unless account.music_on_hold.media_id}}selected{{/unless}}>
-									{{ i18n.callflows.accountSettings.musicOnHold.default }}
-								</option>
-								<option value="{{silenceMedia}}" {{#compare account.music_on_hold.media_id '===' silenceMedia}}selected{{/compare}}>
-									{{ i18n.callflows.accountSettings.musicOnHold.silence }}
-								</option>
-								<option value="shoutcast" {{#if extra.isShoutcast}}selected{{/if}}>
-									{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}
-								</option>
-								{{#each mediaList}}
-									<option value="{{this.id}}" {{#compare ../account.music_on_hold.media_id '===' this.id}}selected{{/compare}}>{{this.name}}</option>
-								{{/each}}
-							</select>
-							<button type="button" class="monster-button-primary upload-toggle" data-toggle="button">{{ i18n.upload }}</button>
-						</div>
-					</div>
-					<div class="shoutcast-div{{#if extra.isShoutcast}} active{{/if}}">
-						<div class="control-group">
-							<label class="control-label">{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLHelp }}" data-placement="top" data-toggle="tooltip"></i></label>
-							<div class="controls">
-								<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{account.music_on_hold.media_id}}"/>
+			<div class="tab-content">
+				<div class="tab-pane active" id="account_settings_caller_id">
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleInbound }}</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
+								<div class="controls">
+									<input type="text" name="caller_id.internal.name" value="{{account.caller_id.internal.name}}"/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+								<div class="controls">
+								<select name="caller_id.internal.number" class="cid-number-select">
+									<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
+									{{#each numberList}}
+										<option value="{{@key}}" {{#compare ../account.caller_id.internal.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{/each}}
+								</select>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="upload-div">
-						<input type="file" class="upload-input" accept="audio/*">
-						<button type="button" class="monster-button-success upload-action upload-submit"><i class="fa fa-upload"></i></button>
-						<button type="button" class="monster-button-danger upload-action upload-cancel"><i class="fa fa-times"></i></button>
-					</div>
-				</div>
-			</div>
 
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.preflow.title }}</div>
-				<div class="section-content">
-					<div class="control-group">
-						<label class="control-label">{{ i18n.callflows.accountSettings.preflow.dropdownLabel }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.preflow.help }}" data-placement="top" data-toggle="tooltip"></i></label>
-						<div class="controls">
-							<select name="preflow.always" class="preflow-callflows-dropdown">
-								{{#select account.preflow.always}}
-									<option value="_disabled">{{ i18n.callflows.accountSettings.preflow.empty }}</option>
-									{{#each extra.preflowCallflows}}
-										<option value="{{id}}">{{friendlyName}}</option>
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleOutbound }}</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
+								<div class="controls">
+									<input type="text" name="caller_id.external.name" value="{{account.caller_id.external.name}}"/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+								<div class="controls">
+								<select name="caller_id.external.number" class="cid-number-select">
+									<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
+									{{#each numberList}}
+										<option value="{{@key}}" {{#compare ../account.caller_id.external.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
 									{{/each}}
-								{{/select}}
-							</select>
+								</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleEmergency }}</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
+								<div class="controls">
+									<input type="text" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+								<div class="controls">
+								<select name="caller_id.emergency.number" class="cid-number-select">
+									<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
+									{{#each numberList}}
+										<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{/each}}
+								</select>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="settings-section">
-				<div class="section-title">{{ i18n.callflows.accountSettings.blacklist.title }}</div>
-				<div class="section-content">
-					<div class="blacklists-wrapper">
+				<div class="tab-pane" id="account_settings_blacklist">
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.blacklist.title }}</div>
+						<div class="section-content">
+							<div class="blacklists-wrapper">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="account_settings_misc">
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.musicOnHold.title }}</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.musicOnHold.dropdownLabel }}</label>
+								<div class="controls">
+									<select name="music_on_hold.media_id" class="media-dropdown">
+										<option value="" {{#unless account.music_on_hold.media_id}}selected{{/unless}}>
+											{{ i18n.callflows.accountSettings.musicOnHold.default }}
+										</option>
+										<option value="{{silenceMedia}}" {{#compare account.music_on_hold.media_id '===' silenceMedia}}selected{{/compare}}>
+											{{ i18n.callflows.accountSettings.musicOnHold.silence }}
+										</option>
+										<option value="shoutcast" {{#if extra.isShoutcast}}selected{{/if}}>
+											{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}
+										</option>
+										{{#each mediaList}}
+											<option value="{{this.id}}" {{#compare ../account.music_on_hold.media_id '===' this.id}}selected{{/compare}}>{{this.name}}</option>
+										{{/each}}
+									</select>
+									<button type="button" class="monster-button-primary upload-toggle" data-toggle="button">{{ i18n.upload }}</button>
+								</div>
+							</div>
+							<div class="shoutcast-div{{#if extra.isShoutcast}} active{{/if}}">
+								<div class="control-group">
+									<label class="control-label">{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURL }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLHelp }}" data-placement="top" data-toggle="tooltip"></i></label>
+									<div class="controls">
+										<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{account.music_on_hold.media_id}}"/>
+									</div>
+								</div>
+							</div>
+							<div class="upload-div">
+								<input type="file" class="upload-input" accept="audio/*">
+								<button type="button" class="monster-button-success upload-action upload-submit"><i class="fa fa-upload"></i></button>
+								<button type="button" class="monster-button-danger upload-action upload-cancel"><i class="fa fa-times"></i></button>
+							</div>
+						</div>
+					</div>
+
+					<div class="settings-section">
+						<div class="section-title">{{ i18n.callflows.accountSettings.preflow.title }}</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label class="control-label">{{ i18n.callflows.accountSettings.preflow.dropdownLabel }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.preflow.help }}" data-placement="top" data-toggle="tooltip"></i></label>
+								<div class="controls">
+									<select name="preflow.always" class="preflow-callflows-dropdown">
+										{{#select account.preflow.always}}
+											<option value="_disabled">{{ i18n.callflows.accountSettings.preflow.empty }}</option>
+											{{#each extra.preflowCallflows}}
+												<option value="{{id}}">{{friendlyName}}</option>
+											{{/each}}
+										{{/select}}
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

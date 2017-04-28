@@ -71,7 +71,7 @@ define(function(require){
 			}
 		},
 
-		blacklistBindEvents: function(data, template, callbacks) {
+/*		blacklistBindEvents: function(data, template, callbacks) {
 			var self = this,
 				addNumber = function(e) {
 					var number = template.find('#number_value').val();
@@ -135,6 +135,77 @@ define(function(require){
 			});
 
 			$('.blacklist-delete', template).on('click', function() {
+				monster.ui.confirm(self.i18n.active().callflows.blacklist.are_you_sure_you_want_to_delete, function() {
+					self.blacklistDelete(data.id, callbacks.delete_success);
+				});
+			});
+		},*/
+
+
+		blacklistBindEvents: function(data, template, callbacks) {
+			var self = this,
+				addNumber = function(e) {
+					var number = template.find('#number_value').val();
+
+					if(number) {
+						$('.list-numbers .saved-numbers', template).prepend(monster.template(self,'blacklist-addNumber', { number: number }));
+
+						$('#number_value', template).val('');
+					}
+				};
+
+			$('.number-wrapper.placeholder:not(.active)', template).click(function() {
+				var $this = $(this);
+
+				$this.addClass('active');
+
+				$('#number_value', template).focus();
+			});
+
+			$('#add_number', template).click(function(e) {
+				e.preventDefault();
+				addNumber();
+			});
+
+			$('.add-number', template).bind('keypress', function(e) {
+				var code = e.keyCode || e.which;
+
+				if(code === 13) {;
+					addNumber(e);
+				}
+			});
+
+			$(template).delegate('.delete-number', 'click', function(e) {
+				$(this).parents('.number-wrapper').remove();
+			});
+
+			$('#cancel_number', template).click(function(e) {
+				e.stopPropagation();
+
+				$('.number-wrapper.placeholder.active', template).removeClass('active');
+				$('#number_value', template).val('');
+			});
+
+			$('.blacklist-save', template).click(function() {
+				var formData = form2object('blacklist-form'),
+					cleanData = self.blacklistCleanFormData(formData),
+					mapNumbers = {};
+
+				$('.saved-numbers .number-wrapper', template).each(function(k, wrapper) {
+					var number = $(wrapper).attr('data-number');
+					mapNumbers[number] = {};
+				});
+
+				cleanData.numbers = mapNumbers;
+
+				if(data.id) {
+					cleanData.id = data.id;
+				}
+
+				self.blacklistSave(cleanData, callbacks.save_success);
+			});
+
+			$('.blacklist-delete', template).click(function() {
 				monster.ui.confirm(self.i18n.active().callflows.blacklist.are_you_sure_you_want_to_delete, function() {
 					self.blacklistDelete(data.id, callbacks.delete_success);
 				});
