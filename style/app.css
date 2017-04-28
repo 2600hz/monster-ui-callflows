@@ -1475,12 +1475,13 @@
 
 #callflow_container .account-settings-container #account_settings_form {
 	min-width: 400px;
-	max-width: 1080px;
+	max-width: 1140px;
 	margin: auto;
-	border: solid 1px #909099;
-	border-radius: 2px;
-	padding: 20px;
+}
+
+#callflow_container .account-settings-container .tab-content {
 	background-color: #f0f0f9;
+	padding: 20px;
 }
 
 #callflow_container .account-settings-container .upload-toggle {
@@ -1514,9 +1515,7 @@
 	min-width: initial;
 }
 #callflow_container .account-settings-container .action-bar {
-	margin-top: 40px;
-	padding-top: 20px;
-	border-top: solid 1px #c0c0c9;
+	padding-top: 15px;
 }
 
 #callflow_container .account-settings-container .shoutcast-div {
