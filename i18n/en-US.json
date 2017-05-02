@@ -280,7 +280,10 @@
 			"add_directory_label": "Add Directory",
 			"__comment": "UI-1462: Show errors properly",
 			"__version": "v3.20_s5",
-			"noDataSelected": "You need to select a User AND its associated callflow, in order to add it to the directory, make sure both dropdowns have an item selected!"
+			"noDataSelected": "You need to select a User AND its associated callflow, in order to add it to the directory, make sure both dropdowns have an item selected!",
+			"__comment": "UI-2712: Handle UX issues with directories",
+			"__version": "4.1",
+			"empty": "Empty"
 		},
 		"faxbox": {
 			"faxboxes_label": "Fax Boxes",
