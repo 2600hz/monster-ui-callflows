@@ -39,18 +39,23 @@ define(function(require){
 				ev.preventDefault();
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
+				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
-					if(monster.ui.valid(directoryForm)) {
+					if (monster.ui.valid(directoryForm)) {
 						var form_data = monster.ui.getFormData('directory-form');
 
 						self.directoryCleanFormData(form_data);
 
 						var old_list = {},
-							new_list = {};
+							new_list = {},
+							userCallflowId;
 
 						$('.rows .row:not(#row_no_data)', directory_html).each(function() {
-							new_list[$(this).data('id')] = $('#user_callflow_id', $(this)).val();
+							userCallflowId = $('#user_callflow_id', $(this)).val();
+
+							if (userCallflowId !== '_empty') {
+								new_list[$(this).data('id')] = userCallflowId;
+							}
 						});
 
 						data.field_data.user_list = {
@@ -59,8 +64,7 @@ define(function(require){
 						};
 
 						self.directorySave(form_data, data, callbacks.save_success);
-					}
-					else {
+					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert(self.i18n.active().callflows.directory.there_were_errors_on_the_form);
 					}
@@ -209,11 +213,11 @@ define(function(require){
 									}
 								});
 
-								list_callflows.sort(function(a,b) {
+								list_callflows.sort(function(a, b) {
 									var aName = (a.name || (a.numbers[0] + '')).toLowerCase(),
 										bName = (b.name || (b.numbers[0] + '')).toLowerCase();
 
-									return aName > bName;
+									return aName > bName ? 1 : -1;
 								});
 
 								defaults.field_data.callflows = list_callflows;
@@ -236,7 +240,7 @@ define(function(require){
 									var aName = (a.first_name + ' ' + a.last_name).toLowerCase(),
 										bName = (b.first_name + ' ' + b.last_name).toLowerCase();
 
-									return aName > bName;
+									return aName > bName ? 1 : -1;
 								});
 
 								defaults.field_data.users = users.data;

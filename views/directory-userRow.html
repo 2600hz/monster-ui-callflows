@@ -4,6 +4,7 @@
 			<div class="column second">
 				<select id="user_callflow_id" name="user_callflow_id">
 					{{#select callflow_id}}
+						<option value="_empty">-- {{ i18n.callflows.directory.empty }} --</option>
 						{{#each field_data.callflows}}
 							<option value="{{ id }}" data-callflow_id={{ id }}>
 								&nbsp;
