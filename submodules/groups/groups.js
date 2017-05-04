@@ -377,6 +377,165 @@ define(function(require){
 					edit: function(node, callback) {
 						self.groupsEditPageGroup(node, callback);
 					}
+				},
+
+				'ring_group_toggle[action=login]': {
+					name: self.i18n.active().callflows.ringGroupToggle.loginTitle,
+					icon: 'ring_group',
+					category: self.i18n.active().callflows.ringGroupToggle.category,
+					module: 'ring_group_toggle',
+					tip: self.i18n.active().callflows.ringGroupToggle.loginTip,
+					data: {
+						action: 'login',
+						callflow_id: 'null'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 1,
+					caption: function(node, caption_map) {
+						var id = node.getMetadata('callflow_id'),
+							return_value = '';
+
+						if (id in caption_map) {
+							if (caption_map[id].hasOwnProperty('name')) {
+								return_value = caption_map[id].name;
+							} else if (caption_map[id].hasOwnProperty('numbers')) {
+								return_value = caption_map[id].numbers.toString();
+							}
+						}
+
+						return return_value;
+					},
+					edit: function(node, callback) {
+						self.callApi({
+							resource: 'callflow.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate: false }
+							},
+							success: function(data, status) {
+								var popup, popup_html, _data = [];
+
+								$.each(data.data, function() {
+									if (!this.featurecode && this.id !== self.flow.id) {
+										this.name = this.name ? this.name : ((this.numbers) ? this.numbers.toString() : self.i18n.active().oldCallflows.no_numbers);
+
+										_data.push(this);
+									}
+								});
+
+								popup_html = $(monster.template(self, 'groups-ring_group_login_dialog', {
+									objects: {
+										type: 'callflow',
+										items: _.sortBy(_data, 'name'),
+										selected: node.getMetadata('callflow_id') || ''
+									}
+								}));
+
+								$('#add', popup_html).click(function() {
+									node.setMetadata('callflow_id', $('#object-selector', popup_html).val());
+
+									node.caption = $('#object-selector option:selected', popup_html).text();
+
+									popup.dialog('close');
+								});
+
+								popup = monster.ui.dialog(popup_html, {
+									title: self.i18n.active().oldCallflows.callflow_title,
+									beforeClose: function() {
+										if (typeof callback === 'function') {
+											callback();
+										}
+									}
+								});
+							}
+						});
+					}
+				},
+
+
+				'ring_group_toggle[action=logout]': {
+					name: self.i18n.active().callflows.ringGroupToggle.logoutTitle,
+					icon: 'ring_group',
+					category: self.i18n.active().callflows.ringGroupToggle.category,
+					module: 'ring_group_toggle',
+					tip: self.i18n.active().callflows.ringGroupToggle.logoutTip,
+					data: {
+						action: 'logout',
+						callflow_id: 'null'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 2,
+					caption: function(node, caption_map) {
+						var id = node.getMetadata('callflow_id'),
+							return_value = '';
+
+						if (id in caption_map) {
+							if (caption_map[id].hasOwnProperty('name')) {
+								return_value = caption_map[id].name;
+							} else if (caption_map[id].hasOwnProperty('numbers')) {
+								return_value = caption_map[id].numbers.toString();
+							}
+						}
+
+						return return_value;
+					},
+					edit: function(node, callback) {
+						self.callApi({
+							resource: 'callflow.list',
+							data: {
+								accountId: self.accountId,
+								filters: { paginate: false }
+							},
+							success: function(data, status) {
+								var popup, popup_html, _data = [];
+
+								$.each(data.data, function() {
+									if (!this.featurecode && this.id !== self.flow.id) {
+										this.name = this.name ? this.name : ((this.numbers) ? this.numbers.toString() : self.i18n.active().oldCallflows.no_numbers);
+
+										_data.push(this);
+									}
+								});
+
+								popup_html = $(monster.template(self, 'groups-ring_group_logout_dialog', {
+									objects: {
+										type: 'callflow',
+										items: _.sortBy(_data, 'name'),
+										selected: node.getMetadata('callflow_id') || ''
+									}
+								}));
+
+								$('#add', popup_html).click(function() {
+									node.setMetadata('callflow_id', $('#object-selector', popup_html).val());
+
+									node.caption = $('#object-selector option:selected', popup_html).text();
+
+									popup.dialog('close');
+								});
+
+								popup = monster.ui.dialog(popup_html, {
+									title: self.i18n.active().oldCallflows.callflow_title,
+									beforeClose: function() {
+										if (typeof callback === 'function') {
+											callback();
+										}
+									}
+								});
+							}
+						});
+					}
 				}
 			});
 		},

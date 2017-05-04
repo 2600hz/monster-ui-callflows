@@ -1,11 +1,11 @@
 <div class="dialog_popup callflows-port">
-	<h1>{{ i18n.oldCallflows.connect_caller_to_another_callflow }}</h1>
+	<h1>{{ i18n.callflows.ringGroupToggle.loginDialogTitle }}</h1>
 	<form name="form" method="post" action="#">
 		<div class="form_content">
 			<div class="popup_field">
 				<label for="object-selector">{{ i18n.callflows.ringGroupToggle.callflow }}</label>
 				<div class="select_wrapper">
-					<select id="object-selector">
+					<select class="ring-group-toggle-select" id="object-selector">
 						{{#select objects.selected}}
 							{{#each objects.items}}
 									<option value="{{ id }}">{{ name }}</option>

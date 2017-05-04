@@ -912,6 +912,20 @@
 			"popupTitle": "Missed Call Alert",
 			"unselectedUsers": "Unselected Users",
 			"selectedUsers": "Selected Users"
+		},
+
+		"__comment": "UI-2646: adding ring group togle to adv. callflows",
+		"__version": "v4.1",
+		"ringGroupToggle": {
+			"loginTitle": "Ring Group Login",
+			"logoutTitle": "Ring Group Logout",
+			"loginDialogTitle": "Login to callflow with a ring group in it",
+			"logoutDialogTitle": "Login to callflow with a ring group in it",
+			"name": "Ring Group Toggle",
+			"loginTip": "Ring Group Toggle allows a user to log in a ring group dynamically.",
+			"logoutTip": "Ring Group Toggle allows a user to log out of a ring group dynamically.",
+			"callflow": "Which Callflow?",
+			"category": "Ring Group Toggle"
 		}
 	},
 	"oldCallflows": {
