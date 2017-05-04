@@ -740,7 +740,6 @@ define(function(require){
 						});
 					}
 				},
-
 				'sleep[]': {
 					name: self.i18n.active().callflows.sleep.name,
 					icon: 'dot_chat',
@@ -797,7 +796,6 @@ define(function(require){
 						});
 					}
 				},
-
 				'tts[]': {
 					name: self.i18n.active().callflows.tts.name,
 					icon: 'chat_circle',
