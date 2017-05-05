@@ -11,7 +11,7 @@
 					{{/each}}
 				</select>
 
-				<ul class="nav pull-right">
+				<ul class="nav pull-right number-selection-sidelink">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle buy-dropdown monster-link" data-toggle="dropdown" data-target="#">
 							<i class="fa fa-shopping-cart monster-green fa-lg"></i>
@@ -33,7 +33,8 @@
 			<label for="number_type_2">{{ i18n.oldCallflows.extension }}</label>
 
 			<div class="extensions_content">
-				<input id="add_number_text" placeholder="2001" type="text" name="number" id="number"/>
+				<input id="add_number_text" placeholder="2001" type="text" name="number"/>
+				<a href="javascript:void(0);" class="number-selection-sidelink search-extension-link">{{ i18n.callflows.findExtension }}</a>
 			</div>
 		</div>
 

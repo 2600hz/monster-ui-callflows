@@ -1285,6 +1285,10 @@ define(function(require){
 									title: self.i18n.active().oldCallflows.add_number
 								});
 
+							popup_html.find('#list_numbers').chosen({ search_contains: true, width: '160px' });
+							// Have to do that so that the chosen dropdown isn't hidden.
+							popup_html.parent().css('overflow', 'visible');
+
 							if(parsedNumbers.length === 0) {
 								$('#list_numbers', popup_html).attr('disabled', 'disabled');
 								$('<option value="select_none">' + self.i18n.active().oldCallflows.no_phone_numbers + '</option>').appendTo($('#list_numbers', popup_html));
@@ -1330,6 +1334,14 @@ define(function(require){
 												$('<option value="'+k+'">'+k+'</option>').appendTo($('#list_numbers', popup));
 											});
 										}
+									}
+								});
+							});
+
+							popup.find('.search-extension-link').on('click', function() {
+								monster.pub('common.extensionTools.select', {
+									callback: function(number) {
+										popup.find('#add_number_text').val(number);
 									}
 								});
 							});

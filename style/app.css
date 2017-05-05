@@ -353,6 +353,10 @@
 	width: 110px;
 }
 
+.add_number_popup .number-selection-sidelink {
+	margin-left: 15px;
+}
+
 .add_number_popup input[type=radio] {
 	margin: -5px 5px 0 10px;
 }
@@ -368,6 +372,11 @@
 .add_number_popup .extensions_content,
 .add_number_popup .list_numbers_content {
 	display: inline-block;
+}
+
+/* has to match setting in js */
+.add_number_popup .list_numbers_content .chosen-drop {
+	width: 160px;
 }
 
 .add_number_popup .list_numbers_content .nav {
