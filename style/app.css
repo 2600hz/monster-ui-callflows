@@ -514,6 +514,19 @@
 	width: 168px;
 }
 
+#ws_callflow .tools .search-box {
+	background: #444;
+}
+
+#ws_callflow .tools .search-box input {
+	width: 120px;
+	height: 15px;
+	border-radius: 20px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 3px;
+}
+
 #ws_callflow .tool {
 	text-align: center;
 	vertical-align: middle;
