@@ -926,7 +926,11 @@
 			"logoutTip": "Ring Group Toggle allows a user to log out of a ring group dynamically.",
 			"callflow": "Which Callflow?",
 			"category": "Ring Group Toggle"
-		}
+		},
+
+		"__comment": "UI-2723: adding way to find extension easily",
+		"__version": "v4.1",
+		"findExtension": "Find Extension"
 	},
 	"oldCallflows": {
 		"call_forwarding_cat": "Call Forwarding",
