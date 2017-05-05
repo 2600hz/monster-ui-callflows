@@ -1586,7 +1586,41 @@ define(function(require){
 					 .addClass('active');
 			});
 
-			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first();
+			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first(),
+				$allActions = tools.find('.tool');
+
+			tools.find('.search-query').on('keyup', function() {
+				// debounce executes a function after a delay if it hasn't been called again
+				_.debounce(function(arg) {
+					var $this = arg,
+						val = $this.val().toLowerCase(),
+						categories = [];
+
+					if (val) {
+						tools.find('.category').removeClass('active').addClass('inactive');
+
+						$allActions.each(function() {
+							var $thisAction = $(this);
+
+							if ($thisAction.data('name').toLowerCase().indexOf(val) >= 0) {
+								$thisAction.show();
+								categories.push($thisAction.parents('.category').attr('id'));
+							} else {
+								$thisAction.hide();
+							}
+						});
+					} else {
+						tools.find('.category').removeClass('active').addClass('inactive');
+						tools.find('.category').first().removeClass('inactive').addClass('active');
+						tools.find('.tool').show();
+					}
+
+					categories = _.uniq(categories);
+					_.each(categories, function(category) {
+						tools.find('.category[name="' + category + '"]').addClass('active').removeClass('inactive');
+					});
+				}, 200)($(this));
+			});
 
 			$('.tool', tools).hover(
 				function() {
