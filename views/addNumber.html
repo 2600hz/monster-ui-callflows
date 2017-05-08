@@ -7,7 +7,7 @@
 			<div class="list_numbers_content">
 				<select id="list_numbers">
 					{{#each phoneNumbers}}
-						<option value="{{ this.phoneNumber }}">{{ this.phoneNumber }}</option>
+						<option value="{{ this.phoneNumber }}">{{ formatPhoneNumber this.phoneNumber }}</option>
 					{{/each}}
 				</select>
 
