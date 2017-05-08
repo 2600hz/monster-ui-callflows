@@ -7,7 +7,7 @@
 				{{#compare numbers.[0] "===" ""}}
 					{{ i18n.oldCallflows.no_number }}
 				{{else}}
-					{{ numbers.[0] }}
+					{{ formatPhoneNumber numbers.[0] }}
 				{{/compare}}
 			{{/compare}}
 			<span class="delete"/>
@@ -20,7 +20,7 @@
 				{{#compare numbers.[1] "===" ""}}
 					{{ i18n.oldCallflows.no_number }}
 				{{else}}
-					{{ numbers.[1] }}
+					{{ formatPhoneNumber numbers.[1] }}
 				{{/compare}}
 			{{/compare}}
 			<span class="delete"/>
@@ -34,7 +34,7 @@
 					{{#compare numbers.[0] "===" ""}}
 						{{ i18n.oldCallflows.no_number }}
 					{{else}}
-						{{ numbers.[0] }}
+						{{ formatPhoneNumber numbers.[0] }}
 					{{/compare}}
 				{{/compare}}
 				<span class="delete"/>

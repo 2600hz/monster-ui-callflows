@@ -798,15 +798,17 @@ define(function(require){
 			var formattedList = [];
 
 			_.each(data.data, function(callflow) {
-				var listNumbers = (callflow.numbers || '-').toString(),
+				var formattedNumbers = _.map(callflow.numbers || '-', function(number) {
+						return monster.util.formatPhoneNumber(number);
+					}),
+					listNumbers = formattedNumbers.toString(),
 					isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
 
-				if(!isFeatureCode) {
-					if(callflow.name) {
+				if (!isFeatureCode) {
+					if (callflow.name) {
 						callflow.description = listNumbers;
 						callflow.title = callflow.name;
-					}
-					else {
+					} else {
 						callflow.title = listNumbers;
 					}
 
@@ -814,7 +816,7 @@ define(function(require){
 				}
 			});
 
-			formattedList.sort(function(a,b) {
+			formattedList.sort(function(a, b) {
 				return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
 			});
 
