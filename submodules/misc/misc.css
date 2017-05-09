@@ -189,3 +189,8 @@
 	margin-bottom: 0;
 	margin-top: 20px;
 }
+
+/* Collect DTMF Popup */
+.dialog_popup.collect-dtmf-popup .form_content .popup_field {
+	padding-bottom: 0;
+}

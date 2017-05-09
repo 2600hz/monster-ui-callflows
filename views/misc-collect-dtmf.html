@@ -1,0 +1,55 @@
+<div class="collect-dtmf-popup dialog_popup callflows-port">
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="collect_dtmf_collection_input"><i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.collectDTMF.collectionName.help }}"></i>{{ i18n.callflows.collectDTMF.collectionName.label }}</label>
+				<input type="text" id="collect_dtmf_collection_input" class="medium" value="{{ data_dtmf.collection_name }}"/>
+			</div>
+			
+			<div class="popup_field">
+				<label for="collect_dtmf_interdigit_input"><i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.collectDTMF.interdigitTimeout.help }}"></i>{{ i18n.callflows.collectDTMF.interdigitTimeout.label }}</label>
+				<input type="text" id="collect_dtmf_interdigit_input" class="medium" value="{{ data_dtmf.interdigit_timeout }}"/>
+			</div>
+
+			<div class="popup_field">
+				<label for="collect_dtmf_max_digits_input"><i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.collectDTMF.maxDigits.help }}"></i>{{ i18n.callflows.collectDTMF.maxDigits.label }}</label>
+				<input type="text" id="collect_dtmf_max_digits_input" class="medium" value="{{ data_dtmf.max_digits }}"/>
+			</div>
+
+			<div class="popup_field">
+				<label for="collect_dtmf_terminator_input">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.collectDTMF.terminator.help }}"></i>
+					{{ i18n.callflows.collectDTMF.terminator.label }}
+				</label>
+				<div class="select_wrapper">
+					<select id="collect_dtmf_terminator_input">
+						{{#select data_dtmf.terminator}}
+							<option value="default">{{ i18n.callflows.collectDTMF.default }}</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="0">0</option>
+							<option value="#">#</option>
+							<option value="*">*</option>
+						{{/select}}
+					</select>
+				</div>
+			</div>
+
+			<div class="popup_field">
+				<label for="collect_dtmf_timeout_input"><i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.collectDTMF.timeout.help }}"></i>{{ i18n.callflows.collectDTMF.timeout.label }}</label>
+				<input type="text" id="collect_dtmf_timeout_input" class="medium" value="{{ data_dtmf.timeout }}"/>
+			</div>
+			
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>

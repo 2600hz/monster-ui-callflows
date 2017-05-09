@@ -930,7 +930,36 @@
 
 		"__comment": "UI-2723: adding way to find extension easily",
 		"__version": "v4.1",
-		"findExtension": "Find Extension"
+		"findExtension": "Find Extension",
+
+		"__comment": "UI-755: adding collect dtmf to adv. callflows",
+		"__version": "v4.1",
+		"collectDTMF": {
+			"default": "Default",
+			"title": "Collect DTMF",
+			"name": "Collect DTMF",
+			"tip": "Allows you to collect DTMF.",
+			"collectionName": {
+				"label": "Collection Name",
+				"help": "Store collected DTMF in a named key. Leave empty to leave it to set it to the back-end default value."
+			},
+			"interdigitTimeout": {
+				"label": "Interdigit Timeout",
+				"help": "How long, in milliseconds, to wait for the next DTMF. Leave empty to leave it to set it to the back-end default value."
+			},
+			"terminator": {
+				"label": "Terminator",
+				"help": "What DTMF will terminate collection before the timeout occurs"
+			},
+			"maxDigits": {
+				"label": "Max Digits",
+				"help": "How many DTMFs to collect from the caller"
+			},
+			"timeout": {
+				"label": "Timeout",
+				"help": "How long, in milliseconds, to wait for the first DTMF"
+			}
+		}
 	},
 	"oldCallflows": {
 		"call_forwarding_cat": "Call Forwarding",
