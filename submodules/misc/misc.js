@@ -740,6 +740,70 @@ define(function(require){
 						});
 					}
 				},
+				'collect_dtmf[]': {
+					name: self.i18n.active().callflows.collectDTMF.title,
+					icon: 'conference',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'collect_dtmf',
+					tip: self.i18n.active().callflows.collectDTMF.tip,
+					data: {
+						pin: '',
+						use_account_caller_id: true
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 90,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						var popup, popup_html;
+
+						popup_html = $(monster.template(self, 'misc-collect-dtmf', {
+							data_dtmf: {
+								'interdigit_timeout': node.getMetadata('interdigit_timeout') || '',
+								'collection_name': node.getMetadata('collection_name') || '',
+								'max_digits': node.getMetadata('max_digits') || '',
+								'terminator': node.getMetadata('terminator') || '#',
+								'timeout': node.getMetadata('timeout') || '5000'
+							}
+						}));
+
+						monster.ui.tooltips(popup_html);
+
+						$('#add', popup_html).click(function() {
+							var setData = function(field, value) {
+								if (value !== 'default' && value !== '') {
+									node.setMetadata(field, value);
+								} else {
+									node.deleteMetadata(field);
+								}
+							};
+
+							setData('interdigit_timeout', $('#collect_dtmf_interdigit_input', popup_html).val());
+							setData('collection_name', $('#collect_dtmf_collection_input', popup_html).val());
+							setData('max_digits', $('#collect_dtmf_max_digits_input', popup_html).val());
+							setData('terminator', $('#collect_dtmf_terminator_input', popup_html).val());
+							setData('timeout', $('#collect_dtmf_timeout_input', popup_html).val());
+
+							popup.dialog('close');
+						});
+
+						popup = monster.ui.dialog(popup_html, {
+							title: self.i18n.active().callflows.collectDTMF.title,
+							beforeClose: function() {
+								if (typeof callback === 'function') {
+									callback();
+								}
+							}
+						});
+					}
+				},
 				'sleep[]': {
 					name: self.i18n.active().callflows.sleep.name,
 					icon: 'dot_chat',
