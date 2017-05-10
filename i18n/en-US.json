@@ -959,6 +959,24 @@
 				"label": "Timeout",
 				"help": "How long, in milliseconds, to wait for the first DTMF"
 			}
+		},
+
+		"__comment": "UI-413: adding eavesdrop to adv. callflows",
+		"__version": "v4.1",
+		"eavesdrop": {
+			"none": "None",
+			"default": "Default",
+			"title": "Eavesdrop",
+			"name": "Eavesdrop",
+			"tip": "Allows you to eavesdrop on a call for a specific user or device.",
+			"endpoint": {
+				"label": "Endpoint",
+				"help": "Store collected DTMF in a named key. Leave empty to leave it to set it to the back-end default value."
+			},
+			"approvedEndpoint": {
+				"label": "Approved Endpoint",
+				"help": "You can force the eavesdropper to be a specific user/device/group by selecting an endpoint in this list."
+			}
 		}
 	},
 	"oldCallflows": {
