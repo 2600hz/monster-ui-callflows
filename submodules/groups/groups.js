@@ -381,7 +381,7 @@ define(function(require){
 
 				'eavesdrop[]': {
 					name: self.i18n.active().callflows.eavesdrop.name,
-					icon: 'dot_chat',
+					icon: 'headset',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'eavesdrop',
 					tip: self.i18n.active().callflows.eavesdrop.tip,
@@ -438,6 +438,75 @@ define(function(require){
 
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().callflows.eavesdrop.title,
+								beforeClose: function() {
+									if (typeof callback === 'function') {
+										callback();
+									}
+								}
+							});
+						});
+					}
+				},
+
+				'intercept[]': {
+					name: self.i18n.active().callflows.intercept.name,
+					icon: 'uturn_arrow',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'intercept',
+					tip: self.i18n.active().callflows.intercept.tip,
+					data: {},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 48,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.groupsGetEndpoints(function(formattedData) {
+							var popup, popup_html;
+
+							popup_html = $(monster.template(self, 'misc-intercept', {
+								fieldData: formattedData,
+								data: {
+									'selectedId': node.getMetadata('device_id') || node.getMetadata('user_id') || '',
+									'approvedId': node.getMetadata('approved_device_id') || node.getMetadata('approved_user_id') || node.getMetadata('approved_group_id') || ''
+								}
+							}));
+
+							monster.ui.tooltips(popup_html);
+
+							$('#add', popup_html).click(function() {
+								var setData = function(field, value) {
+									if (value === 'endpoint_empty') {
+										node.deleteMetadata('user_id');
+										node.deleteMetadata('device_id');
+									} else if (value === 'approved_empty') {
+										node.deleteMetadata('approved_user_id');
+										node.deleteMetadata('approved_group_id');
+										node.deleteMetadata('approved_device_id');
+									} else {
+										node.setMetadata(field, value);
+									}
+								};
+
+								var endpointField = $('#endpoint_selector option:selected').data('type') + '_id',
+									endpointVal = $('#endpoint_selector option:selected').val(),
+									approvedEndpointField = 'approved_' + $('#approved_endpoint_selector option:selected').data('type') + '_id',
+									approvedEndpointVal = $('#approved_endpoint_selector option:selected').val();
+
+								setData(endpointField, endpointVal);
+								setData(approvedEndpointField, approvedEndpointVal);
+
+								popup.dialog('close');
+							});
+
+							popup = monster.ui.dialog(popup_html, {
+								title: self.i18n.active().callflows.intercept.title,
 								beforeClose: function() {
 									if (typeof callback === 'function') {
 										callback();
