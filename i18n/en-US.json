@@ -970,12 +970,28 @@
 			"name": "Eavesdrop",
 			"tip": "Allows you to eavesdrop on a call for a specific user or device.",
 			"endpoint": {
-				"label": "Endpoint",
-				"help": "Store collected DTMF in a named key. Leave empty to leave it to set it to the back-end default value."
+				"label": "Endpoint"
 			},
 			"approvedEndpoint": {
 				"label": "Approved Endpoint",
 				"help": "You can force the eavesdropper to be a specific user/device/group by selecting an endpoint in this list."
+			}
+		},
+
+		"__comment": "UI-431: adding intercept to adv. callflows",
+		"__version": "v4.1",
+		"intercept": {
+			"none": "None",
+			"default": "Default",
+			"title": "Intercept",
+			"name": "Intercept",
+			"tip": "Allows you to intercept a call.",
+			"endpoint": {
+				"label": "Endpoint"
+			},
+			"approvedEndpoint": {
+				"label": "Approved Endpoint",
+				"help": "You can force the intercepter to be a specific user/device/group by selecting an endpoint in this list."
 			}
 		}
 	},
