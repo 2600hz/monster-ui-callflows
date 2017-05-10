@@ -1,0 +1,46 @@
+<div class="dialog_popup callflows-port">
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="endpoint_selector">{{ i18n.callflows.eavesdrop.endpoint.label }}</label>
+				<div class="select_wrapper">
+					<select id="endpoint_selector">
+						<option value="endpoint_empty">{{ i18n.callflows.eavesdrop.none }}</option>
+						{{#select data.selectedId}}
+							{{#each fieldData}}
+								<optgroup data-type="{{ @key }}" label="{{ @key }}">
+								{{#each this}}
+									<option data-type="{{@../key}}" id="{{ id }}" value="{{ id }}" {{#compare @root.data.selected_id "===" id}} selected{{/compare}}>{{ name }}</option>
+								{{/each}}
+								</optgroup>
+							{{/each}}
+						{{/select}}
+					</select>
+				</div>
+				<div class="clear"/>
+			</div>
+
+			<div class="popup_field">
+				<label for="endpoint_selector">{{ i18n.callflows.eavesdrop.approvedEndpoint.label }}</label>
+				<div class="select_wrapper">
+					<select id="approved_endpoint_selector">
+						<option value="approved_empty">{{ i18n.callflows.eavesdrop.default }}</option>
+						{{#select data.approvedId}}
+							{{#each fieldData}}
+								<optgroup data-type="{{ @key }}" label="{{ @key }}">
+								{{#each this}}
+									<option data-type="{{@../key}}" id="{{ id }}" value="{{ id }}" {{#compare @root.data.selected_id "===" id}} selected{{/compare}}>{{ name }}</option>
+								{{/each}}
+								</optgroup>
+							{{/each}}
+						{{/select}}
+					</select>
+				</div>
+				<div class="clear"/>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>
