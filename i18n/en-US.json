@@ -993,6 +993,23 @@
 				"label": "Approved Endpoint",
 				"help": "You can force the intercepter to be a specific user/device/group by selecting an endpoint in this list."
 			}
+		},
+
+		"__comment": "UI-1929: adding time of day sets to adv. callflows",
+		"__version": "v4.1",
+		"temporalset": {
+			"name": "Time of Day Sets",
+			"nameKey": {
+				"label": "Name",
+				"help": "Name of the Set"
+			},
+			"createSet": "Create Time of Day Set",
+			"editSet": "Edit Time of Day Set",
+			"there_were_errors_on_the_form": "There were errors on the form, please correct!",
+			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this time of day set?",
+			"selectedTOD": "Selected Rules",
+			"unselectedTOD": "Unselected Rules",
+			"noSave": "You can not update this set because it was created in Smart PBX."
 		}
 	},
 	"oldCallflows": {

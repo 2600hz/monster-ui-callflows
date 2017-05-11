@@ -1,0 +1,10 @@
+.callflows-port #temporalset-form .items-selector-wrapper {
+	width: 535px;
+	margin-left: 99px;
+}
+
+.callflows-port .warning-no-save {
+	display: inline-block;
+	color: red;
+	margin-right: 10px;
+}

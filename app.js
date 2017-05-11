@@ -17,7 +17,8 @@ define(function(require){
 		'./submodules/timeofday/timeofday',
 		'./submodules/user/user',
 		'./submodules/vmbox/vmbox',
-		'./submodules/featurecodes/featurecodes'
+		'./submodules/featurecodes/featurecodes',
+		'./submodules/temporalset/temporalset'
 	]);
 
 	var app = {
@@ -37,7 +38,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes'],
+		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
 
 		appFlags: {
 			flow: {},

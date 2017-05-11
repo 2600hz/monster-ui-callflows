@@ -1,0 +1,42 @@
+<div>
+	<div>
+		<div class="whapp-header clearfix">
+			{{#if data.id}}
+				<h1>{{ i18n.callflows.temporalset.editSet }}</h1>
+			{{else}}
+				<h1>{{ i18n.callflows.temporalset.createSet }}</h1>
+			{{/if}}
+		</div>
+	</div>
+	<div>
+		<form action="#" id="temporalset-form">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">{{ i18n.callflows.temporalset.nameKey.label }}</label>
+						<div class="input">
+							<input class="span4" id="name" name="name" type="text" placeholder="{{ i18n.callflows.temporalset.placeholder }}" value="{{ data.name }}" rel="popover" data-content="{{ i18n.callflows.temporalset.nameKey.help }}" required/>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="items-selector-wrapper"></div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="buttons-right">
+			{{#unless data.extra.showSave}}
+				<div class="warning-no-save">{{ i18n.callflows.temporalset.noSave }}</div>
+			{{/unless}}
+
+			{{#if data.extra.showDelete}}
+				<button class="monster-button monster-button-danger temporalset-delete">{{ i18n.delete }}</button>
+			{{/if}}
+
+			{{#if data.extra.showSave}}
+				<button class="monster-button monster-button-success temporalset-save">{{ i18n.save }}</button>
+			{{/if}}
+		</div>
+	</div>
+</div>

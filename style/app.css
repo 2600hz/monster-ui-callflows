@@ -8,6 +8,7 @@
 @import url('../submodules/timeofday/timeofday.css');
 @import url('../submodules/groups/groups.css');
 @import url('../submodules/featurecodes/featurecodes.css');
+@import url('../submodules/temporalset/temporalset.css');
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
