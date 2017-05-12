@@ -379,7 +379,7 @@ define(function(require){
 					}
 				},
 
-				'eavesdrop[]': {
+				/*'eavesdrop[]': {
 					name: self.i18n.active().callflows.eavesdrop.name,
 					icon: 'headset',
 					category: self.i18n.active().oldCallflows.advanced_cat,
@@ -446,9 +446,9 @@ define(function(require){
 							});
 						});
 					}
-				},
+				},*/
 
-				'intercept[]': {
+				/*'intercept[]': {
 					name: self.i18n.active().callflows.intercept.name,
 					icon: 'uturn_arrow',
 					category: self.i18n.active().oldCallflows.advanced_cat,
@@ -515,7 +515,7 @@ define(function(require){
 							});
 						});
 					}
-				},
+				},*/
 
 				'ring_group_toggle[action=login]': {
 					name: self.i18n.active().callflows.ringGroupToggle.loginTitle,
