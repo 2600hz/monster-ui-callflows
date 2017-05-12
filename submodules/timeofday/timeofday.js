@@ -482,16 +482,15 @@ define(function(require){
 					isUsable: 'true',
 					weight: 10,
 					key_caption: function(child_node, caption_map) {
-						var key = child_node.key;
+						var key = child_node.key,
+							caption;
 
-						if(key === '_') {
+						if (key === '_') {
 							caption = self.i18n.active().callflows.timeofday.all_other_times;
-						}
-						else if(caption_map.hasOwnProperty(key)) {
+						} else if (caption_map.hasOwnProperty(key)) {
 							caption = caption_map[key].name;
-						}
-						else {
-							caption = ''
+						} else {
+							caption = '';
 						}
 
 						return caption;
@@ -499,23 +498,24 @@ define(function(require){
 					key_edit: function(child_node, callback) {
 						var _this = this;
 
-						self.temporalRuleList(function(rules) {
+						self.temporalRuleAndSetList(function(formattedData) {
+							formattedData.rules.push({ id: '_', name: self.i18n.active().callflows.timeofday.all_other_times });
+
 							var popup, popup_html;
 
-							rules.push({ id: '_', name: self.i18n.active().callflows.timeofday.all_other_times });
-
 							popup_html = $(monster.template(self, 'timeofday-callflowKey', {
-								items: _.sortBy(rules, 'name'),
+								items: formattedData,
 								selected: child_node.key
 							}));
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ?
-												{ id: $('#timeofday_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#timeofday_selector', popup_html).val() } : {},
+									isRule = $('#timeofday_selector option:selected').parents('optgroup').data('type') === 'rules',
+									methodToCall = $(this).data('action') === 'edit' ? (isRule ? 'timeofdayPopupEdit' : 'temporalsetPopupEdit') : 'timeofdayPopupEdit';
 
 								ev.preventDefault();
 
-								self.timeofdayPopupEdit({
+								self[methodToCall]({
 									data: _data,
 									callback: function(timeofday) {
 										child_node.key = timeofday.id || 'null';
@@ -527,12 +527,12 @@ define(function(require){
 								});
 							});
 
-							if($('#timeofday_selector option:selected', popup_html).val() == '_') {
+							if ($('#timeofday_selector option:selected', popup_html).val() === '_') {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('#timeofday_selector', popup_html).change(function() {
-								$('#timeofday_selector option:selected', popup_html).val() == '_' ? $('#edit_link', popup_html).hide() : $('#edit_link', popup_html).show();
+								$('#timeofday_selector option:selected', popup_html).val() === '_' ? $('#edit_link', popup_html).hide() : $('#edit_link', popup_html).show();
 							});
 
 							$('#add', popup_html).click(function() {
@@ -546,14 +546,14 @@ define(function(require){
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().callflows.timeofday.time_of_day,
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
 							});
 						});
 					},
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('timezone') || self.i18n.active().defaultTimezone;
 					},
 					edit: function(node, callback) {
@@ -564,11 +564,11 @@ define(function(require){
 							selected: {}
 						}));
 
-						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone')||'inherit', {inherit: self.i18n.active().defaultTimezone});
+						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', {inherit: self.i18n.active().defaultTimezone});
 
 						$('#add', popup_html).click(function() {
 							var timezone = $('#timezone_selector', popup_html).val();
-							if(timezone && timezone !== 'inherit') {
+							if (timezone && timezone !== 'inherit') {
 								node.setMetadata('timezone', timezone);
 							}
 
@@ -580,22 +580,15 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().callflows.timeofday.select_a_timezone_title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
+								if (typeof callback === 'function') {
 									callback();
 								}
 							}
 						});
 					},
 					listEntities: function(callback) {
-						self.callApi({
-							resource: 'temporalRule.list',
-							data: {
-								accountId: self.accountId,
-								filters: { paginate:false }
-							},
-							success: function(data, status) {
-								callback && callback(data.data);
-							}
+						self.temporalRuleList(function(data) {
+							callback && callback(data);
 						});
 					},
 					editEntity: 'callflows.timeofday.edit'
@@ -885,6 +878,25 @@ define(function(require){
 			});
 		},
 
+		temporalRuleAndSetList: function(callback) {
+			var self = this;
+
+			monster.parallel({
+				'rules': function(callback) {
+					self.temporalRuleList(function(data) {
+						callback(null, _.sortBy(data, 'name'));
+					});
+				},
+				'sets': function(callback) {
+					self.temporalSetList(function(data) {
+						callback(null, _.sortBy(data, 'name'));
+					});
+				}
+			}, function(err, results) {
+				callback && callback(results);
+			});
+		},
+
 		temporalRuleList: function(callback) {
 			var self = this;
 
@@ -892,7 +904,22 @@ define(function(require){
 				resource: 'temporalRule.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: { paginate: false }
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		temporalSetList: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'temporalSet.list',
+				data: {
+					accountId: self.accountId,
+					filters: { paginate: false }
 				},
 				success: function(data) {
 					callback && callback(data.data);

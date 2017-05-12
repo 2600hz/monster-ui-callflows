@@ -8,7 +8,11 @@
 					<select id="timeofday_selector">
 						{{#select selected}}
 							{{#each items}}
-								<option value="{{ id }}">{{ name }}</option>
+								<optgroup data-type="{{ @key }}" label="{{ tryI18n @root.i18n.callflows.timeofday.types @key }}">
+									{{#each this}}
+										<option value="{{ id }}">{{ name }}</option>
+									{{/each}}
+								</optgroup>
 							{{/each}}
 						{{/select}}
 					</select>
