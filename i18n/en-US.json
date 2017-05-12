@@ -551,7 +551,13 @@
 			"no_name": "(no name)",
 			"add_time_of_day_label": "Add Time of Day",
 			"all_other_times": "All other times",
-			"name_regex": "/^[a-zA-Z0-9\\s_']+$/"
+			"name_regex": "/^[a-zA-Z0-9\\s_']+$/",
+			"__comment": "UI-1929: adding time of day sets to options in time of days",
+			"__version": "4.1",
+			"types": {
+				"rules": "Rules",
+				"sets": "Sets"
+			}
 		},
 		"user": {
 			"user": "User",
