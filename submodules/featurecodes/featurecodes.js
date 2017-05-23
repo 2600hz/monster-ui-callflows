@@ -461,7 +461,7 @@ define(function(require){
 					icon: 'phone',
 					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
 					module: 'voicemail',
-					number_type: 'numbers',
+					number_type: 'patterns',
 					data: {
 						action: 'check',
 						single_mailbox_login: true
@@ -471,7 +471,7 @@ define(function(require){
 					default_number: '98',
 					number: this.default_number,
 					build_regex: function(number) {
-						return '*'+number;
+						return '^\\*'+number+'([0-9]*)$';
 					}
 				},
 				'voicemail[action="direct"]': {
@@ -588,6 +588,23 @@ define(function(require){
 					number: this.default_number,
 					build_regex: function(number) {
 						return number;
+					}
+				},
+				'directed_ext_pickup': {
+					name: self.i18n.active().callflows.featureCodes.directed_ext_pickup,
+					icon: 'phone',
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'group_pickup_feature',
+					number_type: 'patterns',
+					data: {
+						type: "extension"
+					},
+					enabled: false,
+					hasStar: true,
+					default_number: '87',
+					number: this.default_number,
+					build_regex: function(number) {
+						return '^\\*'+number+'([0-9]+)$';
 					}
 				},
 				/*'call_forward[action=on_busy_enable]': {
