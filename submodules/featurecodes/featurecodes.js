@@ -590,23 +590,6 @@ define(function(require){
 						return number;
 					}
 				},
-				'directed_ext_pickup': {
-					name: self.i18n.active().callflows.featureCodes.directed_ext_pickup,
-					icon: 'phone',
-					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
-					module: 'group_pickup_feature',
-					number_type: 'patterns',
-					data: {
-						type: "extension"
-					},
-					enabled: false,
-					hasStar: true,
-					default_number: '87',
-					number: this.default_number,
-					build_regex: function(number) {
-						return '^\\*'+number+'([0-9]+)$';
-					}
-				},
 				/*'call_forward[action=on_busy_enable]': {
 					name: 'Enable Call-Forward on Busy',
 					icon: 'phone',
