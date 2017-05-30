@@ -444,7 +444,7 @@ define(function(require){
 					icon: 'phone',
 					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
 					module: 'voicemail',
-					number_type: 'numbers',
+					number_type: 'patterns',
 					data: {
 						action: 'check'
 					},
@@ -453,7 +453,7 @@ define(function(require){
 					default_number: '97',
 					number: this.default_number,
 					build_regex: function(number) {
-						return '*'+number;
+						return '^\\*'+number+'([0-9]*)$';
 					}
 				},
 				'voicemail[single_mailbox_login]': {
