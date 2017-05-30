@@ -351,6 +351,7 @@ define(function(require){
 						popup_html = $(monster.template(self, 'menu-callflowKey', {
 							items: {
 								'_': self.i18n.active().callflows.menu.default_action,
+								'timeout': 'timeout',
 								'0': '0',
 								'1': '1',
 								'2': '2',
