@@ -1333,9 +1333,14 @@ define(function(require){
 									searchType: $(this).data('type'),
 									callbacks: {
 										success: function(numbers) {
+											var lastNumber;
+
 											_.each(numbers, function(number, k) {
-												$('<option value="'+k+'">'+k+'</option>').appendTo($('#list_numbers', popup));
+												popup.find('#list_numbers').append($('<option value="' + k + '">' + monster.util.formatPhoneNumber(k) + '</option>'));
+												lastNumber = k;
 											});
+
+											popup.find('#list_numbers').val(lastNumber).trigger('chosen:updated');
 										}
 									}
 								});
