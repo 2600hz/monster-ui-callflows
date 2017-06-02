@@ -17,7 +17,7 @@ define(function(require) {
 			$.extend(callflow_nodes, {
 				'qubicle[id=*]': {
 					name: self.i18n.active().callflows.qubicle.qubicle,
-					icon: '',
+					icon: 'support',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'qubicle',
 					tip: self.i18n.active().callflows.qubicle.qubicle_tip,
@@ -53,7 +53,7 @@ define(function(require) {
 								node.setMetadata('id', $('#queue_selector', popup_html).val());
 
 								node.caption = $('#queue_selector option:selected', popup_html).text();
-console.log(node);
+
 								popup.dialog('close');
 							});
 

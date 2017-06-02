@@ -1168,7 +1168,7 @@ define(function(require){
 			}
 
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
-				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile'], metadata.origin);
+				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile', 'callqueues'], metadata.origin);
 
 			isHiddenCallflow ? $('#hidden_callflow_warning').show() : $('#hidden_callflow_warning').hide();
 		},
