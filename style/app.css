@@ -1132,7 +1132,7 @@
 	color: #333;
 }
 
-.callflows-port form label:not(.monster-invalid):not(.monster-switch) {
+.callflows-port form label:not(.monster-invalid) {
 	float: left;
 	font-size: 13px;
 	line-height: 18px;
