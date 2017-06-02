@@ -13,6 +13,7 @@ define(function(require){
 		'./submodules/groups/groups',
 		'./submodules/media/media',
 		'./submodules/menu/menu',
+		'./submodules/qubicle/qubicle',
 		'./submodules/resource/resource',
 		'./submodules/timeofday/timeofday',
 		'./submodules/user/user',
@@ -38,7 +39,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
+		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'qubicle', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
 
 		appFlags: {
 			flow: {},

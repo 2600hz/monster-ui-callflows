@@ -6,6 +6,11 @@
 		"buyLocal": "Local",
 		"buyTollfree": "Toll-Free",
 		"buyVanity": "Vanity",
+		"qubicle": {
+			"qubicle": "Qubicle",
+			"qubicle_tip": "Route to a queue",
+			"which_queue": "Which queue?"
+		},
 		"conference": {
 			"conference": "Conference",
 			"conference_tip": "Connect a caller to a Meet-Me conference bridge",
