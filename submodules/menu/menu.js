@@ -33,6 +33,7 @@ define(function(require){
 					data: $.extend(true, {
 						retries: '3',
 						timeout: '10',
+						interdigit_timeout: '2',
 						max_extension_length: '4',
 						media: {}
 					}, data_defaults || {}),
@@ -138,6 +139,10 @@ define(function(require){
 						digits: true
 					},
 					'timeout': {
+						number: true,
+						max: 10
+					},
+					'interdigit_timeout': {
 						number: true,
 						max: 10
 					},
@@ -258,6 +263,11 @@ define(function(require){
 				data.timeout /= 1000; // ms to seconds
 			}
 
+			if(data.interdigit_timeout) {
+				data.interdigit_timeout /= 1000; // ms to seconds
+			}
+
+
 			if(data.media) {
 				if(data.media.invalid_media === false && data.media.transfer_media === false && data.media.exit_media === false) {
 					data.suppress_media = true;
@@ -276,8 +286,9 @@ define(function(require){
 				form_data.max_extension_length = form_data.record_pin.length;
 			}
 
-			/* Hack to put timeout in ms in database. */
+			/* Hack to put timeouts in ms in database. */
 			form_data.timeout = form_data.timeout * 1000;
+			form_data.interdigit_timeout = form_data.interdigit_timeout * 1000;
 
 			if('suppress_media' in form_data) {
 				form_data.media = form_data.media || {};
