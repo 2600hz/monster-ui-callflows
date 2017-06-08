@@ -466,7 +466,12 @@
 			"no_name": "(no name)",
 			"add_menu_label": "Add Menu",
 			"default_action": "Default action",
-			"menu_option_title": "Menu Option"
+			"menu_option_title": "Menu Option",
+			"__comment": "UI-2764: adding interdigit timeout field",
+			"__version": "4.1",
+			"interdigit_timeout": "Interdigit Timeout (s)",
+			"interdigit_timeout_placeholder": "2",
+			"interdigit_timeout_data_content": "Number of seconds to wait after a digit has been pressed before considering the entry complete."
 		},
 		"resource": {
 			"global_carrier": "Global Carrier",

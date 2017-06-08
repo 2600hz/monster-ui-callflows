@@ -107,6 +107,13 @@
 					</div>
 
 					<div class="clearfix">
+						<label for="interdigit_timeout">{{ i18n.callflows.menu.interdigit_timeout }}</label>
+						<div class="input">
+							<input class="span4" id="interdigit_timeout" name="interdigit_timeout" type="text" placeholder="{{ i18n.callflows.menu.interdigit_timeout_placeholder }}" value="{{ data.interdigit_timeout }}" rel="popover" data-content="{{ i18n.callflows.menu.interdigit_timeout_data_content }}" required/>
+						</div>
+					</div>
+
+					<div class="clearfix">
 						<label for="max_extension_length">{{ i18n.callflows.menu.extension_number_length }}</label>
 						<div class="input">
 							<input class="span4" id="max_extension_length" name="max_extension_length" type="text" placeholder="{{ i18n.callflows.menu.length }}" value="{{ data.max_extension_length }}" rel="popover" data-content="{{ i18n.callflows.menu.extension_number_length_data_content }}"/>
