@@ -132,6 +132,84 @@ define(function(require){
 						});
 					}
 				},
+				'do_not_disturb[action=activate]': {
+					name: self.i18n.active().callflows.doNotDisturb.activate.label,
+					icon: 'x_circle',
+					category: self.i18n.active().callflows.doNotDisturb.categoryName,
+					module: 'do_not_disturb',
+					tip: self.i18n.active().callflows.doNotDisturb.activate.tip,
+					data: {
+						action: 'activate'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 1,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				},
+				'do_not_disturb[action=deactivate]': {
+					name: self.i18n.active().callflows.doNotDisturb.deactivate.label,
+					icon: 'x_circle',
+					category: self.i18n.active().callflows.doNotDisturb.categoryName,
+					module: 'do_not_disturb',
+					tip: self.i18n.active().callflows.doNotDisturb.deactivate.tip,
+					data: {
+						action: 'deactivate'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 2,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				},
+				'do_not_disturb[action=toggle]': {
+					name: self.i18n.active().callflows.doNotDisturb.toggle.label,
+					icon: 'x_circle',
+					category: self.i18n.active().callflows.doNotDisturb.categoryName,
+					module: 'do_not_disturb',
+					tip: self.i18n.active().callflows.doNotDisturb.toggle.tip,
+					data: {
+						action: 'toggle'
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 3,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				},
 				'call_forward[action=activate]': {
 					name: self.i18n.active().oldCallflows.enable_call_forwarding,
 					icon: 'rightarrow',
