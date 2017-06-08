@@ -1022,6 +1022,24 @@
 			"selectedTOD": "Selected Rules",
 			"unselectedTOD": "Unselected Rules",
 			"noSave": "You can not update this set because it was created in Smart PBX."
+		},
+
+		"__comment": "UI-2763: expose dnd callflow action",
+		"__version": "v4.1",
+		"doNotDisturb": {
+			"categoryName": "Do Not Disturb",
+			"activate": {
+				"label": "Activate Do Not Disturb",
+				"tip": "Activates Do Not Disturb"
+			},
+			"deactivate": {
+				"label": "Dectivate Do Not Disturb",
+				"tip": "Dectivates Do Not Disturb"
+			},
+			"toggle": {
+				"label": "Toggle Do Not Disturb",
+				"tip": "Toggles Do Not Disturb"
+			}
 		}
 	},
 	"oldCallflows": {
