@@ -13,6 +13,7 @@ define(function(require){
 		'./submodules/groups/groups',
 		'./submodules/media/media',
 		'./submodules/menu/menu',
+		'./submodules/qubicle/qubicle',
 		'./submodules/resource/resource',
 		'./submodules/timeofday/timeofday',
 		'./submodules/user/user',
@@ -38,7 +39,7 @@ define(function(require){
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
 
-		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
+		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'qubicle', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
 
 		appFlags: {
 			flow: {},
@@ -1167,7 +1168,7 @@ define(function(require){
 			}
 
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
-				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile'], metadata.origin);
+				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile', 'callqueues'], metadata.origin);
 
 			isHiddenCallflow ? $('#hidden_callflow_warning').show() : $('#hidden_callflow_warning').hide();
 		},
