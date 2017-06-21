@@ -339,7 +339,7 @@ define(function(require){
 				$('#time', timeofday_html).jslider({
 					from: 0,
 					to: 86400,
-					step: 60,
+					step: 300,
 					dimension: '',
 					scale: ['12:00am', '1:00am', '2:00am', '3:00am', '4:00am', '5:00am',
 							'6:00am', '7:00am', '8:00am',  '9:00am', '10:00am', '11:00am',
@@ -357,7 +357,7 @@ define(function(require){
 							hours = 12;
 						}
 
-						return hours + ':' + (mins ? mins : '0' + mins)  + meridiem;
+						return hours + ':' + (mins >= 10 ? mins : '0' + mins)  + meridiem;
 					},
 					onstatechange: function () {}
 				});
