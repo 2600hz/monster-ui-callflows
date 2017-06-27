@@ -30,6 +30,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: false,
 					weight: 30,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),

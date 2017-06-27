@@ -1541,7 +1541,7 @@ define(function(require){
 			categories[advanced_cat] = [];
 
 			$.each(self.actions, function(i, data) {
-				if('category' in data) {
+				if('category' in data && (!data.hasOwnProperty('isListed') || data.isListed)) {
 					data.category in categories ? true : categories[data.category] = [];
 					data.key = i;
 					categories[data.category].push(data);
