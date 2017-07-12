@@ -653,7 +653,10 @@ define(function(require){
 					self.callApi({
 						resource: 'numbers.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(data, status) {
 							parallelCallback && parallelCallback(null, data.data.numbers);
