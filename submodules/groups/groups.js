@@ -1090,6 +1090,7 @@ define(function(require){
 										selected: node.getMetadata('strategy') || 'simultaneous'
 									},
 									timeout: node.getMetadata('timeout') || '30',
+									repeats: node.getMetadata('repeats') || 1,
 									ringback: {
 										items: $.merge([
 											{
@@ -1241,7 +1242,8 @@ define(function(require){
 								var name = $('#name', popup_html).val(),
 									global_timeout = 0,
 									strategy = $('#strategy', popup_html).val(),
-									ringback = $('#ringback', popup_html).val();
+									ringback = $('#ringback', popup_html).val(),
+								    	repeats  = $('#repeats',  popup_html).val();
 
 								endpoints = [];
 
@@ -1270,11 +1272,16 @@ define(function(require){
 									endpoints.push(item_data);
 									global_timeout = computeTimeout(parseFloat(item_data.delay), parseFloat(item_data.timeout), global_timeout);
 								});
+								
+								if (repeats < 1) {
+									repeats = 1;
+								}
 
 								node.setMetadata('endpoints', endpoints);
 								node.setMetadata('name', name);
 								node.setMetadata('strategy', strategy);
 								node.setMetadata('timeout', global_timeout);
+								node.setMetadata('repeats', repeats);
 								if(ringback === 'default') {
 									node.deleteMetadata('ringback', ringback);
 								} else {
