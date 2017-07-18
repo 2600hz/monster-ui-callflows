@@ -996,7 +996,8 @@
 		"searchReset": "Click again to clear the search",
 		"__comment": "UI-1742: Add a flag to list callflows in Main Numbers",
 		"__version": "3.22",
-		"list_this_callflow": "List this callflow in Main Number"
+		"list_this_callflow": "List this callflow in Main Number",
+		"repeats": "Repeats"
 	},
 	"__comment": "UI-1260: created common control for carrier selection",
 	"__version": "v3.20_s2",
