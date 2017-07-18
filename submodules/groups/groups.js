@@ -951,7 +951,7 @@ define(function(require){
 								node.setMetadata('name', name);
 								node.setMetadata('strategy', strategy);
 								node.setMetadata('timeout', global_timeout);
-								node.setMetadata('repeats', repeats');
+								node.setMetadata('repeats', repeats);
 								if(ringback === 'default') {
 									node.deleteMetadata('ringback', ringback);
 								} else {
