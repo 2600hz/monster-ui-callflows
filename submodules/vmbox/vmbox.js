@@ -258,15 +258,15 @@ define(function(require){
 					callback: function(_data) {
 						/* Create */
 						if(!_id) {
-							$('#media_unavailable', vmbox_html).append('<option id="'+ _data.data.id  +'" value="'+ _data.data.id +'">'+ _data.data.name +'</option>')
-							$('#media_unavailable', vmbox_html).val(_data.data.id);
+							$('#media_unavailable', vmbox_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.name +'</option>')
+							$('#media_unavailable', vmbox_html).val(_data.id);
 
 							$('#edit_link_media', vmbox_html).show();
 						}
 						else {
 							/* Update */
-							if('id' in _data.data) {
-								$('#media_unavailable #'+_data.data.id, vmbox_html).text(_data.data.name);
+							if('id' in _data) {
+								$('#media_unavailable #'+_data.id, vmbox_html).text(_data.name);
 							}
 							/* Delete */
 							else {
