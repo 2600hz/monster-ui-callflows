@@ -507,7 +507,7 @@ define(function(require){
 						if(monster.ui.valid(deviceForm)) {
 							var form_data = monster.ui.getFormData('device-form');
 
-							if(form_data.music_on_hold.media_id === 'shoutcast') {
+							if (form_data.hasOwnProperty('music_on_hold') && form_data.music_on_hold.media_id === 'shoutcast') {
 								form_data.music_on_hold.media_id = device_html.find('.shoutcast-url-input').val();
 							}
 
