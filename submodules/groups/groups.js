@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -8,10 +8,10 @@ define(function(require){
 
 		subscribe: {
 			'callflows.fetchActions': 'groupsDefineActions',
-			'callflows.groups.edit': '_groupsEdit',
+			'callflows.groups.edit': '_groupsEdit'
 		},
 
-		groupsRender: function(data, target, callbacks){
+		groupsRender: function(data, target, callbacks) {
 			var self = this,
 				groups_html = $(monster.template(self, 'groups-edit', data)),
 				groupForm = groups_html.find('#group-form');
@@ -37,28 +37,27 @@ define(function(require){
 
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
+				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
 
-					if(monster.ui.valid(groupForm)) {
+					if (monster.ui.valid(groupForm)) {
 						var form_data = monster.ui.getFormData('group-form');
 						self.groupsCleanFormData(form_data, data.field_data);
 
 						form_data.endpoints = {};
 
 						$('.rows .row:not(#row_no_data)', groups_html).each(function(k, v) {
-								form_data.endpoints[$(v).data('id')] = { 
-										type: $(v).data('type'),
-										weight: k+1
-								};
+							form_data.endpoints[$(v).data('id')] = {
+								type: $(v).data('type'),
+								weight: k + 1
+							};
 						});
 
 						delete data.data.resources;
 						delete data.data.endpoints;
 
 						self.groupsSave(form_data, data, callbacks.save_success);
-					}
-					else {
+					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert(self.i18n.active().callflows.groups.there_were_errors_on_the_form);
 					}
@@ -74,59 +73,58 @@ define(function(require){
 			});
 
 			var add_user = function() {
-				var $user = $('#select_user_id', groups_html);
+					var $user = $('#select_user_id', groups_html);
 
-				if($user.val() != 'empty_option_user') {
-					var user_id = $user.val();
+					if ($user.val() !== 'empty_option_user') {
+						var user_id = $user.val();
 
-					$.each(data.field_data.users, function(k, v) {
-						if(user_id === v.id) {
-							var user_data = {
-								endpoint_id: user_id,
-								endpoint_type: 'user',
-								endpoint_name: v.first_name + ' ' + v.last_name,
-							};
+						$.each(data.field_data.users, function(k, v) {
+							if (user_id === v.id) {
+								var user_data = {
+									endpoint_id: user_id,
+									endpoint_type: 'user',
+									endpoint_name: v.first_name + ' ' + v.last_name
+								};
 
-							data.data.endpoints.push(user_data);
+								data.data.endpoints.push(user_data);
 
-							data.data.endpoints.sort(function(a,b){
-								return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
-							});
+								data.data.endpoints.sort(function(a, b) {
+									return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
+								});
 
-							self.groupsRenderEndpointList(data, groups_html);
-							$user.val('empty_option_user');
-						}
-					});
-				}
-			},
-			add_device = function() {
+								self.groupsRenderEndpointList(data, groups_html);
+								$user.val('empty_option_user');
+							}
+						});
+					}
+				},
+				add_device = function() {
 					var $device = $('#select_device_id', groups_html);
 
-					if($device.val() != 'empty_option_device') {
-							var device_id = $device.val();
+					if ($device.val() !== 'empty_option_device') {
+						var device_id = $device.val();
 
-							$.each(data.field_data.devices, function(k, v){
-									if(device_id === v.id) {
-											var device_data = {
-													endpoint_id: device_id,
-													endpoint_type: 'device',
-													endpoint_name: v.name,
-											};
+						$.each(data.field_data.devices, function(k, v) {
+							if (device_id === v.id) {
+								var device_data = {
+									endpoint_id: device_id,
+									endpoint_type: 'device',
+									endpoint_name: v.name
+								};
 
-											data.data.endpoints.push(device_data);
+								data.data.endpoints.push(device_data);
 
-											data.data.endpoints.sort(function(a,b){
-													return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
-											});
+								data.data.endpoints.sort(function(a, b) {
+									return a.endpoint_name.toLowerCase() > b.endpoint_name.toLowerCase();
+								});
 
-											self.groupsRenderEndpointList(data, groups_html);
+								self.groupsRenderEndpointList(data, groups_html);
 
-											$device.val('empty_option_device');
-									}
-
-							});
+								$device.val('empty_option_device');
+							}
+						});
 					}
-			};
+				};
 
 			$('#select_user_id', groups_html).change(function() {
 				add_user();
@@ -138,11 +136,11 @@ define(function(require){
 			groups_html.find('#group-form').on('click', '.action_endpoint.delete', function() {
 				var endpoint_id = $(this).data('id');
 				//removes it from the grid
-				$('#row_endpoint_'+endpoint_id, groups_html).remove();
+				$('#row_endpoint_' + endpoint_id, groups_html).remove();
 				//re-add it to the dropdown
-				$('#option_endpoint_'+endpoint_id, groups_html).show();
+				$('#option_endpoint_' + endpoint_id, groups_html).show();
 				//if grid empty, add no data line
-				if($('.rows .row', groups_html).size() === 0) {
+				if ($('.rows .row', groups_html).size() === 0) {
 					$('.rows', groups_html).append(monster.template(self, 'groups-endpoint_row'));
 				}
 
@@ -150,7 +148,7 @@ define(function(require){
 				var new_list = [];
 
 				$.each(data.data.endpoints, function(k, v) {
-					if(!(v.endpoint_id === endpoint_id)) {
+					if (!(v.endpoint_id === endpoint_id)) {
 						new_list.push(v);
 					}
 				});
@@ -169,7 +167,7 @@ define(function(require){
 			self.groupsEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
-		groupsEdit: function(data, _parent, _target, _callbacks, data_defaults){
+		groupsEdit: function(data, _parent, _target, _callbacks, data_defaults) {
 			var self = this,
 				parent = _parent || $('#groups-content'),
 				target = _target || $('#groups-view', parent),
@@ -189,62 +187,58 @@ define(function(require){
 				};
 
 			monster.parallel({
-					'device_list': function(callback) {
-						self.callApi({
-							resource: 'device.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(data) {
-								defaults.field_data.devices = data.data;
-								callback(null, data)
-							}
-						});
-					},
-
-					'user_list': function(callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(data) {
-								defaults.field_data.users = data.data;
-								callback(null, data)
-							}
-						});
-					},
-
-					'groups_get': function(callback) {
-						if(typeof data === 'object' && data.id) {
-							self.callApi({
-								resource: 'group.get',
-								data: {
-									accountId: self.accountId,
-									groupId: data.id
-								},
-								success: function(data) {
-									callback(null, data)
-								}
-							});
+				device_list: function(callback) {
+					self.callApi({
+						resource: 'device.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data) {
+							defaults.field_data.devices = data.data;
+							callback(null, data);
 						}
-						else {
-							callback(null, {});
-						}
-					},
+					});
 				},
-				function(err, results) {
-					var render_data = defaults;
+				user_list: function(callback) {
+					self.callApi({
+						resource: 'user.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(data) {
+							defaults.field_data.users = data.data;
+							callback(null, data);
+						}
+					});
+				},
 
-					if(typeof data === 'object' && data.id) {
-						render_data = $.extend(true, defaults, results.groups_get);
+				groups_get: function(callback) {
+					if (typeof data === 'object' && data.id) {
+						self.callApi({
+							resource: 'group.get',
+							data: {
+								accountId: self.accountId,
+								groupId: data.id
+							},
+							success: function(data) {
+								callback(null, data);
+							}
+						});
+					} else {
+						callback(null, {});
 					}
-
-					render_data = self.groupsFormatData(render_data);
-
-					self.groupsRender(render_data, target, callbacks);
 				}
-			);
+			}, function(err, results) {
+				var render_data = defaults;
+
+				if (typeof data === 'object' && data.id) {
+					render_data = $.extend(true, defaults, results.groups_get);
+				}
+
+				render_data = self.groupsFormatData(render_data);
+
+				self.groupsRender(render_data, target, callbacks);
+			});
 		},
 
 		groupsRenderEndpointList: function(data, parent) {
@@ -252,15 +246,15 @@ define(function(require){
 
 			$('.rows', parent).empty();
 
-			if('endpoints' in data.data && data.data.endpoints.length > 0) {
-				$.each(data.data.endpoints, function(k, item){
+			if ('endpoints' in data.data && data.data.endpoints.length > 0) {
+				$.each(data.data.endpoints, function(k, item) {
 					$('.rows', parent).append(monster.template(self, 'groups-endpoint_row', item));
-					$('#option_endpoint_'+item.endpoint_id, parent).hide();
+					$('#option_endpoint_' + item.endpoint_id, parent).hide();
 				});
-			}
-			else {
-				$('.rows', parent).empty()
-								  .append(monster.template(self, 'groups-endpoint_row'));
+			} else {
+				$('.rows', parent)
+					.empty()
+					.append(monster.template(self, 'groups-endpoint_row'));
 			}
 		},
 
@@ -274,7 +268,7 @@ define(function(require){
 				list_endpoint = [];
 
 			$.each(data.field_data.users, function(k, v) {
-				if(v.id in data.data.endpoints) {
+				if (v.id in data.data.endpoints) {
 					endpoint_item = {
 						endpoint_type: 'user',
 						endpoint_id: v.id,
@@ -287,7 +281,7 @@ define(function(require){
 			});
 
 			$.each(data.field_data.devices, function(k, v) {
-				if(v.id in data.data.endpoints) {
+				if (v.id in data.data.endpoints) {
 					endpoint_item = {
 						endpoint_type: 'device',
 						endpoint_id: v.id,
@@ -299,7 +293,7 @@ define(function(require){
 				}
 			});
 
-			list_endpoint.sort(function(a,b){
+			list_endpoint.sort(function(a, b) {
 				return a.endpoint_weight - b.endpoint_weight;
 			});
 
@@ -330,7 +324,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 20,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('name') || '';
 					},
 					edit: function(node, callback) {
@@ -345,7 +339,9 @@ define(function(require){
 							resource: 'group.list',
 							data: {
 								accountId: self.accountId,
-								filters: { paginate:false }
+								filters: {
+									paginate: false
+								}
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
@@ -371,7 +367,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 30,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('name') || '';
 					},
 					edit: function(node, callback) {
@@ -715,14 +711,16 @@ define(function(require){
 			var self = this;
 
 			self.groupsDeviceList(function(data) {
-				var popup, popup_html, index, endpoints,
+				var popup,
+					popup_html,
+					endpoints,
 					selected_endpoints = {},
 					unselected_endpoints = [],
 					unselected_groups = [],
 					unselected_devices = [],
 					unselected_users = [];
 
-				if(endpoints = node.getMetadata('endpoints')) {
+				if (endpoints === node.getMetadata('endpoints')) {
 					// We need to translate the endpoints to prevent nasty O(N^2) time complexities,
 					// we also need to clone to prevent managing of objects
 					$.each($.extend(true, {}, endpoints), function(i, obj) {
@@ -733,12 +731,11 @@ define(function(require){
 
 				$.each(data, function(i, obj) {
 					obj.endpoint_type = 'device';
-					if(obj.id in selected_endpoints) {
+					if (obj.id in selected_endpoints) {
 						selected_endpoints[obj.id].endpoint_type = 'device';
 						selected_endpoints[obj.id].owner_id = obj.owner_id;
 						selected_endpoints[obj.id].name = obj.name;
-					}
-					else {
+					} else {
 						unselected_devices.push(obj);
 					}
 				});
@@ -748,11 +745,10 @@ define(function(require){
 				self.groupsGroupList(function(_data) {
 					$.each(_data, function(i, obj) {
 						obj.endpoint_type = 'group';
-						if(obj.id in selected_endpoints) {
-							selected_endpoints[obj.id].endpoint_type = 'group',
+						if (obj.id in selected_endpoints) {
+							selected_endpoints[obj.id].endpoint_type = 'group';
 							selected_endpoints[obj.id].name = obj.name;
-						}
-						else {
+						} else {
 							unselected_groups.push(obj);
 						}
 					});
@@ -763,11 +759,10 @@ define(function(require){
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
-							if(obj.id in selected_endpoints) {
-								selected_endpoints[obj.id].endpoint_type = 'user',
+							if (obj.id in selected_endpoints) {
+								selected_endpoints[obj.id].endpoint_type = 'user';
 								selected_endpoints[obj.id].name = obj.name;
-							}
-							else {
+							} else {
 								unselected_users.push(obj);
 							}
 						});
@@ -793,7 +788,7 @@ define(function(require){
 
 						$.each(selected_endpoints, function() {
 							//Check if user/device exists.
-							if(this.endpoint_type) {
+							if (this.endpoint_type) {
 								$('.connect.right', popup_html).append($(monster.template(self, 'groups-page_group_element', this)));
 							}
 						});
@@ -813,13 +808,11 @@ define(function(require){
 
 							var tab_id = $(this).attr('id');
 
-							if(tab_id  === 'users_tab_link') {
+							if (tab_id === 'users_tab_link') {
 								$('#users_pane', popup_html).show();
-							}
-							else if(tab_id === 'devices_tab_link') {
+							} else if (tab_id === 'devices_tab_link') {
 								$('#devices_pane', popup_html).show();
-							}
-							else if(tab_id === 'groups_tab_link') {
+							} else if (tab_id === 'groups_tab_link') {
 								$('#groups_pane', popup_html).show();
 							}
 
@@ -833,10 +826,9 @@ define(function(require){
 
 						$('#devices_pane .searchfield', popup_html).keyup(function() {
 							$('#devices_pane .column.left li').each(function() {
-								if($('.item_name', $(this)).html().toLowerCase().indexOf($('#devices_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+								if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#devices_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 									$(this).hide();
-								}
-								else {
+								} else {
 									$(this).show();
 								}
 							});
@@ -844,10 +836,9 @@ define(function(require){
 
 						$('#users_pane .searchfield', popup_html).keyup(function() {
 							$('#users_pane .column.left li').each(function() {
-								if($('.item_name', $(this)).html().toLowerCase().indexOf($('#users_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+								if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#users_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 									$(this).hide();
-								}
-								else {
+								} else {
 									$(this).show();
 								}
 							});
@@ -855,19 +846,17 @@ define(function(require){
 
 						$('#groups_pane .searchfield', popup_html).keyup(function() {
 							$('#groups_pane .column.left li').each(function() {
-								if($('.item_name', $(this)).html().toLowerCase().indexOf($('#groups_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+								if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#groups_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 									$(this).hide();
-								}
-								else {
+								} else {
 									$(this).show();
 								}
 							});
 						});
 
-						if($.isEmptyObject(selected_endpoints)) {
+						if ($.isEmptyObject(selected_endpoints)) {
 							$('.column.right .connect', popup_html).addClass('no_element');
-						}
-						else {
+						} else {
 							$('.column.right .connect', popup_html).removeClass('no_element');
 						}
 
@@ -906,7 +895,7 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.page_group_title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
+								if (typeof callback === 'function') {
 									callback();
 								}
 							}
@@ -929,24 +918,23 @@ define(function(require){
 									list_li = [],
 									confirm_text;
 
-								if(data.endpoint_type === 'device') {
+								if (data.endpoint_type === 'device') {
 									confirm_text = self.i18n.active().oldCallflows.the_owner_of_this_device_is_already;
 									$('.connect.right li', popup_html).each(function() {
-										if($(this).data('id') === data.owner_id) {
+										if ($(this).data('id') === data.owner_id) {
 											list_li.push($(this));
 										}
 									});
-								}
-								else if(data.endpoint_type === 'user') {
+								} else if (data.endpoint_type === 'user') {
 									confirm_text = self.i18n.active().oldCallflows.this_user_has_already_some_devices;
 									$('.connect.right li', popup_html).each(function() {
-										if($(this).data('owner_id') === data.id) {
+										if ($(this).data('owner_id') === data.id) {
 											list_li.push($(this));
 										}
 									});
 								}
 
-								if(list_li.length > 0) {
+								if (list_li.length > 0) {
 									monster.ui.confirm(confirm_text,
 										function() {
 											$.each(list_li, function() {
@@ -959,7 +947,7 @@ define(function(require){
 									);
 								}
 
-								if($(this).hasClass('right')) {
+								if ($(this).hasClass('right')) {
 									$('.options', ui.item).show();
 									$('.actions', ui.item).show();
 									//$('.item_name', ui.item).addClass('right');
@@ -980,15 +968,15 @@ define(function(require){
 							var $parent_li = li;
 							var data = $parent_li.data();
 							data.name = jQuery.trim($('.item_name', $parent_li).html());
-							$('#'+data.endpoint_type+'s_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', data)));
+							$('#' + data.endpoint_type + 's_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', data)));
 							$parent_li.remove();
 
-							if($('.connect.right li', popup_html).size() == 0) {
+							if ($('.connect.right li', popup_html).size() === 0) {
 								$('.column.right .connect', popup).addClass('no_element');
 							}
 
-							if(data.name.toLowerCase().indexOf($('#'+data.endpoint_type+'s_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
-								$('#'+data.id, popup_html).hide();
+							if (data.name.toLowerCase().indexOf($('#' + data.endpoint_type + 's_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
+								$('#' + data.id, popup_html).hide();
 							}
 						};
 					});
@@ -1002,14 +990,16 @@ define(function(require){
 				default_delay = '0';
 
 			self.groupsDeviceList(function(data) {
-				var popup, popup_html, index, endpoints,
+				var popup,
+					popup_html,
+					endpoints,
 					selected_endpoints = {},
 					unselected_endpoints = [],
 					unselected_groups = [],
 					unselected_devices = [],
 					unselected_users = [];
 
-				if(endpoints = node.getMetadata('endpoints')) {
+				if (endpoints === node.getMetadata('endpoints')) {
 					// We need to translate the endpoints to prevent nasty O(N^2) time complexities,
 					// we also need to clone to prevent managing of objects
 					$.each($.extend(true, {}, endpoints), function(i, obj) {
@@ -1020,12 +1010,11 @@ define(function(require){
 
 				$.each(data, function(i, obj) {
 					obj.endpoint_type = 'device';
-					if(obj.id in selected_endpoints) {
+					if (obj.id in selected_endpoints) {
 						selected_endpoints[obj.id].endpoint_type = 'device';
 						selected_endpoints[obj.id].owner_id = obj.owner_id;
 						selected_endpoints[obj.id].name = obj.name;
-					}
-					else {
+					} else {
 						obj.delay = default_delay;
 						obj.timeout = default_timeout;
 						unselected_devices.push(obj);
@@ -1037,11 +1026,10 @@ define(function(require){
 				self.groupsGroupList(function(_data) {
 					$.each(_data, function(i, obj) {
 						obj.endpoint_type = 'group';
-						if(obj.id in selected_endpoints) {
-							selected_endpoints[obj.id].endpoint_type = 'group',
+						if (obj.id in selected_endpoints) {
+							selected_endpoints[obj.id].endpoint_type = 'group';
 							selected_endpoints[obj.id].name = obj.name;
-						}
-						else {
+						} else {
 							obj.delay = default_delay;
 							obj.timeout = default_timeout;
 							unselected_groups.push(obj);
@@ -1054,11 +1042,10 @@ define(function(require){
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
-							if(obj.id in selected_endpoints) {
-								selected_endpoints[obj.id].endpoint_type = 'user',
+							if (obj.id in selected_endpoints) {
+								selected_endpoints[obj.id].endpoint_type = 'user';
 								selected_endpoints[obj.id].name = obj.name;
-							}
-							else {
+							} else {
 								obj.delay = default_delay;
 								obj.timeout = default_timeout;
 								unselected_users.push(obj);
@@ -1068,10 +1055,9 @@ define(function(require){
 						unselected_users = _.sortBy(unselected_users, 'name');
 
 						self.groupsMediaList(function(_data) {
-							var media_array = _data.sort(function(a,b) {
+							var media_array = _data.sort(function(a, b) {
 								return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
 							});
-
 
 							popup_html = $(monster.template(self, 'groups-ring_group_dialog', {
 								form: {
@@ -1122,7 +1108,7 @@ define(function(require){
 
 							$.each(selected_endpoints, function() {
 								//Check if user/device exists.
-								if(this.endpoint_type) {
+								if (this.endpoint_type) {
 									$('.connect.right', popup_html).append($(monster.template(self, 'groups-ring_group_element', this)));
 								}
 							});
@@ -1132,7 +1118,7 @@ define(function(require){
 							});
 
 							$('#ringback', popup_html).change(function(e) {
-								if($(this).find('option:selected').hasClass('uneditable')) {
+								if ($(this).find('option:selected').hasClass('uneditable')) {
 									$('.media_action[data-action="edit"]', popup_html).hide();
 								} else {
 									$('.media_action[data-action="edit"]', popup_html).show();
@@ -1144,13 +1130,13 @@ define(function(require){
 									mediaData = isCreation ? {} : { id: $('#ringback', popup_html).val() };
 
 								monster.pub('callflows.media.editPopup', {
-									data: mediaData, 
+									data: mediaData,
 									callback: function(_mediaData) {
-										if(_mediaData.data && _mediaData.data.id) {
-											if(isCreation) {
-												$('#ringback', popup_html).append('<option value="'+_mediaData.data.id+'">'+_mediaData.data.name+'</option>');
+										if (_mediaData.data && _mediaData.data.id) {
+											if (isCreation) {
+												$('#ringback', popup_html).append('<option value="' + _mediaData.data.id + '">' + _mediaData.data.name + '</option>');
 											} else {
-												$('#ringback option[value="'+_mediaData.data.id+'"]', popup_html).text(_mediaData.data.name);
+												$('#ringback option[value="' + _mediaData.data.id + '"]', popup_html).text(_mediaData.data.name);
 											}
 											$('#ringback', popup_html).val(_mediaData.data.id);
 										}
@@ -1169,13 +1155,11 @@ define(function(require){
 
 								var tab_id = $(this).attr('id');
 
-								if(tab_id  === 'users_tab_link') {
+								if (tab_id === 'users_tab_link') {
 									$('#users_pane', popup_html).show();
-								}
-								else if(tab_id === 'devices_tab_link') {
+								} else if (tab_id === 'devices_tab_link') {
 									$('#devices_pane', popup_html).show();
-								}
-								else if(tab_id === 'groups_tab_link') {
+								} else if (tab_id === 'groups_tab_link') {
 									$('#groups_pane', popup_html).show();
 								}
 
@@ -1189,10 +1173,9 @@ define(function(require){
 
 							$('#devices_pane .searchfield', popup_html).keyup(function() {
 								$('#devices_pane .column.left li').each(function() {
-									if($('.item_name', $(this)).html().toLowerCase().indexOf($('#devices_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+									if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#devices_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 										$(this).hide();
-									}
-									else {
+									} else {
 										$(this).show();
 									}
 								});
@@ -1200,10 +1183,9 @@ define(function(require){
 
 							$('#users_pane .searchfield', popup_html).keyup(function() {
 								$('#users_pane .column.left li').each(function() {
-									if($('.item_name', $(this)).html().toLowerCase().indexOf($('#users_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+									if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#users_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 										$(this).hide();
-									}
-									else {
+									} else {
 										$(this).show();
 									}
 								});
@@ -1211,19 +1193,17 @@ define(function(require){
 
 							$('#groups_pane .searchfield', popup_html).keyup(function() {
 								$('#groups_pane .column.left li').each(function() {
-									if($('.item_name', $(this)).html().toLowerCase().indexOf($('#groups_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
+									if ($('.item_name', $(this)).html().toLowerCase().indexOf($('#groups_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
 										$(this).hide();
-									}
-									else {
+									} else {
 										$(this).show();
 									}
 								});
 							});
 
-							if($.isEmptyObject(selected_endpoints)) {
+							if ($.isEmptyObject(selected_endpoints)) {
 								$('.column.right .connect', popup_html).addClass('no_element');
-							}
-							else {
+							} else {
 								$('.column.right .connect', popup_html).removeClass('no_element');
 							}
 
@@ -1243,27 +1223,26 @@ define(function(require){
 									global_timeout = 0,
 									strategy = $('#strategy', popup_html).val(),
 									ringback = $('#ringback', popup_html).val(),
-								    	repeats  = $('#repeats',  popup_html).val();
+									repeats = $('#repeats', popup_html).val();
 
 								endpoints = [];
 
-								if(strategy === 'simultaneous') {
+								if (strategy === 'simultaneous') {
 									var computeTimeout = function(delay, local_timeout, global_timeout) {
 										var duration = delay + local_timeout;
 
-										if(duration > global_timeout) {
+										if (duration > global_timeout) {
 											global_timeout = duration;
 										}
 
 										return global_timeout;
-									}
-								}
-								else {
+									};
+								} else {
 									var computeTimeout = function(delay, local_timeout, global_timeout) {
 										global_timeout += delay + local_timeout;
 
 										return global_timeout;
-									}
+									};
 								}
 
 								$('.right .connect li', popup_html).each(function() {
@@ -1272,7 +1251,7 @@ define(function(require){
 									endpoints.push(item_data);
 									global_timeout = computeTimeout(parseFloat(item_data.delay), parseFloat(item_data.timeout), global_timeout);
 								});
-								
+
 								if (repeats < 1) {
 									repeats = 1;
 								}
@@ -1282,7 +1261,7 @@ define(function(require){
 								node.setMetadata('strategy', strategy);
 								node.setMetadata('timeout', global_timeout);
 								node.setMetadata('repeats', repeats);
-								if(ringback === 'default') {
+								if (ringback === 'default') {
 									node.deleteMetadata('ringback', ringback);
 								} else {
 									node.setMetadata('ringback', ringback);
@@ -1296,7 +1275,7 @@ define(function(require){
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().oldCallflows.ring_group,
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -1319,24 +1298,23 @@ define(function(require){
 										list_li = [],
 										confirm_text;
 
-									if(data.endpoint_type === 'device') {
+									if (data.endpoint_type === 'device') {
 										confirm_text = self.i18n.active().oldCallflows.the_owner_of_this_device_is_already;
 										$('.connect.right li', popup_html).each(function() {
-											if($(this).data('id') === data.owner_id) {
+											if ($(this).data('id') === data.owner_id) {
 												list_li.push($(this));
 											}
 										});
-									}
-									else if(data.endpoint_type === 'user') {
+									} else if (data.endpoint_type === 'user') {
 										confirm_text = self.i18n.active().oldCallflows.this_user_has_already_some_devices;
 										$('.connect.right li', popup_html).each(function() {
-											if($(this).data('owner_id') === data.id) {
+											if ($(this).data('owner_id') === data.id) {
 												list_li.push($(this));
 											}
 										});
 									}
 
-									if(list_li.length > 0) {
+									if (list_li.length > 0) {
 										monster.ui.confirm(confirm_text,
 											function() {
 												$.each(list_li, function() {
@@ -1349,7 +1327,7 @@ define(function(require){
 										);
 									}
 
-									if($(this).hasClass('right')) {
+									if ($(this).hasClass('right')) {
 										$('.options', ui.item).show();
 										$('.actions', ui.item).show();
 										//$('.item_name', ui.item).addClass('right');
@@ -1365,7 +1343,7 @@ define(function(require){
 
 							$('.pane_content', popup_html).hide();
 							$('#users_pane', popup_html).show();
-							if($('#ringback option:selected').hasClass('uneditable')) {
+							if ($('#ringback option:selected').hasClass('uneditable')) {
 								$('.media_action[data-action="edit"]', popup_html).hide();
 							} else {
 								$('.media_action[data-action="edit"]', popup_html).show();
@@ -1375,15 +1353,15 @@ define(function(require){
 								var $parent_li = li;
 								var data = $parent_li.data();
 								data.name = jQuery.trim($('.item_name', $parent_li).html());
-								$('#'+data.endpoint_type+'s_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', data)));
+								$('#' + data.endpoint_type + 's_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', data)));
 								$parent_li.remove();
 
-								if($('.connect.right li', popup_html).size() == 0) {
+								if ($('.connect.right li', popup_html).size() === 0) {
 									$('.column.right .connect', popup).addClass('no_element');
 								}
 
-								if(data.name.toLowerCase().indexOf($('#'+data.endpoint_type+'s_pane .searchfield', popup_html).val().toLowerCase()) == -1) {
-									$('#'+data.id, popup_html).hide();
+								if (data.name.toLowerCase().indexOf($('#' + data.endpoint_type + 's_pane .searchfield', popup_html).val().toLowerCase()) === -1) {
+									$('#' + data.id, popup_html).hide();
 								}
 							};
 						});
@@ -1399,7 +1377,9 @@ define(function(require){
 				resource: 'device.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1414,7 +1394,9 @@ define(function(require){
 				resource: 'group.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1429,7 +1411,9 @@ define(function(require){
 				resource: 'user.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1444,7 +1428,9 @@ define(function(require){
 				resource: 'media.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1456,7 +1442,7 @@ define(function(require){
 			delete form_data.users;
 			return form_data;
 		},
-		
+
 		groupsSave: function(form_data, data, success, error) {
 			var self = this,
 				normalized_data = self.groupsNormalizeData($.extend(true, {}, data.data, form_data));
@@ -1473,8 +1459,7 @@ define(function(require){
 						success(_data.data, status, 'update');
 					}
 				});
-			}
-			else {
+			} else {
 				self.callApi({
 					resource: 'group.create',
 					data: {
@@ -1491,7 +1476,7 @@ define(function(require){
 		groupsDelete: function(data, callback) {
 			var self = this;
 
-			if(typeof data.data == 'object' && data.data.id) {
+			if (typeof data.data === 'object' && data.data.id) {
 				self.callApi({
 					resource: 'group.delete',
 					data: {

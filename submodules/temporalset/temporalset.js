@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -278,7 +278,9 @@ define(function(require){
 				resource: 'temporalRule.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
@@ -293,7 +295,9 @@ define(function(require){
 				resource: 'temporalSet.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
