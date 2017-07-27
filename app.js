@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -27,14 +27,14 @@ define(function(require){
 
 		css: [ 'app', 'icons' ],
 
-		i18n: { 
+		i18n: {
 			'en-US': { customCss: false }
 		},
 
 		// Defines API requests not included in the SDK
 		requests: {},
 
-		// Define the events available for other apps 
+		// Define the events available for other apps
 		subscribe: {
 			'callflows.fetchActions': 'define_callflow_nodes'
 		},
@@ -55,7 +55,7 @@ define(function(require){
 		flow: {},
 
 		// Method used by the Monster-UI Framework, shouldn't be touched unless you're doing some advanced kind of stuff!
-		load: function(callback){
+		load: function(callback) {
 			var self = this;
 
 			self.initApp(function() {
@@ -75,7 +75,7 @@ define(function(require){
 		},
 
 		// Entry Point of the app
-		render: function(container){
+		render: function(container) {
 			var self = this,
 				parent = _.isEmpty(container) ? $('#monster_content') : container;
 
@@ -84,7 +84,7 @@ define(function(require){
 			self.renderEntityManager(parent);
 		},
 
-		renderCallflows: function(container){
+		renderCallflows: function(container) {
 			var self = this,
 				callflowsTemplate = $(monster.template(self, 'callflow-manager', {
 					canToggleCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
@@ -144,7 +144,7 @@ define(function(require){
 			});
 
 			callflowList.on('scroll', function() {
-				if(!isLoading && callflowList.data('next-key') && (callflowList.scrollTop() >= (callflowList[0].scrollHeight - callflowList.innerHeight() - 100))) {
+				if (!isLoading && callflowList.data('next-key') && (callflowList.scrollTop() >= (callflowList[0].scrollHeight - callflowList.innerHeight() - 100))) {
 					isLoading = true;
 					callflowList.append(loader);
 
@@ -171,10 +171,10 @@ define(function(require){
 				var search = $(this).val();
 
 				searchLink.find('.search-value').text(search);
-				if(search) {
+				if (search) {
 					$.each(template.find('.list-element'), function() {
 						var $elem = $(this);
-						if($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
+						if ($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
 							$elem.show();
 						} else {
 							$elem.hide();
@@ -188,17 +188,21 @@ define(function(require){
 			});
 
 			callflowList.on('click', '.search-link', function() {
-				if(searchLink.hasClass('active')) {
+				if (searchLink.hasClass('active')) {
 					callflowList.data('search-value', null);
-					searchLink.removeClass('active')
-							  .remove();
-					template.find('.search-query').prop('disabled', false)
-												  .val('');
+					searchLink
+						.removeClass('active')
+						.remove();
+					template
+						.find('.search-query')
+							.prop('disabled', false)
+							.val('');
 					self.repaintList({template: template});
 				} else {
 					var searchValue = searchLink.find('.search-value').text();
-					searchLink.addClass('active')
-							  .remove();
+					searchLink
+						.addClass('active')
+						.remove();
 					callflowList.data('search-value', searchValue);
 
 					template.find('.search-query').prop('disabled', true);
@@ -234,11 +238,9 @@ define(function(require){
 
 		bindEntityManagerEvents: function(args) {
 			var self = this,
-				parent = args.parent,
 				template = args.template,
 				actions = args.actions,
 				editEntity = function(type, id) {
-
 					monster.pub(actions[type].editEntity, {
 						data: id ? { id: id } : {},
 						parent: template,
@@ -272,25 +274,22 @@ define(function(require){
 
 			template.find('.entity-manager .entity-element').on('click', function() {
 				var $this = $(this);
-				if($this.hasClass('callflow-element')) {
+				if ($this.hasClass('callflow-element')) {
 					self.renderCallflows(template.find('.callflow-edition'));
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
-				}
-				else if($this.hasClass('account-element')) {
+				} else if ($this.hasClass('account-element')) {
 					self.renderAccountSettings(template.find('.callflow-edition'));
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
-				}
-				else if($this.hasClass('feature-code-element')) {
+				} else if ($this.hasClass('feature-code-element')) {
 					monster.pub('callflows.featurecode.render', template.find('.callflow-edition'));
 
 					template.find('.callflow-app-section').hide();
 					template.find('.callflow-edition').show();
-				}
-				else {
+				} else {
 					var entityType = $this.data('type');
 					template.find('.entity-edition .entity-header .entity-title').text(actions[entityType].name);
 					self.refreshEntityList({
@@ -326,10 +325,10 @@ define(function(require){
 
 			template.find('.entity-edition .search-query').on('keyup', function() {
 				var search = $(this).val();
-				if(search) {
+				if (search) {
 					$.each(template.find('.entity-edition .list-element'), function() {
 						var $elem = $(this);
-						if($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
+						if ($elem.data('search').toLowerCase().indexOf(search.toLowerCase()) >= 0) {
 							$elem.show();
 						} else {
 							$elem.hide();
@@ -370,20 +369,16 @@ define(function(require){
 		formatEntityData: function(entities, entityType) {
 			var self = this;
 			_.each(entities, function(entity) {
-				if(entity.first_name && entity.last_name) {
+				if (entity.first_name && entity.last_name) {
 					entity.displayName = entity.first_name + ' ' + entity.last_name;
-				} else if(entity.name) {
+				} else if (entity.name) {
 					entity.displayName = entity.name;
 				} else {
 					entity.displayName = entity.id;
 				}
 
-				switch(entityType) {
-					case 'play': //media
-						if(entity.media_source) {
-							entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source]
-						}
-						break;
+				if (entityType === 'play' && entity.media_source) {
+					entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source];
 				}
 			});
 		},
@@ -466,9 +461,9 @@ define(function(require){
 					template.find('.upload-div').slideUp(function() {
 						template.find('.upload-toggle').removeClass('active');
 					});
-					if(newMedia) {
+					if (newMedia) {
 						var mediaSelect = template.find('.media-dropdown');
-						mediaSelect.append('<option value="'+newMedia.id+'">'+newMedia.name+'</option>');
+						mediaSelect.append('<option value="' + newMedia.id + '">' + newMedia.name + '</option>');
 						mediaSelect.val(newMedia.id);
 					}
 				};
@@ -502,7 +497,7 @@ define(function(require){
 					mediaToUpload = results[0];
 				},
 				error: function(errors) {
-					if(errors.hasOwnProperty('size') && errors.size.length > 0) {
+					if (errors.hasOwnProperty('size') && errors.size.length > 0) {
 						monster.ui.alert(self.i18n.active().callflows.accountSettings.musicOnHold.fileTooBigAlert);
 					}
 					template.find('.upload-div input').val('');
@@ -511,7 +506,7 @@ define(function(require){
 			});
 
 			template.find('.upload-toggle').on('click', function() {
-				if($(this).hasClass('active')) {
+				if ($(this).hasClass('active')) {
 					template.find('.upload-div').stop(true, true).slideUp();
 				} else {
 					template.find('.upload-div').stop(true, true).slideDown();
@@ -524,7 +519,7 @@ define(function(require){
 
 			template.find('.upload-submit').on('click', function() {
 				template.find('.shoutcast-div').removeClass('active');
-				if(mediaToUpload) {
+				if (mediaToUpload) {
 					self.callApi({
 						resource: 'media.create',
 						data: {
@@ -532,7 +527,7 @@ define(function(require){
 							data: {
 								streamable: true,
 								name: mediaToUpload.name,
-								media_source: "upload",
+								media_source: 'upload',
 								description: mediaToUpload.name
 							}
 						},
@@ -693,7 +688,7 @@ define(function(require){
 					$flowChart = container.find('.flowchart'),
 					contentHeight = window.innerHeight - $('.core-topbar-wrapper').outerHeight(),
 					contentHeightPx = contentHeight + 'px',
-					innerContentHeightPx = (contentHeight-71) + 'px';
+					innerContentHeightPx = (contentHeight - 71) + 'px';
 
 				$listContainer.css('height', window.innerHeight - $listContainer.position().top + 'px');
 				$mainContent.css('height', contentHeightPx);
@@ -734,7 +729,7 @@ define(function(require){
 					accountId: self.accountId
 				};
 
-			if(nextStartKey) {
+			if (nextStartKey) {
 				$.extend(true, apiData, {
 					filters: {
 						'start_key': encodeURIComponent(nextStartKey)
@@ -742,7 +737,7 @@ define(function(require){
 				});
 			}
 
-			if(!self.appFlags.showAllCallflows) {
+			if (!self.appFlags.showAllCallflows) {
 				$.extend(true, apiData, {
 					filters: {
 						'filter_not_ui_metadata.origin': [
@@ -753,7 +748,7 @@ define(function(require){
 				});
 			}
 
-			if(searchValue) {
+			if (searchValue) {
 				apiResource = 'callflow.searchByNameAndNumber';
 				apiData.value = encodeURIComponent(searchValue);
 			}
@@ -790,7 +785,7 @@ define(function(require){
 				listSpareNumbers = [];
 
 			_.each(numbers, function(numberData, phoneNumber) {
-				if(!numberData.hasOwnProperty('used_by') || numberData.used_by === '') {
+				if (!numberData.hasOwnProperty('used_by') || numberData.used_by === '') {
 					numberData.phoneNumber = phoneNumber;
 					listSpareNumbers.push(numberData);
 				}
@@ -839,9 +834,9 @@ define(function(require){
 
 			self.resetFlow();
 
-			if(data && data.id) {
+			if (data && data.id) {
 				self.callApi({
-					resource: 'callflow.get', 
+					resource: 'callflow.get',
 					data: {
 						accountId: self.accountId,
 						callflowId: data.id
@@ -857,7 +852,7 @@ define(function(require){
 						self.flow.contact_list = { exclude: 'contact_list' in callflow ? callflow.contact_list.exclude || false : false };
 						self.flow.caption_map = callflow.metadata;
 
-						if(callflow.flow.module != undefined) {
+						if (callflow.flow.module !== undefined) {
 							self.flow.root = self.buildFlow(callflow.flow, self.flow.root, 0, '_');
 						}
 
@@ -866,8 +861,7 @@ define(function(require){
 						self.repaintFlow();
 					}
 				});
-			}
-			else {
+			} else {
 				self.resetFlow();
 				self.dataCallflow = {};
 				self.repaintFlow();
@@ -884,16 +878,15 @@ define(function(require){
 			$('.buttons').empty();
 
 			$('.save', buttons).click(function() {
-				if(self.flow.numbers && self.flow.numbers.length > 0) {
+				if (self.flow.numbers && self.flow.numbers.length > 0) {
 					self.save();
-				}
-				else {
+				} else {
 					monster.ui.alert(self.i18n.active().oldCallflows.invalid_number + '<br/><br/>' + self.i18n.active().oldCallflows.please_select_valid_number);
 				}
 			});
 
 			$('.delete', buttons).click(function() {
-				if(self.flow.id) {
+				if (self.flow.id) {
 					monster.ui.confirm(self.i18n.active().oldCallflows.are_you_sure, function() {
 						self.callApi({
 							resource: 'callflow.delete',
@@ -905,7 +898,7 @@ define(function(require){
 								$('#ws_cf_flow').empty();
 								$('.buttons').empty();
 								$('#ws_cf_tools').empty();
-								$('#hidden_callflow_warning').hide()
+								$('#hidden_callflow_warning').hide();
 
 								self.repaintList();
 								self.resetFlow();
@@ -914,8 +907,7 @@ define(function(require){
 
 						self.show_pending_change(false);
 					});
-				}
-				else {
+				} else {
 					monster.ui.alert(self.i18n.active().oldCallflows.this_callflow_has_not_been_created);
 				}
 			});
@@ -924,7 +916,7 @@ define(function(require){
 		},
 
 		// Callflow JS code
-		buildFlow: function (json, parent, id, key) {
+		buildFlow: function(json, parent, id, key) {
 			var self = this,
 				branch = self.branch(self.construct_action(json));
 
@@ -934,11 +926,11 @@ define(function(require){
 
 			branch.caption = self.actions.hasOwnProperty(branch.actionName) ? self.actions[branch.actionName].caption(branch, self.flow.caption_map) : '';
 
-			if(self.actions.hasOwnProperty(parent.actionName) && self.actions[parent.actionName].hasOwnProperty('key_caption')) {
+			if (self.actions.hasOwnProperty(parent.actionName) && self.actions[parent.actionName].hasOwnProperty('key_caption')) {
 				branch.key_caption = self.actions[parent.actionName].key_caption(branch, self.flow.caption_map);
 			}
 
-			if(json.hasOwnProperty('children')) {
+			if (json.hasOwnProperty('children')) {
 				$.each(json.children, function(key, child) {
 					branch = self.buildFlow(child, branch, id, key);
 				});
@@ -949,23 +941,22 @@ define(function(require){
 			return parent;
 		},
 
-		construct_action: function(json) {  
+		construct_action: function(json) {
 			var action = '';
 
-			if('data' in json) {
-				if('id' in json.data) {
+			if ('data' in json) {
+				if ('id' in json.data) {
 					action = 'id=*,';
 				}
 
-				if('action' in json.data) {
+				if ('action' in json.data) {
 					action += 'action=' + json.data.action + ',';
 				}
 			}
 
-			if(action != '') {
+			if (action !== '') {
 				action = '[' + action.replace(/,$/, ']');
-			}
-			else {
+			} else {
 				action = '[]';
 			}
 
@@ -994,7 +985,7 @@ define(function(require){
 		branch: function(actionName) {
 			var self = this;
 
-			function branch(actionName) {
+			function Branch(actionName) {
 				var that = this,
 					action = self.actions[actionName] || {};
 
@@ -1013,61 +1004,56 @@ define(function(require){
 				this.potentialChildren = function() {
 					var list = [];
 
-					for(var i in self.actions) {
-						if(self.actions[i].isUsable) {
+					for (var i in self.actions) {
+						if (self.actions[i].isUsable) {
 							list[i] = i;
 						}
 					}
 
-					for(var i in action.rules) {
+					for (var i in action.rules) {
 						var rule = action.rules[i];
 
-						switch (rule.type) {
-							case 'quantity':
-								if(this.children.length >= rule.maxSize) {
-									list = [];
-								}
-								break;
+						if (rule.type === 'quantity' && this.children.length >= rule.maxSize) {
+							list = [];
 						}
 					}
 
 					return list;
-				}
+				};
 
 				this.contains = function(branch) {
 					var toCheck = branch;
 
-					while(toCheck.parent) {
-						if(this.id == toCheck.id) {
+					while (toCheck.parent) {
+						if (this.id === toCheck.id) {
 							return true;
-						}
-						else {
+						} else {
 							toCheck = toCheck.parent;
 						}
 					}
 
 					return false;
-				}
+				};
 
 				this.removeChild = function(branch) {
 					$.each(this.children, function(i, child) {
-						if(child.id == branch.id) {
-							that.children.splice(i,1);
+						if (child.id === branch.id) {
+							that.children.splice(i, 1);
 							return false;
 						}
 					});
-				}
+				};
 
 				this.addChild = function(branch) {
-					if(!(branch.actionName in this.potentialChildren())) {
+					if (!(branch.actionName in this.potentialChildren())) {
 						return false;
 					}
 
-					if(branch.contains(this)) {
+					if (branch.contains(this)) {
 						return false;
 					}
 
-					if(branch.parent) {
+					if (branch.parent) {
 						branch.parent.removeChild(branch);
 					}
 
@@ -1076,43 +1062,43 @@ define(function(require){
 					this.children.push(branch);
 
 					return true;
-				}
+				};
 
 				this.getMetadata = function(key) {
 					var value;
 
-					if('data' in this.data && key in this.data.data) {
+					if ('data' in this.data && key in this.data.data) {
 						value = this.data.data[key];
 
-						return (value == 'null') ? null : value;
+						return (value === 'null') ? null : value;
 					}
 
 					return false;
-				}
+				};
 
 				this.setMetadata = function(key, value) {
-					if(!('data' in this.data)) {
+					if (!('data' in this.data)) {
 						this.data.data = {};
 					}
 
 					this.data.data[key] = (value == null) ? 'null' : value;
-				}
+				};
 
 				this.deleteMetadata = function(key) {
-					if('data' in this.data && key in this.data.data) {
+					if ('data' in this.data && key in this.data.data) {
 						delete this.data.data[key];
 					}
-				}
+				};
 
-				this.index = function (index) {
+				this.index = function(index) {
 					this.id = index;
 
 					$.each(this.children, function() {
-						index = this.index(index+1);
+						index = this.index(index + 1);
 					});
 
 					return index;
-				}
+				};
 
 				this.nodes = function() {
 					var nodes = {};
@@ -1128,9 +1114,9 @@ define(function(require){
 					});
 
 					return nodes;
-				}
+				};
 
-				this.serialize = function () {
+				this.serialize = function() {
 					var json = $.extend(true, {}, this.data);
 
 					json.module = this.module;
@@ -1142,17 +1128,17 @@ define(function(require){
 					});
 
 					return json;
-				}
+				};
 			}
 
-			return new branch(actionName);
+			return new Branch(actionName);
 		},
 
 		repaintFlow: function() {
 			var self = this;
 
 			// Let it there for now, if we need to save callflows automatically again.
-			/*if('savable' in THIS.flow) {
+			/*if ('savable' in THIS.flow) {
 				THIS.save_callflow_no_loading();
 			}*/
 
@@ -1163,7 +1149,7 @@ define(function(require){
 			target.append(this.getUIFlow());
 
 			var current_flow = self.stringify_flow(self.flow);
-			if(!('original_flow' in self) || self.original_flow.split('|')[0] !== current_flow.split('|')[0]) {
+			if (!('original_flow' in self) || self.original_flow.split('|')[0] !== current_flow.split('|')[0]) {
 				self.original_flow = current_flow;
 				self.show_pending_change(false);
 			} else {
@@ -1171,14 +1157,14 @@ define(function(require){
 			}
 
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
-				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip','migration','mobile', 'callqueues'], metadata.origin);
+				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.contains(['voip', 'migration', 'mobile', 'callqueues'], metadata.origin);
 
 			isHiddenCallflow ? $('#hidden_callflow_warning').show() : $('#hidden_callflow_warning').hide();
 		},
 
 		show_pending_change: function(pending_change) {
 			var self = this;
-			if(pending_change) {
+			if (pending_change) {
 				$('#pending_change', '#ws_callflow').show();
 				$('.save', '#ws_callflow').addClass('pulse-box');
 			} else {
@@ -1188,20 +1174,21 @@ define(function(require){
 		},
 
 		stringify_flow: function(flow) {
-			var s_flow = flow.id + "|" + (!flow.name ? 'undefined' : flow.name),
+			var s_flow = flow.id + '|' + (!flow.name ? 'undefined' : flow.name),
 				first_iteration;
-			s_flow += "|NUMBERS";
+			s_flow += '|NUMBERS';
 			$.each(flow.numbers, function(key, value) {
-				s_flow += "|" + value;
+				s_flow += '|' + value;
 			});
-			s_flow += "|NODES";
+			s_flow += '|NODES';
 			$.each(flow.nodes, function(key, value) {
-				s_flow += "|" + key + "::";
+				s_flow += '|' + key + '::';
 				first_iteration = true;
-				$.each(value.data.data, function(k,v) {
-					if(!first_iteration) { s_flow += '//'; }
-					else { first_iteration = false; }
-					s_flow += k+':'+v;
+				$.each(value.data.data, function(k, v) {
+					if (!first_iteration) {
+						s_flow += '//';
+					} else { first_iteration = false; }
+					s_flow += k + ':' + v;
 				});
 			});
 			return s_flow;
@@ -1215,24 +1202,22 @@ define(function(require){
 			var layout = self.renderBranch(self.flow.root);
 
 			$('.node', layout).hover(function() {
-					$(this).addClass('over');
-				},
-				function() {
-					$(this).removeClass('over');
-				}
-			);
+				$(this).addClass('over');
+			}, function() {
+				$(this).removeClass('over');
+			});
 
 			$('.node', layout).each(function() {
 				var node = self.flow.nodes[$(this).attr('id')],
 					$node = $(this),
 					node_html;
 
-				if (node.actionName == 'root') {
+				if (node.actionName === 'root') {
 					$node.removeClass('icons_black root');
 					node_html = $(monster.template(self, 'root', { name: self.flow.name || 'Callflow' }));
 
 					$('.edit_icon', node_html).click(function() {
-						self.flow = $.extend(true, { contact_list: { exclude: false }} , self.flow);
+						self.flow = $.extend(true, { contact_list: { exclude: false } }, self.flow);
 
 						var dialogTemplate = monster.template(self, 'editName', {
 								name: self.flow.name,
@@ -1240,16 +1225,15 @@ define(function(require){
 								ui_is_main_number_cf: self.dataCallflow.hasOwnProperty('ui_is_main_number_cf') ? self.dataCallflow.ui_is_main_number_cf : false
 							}),
 							popup = monster.ui.dialog(dialogTemplate, {
-							title: self.i18n.active().oldCallflows.popup_title
-						});
+								title: self.i18n.active().oldCallflows.popup_title
+							});
 
 						$('#add', popup).click(function() {
 							var $callflow_name = $('#callflow_name', popup);
-							if($callflow_name.val() != '') {
+							if ($callflow_name.val() !== '') {
 								self.flow.name = $callflow_name.val();
 								$('.root .top_bar .name', layout).html(self.flow.name);
-							}
-							else {
+							} else {
 								self.flow.name = '';
 								$('.root .top_bar .name', layout).html('Callflow');
 							}
@@ -1267,14 +1251,15 @@ define(function(require){
 						monster.ui.dialog(monster.template(self, 'help_callflow'));
 					});
 
-					for(var x, size = self.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
-						x = i * 2;
+					for (var counter, size = self.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
+						counter = i * 2;
 
-						var numbers = self.flow.numbers.slice(x, (x + 2 < size) ? x + 2 : size),
+						var numbers = self.flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
 							row = monster.template(self, 'rowNumber', { numbers: numbers });
 
-						node_html.find('.content')
-								 .append(row);
+						node_html
+							.find('.content')
+								.append(row);
 					}
 
 					$('.number_column.empty', node_html).click(function() {
@@ -1282,7 +1267,7 @@ define(function(require){
 							var parsedNumbers = [];
 
 							_.each(phoneNumbers, function(number) {
-								if($.inArray(number.phoneNumber,self.flow.numbers) < 0) {
+								if ($.inArray(number.phoneNumber, self.flow.numbers) < 0) {
 									parsedNumbers.push(number);
 								}
 							});
@@ -1296,23 +1281,22 @@ define(function(require){
 							// Have to do that so that the chosen dropdown isn't hidden.
 							popup_html.parent().css('overflow', 'visible');
 
-							if(parsedNumbers.length === 0) {
+							if (parsedNumbers.length === 0) {
 								$('#list_numbers', popup_html).attr('disabled', 'disabled');
 								$('<option value="select_none">' + self.i18n.active().oldCallflows.no_phone_numbers + '</option>').appendTo($('#list_numbers', popup_html));
 							}
 
 							var refresh_numbers = function() {
-								 self.listNumbers(function(refreshedNumbers) {
+								self.listNumbers(function(refreshedNumbers) {
 									$('#list_numbers', popup).empty();
 
-									if(refreshedNumbers.length === 0) {
+									if (refreshedNumbers.length === 0) {
 										$('#list_numbers', popup).attr('disabled', 'disabled');
 										$('<option value="select_none">' + self.i18n.active().oldCallflows.no_phone_numbers + '</option>').appendTo($('#list_numbers', popup));
-									}
-									else {
+									} else {
 										$('#list_numbers', popup).removeAttr('disabled');
 										$.each(refreshedNumbers, function(k, v) {
-											$('<option value="'+v+'">'+v+'</option>').appendTo($('#list_numbers', popup));
+											$('<option value="' + v + '">' + v + '</option>').appendTo($('#list_numbers', popup));
 										});
 									}
 								});
@@ -1321,11 +1305,10 @@ define(function(require){
 							$('.extensions_content', popup).hide();
 
 							$('input[name="number_type"]', popup).click(function() {
-								if($(this).val() === 'your_numbers') {
+								if ($(this).val() === 'your_numbers') {
 									$('.list_numbers_content', popup).show();
 									$('.extensions_content', popup).hide();
-								}
-								else {
+								} else {
 									$('.extensions_content', popup).show();
 									$('.list_numbers_content', popup).hide();
 								}
@@ -1361,14 +1344,13 @@ define(function(require){
 							$('.add_number', popup).click(function(event) {
 								event.preventDefault();
 								var number = $('input[name="number_type"]:checked', popup).val() === 'your_numbers' ? $('#list_numbers option:selected', popup).val() : $('#add_number_text', popup).val();
-								
-								if(number !== 'select_none' && number !== '') {
+
+								if (number !== 'select_none' && number !== '') {
 									self.flow.numbers.push(number);
 									popup.dialog('close');
 
 									self.repaintFlow();
-								}
-								else {
+								} else {
 									monster.ui.alert(self.i18n.active().oldCallflows.you_didnt_select);
 								}
 							});
@@ -1379,26 +1361,24 @@ define(function(require){
 						var number = $(this).parent('.number_column').data('number') + '',
 							index = $.inArray(number, self.flow.numbers);
 
-						if(index >= 0) {
+						if (index >= 0) {
 							self.flow.numbers.splice(index, 1);
 						}
 
 						self.repaintFlow();
 					});
-
-				}
-				else {
+				} else {
 					node_html = $(monster.template(self, 'node', {
 						node: node,
 						callflow: self.actions[node.actionName]
 					}));
 
-					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end. 
+					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end.
 					// So we set a 500ms timer that will prevent any other interaction with the callflow element.
 					var isAlreadyClicked = false;
 
 					node_html.find('.module').on('click', function() {
-						if(!isAlreadyClicked) {
+						if (!isAlreadyClicked) {
 							self.actions[node.actionName].edit(node, function() {
 								self.repaintFlow();
 							});
@@ -1415,18 +1395,18 @@ define(function(require){
 				$(this).append(node_html);
 
 				$(this).droppable({
-					drop: function (event, ui) {
+					drop: function(event, ui) {
 						var target = self.flow.nodes[$(this).attr('id')],
 							action;
 
 						if (ui.draggable.hasClass('action')) {
-							action = ui.draggable.attr('name'),
+							action = ui.draggable.attr('name');
 
 							branch = self.branch(action);
 							branch.caption = self.actions[action].caption(branch, self.flow.caption_map);
 
 							if (target.addChild(branch)) {
-								if(branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
+								if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
 									branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
 
 									self.actions[branch.parent.actionName].key_edit(branch, function() {
@@ -1434,8 +1414,7 @@ define(function(require){
 											self.repaintFlow();
 										});
 									});
-								}
-								else {
+								} else {
 									self.actions[action].edit(branch, function() {
 										self.repaintFlow();
 									});
@@ -1453,7 +1432,7 @@ define(function(require){
 								// If we move a node, destroy its key
 								branch.key = '_';
 
-								if(branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
+								if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
 									branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
 								}
 
@@ -1465,25 +1444,25 @@ define(function(require){
 				});
 
 				// dragging the whole branch
-				if($(this).attr('name') != 'root') {
+				if ($(this).attr('name') !== 'root') {
 					$(this).draggable({
-						start: function () {
+						start: function() {
 							var children = $(this).next(),
-								t = children.offset().top - $(this).offset().top,
-								l = children.offset().left - $(this).offset().left;
+								top = children.offset().top - $(this).offset().top,
+								left = children.offset().left - $(this).offset().left;
 
 							self.enableDestinations($(this));
 
-							$(this).attr('t', t); $(this).attr('l', l);
+							$(this).attr('t', top); $(this).attr('l', left);
 						},
-						drag: function () {
+						drag: function() {
 							var children = $(this).next(),
-								t = $(this).offset().top + parseInt($(this).attr('t')),
-								l = $(this).offset().left + parseInt($(this).attr('l'));
+								top = $(this).offset().top + parseInt($(this).attr('t')),
+								left = $(this).offset().left + parseInt($(this).attr('l'));
 
-							children.offset({ top: t, left: l });
+							children.offset({ top: top, left: left });
 						},
-						stop: function () {
+						stop: function() {
 							self.disableDestinations();
 
 							self.repaintFlow();
@@ -1513,7 +1492,7 @@ define(function(require){
 				})),
 				children;
 
-			if(branch.parent && ('key_edit' in self.actions[branch.parent.actionName])) {
+			if (branch.parent && ('key_edit' in self.actions[branch.parent.actionName])) {
 				$('.div_option', flow).click(function() {
 					self.actions[branch.parent.actionName].key_edit(branch, function() {
 						self.repaintFlow();
@@ -1544,7 +1523,7 @@ define(function(require){
 			categories[advanced_cat] = [];
 
 			$.each(self.actions, function(i, data) {
-				if('category' in data && (!data.hasOwnProperty('isListed') || data.isListed)) {
+				if ('category' in data && (!data.hasOwnProperty('isListed') || data.isListed)) {
 					data.category in categories ? true : categories[data.category] = [];
 					data.key = i;
 					categories[data.category].push(data);
@@ -1557,22 +1536,20 @@ define(function(require){
 				}
 			});
 
-			dataTemplate.categories.sort(function(a, b){
+			dataTemplate.categories.sort(function(a, b) {
 				return a.key < b.key ? 1 : -1;
 			});
 
 			dataTemplate.categories.unshift({
-					key: basic_cat,
-					actions: categories[basic_cat]
-				},
-				{
-					key: advanced_cat,
-					actions: categories[advanced_cat]
-				}
-			);
+				key: basic_cat,
+				actions: categories[basic_cat]
+			}, {
+				key: advanced_cat,
+				actions: categories[advanced_cat]
+			});
 
 			$.each(categories, function(idx, val) {
-				val.sort(function(a, b){
+				val.sort(function(a, b) {
 					if (a.hasOwnProperty('weight')) {
 						return a.weight > b.weight ? 1 : -1;
 					}
@@ -1588,14 +1565,16 @@ define(function(require){
 			// Set the basic drawer to open
 			$('#Basic', tools).removeClass('inactive').addClass('active');
 
-			$('.category .open', tools).click(function () {
-				tools.find('.category')
-					 .removeClass('active')
-					 .addClass('inactive');
+			$('.category .open', tools).click(function() {
+				tools
+					.find('.category')
+						.removeClass('active')
+						.addClass('inactive');
 
-				$(this).parent('.category')
-					 .removeClass('inactive')
-					 .addClass('active');
+				$(this)
+					.parent('.category')
+						.removeClass('inactive')
+						.addClass('active');
 			});
 
 			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first(),
@@ -1642,21 +1621,21 @@ define(function(require){
 						tools.find('.callflow_helpbox_wrapper').css('top', $this.offset().top).css('left', $('#ws_cf_tools').offset().left - 162).show();
 					}
 				},
-				function () {
+				function() {
 					tools.find('.callflow_helpbox_wrapper').hide();
 				}
 			);
 
-			function action (el) {
+			function action(el) {
 				el.draggable({
-					start: function () {
+					start: function() {
 						self.enableDestinations($(this));
 						$(this).addClass('inactive');
 					},
-					drag: function () {
+					drag: function() {
 						$('.callflow_helpbox_wrapper', '#callflow-view').hide();
 					},
-					stop: function () {
+					stop: function() {
 						self.disableDestinations();
 						$(this).removeClass('inactive');
 					},
@@ -1664,8 +1643,6 @@ define(function(require){
 					helper: 'clone'
 				});
 			}
-
-
 
 			$('.action', tools).each(function() {
 				action($(this));
@@ -1680,7 +1657,7 @@ define(function(require){
 		enableDestinations: function(el) {
 			var self = this;
 
-			$('.node').each(function () {
+			$('.node').each(function() {
 				var activate = true,
 					target = self.flow.nodes[$(this).attr('id')];
 
@@ -1688,15 +1665,13 @@ define(function(require){
 					if (el.hasClass('node') && self.flow.nodes[el.attr('id')].contains(target)) {
 						activate = false;
 					}
-				}
-				else {
+				} else {
 					activate = false;
 				}
 
 				if (activate) {
 					$(this).addClass('active');
-				}
-				else {
+				} else {
 					$(this).addClass('inactive');
 					$(this).droppable('disable');
 				}
@@ -1704,7 +1679,7 @@ define(function(require){
 		},
 
 		disableDestinations: function() {
-			$('.node').each(function () {
+			$('.node').each(function() {
 				$(this).removeClass('active');
 				$(this).removeClass('inactive');
 				$(this).droppable('enable');
@@ -1716,21 +1691,20 @@ define(function(require){
 		save: function() {
 			var self = this;
 
-			if(self.flow.numbers && self.flow.numbers.length > 0) {
+			if (self.flow.numbers && self.flow.numbers.length > 0) {
 				var data_request = {
-						numbers: self.flow.numbers,
-						flow: (self.flow.root.children[0] == undefined) ? {} : self.flow.root.children[0].serialize()
-					};
+					numbers: self.flow.numbers,
+					flow: (self.flow.root.children[0] === undefined) ? {} : self.flow.root.children[0].serialize()
+				};
 
-				if(self.flow.name !== '') {
+				if (self.flow.name !== '') {
 					data_request.name = self.flow.name;
-				}
-				else {
+				} else {
 					delete data_request.name;
 					delete self.dataCallflow.name;
 				}
 
-				if('contact_list' in self.flow) {
+				if ('contact_list' in self.flow) {
 					data_request.contact_list = { exclude: self.flow.contact_list.exclude || false };
 				}
 
@@ -1740,7 +1714,7 @@ define(function(require){
 				data_request = $.extend(true, {}, self.dataCallflow, data_request);
 				delete data_request.metadata;
 
-				if(self.flow.id) {
+				if (self.flow.id) {
 					self.callApi({
 						resource: 'callflow.update',
 						data: {
@@ -1753,8 +1727,7 @@ define(function(require){
 							self.editCallflow({id: json.data.id});
 						}
 					});
-				}
-				else {
+				} else {
 					self.callApi({
 						resource: 'callflow.create',
 						data: {
@@ -1767,8 +1740,7 @@ define(function(require){
 						}
 					});
 				}
-			}
-			else {
+			} else {
 				monster.ui.alert(self.i18n.active().oldCallflows.you_need_to_select_a_number);
 			}
 		},
@@ -1777,26 +1749,26 @@ define(function(require){
 			var buttons = template.find('.view-buttons'),
 				tabs = template.find('.tabs');
 
-			if(advanced) {
+			if (advanced) {
 				buttons.find('.btn').removeClass('activate');
 				buttons.find('.advanced').addClass('activate');
 			} else {
-				if(monster.config.advancedView) {
+				if (monster.config.advancedView) {
 					buttons.find('.btn').removeClass('activate');
 					buttons.find('.advanced').addClass('activate');
 				} else {
-					 tabs.hide('blind');
+					tabs.hide('blind');
 				}
 			}
 
-			if(tabs.find('li').length < 2){
+			if (tabs.find('li').length < 2) {
 				buttons.hide();
 			}
 
-			buttons.find('.basic').on('click', function(){
+			buttons.find('.basic').on('click', function() {
 				var $this = $(this);
 
-				if(!$this.hasClass('activate')){
+				if (!$this.hasClass('activate')) {
 					buttons.find('.btn').removeClass('activate');
 					$this.addClass('activate');
 					tabs.find('li:first-child > a').trigger('click');
@@ -1804,17 +1776,17 @@ define(function(require){
 				}
 			});
 
-			buttons.find('.advanced').click(function(){
+			buttons.find('.advanced').click(function() {
 				var $this = $(this);
 
-				if(!$this.hasClass('activate')){
+				if (!$this.hasClass('activate')) {
 					buttons.find('.btn').removeClass('activate');
 					$this.addClass('activate');
 					tabs.show('blind');
 				}
 			});
 
-			tabs.find('li').on('click', function(ev) { 
+			tabs.find('li').on('click', function(ev) {
 				ev.preventDefault();
 
 				var $this = $(this),
@@ -1837,22 +1809,20 @@ define(function(require){
 					id = input.attr('id'),
 					input_fields = $('input[name="' + name + '"]', html);
 
-				if(input_fields.size() > 1) {
-					if(type == 'checkbox'){
-						input_fields = input_fields.filter('[value='+value+']');
+				if (input_fields.size() > 1) {
+					if (type === 'checkbox') {
+						input_fields = input_fields.filter('[value=' + value + ']');
 						(input.attr('checked')) ? input_fields.attr('checked', 'checked') : input_fields.removeAttr('checked');
-					}
-					else {
+					} else {
 						$.each(input_fields, function(k, v) {
 							var element = $(v);
 
-							if(element.attr('id') !== id) {
+							if (element.attr('id') !== id) {
 								element.val(value);
 							}
 						});
 					}
-				}
-				else {
+				} else {
 					input.unbind('.link');
 				}
 			});

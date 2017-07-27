@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -38,7 +38,7 @@ define(function(require){
 						var id = node.getMetadata('id'),
 							returned_value = '';
 
-						if(id in caption_map) {
+						if (id in caption_map) {
 							returned_value = caption_map[id].name;
 						}
 
@@ -52,12 +52,12 @@ define(function(require){
 								})),
 								popup;
 
-							if($('#conference_selector option:selected', popup_html).val() == undefined) {
+							if ($('#conference_selector option:selected', popup_html).val() === undefined) {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ? { id: $('#conference_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#conference_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
@@ -82,7 +82,7 @@ define(function(require){
 								title: self.i18n.active().callflows.conference.conference,
 								minHeight: '0',
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -94,7 +94,7 @@ define(function(require){
 							resource: 'conference.list',
 							data: {
 								accountId: self.accountId,
-								filters: { paginate:false }
+								filters: { paginate: false }
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
@@ -123,7 +123,7 @@ define(function(require){
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -140,14 +140,14 @@ define(function(require){
 				save_success: function(_data) {
 					popup.dialog('close');
 
-					if(typeof callback == 'function') {
+					if (typeof callback === 'function') {
 						callback(_data);
 					}
 				},
 				delete_success: function() {
 					popup.dialog('close');
 
-					if(typeof callback == 'function') {
+					if (typeof callback === 'function') {
 						callback({ data: {} });
 					}
 				},
@@ -180,7 +180,7 @@ define(function(require){
 					save_error: _callbacks.save_error,
 
 					delete_success: _callbacks.delete_success || function() {
-						target.empty(),
+						target.empty();
 
 						self.conferenceRenderList(parent);
 					},
@@ -201,58 +201,57 @@ define(function(require){
 				};
 
 			monster.parallel({
-					user_list: function(callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId,
-								filters: { paginate:false }
-							},
-							success: function(_data, status) {
-								_data.data.unshift({
-									id: '',
-									first_name: '- No',
-									last_name: 'owner -'
-								});
-
-								defaults.field_data.users = _data.data;
-
-								callback(null, _data);
+				user_list: function(callback) {
+					self.callApi({
+						resource: 'user.list',
+						data: {
+							accountId: self.accountId,
+							filters: {
+								paginate: false
 							}
-						});
-					},
-					get_conference: function(callback) {
-						if(typeof data == 'object' && data.id) {
-							self.conferenceGet(data.id, function(_data, status) {
-								self.conferenceMigrateData(_data);
-
-								self.conferenceFormatData(_data);
-
-								callback(null, _data);
+						},
+						success: function(_data, status) {
+							_data.data.unshift({
+								id: '',
+								first_name: '- No',
+								last_name: 'owner -'
 							});
+
+							defaults.field_data.users = _data.data;
+
+							callback(null, _data);
 						}
-						else {
-							callback(null, {});
-						}
-					}
+					});
 				},
-				function(err, results) {
-					var render_data = defaults;
+				get_conference: function(callback) {
+					if (typeof data === 'object' && data.id) {
+						self.conferenceGet(data.id, function(_data, status) {
+							self.conferenceMigrateData(_data);
 
-					if(typeof data === 'object' && data.id) {
-						render_data = $.extend(true, defaults, { data: results.get_conference });
-					}
+							self.conferenceFormatData(_data);
 
-					self.conferenceRender(render_data, target, callbacks);
-
-					if(typeof callbacks.after_render == 'function') {
-						callbacks.after_render();
+							callback(null, _data);
+						});
+					} else {
+						callback(null, {});
 					}
 				}
-			);
+			}, function(err, results) {
+				var render_data = defaults;
+
+				if (typeof data === 'object' && data.id) {
+					render_data = $.extend(true, defaults, { data: results.get_conference });
+				}
+
+				self.conferenceRender(render_data, target, callbacks);
+
+				if (typeof callbacks.after_render === 'function') {
+					callbacks.after_render();
+				}
+			});
 		},
 
-		conferenceRender: function(data, target, callbacks){
+		conferenceRender: function(data, target, callbacks) {
 			var self = this,
 				conference_html = $(monster.template(self, 'conference-edit', data)),
 				conference_form = conference_html.find('#conference_form');
@@ -260,7 +259,7 @@ define(function(require){
 			monster.ui.validate(conference_form, {
 				rules: {
 					name: {
-						required: true,
+						required: true
 					},
 					'member.pins_string': {
 						regex: /^[a-z0-9A-Z,\s]*$/
@@ -285,7 +284,7 @@ define(function(require){
 
 			self.winkstartTabs(conference_html);
 
-			if(!$('#owner_id', conference_html).val()) {
+			if (!$('#owner_id', conference_html).val()) {
 				$('#edit_link', conference_html).hide();
 			}
 
@@ -294,7 +293,7 @@ define(function(require){
 			});
 
 			$('.inline_action', conference_html).click(function(ev) {
-				var _data = ($(this).data('action') == 'edit') ? { id: $('#owner_id', conference_html).val() } : {},
+				var _data = ($(this).data('action') === 'edit') ? { id: $('#owner_id', conference_html).val() } : {},
 					_id = _data.id;
 
 				ev.preventDefault();
@@ -303,19 +302,17 @@ define(function(require){
 					data: _data,
 					callback: function(_data) {
 						/* Create */
-						if(!_id) {
-							$('#owner_id', conference_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.first_name + ' ' + _data.last_name  +'</option>');
+						if (!_id) {
+							$('#owner_id', conference_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.first_name + ' ' + _data.last_name + '</option>');
 							$('#owner_id', conference_html).val(_data.id);
 							$('#edit_link', conference_html).show();
-						}
-						else {
+						} else {
 							/* Update */
-							if('id' in _data) {
-								$('#owner_id #'+_data.id, conference_html).text(_data.first_name + ' ' + _data.last_name);
-							}
+							if ('id' in _data) {
+								$('#owner_id #' + _data.id, conference_html).text(_data.first_name + ' ' + _data.last_name);
 							/* Delete */
-							else {
-								$('#owner_id #'+_id, conference_html).remove();
+							} else {
+								$('#owner_id #' + _id, conference_html).remove();
 								$('#edit_link', conference_html).hide();
 							}
 						}
@@ -327,7 +324,7 @@ define(function(require){
 				ev.preventDefault();
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
+				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
 					if (monster.ui.valid(conference_form)) {
 						var form_data = monster.ui.getFormData('conference_form');
@@ -336,7 +333,7 @@ define(function(require){
 
 						data.data.member.pins = form_data.member.pins;
 
-						if('field_data' in data) {
+						if ('field_data' in data) {
 							delete data.field_data;
 						}
 
@@ -344,8 +341,7 @@ define(function(require){
 							$this.removeClass('disabled');
 							callbacks && callbacks.hasOwnProperty('save_error') && callbacks.save_error(data);
 						});
-					}
-					else {
+					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert(self.i18n.active().callflows.conference.there_were_errors_on_the_form);
 					};
@@ -370,23 +366,23 @@ define(function(require){
 
 			self.conferenceList(function(data, status) {
 				var map_crossbar_data = function(data) {
-						var new_list = [];
+					var new_list = [];
 
-						if(data.length > 0) {
-							$.each(data, function(key, val) {
-								new_list.push({
-									id: val.id,
-									title: val.name || self.i18n.active().callflows.conference.name
-								});
+					if (data.length > 0) {
+						$.each(data, function(key, val) {
+							new_list.push({
+								id: val.id,
+								title: val.name || self.i18n.active().callflows.conference.name
 							});
-						}
-
-						new_list.sort(function(a, b) {
-							return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
 						});
+					}
 
-						return new_list;
-					};
+					new_list.sort(function(a, b) {
+						return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+					});
+
+					return new_list;
+				};
 
 			// $('#conference-listpanel', parent)
 			// 	.empty()
@@ -404,24 +400,24 @@ define(function(require){
 		},
 
 		conferenceMigrateData: function(data) {
-			if(data.member_play_name) {
-				if(data.play_name_on_join == undefined) {
+			if (data.member_play_name) {
+				if (data.play_name_on_join === undefined) {
 					data.play_name_on_join = data.member_play_name;
 				}
 
 				delete data.member_play_name;
 			}
 
-			if(data.member_join_muted) {
-				if(data.member.join_muted == undefined) {
+			if (data.member_join_muted) {
+				if (data.member.join_muted === undefined) {
 					data.member.join_muted = data.member_join_muted;
 				}
 
 				delete data.member_join_muted;
 			}
 
-			if(data.member_join_deaf) {
-				if(data.member.join_deaf == undefined) {
+			if (data.member_join_deaf) {
+				if (data.member.join_deaf === undefined) {
 					data.member.join_deaf = data.member_join_deaf;
 				}
 
@@ -432,12 +428,12 @@ define(function(require){
 		},
 
 		conferenceFormatData: function(data) {
-			if(typeof data.member == 'object') {
-				if($.isArray(data.member.pins)) {
+			if (typeof data.member === 'object') {
+				if ($.isArray(data.member.pins)) {
 					data.member.pins_string = data.member.pins.join(', ');
 				}
 
-				if($.isArray(data.conference_numbers)) {
+				if ($.isArray(data.conference_numbers)) {
 					data.conference_numbers_string = data.conference_numbers.join(', ');
 				}
 			}
@@ -445,17 +441,16 @@ define(function(require){
 			return data;
 		},
 
-		conferenceCleanFormData: function(form_data){
+		conferenceCleanFormData: function(form_data) {
 			var self = this;
 			form_data.member.pins_string = self.conferenceLettersToNumbers(form_data.member.pins_string);
 
 			form_data.member.pins = $.map(form_data.member.pins_string.split(','), function(val) {
 				var pin = $.trim(val);
 
-				if(pin != '') {
+				if (pin !== '') {
 					return pin;
-				}
-				else {
+				} else {
 					return null;
 				}
 			});
@@ -463,10 +458,9 @@ define(function(require){
 			form_data.conference_numbers = $.map(form_data.conference_numbers_string.split(','), function(val) {
 				var number = $.trim(val);
 
-				if(number != '') {
+				if (number !== '') {
 					return number;
-				}
-				else {
+				} else {
 					return null;
 				}
 			});
@@ -478,31 +472,23 @@ define(function(require){
 			var result = '';
 
 			$.each(string.split(''), function(index, value) {
-				if(value.match(/^[aAbBcC]$/)) {
+				if (value.match(/^[aAbBcC]$/)) {
 					result += '2';
-				}
-				else if(value.match(/^[dDeEfF]$/)) {
+				} else if (value.match(/^[dDeEfF]$/)) {
 					result += '3';
-				}
-				else if(value.match(/^[gGhHiI]$/)) {
+				} else if (value.match(/^[gGhHiI]$/)) {
 					result += '4';
-				}
-				else if(value.match(/^[jJkKlL]$/)) {
+				} else if (value.match(/^[jJkKlL]$/)) {
 					result += '5';
-				}
-				else if(value.match(/^[mMnNoO]$/)) {
+				} else if (value.match(/^[mMnNoO]$/)) {
 					result += '6';
-				}
-				else if(value.match(/^[pPqQrRsS]$/)) {
+				} else if (value.match(/^[pPqQrRsS]$/)) {
 					result += '7';
-				}
-				else if(value.match(/^[tTuUvV]$/)) {
+				} else if (value.match(/^[tTuUvV]$/)) {
 					result += '8';
-				}
-				else if(value.match(/^[wWxXyYzZ]$/)) {
+				} else if (value.match(/^[wWxXyYzZ]$/)) {
 					result += '9';
-				}
-				else {
+				} else {
 					result += value;
 				}
 			});
@@ -514,31 +500,26 @@ define(function(require){
 			var self = this,
 				normalized_data = self.conferenceFixArrays(self.conferenceNormalizeData($.extend(true, {}, data.data, form_data)), form_data);
 
-			if(typeof data.data == 'object' && data.data.id) {
+			if (typeof data.data === 'object' && data.data.id) {
 				self.conferenceUpdate(normalized_data, function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'update');
-						}
-					},
-					function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'update');
-						}
+					if (typeof success === 'function') {
+						success(_data, status, 'update');
 					}
-				);
-			}
-			else {
+				}, function(_data, status) {
+					if (typeof error === 'function') {
+						error(_data, status, 'update');
+					}
+				});
+			} else {
 				self.conferenceCreate(normalized_data, function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'create');
-						}
-					},
-					function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'create');
-						}
+					if (typeof success === 'function') {
+						success(_data, status, 'create');
 					}
-				);
+				}, function(_data, status) {
+					if (typeof error === 'function') {
+						error(_data, status, 'create');
+					}
+				});
 			}
 		},
 
@@ -546,7 +527,7 @@ define(function(require){
 		conferenceFixArrays: function(merged_data, form_data) {
 			var self = this;
 
-			if('conference_numbers' in form_data) {
+			if ('conference_numbers' in form_data) {
 				merged_data.conference_numbers = form_data.conference_numbers;
 			}
 
@@ -554,15 +535,15 @@ define(function(require){
 		},
 
 		conferenceNormalizeData: function(data) {
-			if(!data.member.pins.length) {
+			if (!data.member.pins.length) {
 				delete data.member.pins;
 			}
 
-			if(data.hasOwnProperty('member') && data.member.hasOwnProperty('numbers') && !data.member.numbers.length) {
+			if (data.hasOwnProperty('member') && data.member.hasOwnProperty('numbers') && !data.member.numbers.length) {
 				delete data.member.numbers;
 			}
 
-			if(!data.owner_id) {
+			if (!data.owner_id) {
 				delete data.owner_id;
 			}
 
@@ -572,7 +553,6 @@ define(function(require){
 			return data;
 		},
 
-
 		conferenceList: function(callback) {
 			var self = this;
 
@@ -580,7 +560,9 @@ define(function(require){
 				resource: 'conference.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);

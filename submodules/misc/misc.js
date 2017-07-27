@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -14,29 +14,27 @@ define(function(require){
 			var self = this;
 
 			monster.parallel({
-					groups: function(callback) {
-						self.miscGroupList(function(data) {
-							callback(null, data);
-						});
-					},
-					users: function(callback) {
-						self.miscUserList(function(data) {
-							_.each(data, function(user) {
-								user.name = user.first_name + ' ' + user.last_name;
-							});
-							callback(null, data);
-						});
-					},
-					devices: function(callback) {
-						self.miscDeviceList(function(data) {
-							callback(null, data);
-						});
-					}
+				groups: function(callback) {
+					self.miscGroupList(function(data) {
+						callback(null, data);
+					});
 				},
-				function(err, results) {
-					callback && callback(results);
+				users: function(callback) {
+					self.miscUserList(function(data) {
+						_.each(data, function(user) {
+							user.name = user.first_name + ' ' + user.last_name;
+						});
+						callback(null, data);
+					});
+				},
+				devices: function(callback) {
+					self.miscDeviceList(function(data) {
+						callback(null, data);
+					});
 				}
-			);
+			}, function(err, results) {
+				callback && callback(results);
+			});
 		},
 
 		miscDefineActions: function(args) {
@@ -52,7 +50,7 @@ define(function(require){
 							maxSize: '1'
 						}
 					],
-					isUsable : 'false'
+					isUsable: 'false'
 				},
 				'callflow[id=*]': {
 					name: self.i18n.active().oldCallflows.callflow,
@@ -75,11 +73,10 @@ define(function(require){
 						var id = node.getMetadata('id'),
 							return_value = '';
 
-						if(id in caption_map) {
-							if(caption_map[id].hasOwnProperty('name')) {
+						if (id in caption_map) {
+							if (caption_map[id].hasOwnProperty('name')) {
 								return_value = caption_map[id].name;
-							}
-							else if(caption_map[id].hasOwnProperty('numbers')) {
+							} else if (caption_map[id].hasOwnProperty('numbers')) {
 								return_value = caption_map[id].numbers.toString();
 							}
 						}
@@ -91,13 +88,15 @@ define(function(require){
 							resource: 'callflow.list',
 							data: {
 								accountId: self.accountId,
-								filters: { paginate:false }
+								filters: {
+									paginate: false
+								}
 							},
-							success:function(data, status) {
+							success: function(data, status) {
 								var popup, popup_html, _data = [];
 
 								$.each(data.data, function() {
-									if(!this.featurecode && this.id !== self.flow.id) {
+									if (!this.featurecode && this.id !== self.flow.id) {
 										this.name = this.name ? this.name : ((this.numbers) ? this.numbers.toString() : self.i18n.active().oldCallflows.no_numbers);
 
 										_data.push(this);
@@ -123,7 +122,7 @@ define(function(require){
 								popup = monster.ui.dialog(popup_html, {
 									title: self.i18n.active().oldCallflows.callflow_title,
 									beforeClose: function() {
-										if(typeof callback == 'function') {
+										if (typeof callback === 'function') {
 											callback();
 										}
 									}
@@ -227,11 +226,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 10,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -253,11 +252,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 20,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -279,11 +278,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 30,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -296,11 +295,11 @@ define(function(require){
 					tip: self.i18n.active().oldCallflows.dynamic_cid_tip,
 					isUsable: 'true',
 					weight: 10,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -324,7 +323,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 20,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return (node.getMetadata('caller_id_name_prefix') || '') + ' ' + (node.getMetadata('caller_id_number_prefix') || '');
 					},
 					edit: function(node, callback) {
@@ -352,13 +351,13 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.prepend_caller_id_title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
 
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -380,11 +379,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 30,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -405,7 +404,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 40,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('presence_id') || '';
 					},
 					edit: function(node, callback) {
@@ -430,8 +429,8 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.manual_presence_title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
@@ -453,7 +452,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 50,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('language') || '';
 					},
 					edit: function(node, callback) {
@@ -476,8 +475,8 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().oldCallflows.language_title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
@@ -499,7 +498,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 60,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return node.getMetadata('name') || '';
 					},
 					edit: function(node, callback) {
@@ -516,8 +515,8 @@ define(function(require){
 							$('#add', popup_html).click(function() {
 								var selector = $('#endpoint_selector', popup_html),
 									id = selector.val(),
-									name = selector.find('#'+id).html(),
-									type = $('#'+ id, popup_html).parents('optgroup').data('type'),
+									name = selector.find('#' + id).html(),
+									type = $('#' + id, popup_html).parents('optgroup').data('type'),
 									type_id = type.substring(type, type.length - 1) + '_id';
 
 								/* Clear all the useless attributes */
@@ -556,7 +555,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 70,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
@@ -575,18 +574,17 @@ define(function(require){
 								}
 							}));
 
-							if($('#user_selector option:selected', popup_html).val() == undefined) {
+							if ($('#user_selector option:selected', popup_html).val() === undefined) {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ?
-												{ id: $('#user_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#user_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
 								monster.pub('callflows.user.popupEdit', {
-									data:  _data,
+									data: _data,
 									callback: function(_data) {
 										node.setMetadata('owner_id', _data.id || 'null');
 
@@ -607,7 +605,7 @@ define(function(require){
 								title: self.i18n.active().oldCallflows.select_user_title,
 								minHeight: '0',
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -657,8 +655,8 @@ define(function(require){
 							title: self.i18n.active().oldCallflows.start_call_recording,
 							minHeight: '0',
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
@@ -684,7 +682,7 @@ define(function(require){
 					caption: function(node) {
 						return '';
 					},
-					edit: function(node, callback) {
+					edit: function(node) {
 					}
 				},
 				'pivot[]': {
@@ -713,7 +711,7 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self,'misc-pivot', {
+						popup_html = $(monster.template(self, 'misc-pivot', {
 							data_pivot: {
 								'method': node.getMetadata('method') || 'get',
 								'voice_url': node.getMetadata('voice_url') || '',
@@ -734,8 +732,8 @@ define(function(require){
 							title: self.i18n.active().oldCallflows.pivot_title,
 							minHeight: '0',
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
@@ -765,7 +763,7 @@ define(function(require){
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self,'misc-disa', {
+						popup_html = $(monster.template(self, 'misc-disa', {
 							data_disa: {
 								'pin': node.getMetadata('pin'),
 								'retries': node.getMetadata('retries'),
@@ -781,13 +779,12 @@ define(function(require){
 						$('#add', popup_html).click(function() {
 							var save_disa = function() {
 								var setData = function(field, value) {
-										if(value !== 'default') {
-											node.setMetadata(field, value);
-										}
-										else {
-											node.deleteMetadata(field);
-										}
-									};
+									if (value !== 'default') {
+										node.setMetadata(field, value);
+									} else {
+										node.deleteMetadata(field);
+									}
+								};
 
 								setData('pin', $('#disa_pin_input', popup_html).val());
 								setData('retries', $('#disa_retries_input', popup_html).val());
@@ -798,12 +795,11 @@ define(function(require){
 
 								popup.dialog('close');
 							};
-							if($('#disa_pin_input', popup_html).val() == '') {
+							if ($('#disa_pin_input', popup_html).val() === '') {
 								monster.ui.confirm(self.i18n.active().oldCallflows.not_setting_a_pin, function() {
 									save_disa();
 								});
-							}
-							else {
+							} else {
 								save_disa();
 							}
 						});
@@ -811,8 +807,8 @@ define(function(require){
 						popup = monster.ui.dialog(popup_html, {
 							title: self.i18n.active().callflows.disa.title,
 							beforeClose: function() {
-								if(typeof callback == 'function') {
-									 callback();
+								if (typeof callback === 'function') {
+									callback();
 								}
 							}
 						});
@@ -1016,7 +1012,7 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 100,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return self.i18n.active().oldCallflows.sip_code_caption + node.getMetadata('code');
 					},
 					edit: function(node, callback) {
@@ -1033,23 +1029,22 @@ define(function(require){
 								}
 							}));
 
-							if($('#media_selector option:selected', popup_html).val() == undefined
-							|| $('#media_selector option:selected', popup_html).val() == 'null') {
+							if ($('#media_selector option:selected', popup_html).val() === undefined
+							|| $('#media_selector option:selected', popup_html).val() === 'null') {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('#media_selector', popup_html).change(function() {
-								if($('#media_selector option:selected', popup_html).val() == undefined
-								|| $('#media_selector option:selected', popup_html).val() == 'null') {
+								if ($('#media_selector option:selected', popup_html).val() === undefined
+								|| $('#media_selector option:selected', popup_html).val() === 'null') {
 									$('#edit_link', popup_html).hide();
 								} else {
 									$('#edit_link', popup_html).show();
 								}
-							})
+							});
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ?
-												{ id: $('#media_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#media_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
@@ -1064,10 +1059,10 @@ define(function(require){
 							});
 
 							$('#add', popup_html).click(function() {
-								if($('#response_code_input', popup_html).val().match(/^[1-6][0-9]{2}$/)) {
+								if ($('#response_code_input', popup_html).val().match(/^[1-6][0-9]{2}$/)) {
 									node.setMetadata('code', $('#response_code_input', popup_html).val());
 									node.setMetadata('message', $('#response_message_input', popup_html).val());
-									if($('#media_selector', popup_html).val() && $('#media_selector', popup_html).val() != 'null') {
+									if ($('#media_selector', popup_html).val() && $('#media_selector', popup_html).val() !== 'null') {
 										node.setMetadata('media', $('#media_selector', popup_html).val());
 									} else {
 										node.deleteMetadata('media');
@@ -1085,7 +1080,7 @@ define(function(require){
 								title: self.i18n.active().oldCallflows.response_title,
 								minHeight: '0',
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -1206,7 +1201,9 @@ define(function(require){
 				resource: 'device.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1221,7 +1218,9 @@ define(function(require){
 				resource: 'group.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1236,7 +1235,9 @@ define(function(require){
 				resource: 'user.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
@@ -1251,7 +1252,9 @@ define(function(require){
 				resource: 'media.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data, status) {
 					callback && callback(data.data);

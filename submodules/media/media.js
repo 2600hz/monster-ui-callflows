@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster');
@@ -15,7 +15,8 @@ define(function(require){
 		mediaRender: function(data, target, callbacks) {
 			var self = this,
 				media_html = $(monster.template(self, 'media-edit', data)),
-				mediaForm = media_html.find('#media-form');
+				mediaForm = media_html.find('#media-form'),
+				file;
 
 			monster.ui.validate(mediaForm, {
 				rules: {
@@ -35,7 +36,7 @@ define(function(require){
 
 			self.winkstartTabs(media_html);
 
-			if(data.data.id) {
+			if (data.data.id) {
 				$('#upload_div', media_html).hide();
 			}
 
@@ -47,15 +48,15 @@ define(function(require){
 
 			$('#download_link', media_html).click(function(ev) {
 				ev.preventDefault();
-				window.location.href = self.apiUrl + (self.apiUrl.substring(self.apiUrl.length-1) != '/' ? '/' : '') + 'accounts/' +
-									   self.accountId + '/media/' +
-									   data.data.id + '/raw?auth_token=' + self.getAuthToken();
+				window.location.href = self.apiUrl + (self.apiUrl.substring(self.apiUrl.length - 1) !== '/' ? '/' : '')
+										+ 'accounts/' + self.accountId + '/media/' + data.data.id
+										+ '/raw?auth_token=' + self.getAuthToken();
 			});
 
-			$('#file', media_html).bind('change', function(evt){
+			$('#file', media_html).bind('change', function(evt) {
 				var files = evt.target.files;
 
-				if(files.length > 0) {
+				if (files.length > 0) {
 					var reader = new FileReader();
 
 					file = 'updating';
@@ -63,7 +64,7 @@ define(function(require){
 						var data = evt.target.result;
 
 						file = data;
-					}
+					};
 
 					reader.readAsDataURL(files[0]);
 				}
@@ -72,15 +73,12 @@ define(function(require){
 			function changeType($select) {
 				var type = $select.val();
 
-				switch(type) {
-					case 'tts':
-						$('.tts', media_html).show();
-						$('.file', media_html).hide();
-						break;
-					case 'upload':
-						$('.tts', media_html).hide();
-						$('.file', media_html).show();
-						break;
+				if (type === 'tts') {
+					$('.tts', media_html).show();
+					$('.file', media_html).hide();
+				} else if (type === 'upload') {
+					$('.tts', media_html).hide();
+					$('.file', media_html).show();
 				}
 			}
 
@@ -94,31 +92,30 @@ define(function(require){
 				ev.preventDefault();
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
+				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
 
-					if(monster.ui.valid(mediaForm)) {
+					if (monster.ui.valid(mediaForm)) {
 						var form_data = monster.ui.getFormData('media-form');
 
 						form_data = self.mediaCleanFormData(form_data);
 
 						self.mediaSave(form_data, data, function(_data, status) {
-							if(!form_data.tts) {
-								if($('#upload_div', media_html).is(':visible') && $('#file').val() != '') {
-									if(file === 'updating') {
+							if (!form_data.tts) {
+								if ($('#upload_div', media_html).is(':visible') && $('#file').val() !== '') {
+									if (file === 'updating') {
 										monster.ui.alert(self.i18n.active().callflows.media.the_file_you_want_to_apply);
-										
+
 										$this.removeClass('disabled');
-									}
-									else {
+									} else {
 										self.mediaUpload(file, _data.id, function() {
-											if(typeof callbacks.save_success == 'function') {
+											if (typeof callbacks.save_success === 'function') {
 												callbacks.save_success(_data, status);
 											}
 										}, function() {
-											if(data && data.data && data.data.id) {
+											if (data && data.data && data.data.id) {
 												self.mediaSave({}, data, function() {
-													if(typeof callbacks.save_success == 'function') {
+													if (typeof callbacks.save_success === 'function') {
 														callbacks.save_success(_data, status);
 													}
 												});
@@ -128,19 +125,18 @@ define(function(require){
 
 											$this.removeClass('disabled');
 
-											if(typeof callbacks.save_error == 'function') {
+											if (typeof callbacks.save_error === 'function') {
 												callbacks.save_error(_data, status);
 											}
 										});
 									}
-								}
-								else {
-									if(typeof callbacks.save_success == 'function') {
+								} else {
+									if (typeof callbacks.save_success === 'function') {
 										callbacks.save_success(_data, status);
 									}
 								}
 							} else {
-								if(typeof callbacks.save_success == 'function') {
+								if (typeof callbacks.save_success === 'function') {
 									callbacks.save_success(_data, status);
 								}
 							}
@@ -168,12 +164,12 @@ define(function(require){
 		mediaCleanFormData: function(form_data) {
 			form_data.description = form_data.upload_media;
 
-			if(form_data.description == '') {
+			if (form_data.description === '') {
 				delete form_data.description;
 			}
 
-			if(form_data.media_source == 'tts') {
-				form_data.description = "tts file";
+			if (form_data.media_source === 'tts') {
+				form_data.description = 'tts file';
 			} else {
 				delete form_data.tts;
 			}
@@ -189,7 +185,7 @@ define(function(require){
 			self.mediaEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
-		mediaEdit: function(data, _parent, _target, _callbacks, data_defaults){
+		mediaEdit: function(data, _parent, _target, _callbacks, data_defaults) {
 			var self = this,
 				parent = _parent || $('#media-content'),
 				target = _target || $('#media-view', parent),
@@ -207,21 +203,20 @@ define(function(require){
 					}, data_defaults || {})
 				};
 
-			if(typeof data == 'object' && data.id) {
+			if (typeof data === 'object' && data.id) {
 				self.mediaGet(data.id, function(mediaData) {
 					self.mediaFormatData(mediaData);
 
 					self.mediaRender($.extend(true, defaults, { data: mediaData }), target, callbacks);
 
-					if(typeof callbacks.after_render == 'function') {
+					if (typeof callbacks.after_render === 'function') {
 						callbacks.after_render();
 					}
 				});
-			}
-			else {
+			} else {
 				self.mediaRender(defaults, target, callbacks);
 
-				if(typeof callbacks.after_render == 'function') {
+				if (typeof callbacks.after_render === 'function') {
 					callbacks.after_render();
 				}
 			}
@@ -231,16 +226,15 @@ define(function(require){
 			var self = this,
 				normalized_data = self.mediaNormalizeData($.extend(true, {}, data.data, form_data));
 
-			if(typeof data.data == 'object' && data.data.id) {
+			if (typeof data.data === 'object' && data.data.id) {
 				self.mediaUpdate(normalized_data, function(_data, status) {
-					if(typeof success == 'function') {
+					if (typeof success === 'function') {
 						success(_data, status, 'update');
 					}
 				});
-			}
-			else {
+			} else {
 				self.mediaCreate(normalized_data, function(_data, status) {
-					if(typeof success == 'function') {
+					if (typeof success === 'function') {
 						success(_data, status, 'create');
 					}
 				});
@@ -250,11 +244,11 @@ define(function(require){
 		mediaNormalizeData: function(form_data) {
 			delete form_data.upload_media;
 
-			if('field_data' in form_data) {
+			if ('field_data' in form_data) {
 				delete form_data.field_data;
 			}
 
-			if(form_data.media_source == 'upload') {
+			if (form_data.media_source === 'upload') {
 				delete form_data.tts;
 			}
 
@@ -266,14 +260,13 @@ define(function(require){
 			* And as we're using the same template for both behaviors, we need the same kind of data.
 			* TODO: delete once this bug is fixed!
 			*/
-			if(data.streamable == 'false') {
-				 data.streamable = false;
-			}
-			else if(data.streamable == 'true') {
+			if (data.streamable === 'false') {
+				data.streamable = false;
+			} else if (data.streamable === 'true') {
 				data.streamable = true;
 			}
 
-			if(data.description != undefined && data.description.substr(0,12) == 'C:\\fakepath\\') {
+			if (data.description !== undefined && data.description.substr(0, 12) === 'C:\\fakepath\\') {
 				data.description = data.description.substr(12);
 			}
 
@@ -285,21 +278,21 @@ define(function(require){
 				data = args.data,
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
-				popup, 
+				popup,
 				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
 			self.mediaEdit(data, popup_html, $('.inline_content', popup_html), {
 				save_success: function(_data) {
 					popup.dialog('close');
 
-					if(typeof callback == 'function') {
+					if (typeof callback === 'function') {
 						callback(_data);
 					}
 				},
 				delete_success: function() {
 					popup.dialog('close');
 
-					if(typeof callback == 'function') {
+					if (typeof callback === 'function') {
 						callback({ data: {} });
 					}
 				},
@@ -337,7 +330,7 @@ define(function(require){
 						var id = node.getMetadata('id'),
 							returned_value = '';
 
-						if(id in caption_map) {
+						if (id in caption_map) {
 							returned_value = caption_map[id].name;
 						}
 
@@ -354,18 +347,17 @@ define(function(require){
 								selected: node.getMetadata('id') || ''
 							}));
 
-							if($('#media_selector option:selected', popup_html).val() == undefined) {
+							if ($('#media_selector option:selected', popup_html).val() === undefined) {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ?
-												{ id: $('#media_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#media_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
 								self.mediaPopupEdit({
-									data: _data, 
+									data: _data,
 									callback: function(media) {
 										node.setMetadata('id', media.id || 'null');
 										node.caption = media.name || '';
@@ -387,7 +379,7 @@ define(function(require){
 								title: self.i18n.active().callflows.media.media,
 								minHeight: '0',
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -399,7 +391,9 @@ define(function(require){
 							resource: 'media.list',
 							data: {
 								accountId: self.accountId,
-								filters: { paginate:false }
+								filters: {
+									paginate: false
+								}
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
@@ -418,7 +412,9 @@ define(function(require){
 				resource: 'media.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);

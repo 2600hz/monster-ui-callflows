@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster'),
@@ -17,10 +17,10 @@ define(function(require){
 
 		userDefineActions: function(args) {
 			var self = this,
-				callflow_nodes= args.actions;
+				callflow_nodes = args.actions;
 
 			$.extend(callflow_nodes, {
-				 'user[id=*]': {
+				'user[id=*]': {
 					name: self.i18n.active().callflows.user.user,
 					icon: 'user',
 					category: self.i18n.active().oldCallflows.basic_cat,
@@ -41,7 +41,7 @@ define(function(require){
 						var id = node.getMetadata('id'),
 							returned_value = '';
 
-						if(id in caption_map) {
+						if (id in caption_map) {
 							returned_value = caption_map[id].name;
 						}
 
@@ -55,7 +55,7 @@ define(function(require){
 								this.name = this.first_name + ' ' + this.last_name;
 							});
 
-							popup_html = $(monster.template(self, 'user-callflowEdit' , {
+							popup_html = $(monster.template(self, 'user-callflowEdit', {
 								can_call_self: node.getMetadata('can_call_self') || false,
 								parameter: {
 									name: 'timeout (s)',
@@ -67,18 +67,17 @@ define(function(require){
 								}
 							}));
 
-							if($('#user_selector option:selected', popup_html).val() == undefined) {
+							if ($('#user_selector option:selected', popup_html).val() === undefined) {
 								$('#edit_link', popup_html).hide();
 							}
 
 							$('.inline_action', popup_html).click(function(ev) {
-								var _data = ($(this).data('action') == 'edit') ?
-												{ id: $('#user_selector', popup_html).val() } : {};
+								var _data = ($(this).data('action') === 'edit') ? { id: $('#user_selector', popup_html).val() } : {};
 
 								ev.preventDefault();
 
 								self.userPopupEdit({
-									data: _data, 
+									data: _data,
 									callback: function(_data) {
 										node.setMetadata('id', _data.id || 'null');
 										node.setMetadata('timeout', $('#parameter_input', popup_html).val());
@@ -104,7 +103,7 @@ define(function(require){
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().callflows.user.select_user,
 								beforeClose: function() {
-									if(typeof callback == 'function') {
+									if (typeof callback === 'function') {
 										callback();
 									}
 								}
@@ -116,7 +115,9 @@ define(function(require){
 							resource: 'user.list',
 							data: {
 								accountId: self.accountId,
-								filters: { paginate:false }
+								filters: {
+									paginate: false
+								}
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
@@ -142,11 +143,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 10,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -168,11 +169,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 20,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -194,11 +195,11 @@ define(function(require){
 					],
 					isUsable: 'true',
 					weight: 30,
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return '';
 					},
 					edit: function(node, callback) {
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback();
 						}
 					}
@@ -227,14 +228,14 @@ define(function(require){
 					save_success: function(_data) {
 						popup.dialog('close');
 
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback(_data);
 						}
 					},
 					delete_success: function() {
 						popup.dialog('close');
 
-						if(typeof callback == 'function') {
+						if (typeof callback === 'function') {
 							callback({ data: {} });
 						}
 					},
@@ -294,7 +295,7 @@ define(function(require){
 						},
 						hotdesk: {},
 						contact_list: {
-							exclude: false,
+							exclude: false
 						},
 						priv_level: 'user',
 						music_on_hold: {},
@@ -322,10 +323,12 @@ define(function(require){
 						resource: 'numbers.listClassifiers',
 						data: {
 							accountId: self.accountId,
-							filters: { paginate:false }
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(_data_classifiers, status) {
-							if('data' in _data_classifiers) {
+							if ('data' in _data_classifiers) {
 								$.each(_data_classifiers.data, function(k, v) {
 									defaults.field_data.call_restriction[k] = {
 										friendly_name: v.friendly_name
@@ -343,10 +346,12 @@ define(function(require){
 						resource: 'media.list',
 						data: {
 							accountId: self.accountId,
-							filters: { paginate:false }
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(_data, status) {
-							if(_data.data) {
+							if (_data.data) {
 								_data.data.unshift(
 									{
 										id: '',
@@ -370,22 +375,21 @@ define(function(require){
 					});
 				},
 				user_get: function(callback) {
-					if(typeof data == 'object' && data.id) {
+					if (typeof data === 'object' && data.id) {
 						self.userGet(data.id, function(_data, status) {
 							self.userMigrateData(_data);
 
 							callback(null, _data);
 						});
-					}
-					else {
-						self.random_id = $.md5(monster.util.randomString(10)+new Date().toString());
+					} else {
+						self.random_id = $.md5(monster.util.randomString(10) + new Date().toString());
 						defaults.field_data.new_user = self.random_id;
 
 						callback(null, defaults);
 					}
 				},
 				user_hotdesks: function(callback) {
-					if(typeof data == 'object' && data.id) {
+					if (typeof data === 'object' && data.id) {
 						self.callApi({
 							resource: 'user.hotdesks',
 							data: {
@@ -400,7 +404,7 @@ define(function(require){
 									defaults.field_data.device_list[v.device_id] = { name: v.device_name };
 								});
 
-								if($.isEmptyObject(defaults.field_data.device_list)) {
+								if ($.isEmptyObject(defaults.field_data.device_list)) {
 									delete defaults.field_data.device_list;
 								}
 
@@ -410,17 +414,16 @@ define(function(require){
 								//callback({api_name: 'Hotdesk'}, _data);
 								callback(null, defaults);
 							}
-						})
-					}
-					else {
+						});
+					} else {
 						callback(null, defaults);
 					}
 				}
 			},
 			function(err, results) {
 				var render_data = defaults;
-				if(typeof data === 'object' && data.id) {
-					if(results.user_get.hasOwnProperty('call_restriction')) {
+				if (typeof data === 'object' && data.id) {
+					if (results.user_get.hasOwnProperty('call_restriction')) {
 						$.each(results.user_get.call_restriction, function(k, v) {
 							if (defaults.field_data.call_restriction.hasOwnProperty(k)) {
 								defaults.field_data.call_restriction[k].action = v.action;
@@ -433,7 +436,7 @@ define(function(require){
 					render_data.extra = render_data.extra || {};
 					render_data.extra.isShoutcast = false;
 
-					// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism, 
+					// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 					// but we also need to store the  value so we can display it
 					if (render_data.data.hasOwnProperty('music_on_hold') && render_data.data.music_on_hold.hasOwnProperty('media_id')) {
 						if (render_data.data.music_on_hold.media_id.indexOf('://') >= 0) {
@@ -448,7 +451,7 @@ define(function(require){
 
 				self.userRender(render_data, target, callbacks);
 
-				if(typeof callbacks.after_render == 'function') {
+				if (typeof callbacks.after_render === 'function') {
 					callbacks.after_render();
 				}
 			});
@@ -466,7 +469,7 @@ define(function(require){
 
 			monster.ui.validate(user_form, {
 				rules: {
-					"extra.shoutcastUrl": {
+					'extra.shoutcastUrl': {
 						protocol: true
 					},
 					username: {
@@ -478,13 +481,13 @@ define(function(require){
 						required: true,
 						minlength: 1,
 						maxlength: 256,
-						regex: /^[0-9a-zA-Z\s\-\']+$/
+						regex: /^[0-9a-zA-Z\s\-']+$/
 					},
 					last_name: {
 						required: true,
 						minlength: 1,
 						maxlength: 256,
-						regex: /^[0-9a-zA-Z\s\-\']+$/
+						regex: /^[0-9a-zA-Z\s\-']+$/
 					},
 
 					email: {
@@ -501,14 +504,14 @@ define(function(require){
 						equalTo: '#pwd_mngt_pwd1'
 					},
 					'hotdesk.pin': { regex: /^[0-9]*$/ },
-					'hotdesk.id': { regex: /^[0-9\+\#\*]*$/ },
-					call_forward_number: { regex: /^[\+]?[0-9]*$/ },
+					'hotdesk.id': { regex: /^[0-9+#*]*$/ },
+					call_forward_number: { regex: /^[+]?[0-9]*$/ },
 					'caller_id.internal.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 					'caller_id.external.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
-					'caller_id.internal.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
-					'caller_id.external.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ },
+					'caller_id.internal.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
+					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.emergency.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
-					'caller_id.emergency.number': { regex: /^[\+]?[0-9\s\-\.\(\)]*$/ }
+					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ }
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
@@ -525,9 +528,9 @@ define(function(require){
 				}
 			});
 
-			timezone.populateDropdown($('#timezone', user_html), data.data.timezone||'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#timezone', user_html), data.data.timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
 
-			if (data.data.id === monster.apps.auth.userId){
+			if (data.data.id === monster.apps.auth.userId) {
 				$('.user-delete', user_html).hide();
 			}
 
@@ -553,24 +556,24 @@ define(function(require){
 
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
+				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
 
 					if (monster.ui.valid(user_form)) {
 						var form_data = monster.ui.getFormData('user-form');
 
-						if(form_data.enable_pin === false) {
+						if (form_data.enable_pin === false) {
 							delete data.data.queue_pin;
 							delete data.data.record_call;
 						}
 
-						if(form_data.music_on_hold.media_id === 'shoutcast') {
+						if (form_data.music_on_hold.media_id === 'shoutcast') {
 							form_data.music_on_hold.media_id = user_html.find('.shoutcast-url-input').val();
 						}
 
 						self.userCleanFormData(form_data);
 
-						if('field_data' in data) {
+						if ('field_data' in data) {
 							delete data.field_data;
 						}
 
@@ -580,41 +583,39 @@ define(function(require){
 								accountId: self.accountId
 							},
 							success: function(_data, status) {
-								if(form_data.priv_level == 'admin') {
+								if (form_data.priv_level === 'admin') {
 									form_data.apps = form_data.apps || {};
-									if(!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
-										form_data.apps['voip'] = {
+									if (!('voip' in form_data.apps) && $.inArray('voip', (_data.data.available_apps || [])) > -1) {
+										form_data.apps.voip = {
 											label: self.i18n.active().callflows.user.voip_services_label,
 											icon: 'device',
 											api_url: monster.config.api.default
-										}
+										};
 									}
-								}
-								else if(form_data.priv_level == 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
+								} else if (form_data.priv_level === 'user' && $.inArray('userportal', (_data.data.available_apps || [])) > -1) {
 									form_data.apps = form_data.apps || {};
-									if(!('userportal' in form_data.apps)) {
-										form_data.apps['userportal'] = {
+									if (!('userportal' in form_data.apps)) {
+										form_data.apps.userportal = {
 											label: self.i18n.active().callflows.user.user_portal_label,
 											icon: 'userportal',
 											api_url: monster.config.api.default
-										}
+										};
 									}
 								}
 
 								self.userSave(form_data, data, function(data, status, action) {
-									if(action == 'create') {
+									if (action === 'create') {
 										self.userAcquireDevice(data, function() {
-											if(typeof callbacks.save_success == 'function') {
+											if (typeof callbacks.save_success === 'function') {
 												callbacks.save_success(data, status, action);
 											}
 										}, function() {
-											if(typeof callbacks.save_error == 'function') {
+											if (typeof callbacks.save_error === 'function') {
 												callbacks.save_error(data, status, action);
 											}
 										});
-									}
-									else {
-										if(typeof callbacks.save_success == 'function') {
+									} else {
+										if (typeof callbacks.save_success === 'function') {
 											callbacks.save_success(data, status, action);
 										}
 									}
@@ -622,8 +623,7 @@ define(function(require){
 								});
 							}
 						});
-					}
-					else {
+					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert(self.i18n.active().callflows.user.there_were_errors_on_the_form);
 					}
@@ -638,7 +638,7 @@ define(function(require){
 				});
 			});
 
-			if(!$('#music_on_hold_media_id', user_html).val()) {
+			if (!$('#music_on_hold_media_id', user_html).val()) {
 				$('#edit_link_media', user_html).hide();
 			}
 
@@ -649,7 +649,7 @@ define(function(require){
 			});
 
 			$('.inline_action_media', user_html).click(function(ev) {
-				var _data = ($(this).data('action') == 'edit') ? { id: $('#music_on_hold_media_id', user_html).val() } : {},
+				var _data = ($(this).data('action') === 'edit') ? { id: $('#music_on_hold_media_id', user_html).val() } : {},
 					_id = _data.id;
 
 				ev.preventDefault();
@@ -657,20 +657,18 @@ define(function(require){
 					data: _data,
 					callback: function(media) {
 						/* Create */
-						if(!_id) {
-							$('#music_on_hold_media_id', user_html).append('<option id="'+ media.id  +'" value="'+ media.id +'">'+ media.name +'</option>')
+						if (!_id) {
+							$('#music_on_hold_media_id', user_html).append('<option id="' + media.id + '" value="' + media.id + '">' + media.name + '</option>');
 							$('#music_on_hold_media_id', user_html).val(media.id);
 
 							$('#edit_link_media', user_html).show();
-						}
-						else {
+						} else {
 							/* Update */
-							if(media.hasOwnProperty('id')) {
-								$('#music_on_hold_media_id #'+ media.id, user_html).text(media.name);
-							}
+							if (media.hasOwnProperty('id')) {
+								$('#music_on_hold_media_id #' + media.id, user_html).text(media.name);
 							/* Delete */
-							else {
-								$('#music_on_hold_media_id #'+_id, user_html).remove();
+							} else {
+								$('#music_on_hold_media_id #' + _id, user_html).remove();
 								$('#edit_link_media', user_html).hide();
 							}
 						}
@@ -690,10 +688,9 @@ define(function(require){
 
 				var defaults = {};
 
-				if(!data.data.id) {
+				if (!data.data.id) {
 					defaults.new_user = self.random_id;
-				}
-				else {
+				} else {
 					defaults.owner_id = data.data.id;
 				}
 
@@ -739,10 +736,9 @@ define(function(require){
 
 				ev.preventDefault();
 
-				if(!data.data.id) {
+				if (!data.data.id) {
 					defaults.new_user = self.random_id;
-				}
-				else {
+				} else {
 					defaults.owner_id = data.data.id;
 				}
 
@@ -772,55 +768,52 @@ define(function(require){
 			var self = this;
 
 			self.userList(function(data, status) {
-					var map_crossbar_data = function(data) {
-						var new_list = [];
+				var map_crossbar_data = function(data) {
+					var new_list = [];
 
-						if(data.length > 0) {
-							$.each(data, function(key, val) {
-								new_list.push({
-									id: val.id,
-									title: (val.first_name && val.last_name) ?
-											   val.last_name + ', ' + val.first_name :
-											   '(no name)'
-								});
+					if (data.length > 0) {
+						$.each(data, function(key, val) {
+							new_list.push({
+								id: val.id,
+								title: (val.first_name && val.last_name) ? val.last_name + ', ' + val.first_name : '(no name)'
 							});
-						}
-
-						new_list.sort(function(a, b) {
-							return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
 						});
+					}
 
-						return new_list;
-					};
+					new_list.sort(function(a, b) {
+						return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+					});
 
-					// $('#user-listpanel', parent)
-					// 	.empty()
-					// 	.listpanel({
-					// 		label: _t('user', 'users_label'),
-					// 		identifier: 'user-listview',
-					// 		new_entity_label: _t('user', 'add_user_label'),
-					// 		data: map_crossbar_data(data.data),
-					// 		publisher: monster.pub,
-					// 		notifyMethod: 'callflows.user.edit',
-					// 		notifyCreateMethod: 'callflows.user.edit',
-					// 		notifyParent: parent
-					// 	});
+					return new_list;
+				};
 
-					callback && callback();
-				}
-			);
+				// $('#user-listpanel', parent)
+				// 	.empty()
+				// 	.listpanel({
+				// 		label: _t('user', 'users_label'),
+				// 		identifier: 'user-listview',
+				// 		new_entity_label: _t('user', 'add_user_label'),
+				// 		data: map_crossbar_data(data.data),
+				// 		publisher: monster.pub,
+				// 		notifyMethod: 'callflows.user.edit',
+				// 		notifyCreateMethod: 'callflows.user.edit',
+				// 		notifyParent: parent
+				// 	});
+
+				callback && callback();
+			});
 		},
 
 		userRenderDeviceList: function(data, parent) {
 			var self = this,
 				parent = $('#tab_devices', parent);
 
-			if(data.data.id) {
+			if (data.data.id) {
 				var filter = data.data.new_user ? { filter_new_user: data.data.id } : { filter_owner_id: data.data.id };
 
 				self.userListDevice(filter, function(_data, status) {
 					$('.rows', parent).empty();
-					if(_data.length > 0) {
+					if (_data.length > 0) {
 						$.each(_data, function(k, v) {
 							v.display_type = data.field_data.device_types[v.device_type];
 							v.not_enabled = this.enabled === false ? true : false;
@@ -838,21 +831,20 @@ define(function(require){
 								});
 							}
 						});
-					}
-					else {
+					} else {
 						$('.rows', parent).append($(monster.template(self, 'user-deviceRow')));
 					}
 				});
-			}
-			else {
-				$('.rows', parent).empty()
-								  .append($(monster.template(self, 'user-deviceRow')));
+			} else {
+				$('.rows', parent)
+					.empty()
+					.append($(monster.template(self, 'user-deviceRow')));
 			}
 		},
 
 		userMigrateData: function(data) {
-			if(!('priv_level' in data)) {
-				if('apps' in data && 'voip' in data.apps) {
+			if (!('priv_level' in data)) {
+				if ('apps' in data && 'voip' in data.apps) {
 					data.priv_level = 'admin';
 				} else {
 					data.priv_level = 'user';
@@ -870,76 +862,69 @@ define(function(require){
 				enabled = $checkbox.is(':checked');
 
 			self.userGetDevice(device_id, function(_data) {
-					if($.inArray(_data.device_type, ['cellphone', 'smartphone', 'landline']) > -1) {
-						_data.call_forward.enabled = enabled;
+				if ($.inArray(_data.device_type, ['cellphone', 'smartphone', 'landline']) > -1) {
+					_data.call_forward.enabled = enabled;
+				}
+				_data.enabled = enabled;
+				self.userUpdateDevice(device_id, _data, function(_data) {
+					$checkbox.removeAttr('disabled');
+					if (_data.enabled === true) {
+						$('#' + _data.id + ' .column.third', parent).removeClass('disabled');
+					} else {
+						$('#' + _data.id + ' .column.third', parent).addClass('disabled');
 					}
-					_data.enabled = enabled;
-					self.userUpdateDevice(device_id, _data, function(_data) {
-							$checkbox.removeAttr('disabled');
-							if(_data.enabled === true) {
-								$('#'+ _data.id + ' .column.third', parent).removeClass('disabled');
-							}
-							else {
-								$('#'+ _data.id + ' .column.third', parent).addClass('disabled');
-							}
-						},
-						function() {
-							$checkbox.removeAttr('disabled');
-							enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
-						}
-					);
-				},
-				function() {
+				}, function() {
 					$checkbox.removeAttr('disabled');
 					enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
-				}
-			);
+				});
+			}, function() {
+				$checkbox.removeAttr('disabled');
+				enabled ? $checkbox.removeAttr('checked') : $checkbox.attr('checked', 'checked');
+			});
 		},
 
 		userAcquireDevice: function(user_data, success, error) {
 			var self = this,
 				user_id = user_data.id;
 
-			if(self.random_id) {
+			if (self.random_id) {
 				self.userListDevice({ filter_new_user: self.random_id }, function(_data, status) {
 					var device_id;
 					var array_length = _data.length;
-					if(array_length != 0) {
-						$.each(_data, function(k, v) {
+					if (array_length !== 0) {
+						$.each(_data, function(k) {
 							device_id = this.id;
 							self.userGetDevice(device_id, function(_data, status) {
 								_data.owner_id = user_id;
 								delete _data.new_user;
 								self.userUpdateDevice(device_id, _data, function(_data, status) {
-									if(k == array_length - 1) {
+									if (k === array_length - 1) {
 										success({}, status, 'create');
 									}
 								});
 							});
 						});
-					}
-					else {
+					} else {
 						success({}, status, 'create');
 					}
 				});
-			}
-			else {
+			} else {
 				success({}, status, 'create');
 			}
 		},
 
-		userCleanFormData: function(form_data){
-			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|\-|\./g,'');
-			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|\-|\./g,'');
-			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|\-|\./g,'');
+		userCleanFormData: function(form_data) {
+			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
+			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
+			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
 
-			if(!form_data.hotdesk.require_pin) {
+			if (!form_data.hotdesk.require_pin) {
 				delete form_data.hotdesk.pin;
 			}
 
-			if(form_data.pwd_mngt_pwd1 != 'fakePassword') {
+			if (form_data.pwd_mngt_pwd1 !== 'fakePassword') {
 				form_data.password = form_data.pwd_mngt_pwd1;
 			}
 
@@ -954,68 +939,63 @@ define(function(require){
 			var self = this,
 				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data));
 
-			if(typeof data.data == 'object' && data.data.id) {
+			if (typeof data.data === 'object' && data.data.id) {
 				self.userUpdate(normalized_data, function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'update');
-						}
-					},
-					function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'update');
-						}
+					if (typeof success === 'function') {
+						success(_data, status, 'update');
 					}
-				);
-			}
-			else {
+				}, function(_data, status) {
+					if (typeof error === 'function') {
+						error(_data, status, 'update');
+					}
+				});
+			} else {
 				self.userCreate(normalized_data, function(_data, status) {
-						if(typeof success == 'function') {
-							success(_data, status, 'create');
-						}
-					},
-					function(_data, status) {
-						if(typeof error == 'function') {
-							error(_data, status, 'create');
-						}
+					if (typeof success === 'function') {
+						success(_data, status, 'create');
 					}
-				);
+				}, function(_data, status) {
+					if (typeof error === 'function') {
+						error(_data, status, 'create');
+					}
+				});
 			}
 		},
 
 		userNormalizeData: function(data) {
-			if($.isArray(data.directories)) {
+			if ($.isArray(data.directories)) {
 				data.directories = {};
 			}
 
 			$.each(data.caller_id, function(key, val) {
 				$.each(val, function(_key, _val) {
-					if(_val == '') {
+					if (_val === '') {
 						delete val[_key];
 					}
 				});
 
-				if($.isEmptyObject(val)) {
+				if ($.isEmptyObject(val)) {
 					delete data.caller_id[key];
 				}
 			});
 
-			if($.isEmptyObject(data.caller_id)) {
+			if ($.isEmptyObject(data.caller_id)) {
 				delete data.caller_id;
 			}
 
-			if(!data.music_on_hold.media_id) {
+			if (!data.music_on_hold.media_id) {
 				delete data.music_on_hold.media_id;
 			}
 
-			if(data.hotdesk.hasOwnProperty("enable")) {
+			if (data.hotdesk.hasOwnProperty('enable')) {
 				delete data.hotdesk.enable;
 			}
 
-			if(data.hotdesk.hasOwnProperty('log_out')) {
+			if (data.hotdesk.hasOwnProperty('log_out')) {
 				var new_endpoint_ids = [];
 
 				$.each(data.hotdesk.endpoint_ids, function(k, v) {
-					if(data.hotdesk.log_out.indexOf(v) < 0) {
+					if (data.hotdesk.log_out.indexOf(v) < 0) {
 						new_endpoint_ids.push(v);
 					}
 				});
@@ -1025,25 +1005,24 @@ define(function(require){
 				delete data.hotdesk.log_out;
 			}
 
-			if(data.hotdesk.hasOwnProperty('endpoint_ids') && data.hotdesk.endpoint_ids.length === 0) {
+			if (data.hotdesk.hasOwnProperty('endpoint_ids') && data.hotdesk.endpoint_ids.length === 0) {
 				delete data.hotdesk.endpoint_ids;
 			}
 
-			if(data.hasOwnProperty('call_forward') && data.call_forward.number === '') {
+			if (data.hasOwnProperty('call_forward') && data.call_forward.number === '') {
 				delete data.call_forward.number;
 			}
 
-			if(data.hasOwnProperty('presence_id') && data.presence_id === '') {
+			if (data.hasOwnProperty('presence_id') && data.presence_id === '') {
 				delete data.presence_id;
 			}
 
-			if(data.timezone && data.timezone === 'inherit') {
+			if (data.timezone && data.timezone === 'inherit') {
 				delete data.timezone;
 			}
 
 			return data;
 		},
-
 
 		userList: function(callback) {
 			var self = this;
@@ -1052,7 +1031,9 @@ define(function(require){
 				resource: 'user.list',
 				data: {
 					accountId: self.accountId,
-					filters: { paginate:false }
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
@@ -1137,7 +1118,7 @@ define(function(require){
 				success: function(data) {
 					callback && callback(data.data);
 				}
-			})
+			});
 		},
 
 		userGetDevice: function(deviceId, callbackSuccess, callbackError) {
@@ -1155,7 +1136,7 @@ define(function(require){
 				error: function(data) {
 					callbackError && callbackError();
 				}
-			})
+			});
 		},
 
 		userUpdateDevice: function(deviceId, data, callbackSuccess, callbackError) {
