@@ -349,7 +349,9 @@ define(function(require) {
 
 			actions[entityType].listEntities(function(entities) {
 				self.formatEntityData(entities, entityType);
-				var listEntities = monster.template(self, 'entity-list', { entities: entities });
+				var listEntities = $(monster.template(self, 'entity-list', { entities: entities }));
+
+				monster.ui.tooltips(listEntities);
 
 				template.find('.entity-edition .list-container .list')
 						.empty()

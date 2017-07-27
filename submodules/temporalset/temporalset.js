@@ -232,7 +232,6 @@ define(function(require) {
 			merged_data.temporal_rules = form_data.temporal_rules;
 
 			delete merged_data.extra;
-			console.log(merged_data);
 
 			return merged_data;
 		},
