@@ -73,6 +73,7 @@
 			"device_title": "Device",
 			"voip_phone": "VoIP Phone",
 			"cell_phone": "Cell Phone",
+			"cellphone": "Cell Phone",
 			"smart_phone": "Smart Phone",
 			"landline": "Landline",
 			"soft_phone": "Soft Phone",

@@ -1180,15 +1180,61 @@ define(function(require){
 						});
 					},
 					listEntities: function(callback) {
-						self.callApi({
-							resource: 'device.list',
-							data: {
-								accountId: self.accountId,
-								filters: { paginate:false }
+						monster.parallel({
+							device: function(callback) {
+								self.callApi({
+									resource: 'device.list',
+									data: {
+										accountId: self.accountId,
+										filters: {
+											paginate: false
+										}
+									},
+									success: function(data, status) {
+										callback && callback(null, data.data);
+									}
+								});
 							},
-							success: function(data, status) {
-								callback && callback(data.data);
+							status: function(callback) {
+								self.callApi({
+									resource: 'device.getStatus',
+									data: {
+										accountId: self.accountId,
+										filters: {
+											paginate: false
+										}
+									},
+									success: function(data, status) {
+										callback && callback(null, data.data);
+									}
+								});
 							}
+						},
+						function(err, results) {
+							var registeredDevices = _.map(results.status, function(registration) { if (registration.registered === true) { return registration.device_id; } }),
+								deviceIcons = {
+									'cellphone': 'fa fa-phone',
+									'smartphone': 'icon-telicon-mobile-phone',
+									'landline': 'icon-telicon-home',
+									'mobile': 'icon-telicon-sprint-phone',
+									'softphone': 'icon-telicon-soft-phone',
+									'sip_device': 'icon-telicon-voip-phone',
+									'sip_uri': 'icon-telicon-voip-phone',
+									'fax': 'icon-telicon-fax',
+									'ata': 'icon-telicon-ata',
+									'unknown': 'fa fa-circle'
+								};
+
+							_.each(results.device, function(device) {
+								var dataTemplate = device;
+								dataTemplate.extra = {
+									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
+									isRegistered: device.enabled ? (['sip_device', 'smartphone', 'softphone', 'fax', 'ata'].indexOf(device.device_type) >= 0 ? registeredDevices.indexOf(device.id) >= 0 : true) : false
+								};
+								device.customEntityTemplate = monster.template(self, 'device-entity-element', dataTemplate);
+							});
+
+							callback && callback(results.device);
 						});
 					},
 					editEntity: 'callflows.device.edit'

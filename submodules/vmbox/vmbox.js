@@ -213,7 +213,6 @@ define(function(require){
 				monster.pub('callflows.user.popupEdit', {
 					data: _data,
 					callback: function(_data) {
-						console.log(_data);
 						/* Create */
 						if(!_id) {
 							$('#owner_id', vmbox_html).append('<option id="'+ _data.id  +'" value="'+ _data.id +'">'+ _data.first_name + ' ' + _data.last_name  +'</option>')
