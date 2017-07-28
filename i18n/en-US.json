@@ -416,7 +416,12 @@
 				"tts": "Text to Speech",
 				"upload": "Uploaded file",
 				"recording": "Recorded over the phone"
-			}
+			},
+			"__comment": "UI-2812: allow for shoutcast url and silence in adv. callflows",
+			"__version": "4.1",
+			"shoutcastURL": "Stream URL",
+			"shoutcastURLHelp": "You can type any URL including :// (http, https, shout...)",
+			"silence": "Silence"
 		},
 		"menu": {
 			"menu": "Menu",
