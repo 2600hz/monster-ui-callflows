@@ -1,8 +1,8 @@
-<div class="dialog_popup callflows-port">
+<div class="dialog_popup callflows-port media-edit-callflow-popup">
 	<h1>{{ i18n.callflows.media.connect_caller_to_media }}</h1>
 	<form name="form" method="post" action="#">
 		<div class="form_content">
-			<div class="popup_field">
+			<div class="popup_field clearfix">
 				<label for="media_selector">{{ i18n.callflows.media.media }}</label>
 				<div class="select_wrapper">
 					<select id="media_selector">
@@ -13,8 +13,17 @@
 						{{/select}}
 					</select>
 					<div class="action_links_div">
-						<div id="edit_link"><a class="inline_action" data-action="edit" href="#">{{ i18n.callflows.media.edit_media_options }}</a></div>
+						<div id="edit_link" class="{{#if isEditable}}active{{/if}}"><a class="inline_action" data-action="edit" href="#">{{ i18n.callflows.media.edit_media_options }}</a></div>
 						<div><a class="inline_action" data-action="create" href="#">{{ i18n.callflows.media.add_a_media }}</a></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="shoutcast-div{{#if isShoutcast}} active{{/if}}">
+				<div class="control-group">
+					<label class="control-label">{{ i18n.callflows.media.shoutcastURL }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.media.shoutcastURLHelp }}" data-placement="top" data-toggle="tooltip"></i></label>
+					<div class="controls">
+						<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{ shoutcastValue }}"/>
 					</div>
 				</div>
 			</div>

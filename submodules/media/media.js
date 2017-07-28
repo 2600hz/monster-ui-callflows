@@ -328,10 +328,16 @@ define(function(require) {
 					weight: 10,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
+							isSilence = id && id === 'silence_stream://300000',
+							isShoutcast = id && id.indexOf('://') >= 0 && !isSilence,
 							returned_value = '';
 
 						if (id in caption_map) {
 							returned_value = caption_map[id].name;
+						} else if (isShoutcast) {
+							returned_value = id;
+						} else if (isSilence) {
+							returned_value = self.i18n.active().callflows.media.silence;
 						}
 
 						return returned_value;
@@ -340,11 +346,17 @@ define(function(require) {
 						var _this = this;
 
 						self.mediaList(function(medias) {
-							var popup, popup_html;
+							var popup, popup_html,
+								mediaId = node.getMetadata('id') || '',
+								isSilence = !mediaId || (mediaId && mediaId === 'silence_stream://300000'), // because silence is the default choice, we test for !mediaId
+								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000';
 
 							popup_html = $(monster.template(self, 'media-callflowEdit', {
-								items: _.sortBy(medias, 'name'),
-								selected: node.getMetadata('id') || ''
+								items: medias,
+								selected: isShoutcast ? 'shoutcast' : mediaId,
+								isShoutcast: isShoutcast,
+								shoutcastValue: mediaId,
+								isEditable: !isShoutcast && !isSilence
 							}));
 
 							if ($('#media_selector option:selected', popup_html).val() === undefined) {
@@ -367,13 +379,28 @@ define(function(require) {
 								});
 							});
 
-							$('#add', popup_html).click(function() {
-								node.setMetadata('id', $('#media_selector', popup_html).val());
+							popup_html.find('#media_selector').on('change', function() {
+								var val = $(this).val(),
+									isSilence = val && val === 'silence_stream://300000',
+									isShoutcast = val === 'shoutcast',
+									isEditable = !isShoutcast && !isSilence;
 
-								node.caption = $('#media_selector option:selected', popup_html).text();
+								popup_html.find('#edit_link').toggleClass('active', isEditable);
+								popup_html.find('.shoutcast-div').toggleClass('active', isShoutcast).find('input').val('');
+							});
+
+							$('#add', popup_html).click(function() {
+								var mediaValue = $('#media_selector', popup_html).val(),
+									shoutcastValue = $('.shoutcast-url-input', popup_html).val();
+
+								node.caption = mediaValue === 'shoutcast' ? shoutcastValue : $('#media_selector option:selected', popup_html).text();
+								mediaValue = mediaValue === 'shoutcast' ? shoutcastValue : mediaValue;
+								node.setMetadata('id', mediaValue);
 
 								popup.dialog('close');
 							});
+
+							monster.ui.tooltips(popup_html);
 
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().callflows.media.media,
@@ -417,7 +444,20 @@ define(function(require) {
 					}
 				},
 				success: function(data) {
-					callback && callback(data.data);
+					var mediaList = _.sortBy(data.data, function(item) { return item.name.toLowerCase(); });
+
+					mediaList.unshift(
+						{
+							id: 'silence_stream://300000',
+							name: self.i18n.active().callflows.media.silence
+						},
+						{
+							id: 'shoutcast',
+							name: self.i18n.active().callflows.media.shoutcastURL
+						}
+					);
+
+					callback && callback(mediaList);
 				}
 			});
 		},

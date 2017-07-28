@@ -1541,10 +1541,13 @@
 	padding-top: 15px;
 }
 
+
+.media-edit-callflow-popup .shoutcast-div,
 #callflow_container .account-settings-container .shoutcast-div {
 	display: none;
 }
 
+.media-edit-callflow-popup .shoutcast-div.active,
 #callflow_container .account-settings-container .shoutcast-div.active {
 	display: block;
 }
@@ -1564,4 +1567,17 @@
 
 #callflow_container .blacklists-wrapper .items-selector .box-selector ul {
 	height: 250px;
+}
+
+/* Media shoutcast addition */
+.media-edit-callflow-popup .form_content {
+	width: 360px;
+}
+
+.media-edit-callflow-popup #edit_link {
+	display: none;
+}
+
+.media-edit-callflow-popup #edit_link.active {
+	display: block;
 }
