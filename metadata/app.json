@@ -4,18 +4,12 @@
 		"en-US": {
 			"label": "Callflows",
 			"description": "The Callflow Manager allows you manage Callflows as well as various VOIP entities.",
-			"extended_description": "The Callflow Manager app has been ported from Kazoo-UI to provide you with the same experience of callflow management. It allows you to create, update and delete callflows in an quick and easy way. You can also manage various VOIP entities, such as users or devices.",
+			"extended_description": "Advanced Callflows features a drag and drop interface which allows users to select from over 50 items in our “call handling toolbox” to chain together. These chains, known as callflows, allow you to manipulate the flow a call takes as a caller traverses various features, menus and call routing decisions in the system. Use the Advanced Callflow editor to configure every step a caller can take when calling a phone number or extension. Route calls to menus, ring groups, voicemails, conference bridges, call queues, call recordings and more.",
 			"features": [
-				"Manage Callflows",
-				"Manage Conferences",
-				"Manage Devices",
-				"Manage Directories",
-				"Manage Fax Boxes",
-				"Manage Medias",
-				"Manage Menus",
-				"Manage Users",
-				"Manage Voicemail Boxes",
-				"Manage Time of Day"
+				"Drag and drop management",
+				"50+ call handling actions such as: Time of Day Routing, Device/User Routing, Menus/IVRs, Call Pickup, BLF/Presence Manipulation, Outbound Call Routing...",
+				"Create custom call flows",
+				"Customize feature codes"
 			]
 		}
 	},
