@@ -144,7 +144,7 @@ define(function(require) {
 
 		temporalSetFormatRules: function(data) {
 			var self = this,
-				mapRules = _.indexBy(data.field_data.rules, 'id'),
+				mapRules = _.keyBy(data.field_data.rules, 'id'),
 				formattedData = {};
 
 			formattedData.available = _.map(data.field_data.rules, function(rule) {
