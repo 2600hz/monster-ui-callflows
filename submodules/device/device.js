@@ -102,7 +102,7 @@ define(function(require) {
 						},
 						sip: {
 							method: 'password',
-							invite_format: 'username',
+							invite_format: 'contact',
 							username: 'user_' + monster.util.randomString(6),
 							password: monster.util.randomString(12),
 							expire_seconds: '360'
@@ -125,7 +125,10 @@ define(function(require) {
 							invite_formats: {
 								'username': 'Username',
 								'npan': 'NPA NXX XXXX',
-								'e164': 'E. 164'
+								'e164': 'E. 164',
+								'1npan': '1npan',
+								'route': 'Route',
+								'contact': 'Contact'
 							}
 						},
 						media: {
