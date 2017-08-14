@@ -872,6 +872,11 @@ define(function(require) {
 				delete data.ringtones.external;
 			}
 
+			// For devices who don't have sip creds, we need to use username, for sip url we already set it to "route", and for the others, the default is applied: "contact"
+			if ($.inArray(data.device_type, ['landline', 'cellphone']) >= 0) {
+				data.sip.invite_format = 'username';
+			}
+
 			if ($.inArray(data.device_type, ['fax', 'mobile', 'softphone', 'sip_device', 'smartphone']) < 0) {
 				delete data.call_restriction;
 			}
