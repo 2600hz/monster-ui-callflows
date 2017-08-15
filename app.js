@@ -1,6 +1,6 @@
 define(function(require) {
 	var $ = require('jquery'),
-		_ = require('underscore'),
+		_ = require('lodash'),
 		monster = require('monster');
 
 	require([
@@ -220,7 +220,7 @@ define(function(require) {
 
 		renderEntityManager: function(container) {
 			var self = this,
-				entityActions = _.indexBy(_.filter(self.actions, function(action) {
+				entityActions = _.keyBy(_.filter(self.actions, function(action) {
 					return action.hasOwnProperty('listEntities');
 				}), 'module'),
 				template = $(monster.template(self, 'layout', { actions: entityActions }));
