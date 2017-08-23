@@ -382,7 +382,7 @@ define(function(require) {
 							callback(null, _data);
 						});
 					} else {
-						self.random_id = $.md5(monster.util.randomString(10) + new Date().toString());
+						self.random_id = monster.md5(monster.util.randomString(10) + new Date().toString());
 						defaults.field_data.new_user = self.random_id;
 
 						callback(null, defaults);

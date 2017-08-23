@@ -772,7 +772,10 @@ define(function(require) {
 			self.callApi({
 				resource: 'numbers.list',
 				data: {
-					accountId: self.accountId
+					accountId: self.accountId,
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(numbers) {
 					numbers = self.formatListSpareNumbers(numbers.data.numbers);
