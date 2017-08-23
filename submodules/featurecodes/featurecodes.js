@@ -13,28 +13,13 @@ define(function(require) {
 
 		featureCodeRender: function(pContainer) {
 			var self = this,
-				actions = {},
-				categories = {},
 				container = pContainer || $('.callflow-edition');
 
-			self.featureCodesDefine(actions);
-
-			$.each(actions, function(i, action) {
-				this.tag = i;
-				this.number = typeof action.number === 'undefined' ? action.default_number : action.number;
-
-				if (action.hasOwnProperty('category')) {
-					categories[action.category] = categories[action.category] || [];
-					categories[action.category].push(action);
-				}
-			});
-
 			self.featureCodeGetData(function(featureCodes) {
-				var template = $(monster.template(self, 'featurecodes-view', { categories: categories }));
+				var formattedData = self.featureCodeFormatData(featureCodes),
+					template = $(monster.template(self, 'featurecodes-view', formattedData));
 
-				self.featureCodeFormatData(featureCodes, actions);
-
-				self.featureCodeBindEvents(template, actions);
+				self.featureCodeBindEvents(template, formattedData.actions);
 
 				container
 					.empty()
@@ -50,8 +35,16 @@ define(function(require) {
 			});
 		},
 
-		featureCodeFormatData: function(data, actions) {
-			var self = this;
+		featureCodeFormatData: function(data) {
+			var self = this,
+				actions = {},
+				categories = {},
+				formattedData = {
+					categories: {},
+					actions: {}
+				};
+
+			self.featureCodesDefine(actions);
 
 			_.each(data, function(callflow) {
 				if (callflow.hasOwnProperty('featurecode') && callflow.featurecode !== false) {
@@ -63,7 +56,20 @@ define(function(require) {
 				}
 			});
 
-			return actions;
+			$.each(actions, function(i, action) {
+				this.tag = i;
+				this.number = typeof action.number === 'undefined' ? action.default_number : action.number;
+
+				if (action.hasOwnProperty('category')) {
+					categories[action.category] = categories[action.category] || [];
+					categories[action.category].push(action);
+				}
+			});
+
+			formattedData.categories = categories;
+			formattedData.actions = actions;
+
+			return formattedData;
 		},
 
 		featureCodeBindEvents: function(template, actions) {
