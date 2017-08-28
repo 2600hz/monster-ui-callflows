@@ -886,7 +886,6 @@ define(function(require) {
 							node.setMetadata('endpoints', endpoints);
 							node.setMetadata('name', name);
 							node.setMetadata('audio', audio);
-
 							node.caption = name;
 
 							popup.dialog('close');
@@ -992,14 +991,14 @@ define(function(require) {
 			self.groupsDeviceList(function(data) {
 				var popup,
 					popup_html,
-					endpoints,
+					endpoints = node.getMetadata('endpoints'),
 					selected_endpoints = {},
 					unselected_endpoints = [],
 					unselected_groups = [],
 					unselected_devices = [],
 					unselected_users = [];
 
-				if (endpoints === node.getMetadata('endpoints')) {
+				if (endpoints) {
 					// We need to translate the endpoints to prevent nasty O(N^2) time complexities,
 					// we also need to clone to prevent managing of objects
 					$.each($.extend(true, {}, endpoints), function(i, obj) {
