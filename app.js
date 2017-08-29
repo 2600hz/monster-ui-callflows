@@ -1154,6 +1154,7 @@ define(function(require) {
 			target.append(this.getUIFlow());
 
 			var current_flow = self.stringify_flow(self.flow);
+
 			if (!('original_flow' in self) || self.original_flow.split('|')[0] !== current_flow.split('|')[0]) {
 				self.original_flow = current_flow;
 				self.show_pending_change(false);
@@ -1178,8 +1179,34 @@ define(function(require) {
 			}
 		},
 
+		// We add this function because today the stringify flow doesn't handle arrays well
+		// For instance in ring groups, if we change the timeout of a member, it won't toggle the "pending changes" warning
+		stringify_obj: function(obj) {
+			var self = this,
+				str = '[';
+
+			_.each(obj, function(v, k) {
+				// Had to add this check since when we list objects with sortable, we usually just add items with .data(), but it includes sortableItem from the jQuery plugin for a short time.
+				// If we don't avoid it, then we run into a JS Exception
+				if (k !== 'sortableItem') {
+					if (typeof v === 'object') {
+						str += k + ':' + self.stringify_obj(v);
+					} else if (['boolean', 'string', 'number'].indexOf(typeof v) >= 0) {
+						str += k + ':' + v;
+					}
+
+					str += '|';
+				}
+			});
+
+			str += ']';
+
+			return str;
+		},
+
 		stringify_flow: function(flow) {
-			var s_flow = flow.id + '|' + (!flow.name ? 'undefined' : flow.name),
+			var self = this,
+				s_flow = flow.id + '|' + (!flow.name ? 'undefined' : flow.name),
 				first_iteration;
 			s_flow += '|NUMBERS';
 			$.each(flow.numbers, function(key, value) {
@@ -1189,13 +1216,22 @@ define(function(require) {
 			$.each(flow.nodes, function(key, value) {
 				s_flow += '|' + key + '::';
 				first_iteration = true;
+
 				$.each(value.data.data, function(k, v) {
 					if (!first_iteration) {
 						s_flow += '//';
-					} else { first_iteration = false; }
-					s_flow += k + ':' + v;
+					} else {
+						first_iteration = false;
+					}
+
+					if (typeof v !== 'object') {
+						s_flow += k + ':' + v;
+					} else {
+						s_flow += k + ':' + self.stringify_obj(v);
+					}
 				});
 			});
+
 			return s_flow;
 		},
 
