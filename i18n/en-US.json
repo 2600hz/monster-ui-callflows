@@ -331,7 +331,7 @@
 			"outbound_notification_email": "Fax sent receipts",
 			"outbound_notification_email_data_content": "List of email addresses separated by a comma that will receive a notification when a fax is sent by the faxbox",
 			"custom_smtp_address": "Custom SMTP address",
-			"custom_smtp_address_placeholder": "@domain.com",
+			"custom_smtp_address_placeholder": "domain.com",
 			"custom_smtp_address_data_content": "",
 			"smtp_email_address": "SMTP email address",
 			"cloud_connector_claim_url": "Link to printer",
