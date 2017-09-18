@@ -27,6 +27,16 @@
 			<a href="#" class="media_action" data-action="edit">Edit</a>
 			<a href="#" class="media_action" data-action="create">Create</a>
 		</div>
+
+		<div class="shoutcast-div{{#compare form.ringback.selected "!==" "shoutcast_url"}} hidden{{/compare}}">
+			<div class="control-group">
+				<label class="control-label">{{ i18n.callflows.media.shoutcastURL }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.media.shoutcastURLHelp }}" data-placement="top" data-toggle="tooltip"></i></label>
+				<div class="controls">
+					<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{ form.ringback.shoutcastValue }}"/>
+				</div>
+			</div>
+		</div>
+
 		<div class="popup_field">
 			<label>{{ i18n.oldCallflows.numberOfTries }}</label>
 			<input class="input-mini" id="repeats" type="number" value="{{form.repeats}}"/>

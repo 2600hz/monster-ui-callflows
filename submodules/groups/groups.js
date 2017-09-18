@@ -1068,10 +1068,11 @@ define(function(require){
 						unselected_users = _.sortBy(unselected_users, 'name');
 
 						self.groupsMediaList(function(_data) {
-							var media_array = _data.sort(function(a,b) {
-								return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-							});
-
+							var media_array = _data.sort(function(a, b) {
+									return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+								}),
+								mediaId = node.getMetadata('ringback') || 'default',
+								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000';
 
 							popup_html = $(monster.template(self, 'groups-ring_group_dialog', {
 								form: {
@@ -1102,9 +1103,15 @@ define(function(require){
 												id: 'silence_stream://300000',
 												name: self.i18n.active().oldCallflows.silence,
 												class: 'uneditable'
+											},
+											{
+												id: 'shoutcast_url',
+												name: self.i18n.active().callflows.media.shoutcastURL,
+												class: 'uneditable'
 											}
 										], media_array),
-										selected: node.getMetadata('ringback') || 'default'
+										selected: isShoutcast ? 'shoutcast_url' : mediaId,
+										shoutcastValue: mediaId
 									}
 								}
 							}));
@@ -1132,7 +1139,13 @@ define(function(require){
 							});
 
 							$('#ringback', popup_html).change(function(e) {
-								if($(this).find('option:selected').hasClass('uneditable')) {
+								var val = $(this).val(),
+									isShoutcast = val === 'shoutcast_url';
+
+								popup_html.find('.shoutcast-div').toggleClass('hidden', !isShoutcast).find('input').val('');
+
+								if ($(this).find('option:selected').hasClass('uneditable')) {
+
 									$('.media_action[data-action="edit"]', popup_html).hide();
 								} else {
 									$('.media_action[data-action="edit"]', popup_html).show();
@@ -1146,13 +1159,13 @@ define(function(require){
 								monster.pub('callflows.media.editPopup', {
 									data: mediaData, 
 									callback: function(_mediaData) {
-										if(_mediaData.data && _mediaData.data.id) {
-											if(isCreation) {
-												$('#ringback', popup_html).append('<option value="'+_mediaData.data.id+'">'+_mediaData.data.name+'</option>');
+										if (_mediaData) {
+											if (isCreation) {
+												$('#ringback', popup_html).append('<option value="' + _mediaData.id + '">' + _mediaData.name + '</option>');
 											} else {
-												$('#ringback option[value="'+_mediaData.data.id+'"]', popup_html).text(_mediaData.data.name);
+												$('#ringback option[value="' + _mediaData.id + '"]', popup_html).text(_mediaData.name);
 											}
-											$('#ringback', popup_html).val(_mediaData.data.id);
+											$('#ringback', popup_html).val(_mediaData.id);
 										}
 									}
 								});
@@ -1243,7 +1256,12 @@ define(function(require){
 									global_timeout = 0,
 									strategy = $('#strategy', popup_html).val(),
 									ringback = $('#ringback', popup_html).val(),
-								    	repeats  = $('#repeats',  popup_html).val();
+									repeats = $('#repeats', popup_html).val(),
+									shoutcastValue = $('.shoutcast-url-input', popup_html).val();
+
+								if (ringback === 'shoutcast_url') {
+									ringback = shoutcastValue;
+								}
 
 								endpoints = [];
 
@@ -1292,6 +1310,8 @@ define(function(require){
 
 								popup.dialog('close');
 							});
+
+							monster.ui.tooltips(popup_html);
 
 							popup = monster.ui.dialog(popup_html, {
 								title: self.i18n.active().oldCallflows.ring_group,
