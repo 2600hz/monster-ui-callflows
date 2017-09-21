@@ -151,14 +151,17 @@ define(function(require) {
 				return { key: rule.id, value: rule.name };
 			});
 
-			formattedData.selected = _.map(data.data.temporal_rules, function(id) {
-				if (mapRules.hasOwnProperty(id)) {
+			formattedData.selected = _.chain(data.data.temporal_rules)
+				.filter(function(id) {
+					if (mapRules.hasOwnProperty(id)) {
+						return id;
+					}
+				}).map(function(id) {
 					return {
 						key: id,
 						value: mapRules[id].name
 					};
-				}
-			});
+				}).value();
 
 			return formattedData;
 		},
