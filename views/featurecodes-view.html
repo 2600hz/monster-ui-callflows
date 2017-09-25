@@ -25,6 +25,9 @@
 											<input type="checkbox" class="featurecode_enabled"{{#if enabled}} checked="checked"{{/if}}>
 										</label>
 									</div>
+									{{#if hasConfig}}
+										<a class="edit-configuration-link monster-link"><i class="fa fa-cog"></i></a>
+									{{/if}}
 								</div>
 							</div>
 						{{/each}}

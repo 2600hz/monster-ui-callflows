@@ -22,3 +22,27 @@
 #featurecode_view .add-on.empty {
 	border: 1px solid #dadada;
 }
+
+#featurecode_view .input-append {
+	display: inline-block;
+}
+
+#featurecode_view .edit-configuration-link {
+	margin-left: 10px;
+}
+
+#parking_settings_popup {
+	width: 450px;
+}
+
+#parking_settings_popup form {
+	margin: 0;
+}
+
+#parking_settings_popup form .controls > * {
+	display: block;
+}
+
+#parking_settings_popup label.monster-invalid {
+	margin-top: 0;
+}

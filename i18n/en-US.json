@@ -863,7 +863,32 @@
 			"valet": "Valet",
 			"retrieve": "Retrieve",
 			"single_mailbox_login": "Check Voicemail (auto login)",
-			"callMove": "Move"
+			"callMove": "Move",
+			"infoSettings": "Leave the fields empty to use default system values",
+			"parkingParkAndRetrievePopup": {
+				"title": "Edit Park And Retrieve Configuration",
+				"ringBackTimeout": {
+					"label": "Ring Back Timeout",
+					"tooltip": "How long, in seconds, before ringing back"
+				},
+				"callbackTimeout": {
+					"label": "Call BackTimeout",
+					"tooltip": "When a parked call has remained parked for the Ring Back Timeout duration, the parker will be called for that duration (in seconds)"
+				},
+				"successUpdate": "You successfully updated settings of the Park And Retrieve Feature Code"
+			},
+			"parkingValetPopup": {
+				"title": "Edit Valet Configuration",
+				"ringBackTimeout": {
+					"label": "Ring Back Timeout",
+					"tooltip": "How long, in seconds, before ringing back"
+				},
+				"callbackTimeout": {
+					"label": "Call Back Timeout",
+					"tooltip": "When a parked call has remained parked for the Ring Back Timeout duration, the parker will be called for that duration (in seconds)"
+				},
+				"successUpdate": "You successfully updated settings of the Valet Feature Code"
+			}
 		},
 		"hiddenCallflowWarning": "It looks like you're editing a callflow that wasn't meant to be edited by end-users. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break features in SmartPBX/Mobile or the Migration app, so make sure you know what you're doing!",
 
