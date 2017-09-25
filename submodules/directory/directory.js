@@ -493,9 +493,9 @@ define(function(require){
 								self.directoryPopupEdit({
 									data: _data,
 									callback: function(_data) {
-										node.setMetadata('id', _data.data.id || 'null');
+										node.setMetadata('id', _data.id || 'null');
 
-										node.caption = _data.data.name || '';
+										node.caption = _data.name || '';
 
 										popup.dialog('close');
 									}
