@@ -1,0 +1,28 @@
+<div id="parking_settings_popup" class="dialog_popup callflows-port">
+	<div class="info-settings">
+		{{#monsterText 'info'}}
+			{{ i18n.callflows.featureCodes.infoSettings }}
+		{{/monsterText}}
+	</div>
+
+	<form id="form_park_retrieve" name="form" class="form-horizontal" method="post" action="#">
+		<div class="form_content">
+			<div class="control-group">
+				<label class="control-label">{{ i18n.callflows.featureCodes.parkingValetPopup.ringBackTimeout.label }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.featureCodes.parkingValetPopup.ringBackTimeout.tooltip}}" data-placement="right" data-toggle="tooltip"></i></label>
+				<div class="controls">
+					<input type="text" name="default_ringback_timeout" value="{{ default_ringback_timeout }}"/>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label">{{ i18n.callflows.featureCodes.parkingValetPopup.callbackTimeout.label }}<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.featureCodes.parkingValetPopup.callbackTimeout.tooltip}}" data-placement="right" data-toggle="tooltip"></i></label>
+				<div class="controls">
+					<input type="text" name="default_callback_timeout" value="{{ default_callback_timeout }}"/>
+				</div>
+			</div>
+	</form>
+	<div class="buttons-center">
+		<button id="save" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>
+

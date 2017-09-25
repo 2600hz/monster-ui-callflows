@@ -59,6 +59,7 @@ define(function(require) {
 			$.each(actions, function(i, action) {
 				this.tag = i;
 				this.number = typeof action.number === 'undefined' ? action.default_number : action.number;
+				this.hasConfig = this.hasOwnProperty('editConfiguration');
 
 				if (action.hasOwnProperty('category')) {
 					categories[action.category] = categories[action.category] || [];
@@ -129,6 +130,14 @@ define(function(require) {
 					});
 				}
 			});
+
+			_.each(actions, function(item) {
+				if (item.hasOwnProperty('editConfiguration')) {
+					template.find('[data-id="' + item.id + '"] .edit-configuration-link').on('click', function() {
+						item.editConfiguration();
+					});
+				}
+			});
 		},
 
 		featureCodeList: function(callback) {
@@ -141,6 +150,21 @@ define(function(require) {
 					filters: {
 						paginate: false
 					}
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		featureCodeGet: function(id, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'callflow.get',
+				data: {
+					accountId: self.accountId,
+					callflowId: id
 				},
 				success: function(data) {
 					callback && callback(data.data);
@@ -540,6 +564,9 @@ define(function(require) {
 					},
 					enabled: false,
 					hasStar: true,
+					editConfiguration: function() {
+						self.featureCodesEditParkingParkAndRetrieve(this);
+					},
 					default_number: '3',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -557,6 +584,9 @@ define(function(require) {
 					},
 					enabled: false,
 					hasStar: true,
+					editConfiguration: function() {
+						self.featureCodesEditParkingValet(this);
+					},
 					default_number: '4',
 					number: this.default_number,
 					build_regex: function(number) {
@@ -820,6 +850,131 @@ define(function(require) {
 					}
 				}*/
 			});
+		},
+
+		featureCodesEditParkingParkAndRetrieve: function(featureCode) {
+			var self = this;
+
+			self.featureCodeGet(featureCode.id, function(data) {
+				var popup,
+					formattedData = self.featureCodesFormatParkingData(data),
+					template = $(self.getTemplate({
+						name: 'featurecodes-parking-parkandretrieve',
+						submodule: 'featurecodes',
+						data: formattedData
+					}));
+
+				monster.ui.validate(template.find('#form_park_retrieve'), {
+					rules: {
+						'default_ringback_timeout': {
+							'digits': true
+						},
+						'default_callback_timeout': {
+							'digits': true
+						}
+					}
+				});
+
+				monster.ui.tooltips(template);
+
+				template.find('#save').on('click', function(e) {
+					e.preventDefault();
+
+					if (monster.ui.valid(template.find('#form_park_retrieve'))) {
+						var formData = monster.ui.getFormData('form_park_retrieve'),
+							dataToUpdate = self.featureCodesNormalizeData(data, formData);
+
+						self.featureCodeUpdate(dataToUpdate.id, dataToUpdate, function() {
+							toastr.success(self.i18n.active().callflows.featureCodes.parkingParkAndRetrievePopup.successUpdate);
+							popup.dialog('close');
+						});
+					}
+				});
+
+				popup = monster.ui.dialog(template, {
+					title: self.i18n.active().callflows.featureCodes.parkingParkAndRetrievePopup.title
+				});
+			});
+		},
+
+		featureCodesEditParkingValet: function(featureCode) {
+			var self = this;
+
+			self.featureCodeGet(featureCode.id, function(data) {
+				var popup,
+					formattedData = self.featureCodesFormatParkingData(data),
+					template = $(self.getTemplate({
+						name: 'featurecodes-parking-valet',
+						submodule: 'featurecodes',
+						data: formattedData
+					}));
+
+				monster.ui.validate(template.find('#form_valet'), {
+					rules: {
+						'default_ringback_timeout': {
+							'digits': true
+						},
+						'default_callback_timeout': {
+							'digits': true
+						}
+					}
+				});
+
+				monster.ui.tooltips(template);
+
+				template.find('#save').on('click', function(e) {
+					e.preventDefault();
+
+					if (monster.ui.valid(template.find('#form_valet'))) {
+						var formData = monster.ui.getFormData('form_valet'),
+							dataToUpdate = self.featureCodesNormalizeData(data, formData);
+
+						self.featureCodeUpdate(dataToUpdate.id, dataToUpdate, function() {
+							toastr.success(self.i18n.active().callflows.featureCodes.parkingValetPopup.successUpdate);
+							popup.dialog('close');
+						});
+					}
+				});
+
+				popup = monster.ui.dialog(template, {
+					title: self.i18n.active().callflows.featureCodes.parkingValetPopup.title
+				});
+			});
+		},
+
+		featureCodesNormalizeData: function(data, formData) {
+			var self = this,
+				dataToUpdate = $.extend(true, {}, data);
+
+			// If user leaves field empty, we want to delete the field, so it goes back to system default.
+			// Otherwise we transform seconds into milliseconds for back-end
+			if (formData.default_callback_timeout.length) {
+				dataToUpdate.flow.data.default_callback_timeout = parseInt(formData.default_callback_timeout) * 1000;
+			} else {
+				delete dataToUpdate.flow.data.default_callback_timeout;
+			}
+
+			if (formData.default_ringback_timeout.length) {
+				dataToUpdate.flow.data.default_ringback_timeout = parseInt(formData.default_ringback_timeout) * 1000;
+			} else {
+				delete dataToUpdate.flow.data.default_ringback_timeout;
+			}
+
+			return dataToUpdate;
+		},
+
+		featureCodesFormatParkingData: function(data) {
+			var formattedData = $.extend(true, {}, data.flow.data);
+
+			if (formattedData.hasOwnProperty('default_callback_timeout')) {
+				formattedData.default_callback_timeout /= 1000;
+			}
+
+			if (formattedData.hasOwnProperty('default_ringback_timeout')) {
+				formattedData.default_ringback_timeout /= 1000;
+			}
+
+			return formattedData;
 		}
 	};
 
