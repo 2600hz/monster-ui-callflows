@@ -31,11 +31,13 @@ define(function(require){
 				},
 				defaults = {
 					data: $.extend(true, {
-						retries: '3',
 						timeout: '10',
 						interdigit_timeout: '2',
 						max_extension_length: '4',
-						media: {}
+						media: {},
+						extra: {
+							retries: 2
+						}
 					}, data_defaults || {}),
 					field_data: {
 						media: []
@@ -132,8 +134,9 @@ define(function(require){
 
 			monster.ui.validate(menuForm, {
 				rules: {
-					'retries': {
-						digits: true
+					'extra.retries': {
+						digits: true,
+						min: 0
 					},
 					'record_pin': {
 						digits: true
@@ -220,9 +223,10 @@ define(function(require){
 							delete data.field_data;
 						}
 
-						self.menuSave(form_data, data, callbacks.save_success);
-					}
-					else {
+						self.menuSave(form_data, data, callbacks.save_success, function() {
+							$this.removeClass('disabled');
+						});
+					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert('error', self.i18n.active().callflows.menu.there_were_errors_on_the_form);
 					}
@@ -242,24 +246,28 @@ define(function(require){
 				.append(menu_html);
 		},
 
-		menuSave: function(form_data, data, success) {
+		menuSave: function(form_data, data, success, error) {
 			var self = this,
 				normalized_data = self.menuNormalizeData($.extend(true, {}, data.data, form_data));
 
 			if (typeof data.data == 'object' && data.data.id) {
 				self.menuUpdate(normalized_data, function(data, status) {
 					success && success(data, status, 'update');
-				});
-			}
-			else {
+				}, error);
+			} else {
 				self.menuCreate(normalized_data, function(data, status) {
 					success && success(data, status, 'create');
-				});
+				}, error);
 			}
 		},
 
 		menuformatData: function(data) {
-			if(data.timeout) {
+			var self = this;
+
+			data.extra = {};
+			data.extra.retries = parseInt(data.retries) - 1;
+
+			if (data.timeout) {
 				data.timeout /= 1000; // ms to seconds
 			}
 
@@ -290,7 +298,9 @@ define(function(require){
 			form_data.timeout = form_data.timeout * 1000;
 			form_data.interdigit_timeout = form_data.interdigit_timeout * 1000;
 
-			if('suppress_media' in form_data) {
+			form_data.retries = parseInt(form_data.extra.retries) + 1;
+
+			if ('suppress_media' in form_data) {
 				form_data.media = form_data.media || {};
 				if(form_data.suppress_media === true) {
 					form_data.media.invalid_media = false;
@@ -498,7 +508,7 @@ define(function(require){
 			});
 		},
 
-		menuCreate: function(data, callback) {
+		menuCreate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -509,11 +519,16 @@ define(function(require){
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(errorPayload, data, globalHandler) {
+					error && error(errorPayload);
+
+					//globalHandler(data, { generateError: true });
 				}
 			});
 		},
 
-		menuUpdate: function(data, callback) {
+		menuUpdate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -525,6 +540,11 @@ define(function(require){
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(errorPayload, data, globalHandler) {
+					error && error(errorPayload);
+
+					//globalHandler(data, { generateError: true });
 				}
 			});
 		},
