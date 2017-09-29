@@ -313,7 +313,8 @@ define(function(require) {
 					data: {
 						action: 'prepend',
 						caller_id_name_prefix: '',
-						caller_id_number_prefix: ''
+						caller_id_number_prefix: '',
+						apply_to: 'original'
 					},
 					rules: [
 						{
@@ -332,16 +333,19 @@ define(function(require) {
 						popup_html = $(monster.template(self, 'misc-prepend_cid_callflow', {
 							data_cid: {
 								'caller_id_name_prefix': node.getMetadata('caller_id_name_prefix') || '',
-								'caller_id_number_prefix': node.getMetadata('caller_id_number_prefix') || ''
+								'caller_id_number_prefix': node.getMetadata('caller_id_number_prefix') || '',
+								'apply_to': node.getMetadata('apply_to') || ''
 							}
 						}));
 
 						$('#add', popup_html).click(function() {
 							var cid_name_val = $('#cid_name_prefix', popup_html).val(),
-								cid_number_val = $('#cid_number_prefix', popup_html).val();
+								cid_number_val = $('#cid_number_prefix', popup_html).val(),
+								apply_to_val = $('#apply_to', popup_html).val();
 
 							node.setMetadata('caller_id_name_prefix', cid_name_val);
 							node.setMetadata('caller_id_number_prefix', cid_number_val);
+							node.setMetadata('apply_to', apply_to_val);
 
 							node.caption = cid_name_val + ' ' + cid_number_val;
 
@@ -356,6 +360,8 @@ define(function(require) {
 								}
 							}
 						});
+
+						monster.ui.tooltips(popup);
 
 						if (typeof callback === 'function') {
 							callback();
