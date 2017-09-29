@@ -1222,7 +1222,17 @@
 		"__comment": "UI-1742: Add a flag to list callflows in Main Numbers",
 		"__version": "3.22",
 		"list_this_callflow": "List this callflow in Main Number",
-		"numberOfTries": "Number of times to ring members"
+		"numberOfTries": "Number of times to ring members",
+		"__comment": "UI-2910: add prepend id fields",
+		"__version": "4.1",
+		"applyTo": {
+			"label": "Apply To",
+			"tooltip": "Setting this field to \"original\" will revert the caller id and then apply the prepend, IE: if the caller id is already prepend'd then that will be lost. Setting it to \"current\" will keep the caller id as is, including any existing prepend, and simply add to it.",
+			"options": {
+				"current": "Current",
+				"original": "Original"
+			}
+		}
 	},
 	"__comment": "UI-1260: created common control for carrier selection",
 	"__version": "v3.20_s2",
