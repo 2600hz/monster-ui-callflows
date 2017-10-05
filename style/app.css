@@ -1165,6 +1165,11 @@
 	color:#e6e6e6;
 }
 
+.callflows-port form label.monster-switch {
+	padding-top: 0;
+	width: auto;
+}
+
 .callflows-port label.monster-invalid {
 	position: relative;
 	color: orange;
