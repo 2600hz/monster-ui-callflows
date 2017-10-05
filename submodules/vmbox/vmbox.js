@@ -299,7 +299,9 @@ define(function(require) {
 							delete data.field_data;
 						}
 
-						self.vmboxSave(form_data, data, callbacks.save_success);
+						self.vmboxSave(form_data, data, callbacks.save_success, function() {
+							$this.removeClass('disabled');
+						});
 					} else {
 						$this.removeClass('disabled');
 					}
@@ -328,13 +330,13 @@ define(function(require) {
 					if (typeof success === 'function') {
 						success(_data, status, 'update');
 					}
-				});
+				}, error);
 			} else {
 				self.vmboxCreate(normalized_data, function(_data, status) {
 					if (typeof success === 'function') {
 						success(_data, status, 'create');
 					}
-				});
+				}, error);
 			}
 		},
 
@@ -544,7 +546,7 @@ define(function(require) {
 			});
 		},
 
-		vmboxCreate: function(data, callback) {
+		vmboxCreate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -555,11 +557,14 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(errorPayload, data, globalHandler) {
+					error && error(errorPayload);
 				}
 			});
 		},
 
-		vmboxUpdate: function(data, callback) {
+		vmboxUpdate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -571,6 +576,9 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(errorPayload, data, globalHandler) {
+					error && error(errorPayload);
 				}
 			});
 		},

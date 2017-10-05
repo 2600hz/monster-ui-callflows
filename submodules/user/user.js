@@ -619,7 +619,8 @@ define(function(require) {
 											callbacks.save_success(data, status, action);
 										}
 									}
-								// }, winkstart.error_message.process_error(callbacks.save_error));
+								}, function() {
+									$this.removeClass('disabled');
 								});
 							}
 						});
@@ -1056,7 +1057,7 @@ define(function(require) {
 			});
 		},
 
-		userCreate: function(data, callback) {
+		userCreate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -1067,11 +1068,14 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(data) {
+					error && error(data.data);
 				}
 			});
 		},
 
-		userUpdate: function(data, callback) {
+		userUpdate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -1083,6 +1087,9 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(data) {
+					error && error(data.data);
 				}
 			});
 		},
