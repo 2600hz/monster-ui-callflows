@@ -573,7 +573,8 @@
 			"types": {
 				"rules": "Rules",
 				"sets": "Sets"
-			}
+			},
+			"to": "To"
 		},
 		"user": {
 			"user": "User",
