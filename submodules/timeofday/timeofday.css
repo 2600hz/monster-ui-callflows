@@ -2,7 +2,7 @@
 	color: #EBEBEB;
 }
 
-.callflows-port #timeofday-form .time_wrapper_field {
+.callflows-port #timeofday-form .time-wrapper-field {
 	height: 50px;
 	padding: 10px 20px 0 0;
 }
@@ -40,6 +40,15 @@
 	background-color: #05ADDC;
 }
 
-.callflows-port #timeofday-form .jslider .jslider-label {
-	display: none;
+.callflows-port #timeofday-form .time-wrapper label.monster-invalid {
+	margin-top: 0;
+}
+
+.callflows-port #timeofday-form .timepicker:first-child {
+	margin-left: 0;
+}
+
+.callflows-port #timeofday-form .timepicker {
+	width: 80px;
+	margin: 0 10px;
 }

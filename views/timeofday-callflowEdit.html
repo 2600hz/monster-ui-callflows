@@ -106,10 +106,12 @@
 						</div>
 					</div>
 
-					<div class="clearfix time_wrapper_field">
+					<div class="clearfix time-wrapper-field">
 						<label for="time">{{ i18n.callflows.timeofday.time }}</label>
-						<div class="input time_wrapper">
-							<input id="time" name="time" type="slider" value="{{ data.time_window_start }};{{ data.time_window_stop }}"/>
+						<div class="input time-wrapper">
+							<input required class="from-hour timepicker" type="text" name="extra.timeofday.from" value="{{ extra.timeStart }}">
+							{{ i18n.callflows.timeofday.to }}
+							<input required class="to-hour timepicker" type="text" name="extra.timeofday.to" value="{{ extra.timeStop  }}">
 						</div>
 					</div>
 

@@ -2,8 +2,7 @@ define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
 		monster = require('monster'),
-		timezone = require('monster-timezone'),
-		slider = require('slider');
+		timezone = require('monster-timezone');
 
 	var app = {
 		requests: {},
@@ -186,7 +185,20 @@ define(function(require) {
 				_after_render,
 				timeofdayForm = timeofday_html.find('#timeofday-form');
 
-			monster.ui.validate(timeofdayForm);
+			monster.ui.validate(timeofdayForm, {
+				rules: {
+					'extra.timeofday.from': {},
+					'extra.timeofday.to': {
+						greaterDate: timeofday_html.find('input[name="extra.timeofday.from"]')
+					}
+				},
+				groups: {
+					'extra.timeofday': 'extra.timeofday.from extra.timeofday.to'
+				},
+				errorPlacement: function(error, element) {
+					error.appendTo(element.parent());
+				}
+			});
 
 			$('*[rel=popover]', timeofday_html).popover({
 				trigger: 'focus'
@@ -195,6 +207,9 @@ define(function(require) {
 			self.winkstartTabs(timeofday_html);
 
 			monster.ui.datepicker(timeofday_html.find('#start_date'));
+			monster.ui.timepicker(timeofday_html.find('.timepicker'), {
+				step: 5
+			});
 
 			$('#yearly_every', timeofday_html).hide();
 			$('#monthly_every', timeofday_html).hide();
@@ -325,34 +340,6 @@ define(function(require) {
 				if (typeof _after_render === 'function') {
 					_after_render();
 				}
-
-				$('#time', timeofday_html).jslider({
-					from: 0,
-					to: 86400,
-					step: 300,
-					dimension: '',
-					scale: [
-						'12:00am', '1:00am', '2:00am', '3:00am', '4:00am', '5:00am',
-						'6:00am', '7:00am', '8:00am', '9:00am', '10:00am', '11:00am',
-						'12:00pm', '1:00pm', '2:00pm', '3:00pm', '4:00pm', '5:00pm',
-						'6:00pm', '7:00pm', '8:00pm', '9:00pm', '10:00pm', '11:00pm', '12:00am'
-					],
-					limits: false,
-					calculate: function(val) {
-						var hours = Math.floor(val / 3600),
-							mins = (val - hours * 3600) / 60,
-							meridiem = (hours < 12) ? 'am' : 'pm';
-
-						hours = hours % 12;
-
-						if (hours === 0) {
-							hours = 12;
-						}
-
-						return hours + ':' + (mins >= 10 ? mins : '0' + mins) + meridiem;
-					},
-					onstatechange: function() {}
-				});
 			};
 
 			(target)
@@ -361,8 +348,7 @@ define(function(require) {
 		},
 
 		timeofdayCleanFormData: function(form_data) {
-			var wdays = [],
-				times = form_data.time.split(';');
+			var wdays = [];
 
 			if (form_data.cycle !== 'weekly' && form_data.weekday !== undefined) {
 				form_data.wdays = [];
@@ -390,12 +376,14 @@ define(function(require) {
 				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
 			}
 
-			form_data.time_window_start = times[0];
-			form_data.time_window_stop = times[1];
+			form_data.time_window_start = parseInt(monster.util.timeToSeconds(form_data.extra.timeofday.from));
+			form_data.time_window_stop = parseInt(monster.util.timeToSeconds(form_data.extra.timeofday.to));
 
 			if (form_data.month) {
 				form_data.month = parseInt(form_data.month);
 			}
+
+			delete form_data.extra;
 
 			return form_data;
 		},
@@ -425,9 +413,27 @@ define(function(require) {
 		},
 
 		timeofdayFormatData: function(data) {
+			var self = this,
+				is12hMode = monster.apps.auth.currentUser.ui_flags && monster.apps.auth.currentUser.ui_flags.twelve_hours_mode ? true : false,
+				secondsToTime = function(seconds) {
+					var hours = parseInt(seconds / 3600) % 24,
+						minutes = (parseInt(seconds / 60) % 60).toString(),
+						suffix = '';
+
+					if (is12hMode) {
+						suffix = hours >= 12 ? 'PM' : 'AM';
+						hours = hours > 12 ? hours - 12 : (hours === 0 ? 12 : hours);
+					}
+					return hours.toString() + ':' + (minutes.length < 2 ? '0' + minutes : minutes) + suffix;
+				};
+
 			if (data.data.wdays !== undefined && data.data.cycle !== 'weekly') {
 				data.data.weekday = data.data.wdays[0];
 			}
+
+			data.extra = {};
+			data.extra.timeStart = secondsToTime(data.data.time_window_start);
+			data.extra.timeStop = secondsToTime(data.data.time_window_stop);
 
 			data.data.showSave = true;
 			data.data.showDelete = data.data.id ? true : false;
