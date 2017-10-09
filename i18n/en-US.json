@@ -421,7 +421,8 @@
 			"__version": "4.1",
 			"shoutcastURL": "Stream URL",
 			"shoutcastURLHelp": "You can type any URL including :// (http, https, shout...)",
-			"silence": "Silence"
+			"silence": "Silence",
+			"shoutcastURLWarning": "WARNING: If the stream selected here attempts to be played, and is unavailable, the call may fail completely. Please make sure the stream you use is available 24/7."
 		},
 		"menu": {
 			"menu": "Menu",
@@ -821,7 +822,8 @@
 				"__comment": "UI-2654: Allow shoutcast URL for MoH",
 				"__version": "v4.1",
 				"shoutcastURL": "Stream URL",
-				"shoutcastURLHelp": "You can type any URL including :// (http, https, shout...)"
+				"shoutcastURLHelp": "You can type any URL including :// (http, https, shout...)",
+				"shoutcastURLWarning": "WARNING: If the stream selected here attempts to be played, and is unavailable, the call may fail completely. Please make sure the stream you use is available 24/7."
 			},
 			"blacklist": {
 				"title": "Blacklists"

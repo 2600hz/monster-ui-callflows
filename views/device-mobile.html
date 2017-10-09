@@ -195,6 +195,11 @@
 						<div class="input">
 							<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{extra.shoutcastValue}}" rel="popover" data-content="{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLHelp }}"/>
 						</div>
+						<div class="shoutcast-warning">
+							{{#monsterText 'warning'}}
+								{{ i18n.callflows.accountSettings.musicOnHold.shoutcastURLWarning }}
+							{{/monsterText}}
+						</div>
 					</div>
 
 					<div class="clearfix">
