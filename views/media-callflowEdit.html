@@ -25,6 +25,11 @@
 					<div class="controls">
 						<input type="text" class="shoutcast-url-input" name="extra.shoutcastUrl" value="{{ shoutcastValue }}"/>
 					</div>
+					<div class="shoutcast-warning">
+						{{#monsterText 'warning'}}
+							{{ i18n.callflows.media.shoutcastURLWarning }}
+						{{/monsterText}}
+					</div>
 				</div>
 			</div>
 		</div>

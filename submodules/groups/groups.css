@@ -1,3 +1,7 @@
+.callflows-port#ring_group_popup .shoutcast-div {
+	width: 350px;
+}
+
 .callflows-port#ring_group_popup .form_content .popup_field .media_action {
 	color: #05addc;
 	margin-left: 10px;
