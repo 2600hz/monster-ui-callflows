@@ -620,6 +620,9 @@
 	</form>
 	<div class="buttons-right">
 		{{#if data.id}}
+			{{#if field_data.canImpersonate}}
+				<button class="monster-button monster-button-primary user-impersonate">{{ i18n.callflows.user.impersonate }}</button>
+			{{/if}}
 			<button class="monster-button monster-button-danger user-delete">{{ i18n.callflows.user.delete }}</button>
 		{{/if}}
 		<button class="monster-button monster-button-success user-save">{{ i18n.callflows.user.save }}</button>

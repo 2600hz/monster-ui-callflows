@@ -311,7 +311,8 @@ define(function(require) {
 							softphone: self.i18n.active().callflows.user.softphone_type,
 							sip_uri: self.i18n.active().callflows.user.sip_uri_type
 						},
-						call_restriction: {}
+						call_restriction: {},
+						canImpersonate: monster.util.canImpersonate(self.accountId)
 					}
 				};
 
@@ -549,6 +550,13 @@ define(function(require) {
 
 			hotdesk_pin_require.change(function() {
 				$(this).is(':checked') ? hotdesk_pin.show('blind') : hotdesk_pin.hide('blind');
+			});
+
+			$('.user-impersonate', user_html).click(function(ev) {
+				monster.pub('auth.triggerImpersonateUser', {
+					userId: data.data.id,
+					userName: data.data.first_name + ' ' + data.data.last_name
+				});
 			});
 
 			$('.user-save', user_html).click(function(ev) {

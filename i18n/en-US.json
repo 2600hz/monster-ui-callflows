@@ -731,7 +731,10 @@
 			"__version": "4.0",
 			"__comment": "UI-2475: add a failover option to callforward",
 			"failover_callforward": "Failover",
-			"failover_callforward_content": "When checked, if all this user's devices are unregistered, then the system will automatically call-forward (even if the Enable Call-Forward setting isn't enabled)"
+			"failover_callforward_content": "When checked, if all this user's devices are unregistered, then the system will automatically call-forward (even if the Enable Call-Forward setting isn't enabled)",
+			"__comment": "UI-2921: adding way to impersonate users",
+			"__version": "4.2",
+			"impersonate": "Impersonate"
 		},
 		"vmbox": {
 			"voicemail": "Voicemail",
