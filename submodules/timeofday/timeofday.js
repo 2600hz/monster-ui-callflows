@@ -172,7 +172,7 @@ define(function(require) {
 						renderData.field_data.isAllDay = true;
 					}
 
-					self.timeofdayRender($.extend(true, defaults, oldFormatData), target, callbacks);
+					self.timeofdayRender(renderData, target, callbacks);
 
 					if (typeof callbacks.after_render === 'function') {
 						callbacks.after_render();
