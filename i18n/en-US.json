@@ -575,7 +575,10 @@
 				"rules": "Rules",
 				"sets": "Sets"
 			},
-			"to": "To"
+			"to": "To",
+			"__comment": "UI-2939: add all day field to time of day settings",
+			"__version": "4.1",
+			"allDay": "All Day"
 		},
 		"user": {
 			"user": "User",

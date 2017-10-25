@@ -153,7 +153,9 @@ define(function(require) {
 							{ id: 10, value: 'October' },
 							{ id: 11, value: 'November' },
 							{ id: 12, value: 'December' }
-						]
+						],
+
+						isAllDay: false
 					}
 				};
 
@@ -163,6 +165,12 @@ define(function(require) {
 
 					self.timeofdayMigrateData(oldFormatData);
 					self.timeofdayFormatData(oldFormatData);
+
+					var renderData = $.extend(true, defaults, oldFormatData);
+
+					if (renderData.data.time_window_start === 0 && renderData.data.time_window_stop === 86400) {
+						renderData.field_data.isAllDay = true;
+					}
 
 					self.timeofdayRender($.extend(true, defaults, oldFormatData), target, callbacks);
 
@@ -334,6 +342,13 @@ define(function(require) {
 				});
 			});
 
+			$('#all_day_checkbox', timeofday_html).on('click', function() {
+				var $this = $(this);
+
+				$('input.timepicker', timeofday_html).val('');
+				$('.time-wrapper', timeofday_html).toggleClass('hidden', $this.is(':checked'));
+			});
+
 			_after_render = callbacks.after_render;
 
 			callbacks.after_render = function() {
@@ -348,7 +363,9 @@ define(function(require) {
 		},
 
 		timeofdayCleanFormData: function(form_data) {
-			var wdays = [];
+			var wdays = [],
+				timeStart = form_data.extra.allDay ? '0:00' : form_data.extra.timeofday.from,
+				timeEnd = form_data.extra.allDay ? '24:00' : form_data.extra.timeofday.to;
 
 			if (form_data.cycle !== 'weekly' && form_data.weekday !== undefined) {
 				form_data.wdays = [];
@@ -376,8 +393,8 @@ define(function(require) {
 				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
 			}
 
-			form_data.time_window_start = parseInt(monster.util.timeToSeconds(form_data.extra.timeofday.from));
-			form_data.time_window_stop = parseInt(monster.util.timeToSeconds(form_data.extra.timeofday.to));
+			form_data.time_window_start = parseInt(monster.util.timeToSeconds(timeStart));
+			form_data.time_window_stop = parseInt(monster.util.timeToSeconds(timeEnd));
 
 			if (form_data.month) {
 				form_data.month = parseInt(form_data.month);
@@ -408,6 +425,10 @@ define(function(require) {
 			} else {
 				delete form_data.enabled;
 			}
+
+			delete form_data.extra;
+			delete form_data.showSave;
+			delete form_data.showDelete;
 
 			return form_data;
 		},
