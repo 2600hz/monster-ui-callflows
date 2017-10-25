@@ -108,10 +108,15 @@
 
 					<div class="clearfix time-wrapper-field">
 						<label for="time">{{ i18n.callflows.timeofday.time }}</label>
-						<div class="input time-wrapper">
-							<input required class="from-hour timepicker" type="text" name="extra.timeofday.from" value="{{ extra.timeStart }}">
+						<div class="input time-wrapper{{#if field_data.isAllDay}} hidden{{/if}}">
+							<input class="from-hour timepicker" type="text" name="extra.timeofday.from" value="{{ extra.timeStart }}">
 							{{ i18n.callflows.timeofday.to }}
-							<input required class="to-hour timepicker" type="text" name="extra.timeofday.to" value="{{ extra.timeStop  }}">
+							<input class="to-hour timepicker" type="text" name="extra.timeofday.to" value="{{ extra.timeStop  }}">
+						</div>
+						<div class="checkbox-container">
+							{{#monsterCheckbox i18n.callflows.timeofday.allDay }}
+								<input id="all_day_checkbox" type="checkbox" name="extra.allDay"{{#if field_data.isAllDay}} checked{{/if}}></input>
+							{{/monsterCheckbox}}
 						</div>
 					</div>
 
