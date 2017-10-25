@@ -173,12 +173,12 @@ define(function(require){
 						renderData.field_data.isAllDay = true;
 					}
 
-					self.timeofdayRender($.extend(true, defaults, oldFormatData), target, callbacks);
-						if(typeof callbacks.after_render == 'function') {
-							callbacks.after_render();
-						}
+					self.timeofdayRender(renderData, target, callbacks);
+
+					if (typeof callbacks.after_render === 'function') {
+						callbacks.after_render();
 					}
-				);
+				});
 			}
 			else {
 				self.timeofdayRender(defaults, target, callbacks);
