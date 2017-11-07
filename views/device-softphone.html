@@ -314,6 +314,21 @@
 							</ul>
 						</div>
 					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.device.mediaWebrtc.content }}">
+											<input id="webrtc" type="checkbox" name="media.webrtc"{{#if data.media.webrtc}} checked="checked"{{/if}} />
+											<span>{{ i18n.callflows.device.mediaWebrtc.label }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
 					<input type="hidden" name="extra.notify_unregister" value="false"/>
 				</div>
 
