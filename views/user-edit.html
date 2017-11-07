@@ -17,7 +17,9 @@
 		<li><a href="#caller_id">{{ i18n.callflows.user.caller_id }}</a></li>
 		<li><a href="#options">{{ i18n.callflows.user.options }}</a></li>
 		<li><a href="#call_forward">{{ i18n.callflows.user.call_forward }}</a></li>
-		<li><a href="#password_management">{{ i18n.callflows.user.password_management }}</a></li>
+		{{#unless _whitelabel.hide_user_passwords}}
+			<li><a href="#password_management">{{ i18n.callflows.user.password_management }}</a></li>
+		{{/unless}}
 		<li><a href="#hot_desking">{{ i18n.callflows.user.hot_desking }}</a></li>
 		<li><a href="#restrictions">{{ i18n.callflows.user.restrictions }}</a></li>
 	</ul>
@@ -456,21 +458,23 @@
 				</div>
 			</div>
 
-			<div id="password_management">
-				<div class="clearfix">
-					<label for="pwd_mngt_pwd1">{{ i18n.callflows.user.new_password }}</label>
-					<div class="input">
-						<input class="span4" id="pwd_mngt_pwd1" name="pwd_mngt_pwd1" type="password" value="fakePassword"/>
+			{{#unless _whitelabel.hide_user_passwords}}
+				<div id="password_management">
+					<div class="clearfix">
+						<label for="pwd_mngt_pwd1">{{ i18n.callflows.user.new_password }}</label>
+						<div class="input">
+							<input class="span4" id="pwd_mngt_pwd1" name="pwd_mngt_pwd1" type="password" value="fakePassword"/>
+						</div>
 					</div>
-				</div>
 
-				<div class="clearfix">
-					<label for="pwd_reco_pwd2">{{ i18n.callflows.user.confirm_password }}</label>
-					<div class="input">
-						<input class="span4" id="pwd_mngt_pwd2" name="pwd_mngt_pwd2" type="password" value="fakePassword"/>
+					<div class="clearfix">
+						<label for="pwd_reco_pwd2">{{ i18n.callflows.user.confirm_password }}</label>
+						<div class="input">
+							<input class="span4" id="pwd_mngt_pwd2" name="pwd_mngt_pwd2" type="password" value="fakePassword"/>
+						</div>
 					</div>
 				</div>
-			</div>
+			{{/unless}}
 
 			<div id="hot_desking">
 				<div class="clearfix">
