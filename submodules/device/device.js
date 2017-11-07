@@ -85,6 +85,7 @@ define(function(require){
 							emergency: {}
 						},
 						ringtones: {},
+						ignore_completed_elsewhere: true,
 						call_restriction: { closed_groups: 'inherit' },
 						media: {
 							secure_rtp: 'none',
