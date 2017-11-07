@@ -212,7 +212,11 @@
 			"mdn_data_content": "Mobile Device Number",
 			"__version": "3.22",
 			"__comment": "UI-2135: Add an empty option for SIP device brands to support SmartPBX devices",
-			"none": "- Not set -"
+			"none": "- Not set -",
+			"mediaWebrtc": {
+				"content": "If checked, forces a WebRTC compatible SDP on the INVITE.",
+				"label": "WebRTC"
+			}
 		},
 		"disa": {
 			"title": "DISA",
