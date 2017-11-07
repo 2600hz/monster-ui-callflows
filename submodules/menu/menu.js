@@ -332,6 +332,8 @@ define(function(require){
 				delete form_data.record_pin;
 			}
 
+			delete form_data.extra;
+
 			return form_data;
 		},
 
