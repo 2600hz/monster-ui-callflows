@@ -160,7 +160,6 @@ define(function(require) {
 
 						self.faxboxEdit({ id: _data.id }, parent, target, callbacks);
 					},
-					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success || function() {
 						target.empty();
 
@@ -399,7 +398,6 @@ define(function(require) {
 							callbacks && callbacks.hasOwnProperty('save_success') && callbacks.save_success(data);
 						}, function(data) {
 							$this.removeClass('disabled');
-							callbacks && callbacks.hasOwnProperty('save_error') && callbacks.save_error(data);
 						});
 					} else {
 						$this.removeClass('disabled');
@@ -520,14 +518,18 @@ define(function(require) {
 
 		faxboxNormalizedData: function(form_data) {
 			if (form_data.hasOwnProperty('notifications')) {
-				if (form_data.notifications.hasOwnProperty('inbound') && form_data.notifications.inbound.hasOwnProperty('email')) {
+				if (form_data.notifications.hasOwnProperty('inbound') && form_data.notifications.inbound.hasOwnProperty('email') && form_data.notifications.inbound.email.hasOwnProperty('send_to') && form_data.notifications.inbound.email.send_to.length) {
 					var inbound = form_data.notifications.inbound.email.send_to;
 					form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
+				} else {
+					delete form_data.notifications.inbound.email.send_to;
 				}
 
-				if (form_data.notifications.hasOwnProperty('outbound') && form_data.notifications.outbound.hasOwnProperty('email')) {
+				if (form_data.notifications.hasOwnProperty('outbound') && form_data.notifications.outbound.hasOwnProperty('email') && form_data.notifications.outbound.email.hasOwnProperty('send_to') && form_data.notifications.outbound.email.send_to.length) {
 					var outbound = form_data.notifications.outbound.email.send_to;
 					form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
+				} else {
+					delete form_data.notifications.outbound.email.send_to;
 				}
 			}
 
@@ -588,7 +590,7 @@ define(function(require) {
 			});
 		},
 
-		faxboxCreate: function(data, callback) {
+		faxboxCreate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -599,11 +601,14 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(data) {
+					error && error(data.data);
 				}
 			});
 		},
 
-		faxboxUpdate: function(data, callback) {
+		faxboxUpdate: function(data, callback, error) {
 			var self = this;
 
 			self.callApi({
@@ -615,6 +620,9 @@ define(function(require) {
 				},
 				success: function(data) {
 					callback && callback(data.data);
+				},
+				error: function(data) {
+					error && error(data.data);
 				}
 			});
 		},
