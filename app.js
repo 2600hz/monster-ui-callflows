@@ -436,6 +436,15 @@ define(function(require){
 				}
 			}
 
+			if (formattedData.hasOwnProperty('outbound_flags')) {
+				if (formattedData.outbound_flags.hasOwnProperty('dynamic')) {
+					formattedData.outbound_flags.dynamic = formattedData.outbound_flags.dynamic.join(',');
+				}
+				if (formattedData.outbound_flags.hasOwnProperty('static')) {
+					formattedData.outbound_flags.static = formattedData.outbound_flags.static.join(',');
+				}
+			}
+
 			return formattedData;
 		},
 
@@ -589,6 +598,14 @@ define(function(require){
 
 					if (formData.preflow.always === '_disabled') {
 						delete newData.preflow.always;
+					}
+
+					if (newData.hasOwnProperty('outbound_flags')) {
+						newData.outbound_flags.dynamic = newData.outbound_flags.dynamic ? newData.outbound_flags.dynamic.split(',') : [];
+						newData.outbound_flags.static = newData.outbound_flags.static ? newData.outbound_flags.static.split(',') : [];
+						_.isEmpty(newData.outbound_flags.dynamic) && delete newData.outbound_flags.dynamic;
+						_.isEmpty(newData.outbound_flags.static) && delete newData.outbound_flags.static;
+						_.isEmpty(newData.outbound_flags) && delete newData.outbound_flags;
 					}
 
 					newData.blacklists = widgetBlacklist.getSelectedItems();
