@@ -843,6 +843,14 @@
 				"help": "Preflow is an option to execute a callflow before any other callflow. It is set on the account level and will apply on any call using callflow for that account. It can be useful to activate call recording, or the missed call alert feature for example.",
 				"dropdownLabel": "Select Callflow",
 				"empty": "- None -"
+			},
+			"outboundFlags": {
+				"title": "Outbound Flags",
+				"labels": {
+					"dynamic": "Dynamic",
+					"static": "Static"
+				},
+				"help": "Comma separated values (my_custom_properties,comma separated,in-whatever-case-style)"
 			}
 		},
 		"__comment": "UI-1667: Adding way to customize Feature codes",

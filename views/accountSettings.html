@@ -158,6 +158,31 @@
 							</div>
 						</div>
 					</div>
+					<div class="settings-section">
+						<div class="section-title">
+							{{ i18n.callflows.accountSettings.outboundFlags.title }}
+						</div>
+						<div class="section-content">
+							<div class="control-group">
+								<label for="dynamic" class="control-label">
+									{{ i18n.callflows.accountSettings.outboundFlags.labels.dynamic }}
+									<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.outboundFlags.help }}" data-placement="top" data-toggle="tooltip"></i>
+								</label>
+								<div class="controls">
+									<input type="text" id="dynamic" name="outbound_flags.dynamic" value="{{account.outbound_flags.dynamic}}">
+								</div>
+							</div>
+							<div class="control-group">
+								<label for="static" class="control-label">
+									{{ i18n.callflows.accountSettings.outboundFlags.labels.static }}
+									<i class="help-popover fa fa-question-circle" data-original-title="{{ i18n.callflows.accountSettings.outboundFlags.help }}" data-placement="top" data-toggle="tooltip"></i>
+								</label>
+								<div class="controls">
+									<input type="text" id="static" name="outbound_flags.static" value="{{account.outbound_flags.static}}">
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
