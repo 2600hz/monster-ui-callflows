@@ -1450,6 +1450,17 @@ define(function(require) {
 					});
 				}
 
+				//make names of callflow nodes clickable
+				$('.details a', node_html).click(function( event ){
+					event.stopPropagation();
+					//get name of callflow to open
+					var searchInputString = node.caption;
+					//search for callflow in box
+					$('.search-query').val(searchInputString);
+					$('.search-query').keyup();
+					$('.list-element:visible:first').click();
+				});
+
 				$(this).append(node_html);
 
 				$(this).droppable({
