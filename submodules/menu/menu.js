@@ -282,9 +282,7 @@ define(function(require) {
 		},
 
 		menuCleanFormData: function(form_data) {
-			if (form_data.record_pin.length === 0) {
-				form_data.max_extension_length = 4;
-			} else if (form_data.max_extension_length < form_data.record_pin.length) {
+			if (form_data.max_extension_length < form_data.record_pin.length) {
 				form_data.max_extension_length = form_data.record_pin.length;
 			}
 
