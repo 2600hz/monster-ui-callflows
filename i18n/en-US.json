@@ -466,7 +466,7 @@
 			"timeout_for_dialing_data_content": "Number of seconds allowed without pressing any key.",
 			"extension_number_length": "Extension Number Length",
 			"length": "Length",
-			"extension_number_length_data_content": "The maximum length of an extension. By default, it is set to the Record PIN number length.",
+			"extension_number_length_data_content": "The maximum length of an extension. You can not set a length shorter than the length of the PIN set on this menu (ie: if you set this field to \"2\" but the PIN is set to \"1234\" then the system will automatically set this field to \"4\").",
 			"allow_outside_recording": "Allow outside recording",
 			"allow_outside_recording_data_content": "This option allows someone to dial into a menu from an outside number (i.e. their cell phone, landline, etc.) and enter the PIN for the menu to be able to re-record it.",
 			"suppress_playing_of_invalid_entry": "Suppress playing of Invalid Entry",

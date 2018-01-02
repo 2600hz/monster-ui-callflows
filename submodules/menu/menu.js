@@ -47,7 +47,7 @@ define(function(require){
 			monster.parallel({
 					media_list: function(callback) {
 						self.callApi({
-							resource: 'media.list', 
+							resource: 'media.list',
 							data: {
 								accountId: self.accountId,
 								filters: { paginate:false }
@@ -101,7 +101,7 @@ define(function(require){
 
 		menuPopupEdit: function(data, callback, data_defaults) {
 			var self = this,
-				popup, 
+				popup,
 				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>');
 
 			self.menuEdit(data, popup_html, $('.inline_content', popup_html), {
@@ -287,10 +287,7 @@ define(function(require){
 		},
 
 		menuCleanFormData: function(form_data) {
-			if(form_data.record_pin.length == 0) {
-				form_data.max_extension_length = 4;
-			}
-			else if(form_data.max_extension_length < form_data.record_pin.length) {
+			if (form_data.max_extension_length < form_data.record_pin.length) {
 				form_data.max_extension_length = form_data.record_pin.length;
 			}
 
