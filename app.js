@@ -847,6 +847,11 @@ define(function(require) {
 			return data;
 		},
 
+		previewCallflow: function(data) {
+			var self = this;
+
+		},
+
 		editCallflow: function(data) {
 			var self = this;
 
@@ -1453,12 +1458,15 @@ define(function(require) {
 				//make names of callflow nodes clickable
 				$('.details a', node_html).click(function( event ){
 					event.stopPropagation();
-					//get name of callflow to open
-					var searchInputString = node.caption;
-					//search for callflow in box
-					$('.search-query').val(searchInputString);
-					$('.search-query').keyup();
-					$('.list-element:visible:first').click();
+					console.log(self.flow.nodes);
+					var dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {});
+					var popup =  monster.ui.dialog(dialogTemplate, {
+						title: self.i18n.active().oldCallflows.callflow_preview_title
+					});
+					$('#callflow_jump').click(function() {
+						self.editCallflow({id: self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id});
+						popup.dialog('close').remove();
+					});
 				});
 
 				$(this).append(node_html);
