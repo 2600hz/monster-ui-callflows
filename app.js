@@ -847,10 +847,6 @@ define(function(require) {
 			return data;
 		},
 
-		previewCallflow: function(data) {
-			var self = this;
-
-		},
 
 		editCallflow: function(data) {
 			var self = this;
@@ -1257,6 +1253,44 @@ define(function(require) {
 			return s_flow;
 		},
 
+
+		getCallflowPreview: function(data) {
+			var self = this;
+			self.formatFlow();
+			var layout = self.renderBranch(self.flow.root);
+
+			$('.node', layout).each(function() {
+				var node = self.flow.nodes[$(this).attr('id')],
+					$node = $(this),
+					node_html;
+
+				if (node.actionName === 'root') {
+					$node.removeClass('icons_black root');
+					node_html = $(monster.template(self, 'root', { name: self.flow.name || 'Callflow' }));
+				} else {
+					node_html = $(monster.template(self, 'node', {
+						node: node,
+						callflow: self.actions[node.actionName]
+					}));
+				}
+
+				for (var counter, size = self.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
+					counter = i * 2;
+
+					var numbers = self.flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
+						row = monster.template(self, 'rowNumber', { numbers: numbers });
+
+					node_html
+						.find('.content')
+							.append(row);
+				}
+
+				$node.append(node_html);
+			});
+			
+			return layout;
+		},
+
 		getUIFlow: function() {
 			var self = this;
 
@@ -1458,11 +1492,11 @@ define(function(require) {
 				//make names of callflow nodes clickable
 				$('.details a', node_html).click(function( event ){
 					event.stopPropagation();
-					console.log(self.flow.nodes);
 					var dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {});
 					var popup =  monster.ui.dialog(dialogTemplate, {
 						title: self.i18n.active().oldCallflows.callflow_preview_title
 					});
+					$(popup.find('.callflow-preview .callflow')).append(self.getCallflowPreview());
 					$('#callflow_jump').click(function() {
 						self.editCallflow({id: self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id});
 						popup.dialog('close').remove();
