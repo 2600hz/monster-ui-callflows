@@ -1494,7 +1494,8 @@ define(function(require) {
 					event.stopPropagation();
 					var dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {});
 					var popup =  monster.ui.dialog(dialogTemplate, {
-						title: self.i18n.active().oldCallflows.callflow_preview_title
+						title: self.i18n.active().oldCallflows.callflow_preview_title,
+						width: '650px'
 					});
 					$(popup.find('.callflow-preview .callflow')).append(self.getCallflowPreview());
 					$('#callflow_jump').click(function() {
