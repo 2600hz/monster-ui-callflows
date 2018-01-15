@@ -997,11 +997,30 @@ define(function(require) {
 			self.formatFlow();
 		},
 
+		resetPreviewFlow: function() {
+			var self = this;
+			
+			self.preview.flow = {};
+			self.preview.flow.root = self.branch('root'); // head of the flow tree
+			self.preview.flow.root.key = 'flow';
+			self.preview.flow.numbers = [];
+			self.preview.flow.caption_map = {};
+			self.formatPreviewFlow();
+
+		},
+
 		formatFlow: function() {
 			var self = this;
 
 			self.flow.root.index(0);
 			self.flow.nodes = self.flow.root.nodes();
+		},
+
+		formatPreviewFlow: function() {
+			var self = this;
+
+			self.preview.flow.root.index(0);
+			self.preview.flow.nodes = self.preview.flow.root.nodes();
 		},
 
 		// Create a new branch node for the flow
@@ -1255,29 +1274,65 @@ define(function(require) {
 
 
 		getCallflowPreview: function(data) {
-			var self = this;
-			self.formatFlow();
-			var layout = self.renderBranch(self.flow.root);
+			var self = this,
+				layout;
+			self.preview = {};
+			self.preview.flow = {};
+			self.resetPreviewFlow();
+			self.formatPreviewFlow();
+
+
+			if (data && data.id) {
+				self.callApi({
+					resource: 'callflow.get',
+					data: {
+						accountId: self.accountId,
+						callflowId: data.id
+					},
+					success: function(callflow) {
+						var callflow = callflow.data;
+
+						self.preview.dataCallflow = callflow;
+
+						self.preview.flow.id = callflow.id;
+						self.preview.flow.name = callflow.name;
+						self.preview.flow.contact_list = { exclude: 'contact_list' in callflow ? callflow.contact_list.exclude || false : false };
+						self.preview.flow.caption_map = callflow.metadata;
+
+						if (callflow.flow.module !== undefined) {
+							self.preview.flow.root = self.buildFlow(callflow.flow, self.preview.flow.root, 0, '_');
+						}
+
+						self.preview.flow.numbers = callflow.numbers || [];
+
+						//self.preview.repaintFlow();
+					}
+				});
+			} else {
+				self.resetPreviewFlow();
+			}
+
+			layout = self.renderBranch(self.preview.flow.root);
 
 			$('.node', layout).each(function() {
-				var node = self.flow.nodes[$(this).attr('id')],
+				var node = self.preview.flow.nodes[$(this).attr('id')],
 					$node = $(this),
 					node_html;
 
 				if (node.actionName === 'root') {
 					$node.removeClass('icons_black root');
-					node_html = $(monster.template(self, 'root', { name: self.flow.name || 'Callflow' }));
+					node_html = $(monster.template(self, 'root', { name: self.preview.flow.name || 'Callflow' }));
 				} else {
 					node_html = $(monster.template(self, 'node', {
 						node: node,
-						callflow: self.actions[node.actionName]
+						callflow: self.preview.actions[node.actionName]
 					}));
 				}
 
-				for (var counter, size = self.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
+				for (var counter, size = self.preview.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
 					counter = i * 2;
 
-					var numbers = self.flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
+					var numbers = self.preview.flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
 						row = monster.template(self, 'rowNumber', { numbers: numbers });
 
 					node_html
@@ -1497,7 +1552,7 @@ define(function(require) {
 						title: self.i18n.active().oldCallflows.callflow_preview_title,
 						width: '650px'
 					});
-					$(popup.find('.callflow-preview .callflow')).append(self.getCallflowPreview());
+					$(popup.find('.callflow-preview .callflow')).append(self.getCallflowPreview({id: node.data.data.id}));
 					$('#callflow_jump').click(function() {
 						self.editCallflow({id: self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id});
 						popup.dialog('close').remove();
