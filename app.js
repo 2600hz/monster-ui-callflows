@@ -999,7 +999,7 @@ define(function(require) {
 
 		resetPreviewFlow: function() {
 			var self = this;
-			
+
 			self.preview.flow = {};
 			self.preview.flow.root = self.branch('root'); // head of the flow tree
 			self.preview.flow.root.key = 'flow';
@@ -1275,12 +1275,10 @@ define(function(require) {
 
 		getCallflowPreview: function(data) {
 			var self = this,
-				layout;
+				layout,
+				target;
 			self.preview = {};
-			self.preview.flow = {};
 			self.resetPreviewFlow();
-			self.formatPreviewFlow();
-
 
 			if (data && data.id) {
 				self.callApi({
@@ -1305,14 +1303,24 @@ define(function(require) {
 
 						self.preview.flow.numbers = callflow.numbers || [];
 
+						layout = self.renderBranch(self.preview.flow.root);
+						layout = self.appendNodesToPreview(layout);
+						target = $('.callflow-preview-section');
+						target.append(layout);
 						//self.preview.repaintFlow();
 					}
 				});
 			} else {
 				self.resetPreviewFlow();
+				layout = self.renderBranch(self.preview.flow.root);
+				layout = self.appendNodesToPreview(layout);
+				target = $('.callflow-preview-section');
+				target.append(layout);
 			}
+		},
 
-			layout = self.renderBranch(self.preview.flow.root);
+		appendNodesToPreview: function(layout) {
+			var self = this;
 
 			$('.node', layout).each(function() {
 				var node = self.preview.flow.nodes[$(this).attr('id')],
@@ -1344,6 +1352,7 @@ define(function(require) {
 			});
 			
 			return layout;
+
 		},
 
 		getUIFlow: function() {
