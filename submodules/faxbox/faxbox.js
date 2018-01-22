@@ -530,18 +530,22 @@ define(function(require){
 
 		faxboxNormalizedData: function(form_data) {
 			if (form_data.hasOwnProperty('notifications')) {
-				if (form_data.notifications.hasOwnProperty('inbound') && form_data.notifications.inbound.hasOwnProperty('email') && form_data.notifications.inbound.email.hasOwnProperty('send_to') && form_data.notifications.inbound.email.send_to.length) {
-					var inbound = form_data.notifications.inbound.email.send_to;
-					form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
-				} else {
-					delete form_data.notifications.inbound.email.send_to;
+				if (form_data.notifications.hasOwnProperty('inbound') && form_data.notifications.inbound.hasOwnProperty('email') && form_data.notifications.inbound.email.hasOwnProperty('send_to')) {
+					if (form_data.notifications.inbound.email.send_to.length) {
+						var inbound = form_data.notifications.inbound.email.send_to;
+						form_data.notifications.inbound.email.send_to = inbound instanceof Array ? inbound.join(',') : inbound.replace(/\s/g, '').split(',');
+					} else {
+						delete form_data.notifications.inbound.email.send_to;
+					}
 				}
 
-				if (form_data.notifications.hasOwnProperty('outbound') && form_data.notifications.outbound.hasOwnProperty('email') && form_data.notifications.outbound.email.hasOwnProperty('send_to') && form_data.notifications.outbound.email.send_to.length) {
-					var outbound = form_data.notifications.outbound.email.send_to;
-					form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
-				} else {
-					delete form_data.notifications.outbound.email.send_to;
+				if (form_data.notifications.hasOwnProperty('outbound') && form_data.notifications.outbound.hasOwnProperty('email') && form_data.notifications.outbound.email.hasOwnProperty('send_to')) {
+					if (form_data.notifications.outbound.email.send_to.length) {
+						var outbound = form_data.notifications.outbound.email.send_to;
+						form_data.notifications.outbound.email.send_to = outbound instanceof Array ? outbound.join(',') : outbound.replace(/\s/g, '').split(',');
+					} else {
+						delete form_data.notifications.outbound.email.send_to;
+					}
 				}
 			}
 
