@@ -125,8 +125,8 @@ define(function(require) {
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
 				template.find('.callflow-content')
-						.removeClass('listing-mode')
-						.addClass('edition-mode');
+					.removeClass('listing-mode')
+					.addClass('edition-mode');
 
 				self.editCallflow();
 			});
@@ -155,8 +155,8 @@ define(function(require) {
 							loader.remove();
 
 							callflowList
-									.append(listCallflows)
-									.data('next-key', callflowData.next_start_key || null);
+								.append(listCallflows)
+								.data('next-key', callflowData.next_start_key || null);
 
 							isLoading = false;
 						},
@@ -195,8 +195,8 @@ define(function(require) {
 						.remove();
 					template
 						.find('.search-query')
-							.prop('disabled', false)
-							.val('');
+						.prop('disabled', false)
+						.val('');
 					self.repaintList({template: template});
 				} else {
 					var searchValue = searchLink.find('.search-value').text();
@@ -354,9 +354,9 @@ define(function(require) {
 				monster.ui.tooltips(listEntities);
 
 				template.find('.entity-edition .list-container .list')
-						.empty()
-						.append(listEntities)
-						.data('type', entityType);
+					.empty()
+					.append(listEntities)
+					.data('type', entityType);
 
 				template.find('.callflow-app-section').hide();
 				template.find('.entity-edition').show();
@@ -728,9 +728,9 @@ define(function(require) {
 					var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
 
 					template.find('.list-container .list')
-							.empty()
-							.append(listCallflows)
-							.data('next-key', callflowData.next_start_key || null);
+						.empty()
+						.append(listCallflows)
+						.data('next-key', callflowData.next_start_key || null);
 
 					callback && callback(callflowData.data);
 				},
@@ -846,7 +846,6 @@ define(function(require) {
 
 			return data;
 		},
-
 
 		editCallflow: function(data) {
 			var self = this;
@@ -1253,7 +1252,6 @@ define(function(require) {
 			return s_flow;
 		},
 
-
 		getCallflowPreview: function(data, callback) {
 			var self = this,
 				layout;
@@ -1309,9 +1307,8 @@ define(function(require) {
 
 								node_html
 									.find('.content')
-										.append(row);
+									.append(row);
 							}
-
 						} else {
 							node_html = $(monster.template(self, 'node', {
 								node: node,
@@ -1322,7 +1319,6 @@ define(function(require) {
 					});
 				}
 			});
-
 		},
 
 		getUIFlow: function() {
@@ -1390,7 +1386,7 @@ define(function(require) {
 
 						node_html
 							.find('.content')
-								.append(row);
+							.append(row);
 					}
 
 					$('.number_column.empty', node_html).click(function() {
@@ -1524,12 +1520,13 @@ define(function(require) {
 				}
 
 				//make names of callflow nodes clickable
-				$('.details a', node_html).click(function( event ){
+				$('.details a', node_html).click(function(event) {
 					event.stopPropagation();
 					var previewCallflowId = self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id,
-						dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {id: previewCallflowId});
-					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview){
-						popup =  monster.ui.dialog(dialogTemplate, {
+						dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {id: previewCallflowId}),
+						popup;
+					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview) {
+						popup = monster.ui.dialog(dialogTemplate, {
 							position: ['top', 20], // put preview near top of screen to have lots of space for it
 							title: self.i18n.active().oldCallflows.callflow_preview_title,
 							width: '650px'
@@ -1547,7 +1544,8 @@ define(function(require) {
 				$(this).droppable({
 					drop: function(event, ui) {
 						var target = self.flow.nodes[$(this).attr('id')],
-							action;
+							action,
+							branch;
 
 						if (ui.draggable.hasClass('action')) {
 							action = ui.draggable.attr('name');
@@ -1718,13 +1716,13 @@ define(function(require) {
 			$('.category .open', tools).click(function() {
 				tools
 					.find('.category')
-						.removeClass('active')
-						.addClass('inactive');
+					.removeClass('active')
+					.addClass('inactive');
 
 				$(this)
 					.parent('.category')
-						.removeClass('inactive')
-						.addClass('active');
+					.removeClass('inactive')
+					.addClass('active');
 			});
 
 			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first(),
