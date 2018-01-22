@@ -5,7 +5,11 @@
 			<span class="icon {{ callflow.icon }}"/>
 			<span class="module_name">{{ callflow.name }}</span>
 		</div>
+		{{#compare callflow.name '===' "Callflow"}}
+		<div class="details"><a href="#">{{ node.caption }}</a></div>
+		{{else}}
 		<div class="details">{{ node.caption }}</div>
+		{{/compare}}
 	</div>
 	<div class="clear"/>
 </div>
