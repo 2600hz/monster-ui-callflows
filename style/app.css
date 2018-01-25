@@ -368,6 +368,11 @@
 	overflow: hidden;
 }
 
+.dialog_popup.callflow-preview {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
 .callflow-preview .details a {
 	color: #22A5FF;
 }
