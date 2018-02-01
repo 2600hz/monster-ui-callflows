@@ -1124,6 +1124,7 @@
 		"hide_from_contact_list": "Hide from Contact List",
 		"giving_a_name_to_a_callflow": "Giving a name to a callflow isn't mandatory. Leave the field blank and the callflow will be displayed in the left listing as the list of numbers used in this callflow.",
 		"popup_title": "Edit Callflow Name",
+		"callflow_preview_title": "Callflow Preview",
 		"add_number": "Add number",
 		"add_a_number": "Add a number",
 		"available_numbers": "Spare Numbers",
