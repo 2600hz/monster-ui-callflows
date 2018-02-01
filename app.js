@@ -125,8 +125,8 @@ define(function(require) {
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
 				template.find('.callflow-content')
-						.removeClass('listing-mode')
-						.addClass('edition-mode');
+					.removeClass('listing-mode')
+					.addClass('edition-mode');
 
 				self.editCallflow();
 			});
@@ -155,8 +155,8 @@ define(function(require) {
 							loader.remove();
 
 							callflowList
-									.append(listCallflows)
-									.data('next-key', callflowData.next_start_key || null);
+								.append(listCallflows)
+								.data('next-key', callflowData.next_start_key || null);
 
 							isLoading = false;
 						},
@@ -195,8 +195,8 @@ define(function(require) {
 						.remove();
 					template
 						.find('.search-query')
-							.prop('disabled', false)
-							.val('');
+						.prop('disabled', false)
+						.val('');
 					self.repaintList({template: template});
 				} else {
 					var searchValue = searchLink.find('.search-value').text();
@@ -354,9 +354,9 @@ define(function(require) {
 				monster.ui.tooltips(listEntities);
 
 				template.find('.entity-edition .list-container .list')
-						.empty()
-						.append(listEntities)
-						.data('type', entityType);
+					.empty()
+					.append(listEntities)
+					.data('type', entityType);
 
 				template.find('.callflow-app-section').hide();
 				template.find('.entity-edition').show();
@@ -728,9 +728,9 @@ define(function(require) {
 					var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
 
 					template.find('.list-container .list')
-							.empty()
-							.append(listCallflows)
-							.data('next-key', callflowData.next_start_key || null);
+						.empty()
+						.append(listCallflows)
+						.data('next-key', callflowData.next_start_key || null);
 
 					callback && callback(callflowData.data);
 				},
@@ -1252,6 +1252,75 @@ define(function(require) {
 			return s_flow;
 		},
 
+		getCallflowPreview: function(data, callback) {
+			var self = this,
+				layout;
+
+			self.callApi({
+				resource: 'callflow.get',
+				data: {
+					accountId: self.accountId,
+					callflowId: data.id
+				},
+				success: function(callflow) {
+					var callflow = callflow.data,
+						flow = {};
+
+					flow.root = self.branch('root');
+					flow.root.key = 'flow';
+					flow.numbers = [];
+					flow.caption_map = {};
+					flow.root.index(0);
+					flow.nodes = flow.root.nodes();
+
+					flow.id = callflow.id;
+					flow.name = callflow.name;
+					flow.contact_list = { exclude: 'contact_list' in callflow ? callflow.contact_list.exclude || false : false };
+					flow.caption_map = callflow.metadata;
+
+					if (callflow.flow.module !== undefined) {
+						flow.root = self.buildFlow(callflow.flow, flow.root, 0, '_');
+					}
+
+					flow.nodes = flow.root.nodes();
+					flow.numbers = callflow.numbers || [];
+
+					//prepare html from callflow
+
+					layout = self.renderBranch(flow.root);
+					callback && callback(layout);
+
+					$('.node', layout).each(function() {
+						var node = flow.nodes[$(this).attr('id')],
+							$node = $(this),
+							node_html;
+
+						if (node.actionName === 'root') {
+							$node.removeClass('icons_black root');
+							node_html = $(monster.template(self, 'root', { name: flow.name || 'Callflow' }));
+
+							for (var counter, size = flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
+								counter = i * 2;
+
+								var numbers = flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
+									row = monster.template(self, 'rowNumber', { numbers: numbers });
+
+								node_html
+									.find('.content')
+									.append(row);
+							}
+						} else {
+							node_html = $(monster.template(self, 'node', {
+								node: node,
+								callflow: self.actions[node.actionName]
+							}));
+						}
+						$(this).append(node_html);
+					});
+				}
+			});
+		},
+
 		getUIFlow: function() {
 			var self = this;
 
@@ -1317,7 +1386,7 @@ define(function(require) {
 
 						node_html
 							.find('.content')
-								.append(row);
+							.append(row);
 					}
 
 					$('.number_column.empty', node_html).click(function() {
@@ -1450,12 +1519,33 @@ define(function(require) {
 					});
 				}
 
+				//make names of callflow nodes clickable
+				$('.details a', node_html).click(function(event) {
+					event.stopPropagation();
+					var previewCallflowId = self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id,
+						dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {id: previewCallflowId}),
+						popup;
+					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview) {
+						popup = monster.ui.dialog(dialogTemplate, {
+							position: ['top', 20], // put preview near top of screen to have lots of space for it
+							title: self.i18n.active().oldCallflows.callflow_preview_title,
+							width: '650px'
+						});
+						popup.find('.callflow-preview-section.callflow').append(callflowPreview);
+						$('#callflow_jump').click(function() {
+							self.editCallflow({id: previewCallflowId});
+							popup.dialog('close').remove();
+						});
+					});
+				});
+
 				$(this).append(node_html);
 
 				$(this).droppable({
 					drop: function(event, ui) {
 						var target = self.flow.nodes[$(this).attr('id')],
-							action;
+							action,
+							branch;
 
 						if (ui.draggable.hasClass('action')) {
 							action = ui.draggable.attr('name');
@@ -1626,13 +1716,13 @@ define(function(require) {
 			$('.category .open', tools).click(function() {
 				tools
 					.find('.category')
-						.removeClass('active')
-						.addClass('inactive');
+					.removeClass('active')
+					.addClass('inactive');
 
 				$(this)
 					.parent('.category')
-						.removeClass('inactive')
-						.addClass('active');
+					.removeClass('inactive')
+					.addClass('active');
 			});
 
 			var help_box = $('.callflow_helpbox_wrapper', '#callflow-view').first(),
