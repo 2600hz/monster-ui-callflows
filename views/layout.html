@@ -10,11 +10,13 @@
 		<div class="entity-element feature-code-element">
 			<div>{{ i18n.entityManager.featureCodeTitle }}</div>
 		</div>
-		{{#each actions}}
-		<div class="entity-element" data-type="{{@key}}">
-			<div>{{this.name}}</div>
+	{{#each actions}}
+		<div class="entity-element" data-type="{{module}}">
+			<div>
+				{{name}}
+			</div>
 		</div>
-		{{/each}}
+	{{/each}}
 	</div>
 	<div class="entity-edition callflow-app-section">
 		<div class="left-bar-container">

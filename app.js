@@ -220,10 +220,21 @@ define(function(require) {
 
 		renderEntityManager: function(container) {
 			var self = this,
-				entityActions = _.keyBy(_.filter(self.actions, function(action) {
-					return action.hasOwnProperty('listEntities');
-				}), 'module'),
-				template = $(monster.template(self, 'layout', { actions: entityActions }));
+				entityActions = _
+					.chain(self.actions)
+					.filter('listEntities')
+					.keyBy('module')
+					.value(),
+				template = $(self.getTemplate({
+					name: 'layout',
+					data: {
+						actions: _
+							.chain(entityActions)
+							.map()
+							.sortBy('name')
+							.value()
+					}
+				}));
 
 			self.bindEntityManagerEvents({
 				parent: container,
