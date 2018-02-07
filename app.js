@@ -225,12 +225,15 @@ define(function(require) {
 					.filter('listEntities')
 					.keyBy('module')
 					.value(),
-				template = $(monster.template(self, 'layout', {
-					actions: _
-						.chain(entityActions)
-						.map()
-						.sortBy('name')
-						.value()
+				template = $(self.getTemplate({
+					name: 'layout',
+					data: {
+						actions: _
+							.chain(entityActions)
+							.map()
+							.sortBy('name')
+							.value()
+					}
 				}));
 
 			self.bindEntityManagerEvents({
