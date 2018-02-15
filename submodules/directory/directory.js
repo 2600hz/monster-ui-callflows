@@ -559,7 +559,10 @@ define(function(require){
 				resource: 'directory.get',
 				data: {
 					accountId: self.accountId,
-					directoryId: directoryId
+					directoryId: directoryId,
+					filters: {
+						paginate: false
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
