@@ -389,6 +389,11 @@ define(function(require) {
 						callback(null, defaults);
 					}
 				},
+				user_numbers: function(callback) {
+					self.userListNumbers(function(_data) {
+						callback(null, _data);
+					});
+				},
 				user_hotdesks: function(callback) {
 					if (typeof data === 'object' && data.id) {
 						self.callApi({
@@ -422,7 +427,9 @@ define(function(require) {
 				}
 			},
 			function(err, results) {
-				var render_data = defaults;
+				var render_data = defaults,
+					mainNumbers = {};
+
 				if (typeof data === 'object' && data.id) {
 					if (results.user_get.hasOwnProperty('call_restriction')) {
 						$.each(results.user_get.call_restriction, function(k, v) {
@@ -430,6 +437,18 @@ define(function(require) {
 								defaults.field_data.call_restriction[k].action = v.action;
 							}
 						});
+
+						$.each(results.user_numbers.numbers, function(k, number) {
+							if (results.user_numbers.numbers.hasOwnProperty(k)) {
+								var settings = results.user_numbers.numbers[k];
+								// Only include phone numbers that are in service and not on a sub-account.
+								if (settings.state === 'in_service' && !settings.on_subaccount) {
+									mainNumbers[k] = number;
+								}
+							}
+						});
+
+						render_data = $.extend(true, defaults, { data: results.user_get, mainNumbers: mainNumbers });
 					}
 
 					render_data = $.extend(true, defaults, { data: results.user_get });
@@ -1116,6 +1135,20 @@ define(function(require) {
 				},
 				error: function(error) {
 					callbackError && callbackError();
+				}
+			});
+		},
+
+		userListNumbers: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'numbers.list',
+				data: {
+					accountId: self.accountId
+				},
+				success: function(data) {
+					callback && callback(data.data);
 				}
 			});
 		},
