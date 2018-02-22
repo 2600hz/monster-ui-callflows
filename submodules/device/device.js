@@ -319,14 +319,14 @@ define(function(require) {
 					},
 					function(err, results) {
 						var render_data = self.devicePrepareDataForTemplate(data, defaults, $.extend(true, results, {
-							get_device: deviceData
-						})),
-						mainNumbers = {};
+								get_device: deviceData
+							})),
+							mainNumbers = {};
 
 						$.each(results.user_numbers.numbers, function(k, number) {
 							if (results.user_numbers.numbers.hasOwnProperty(k)) {
 								var settings = results.user_numbers.numbers[k];
-									// Only include phone numbers that are in service and not on a sub-account.
+								// Only include phone numbers that are in service and not on a sub-account.
 								if (settings.state === 'in_service' && !settings.on_subaccount) {
 									mainNumbers[k] = number;
 								}
