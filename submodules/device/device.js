@@ -217,6 +217,11 @@ define(function(require) {
 								}
 							});
 						},
+						user_numbers: function(callback) {
+							self.userListNumbers(function(_data) {
+								callback(null, _data);
+							});
+						},
 						account: function(callback) {
 							self.callApi({
 								resource: 'account.get',
@@ -314,8 +319,21 @@ define(function(require) {
 					},
 					function(err, results) {
 						var render_data = self.devicePrepareDataForTemplate(data, defaults, $.extend(true, results, {
-							get_device: deviceData
-						}));
+								get_device: deviceData
+							})),
+							mainNumbers = {};
+
+						$.each(results.user_numbers.numbers, function(k, number) {
+							if (results.user_numbers.numbers.hasOwnProperty(k)) {
+								var settings = results.user_numbers.numbers[k];
+								// Only include phone numbers that are in service and not on a sub-account.
+								if (settings.state === 'in_service' && !settings.on_subaccount) {
+									mainNumbers[k] = number;
+								}
+							}
+						});
+
+						render_data = $.extend(true, defaults, { data: results.user_get, mainNumbers: mainNumbers });
 
 						self.deviceRender(render_data, target, callbacks);
 
@@ -344,6 +362,20 @@ define(function(require) {
 			} else {
 				parallelRequests(defaults);
 			}
+		},
+
+		userListNumbers: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'numbers.list',
+				data: {
+					accountId: self.accountId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
 		},
 
 		devicePrepareDataForTemplate: function(data, dataGlobal, results) {
