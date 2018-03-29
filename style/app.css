@@ -14,32 +14,39 @@
 	float: left;
 	width: 85%;
 }
-#ws_callflow .callflow .root {
+
+#ws_callflow .callflow .root,
+.callflow-preview  .callflow .root {
 	width: 322px;
 }
 
-#ws_callflow .callflow .root > .top_bar {
+#ws_callflow .callflow .root > .top_bar,
+.callflow-preview .callflow .root > .top_bar {
 	background-image: url(static/images/blue_bar.png);
 	height: 25px;
 	text-align: left;
 }
 
-#ws_callflow .callflow .root > .top_bar > span {
+#ws_callflow .callflow .root > .top_bar > span,
+.callflow-preview .callflow .root > .top_bar > span {
 	line-height: 25px;
 }
 
-#ws_callflow .callflow .root > .top_bar .name {
+#ws_callflow .callflow .root > .top_bar .name,
+.callflow-preview .callflow .root > .top_bar .name {
 	float: left;
 	margin-left: 10px;
 	font-weight: bold;
 	cursor: default;
 }
 
-#ws_callflow .callflow .root > .top_bar .add_number {
+#ws_callflow .callflow .root > .top_bar .add_number,
+.callflow-preview .callflow .root > .top_bar .add_number {
 	float: right;
 }
 
-#ws_callflow .callflow .root > .content .number_row {
+#ws_callflow .callflow .root > .content .number_row,
+.callflow-preview .callflow .root > .content .number_row {
 	background-image: url(static/images/nav_line_horizontal.jpg);
 	background-position: bottom;
 	background-repeat: repeat-x;
@@ -54,7 +61,12 @@
 	border-radius: 0px 0px 2px 2px;
 }
 
-#ws_callflow .callflow .root > .content .number_column {
+.callflow-preview .callflow .root > .content .number_row:last-child:not(:first-child) {
+	display: none !important;
+}
+
+#ws_callflow .callflow .root > .content .number_column,
+.callflow-preview .callflow .root > .content .number_column {
 	float: left;
 	height: 30px;
 	line-height: 30px;
@@ -64,28 +76,33 @@
 	position: relative;
 }
 
-#ws_callflow .callflow .root > .content .number_column.full {
+#ws_callflow .callflow .root > .content .number_column.full,
+.callflow-preview .callflow .root > .content .number_column.full {
 	width: 312px;
 	text-align: center;
 }
 
-#ws_callflow .callflow .root > .content .number_column.second {
+#ws_callflow .callflow .root > .content .number_column.second,
+.callflow-preview .callflow .root > .content .number_column.second {
 	width: 163px;
 	background-image: url(static/images/nav_line.jpg);
 	background-position: left;
 	background-repeat: repeat-y;
 }
 
-#ws_callflow .callflow .root > .content .number_column.first {
+#ws_callflow .callflow .root > .content .number_column.first,
+.callflow-preview .callflow .root > .content .number_column.first {
 	width: 159px;
 }
 
-#ws_callflow .callflow .root > .content .number_column.empty {
+#ws_callflow .callflow .root > .content .number_column.empty,
+.callflow-preview .callflow .root > .content .number_column.empty {
 	color: #A0A0A0;
 	cursor: default;
 }
 
-#ws_callflow .callflow .root > .content .number_column .delete {
+#ws_callflow .callflow .root > .content .number_column .delete,
+.callflow-preview .callflow .root > .content .number_column .delete {
 	background-image: url(static/images/btn_delete.png);
 	background-repeat: no-repeat;
 	background-position: center;
@@ -99,22 +116,32 @@
 	cursor: pointer;
 }
 
-#ws_callflow .callflow .root > .content .number_column .delete:hover {
+#ws_callflow .callflow .root > .content .number_column .delete:hover,
+.callflow-preview .callflow .root > .content .number_column .delete:hover {
 	background-image: url(static/images/btn_delete_blue.png);
 }
 
-#ws_callflow .callflow .node {
+.callflow-preview span.delete,
+.callflow-preview .number_column.empty,
+.callflow-preview span.edit_icon {
+	display: none !important;
+}
+
+#ws_callflow .callflow .node,
+.callflow-preview .callflow .node {
 	display: inline-block;
 	cursor: -moz-grab;
 	cursor: -webkit-grab;
 	cursor: grab;
 }
 
-#ws_callflow .callflow .node[name="root"] {
+#ws_callflow .callflow .node[name="root"],
+.callflow-preview .callflow .node[name="root"] {
 	cursor: default;
 }
 
-#ws_callflow .callflow .node .node-options .delete {
+#ws_callflow .callflow .node .node-options .delete,
+.callflow-preview .callflow .node .node-options .delete {
 	background-image: url(static/images/btn_delete.png);
 	background-repeat: no-repeat;
 	background-position: center;
@@ -127,28 +154,33 @@
 	cursor: pointer;
 }
 
-#ws_callflow .callflow .node .node-options .delete:hover {
+#ws_callflow .callflow .node .node-options .delete:hover,
+.callflow-preview .callflow .node .node-options .delete:hover {
 	background-image: url(static/images/btn_delete_blue.png);
 }
 
-#ws_callflow .tool .icon {
+#ws_callflow .tool .icon,
+.callflow-preview .tool .icon {
 	margin: 2px;
 	display: inline-block;
 }
 
-#ws_callflow .tools .category {
+#ws_callflow .tools .category,
+.callflow-preview .tools .category {
 	text-align: center;
 	background: url(static/images/background_category.png) no-repeat;
 	background-position: top center;
 	cursor: default;
 }
 
-#ws_callflow .tools .category .content {
+#ws_callflow .tools .category .content,
+.callflow-preview .tools .category .content {
 	background-color: #777777;
 	border: 1px solid #333333;
 }
 
-#ws_callflow .tools .open {
+#ws_callflow .tools .open,
+.callflow-preview .tools .open {
 	font-size: 12px;
 	height: 26px;
 	line-height: 26px;
@@ -156,16 +188,19 @@
 	background-position: 5px center;
 }
 
-#ws_callflow .tools .active .open {
+#ws_callflow .tools .active .open,
+.callflow-preview .tools .active .open {
 	background-image: url(static/images/arrow_active.png);
 	color: #22A5FF;
 }
 
-#ws_callflow .tools .inactive .open{
+#ws_callflow .tools .inactive .open,
+.callflow-preview .tools .inactive .open{
 	background-image: url(static/images/arrow_inactive.png);
 }
 
-#ws_callflow .tools .tool {
+#ws_callflow .tools .tool,
+.callflow-preview .tools .tool {
 	background: #777777;
 	float: left;
 	width: 82px;
@@ -176,38 +211,45 @@
 	cursor: grab;
 }
 
-#ws_callflow .destination {
+#ws_callflow .destination,
+.callflow-preview .destination {
 	border-radius: 2px;
 	border: 3px solid #22A5FF;
 }
 
-#ws_callflow .tools .tool .action {
+#ws_callflow .tools .tool .action,
+.callflow-preview .tools .tool .action {
 	z-index: 19;
 	height:56px;
 	background: url(static/images/blackbox_small.png) no-repeat;
 	min-width: 82px;
 }
 
-#ws_callflow .tools .app_list_nav {
+#ws_callflow .tools .app_list_nav,
+.callflow-preview .tools .app_list_nav {
 	background: #777777;
 	padding-top: 1px;
 }
 
-#ws_callflow .callflow .icons_black.node {
+#ws_callflow .callflow .icons_black.node,
+.callflow-preview .callflow .icons_black.node {
 	width: 143px;
 	height: 84px;
 	background: url(static/images/blackbox.png) no-repeat;
 }
 
-#ws_callflow #ws_cf_flow .children .child:last-child:not(:first-child) {
+.callflow-preview .children .child:last-child:not(:first-child),
+ #ws_cf_flow .children .child:last-child:not(:first-child) {
 	padding-right: 10px;
 }
 
+.callflow-preview .children .child:first-child:not(:last-child),
 #ws_callflow #ws_cf_flow .children .child:first-child:not(:last-child) {
 	padding-left: 10px;
 }
 
-#ws_callflow .children > .child > .div_line {
+#ws_callflow .children > .child > .div_line,
+.callflow-preview .children > .child > .div_line {
 	display: inline-block;
 	height: 6px;
 	width: 100%;
@@ -219,20 +261,24 @@
 	padding: 0px;
 	float: left;
 }
-#ws_callflow .children > .child:first-child > .div_line {
+#ws_callflow #ws_cf_flow .children > .child:first-child > .div_line,
+.callflow-preview .children > .child:first-child > .div_line {
 	width: 50%;
 	float: right;
 }
+.callflow-preview .children > .child:last-child > .div_line,
 #ws_callflow .children > .child:last-child > .div_line {
 	width: 50%;
 	float: left;
 }
 
-#ws_callflow .children > .child:first-child:last-child > .div_line {
+#ws_callflow .children > .child:first-child:last-child > .div_line,
+.callflow-preview .children > .child:first-child:last-child > .div_line {
 	display: none;
 }
 
-#ws_callflow .children > .child > .span_arrow {
+#ws_callflow .children > .child > .span_arrow,
+.callflow-preview .children > .child > .span_arrow {
 	display: inline-block;
 	width: 145px;
 	background-repeat: no-repeat;
@@ -242,35 +288,42 @@
 	position: relative;
 }
 
-#ws_callflow .children > .child > .span_arrow.small {
+#ws_callflow .children > .child > .span_arrow.small,
+.callflow-preview .children > .child > .span_arrow.small {
 	height: 31px;
 	background-image: url(static/images/center_arrow.png);
 }
 
-#ws_callflow .children > .child:first-child > .span_arrow.small {
+#ws_callflow .children > .child:first-child > .span_arrow.small,
+.callflow-preview .children > .child:first-child > .span_arrow.small {
 	background-image: url(static/images/left_arrow.png);
 }
 
-#ws_callflow .children > .child:last-child > .span_arrow.small {
+#ws_callflow .children > .child:last-child > .span_arrow.small,
+.callflow-preview .children > .child:last-child > .span_arrow.small {
 	background-image: url(static/images/right_arrow.png);
 }
 
-#ws_callflow .children > .child:first-child:last-child > .span_arrow.small {
+#ws_callflow .children > .child:first-child:last-child > .span_arrow.small,
+.callflow-preview .children > .child:first-child:last-child > .span_arrow.small {
 	background-image: url(static/images/small_arrow.png);
 }
 
-#ws_callflow .children > .child > .span_arrow.large {
+#ws_callflow .children > .child > .span_arrow.large,
+.callflow-preview .children > .child > .span_arrow.large {
 	float: none;
 	height: 48px;
 	background-image: url(static/images/tall_arrow.png);
 }
 
-#ws_callflow .a_link_option {
+#ws_callflow .a_link_option,
+.callflow-preview .a_link_option {
 	color: #EEE;
 	font-size: 12px;
 }
 
-#ws_callflow .div_option {
+#ws_callflow .div_option,
+.callflow-preview .div_option {
 	display: inline-block;
 	height: 15px;
 	line-height: 15px;
@@ -282,32 +335,50 @@
 	border-radius: 2px;
 }
 
-#ws_callflow .div_icon {
+#ws_callflow .div_icon,
+.callflow-preview .div_icon {
 	height: 50px;
 }
 
-#ws_callflow .div_icon > span {
+#ws_callflow .div_icon > span,
+.callflow-preview .div_icon > span {
 	display: inline-block;
 	max-width: 100px;
 	vertical-align: middle;
 }
 
-#ws_callflow .module {
+#ws_callflow .module,
+.callflow-preview .module {
 	font-size: 13px;
 	height: 59px;
 	margin-top: 25px;
 	cursor: default;
 }
 
-#ws_callflow .div_icon .module_name {
+#ws_callflow .div_icon .module_name,
+.callflow-preview .div_icon .module_name {
 	text-transform: uppercase;
 	text-align: center;
 }
 
-#ws_callflow .details {
+#ws_callflow .details,
+.callflow-preview .details {
 	font-size: 10px;
 	margin-top: -10px;
 	overflow: hidden;
+}
+
+.dialog_popup.callflow-preview {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.callflow-preview .details a {
+	color: #22A5FF;
+}
+
+.callflow-preview * {
+	cursor: default !important; /* Only a preview, cannot click */
 }
 
 /* Add number and Edit name popups */
@@ -399,7 +470,8 @@
 	cursor: grabbing !important;
 }
 
-#ws_callflow .root .top_bar .edit_icon {
+#ws_callflow .root .top_bar .edit_icon,
+.callflow-preview .root .top_bar .edit_icon {
 	background: url('static/images/edit_icon.png') no-repeat scroll center center transparent;
 	cursor: pointer;
 	display: inline-block;
@@ -425,7 +497,8 @@
 	display: none;
 }
 
-#ws_callflow {
+#ws_callflow,
+.callflow-preview {
 	width: 100%;
 }
 
@@ -439,87 +512,110 @@
 	width: 50%;
 }
 
-#ws_callflow #callflow_header {
+#ws_callflow #callflow_header,
+.callflow-preview #callflow_header {
 	height: 30px;
 	margin-top: 15px;
 	width: 100%;
 }
 
-#ws_callflow #callflow_header #pending_change {
+#ws_callflow #callflow_header #pending_change,
+.callflow-preview #callflow_header #pending_change {
 	text-align: center;
 	display: none;
 }
 
-#ws_callflow #callflow_header #pending_change span {
+#ws_callflow #callflow_header #pending_change span,
+.callflow-preview #callflow_header #pending_change span {
 	color: #22A5FF;
 	font-weight: lighter;
 	font-style: italic;
 }
 
-#ws_callflow #ws_cf_flow {
+#ws_callflow #ws_cf_flow,
+.callflow-preview #ws_cf_flow {
 	width: 100%;
 	overflow-x: auto;
 	padding-top: 10px;
 	text-align: center;
 }
 
-#ws_callflow span.flow {
+#ws_callflow .callflow-preview,
+.callflow-preview .callflow-preview {
+	width: 100%;
+	overflow-x: auto;
+	padding-top: 10px;
+	text-align: center;
+}
+
+#ws_callflow span.flow,
+.callflow-preview span.flow {
 	width: 80%;
 }
 
-#ws_callflow .child {
+#ws_callflow .child,
+.callflow-preview .child {
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
 	white-space: normal;
 }
 
-#ws_callflow .branch {
+#ws_callflow .branch,
+.callflow-preview .branch {
 	display: block;
 	text-align: center;
 }
 
-#ws_callflow .node.active {
+#ws_callflow .node.active,
+.callflow-preview .node.active {
 	background-color: #fff;
 	border-radius: 2px;
 	border: 3px solid #22A5FF;
 }
 
-#ws_callflow .node.inactive {
+#ws_callflow .node.inactive,
+.callflow-preview .node.inactive {
 	filter:alpha(opacity=50);
 	-moz-opacity:0.5;
 	-khtml-opacity: 0.5;
 	opacity: 0.5;
 }
 
-#ws_callflow .children {
+#ws_callflow .children,
+.callflow-preview .children {
 	display: block;
 	white-space: pre;
 }
 
-#ws_callflow .flowchart {
+#ws_callflow .flowchart,
+.callflow-preview .flowchart {
 	margin-right: 180px;
 	overflow: auto;
 }
 
-#ws_callflow .tools {
+#ws_callflow .tools,
+.callflow-preview .tools {
 	float: right;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
-#ws_callflow .tools #ws_cf_tools {
+#ws_callflow .tools #ws_cf_tools,
+.callflow-preview .tools #ws_cf_tools {
 	padding-right: 10px;
 	padding-top: 10px;
 	padding-bottom:30px;
 	width: 168px;
 }
 
-#ws_callflow .tools .search-box {
+#ws_callflow .tools .search-box,
+.callflow-preview .tools .search-box {
 	background: #444;
 }
 
-#ws_callflow .tools .search-box input {
+#ws_callflow .tools .search-box input,
+.callflow-preview .tools .search-box input {
 	width: 120px;
 	height: 15px;
 	border-radius: 20px;
@@ -528,29 +624,35 @@
 	margin-left: 3px;
 }
 
-#ws_callflow .tool {
+#ws_callflow .tool,
+.callflow-preview .tool {
 	text-align: center;
 	vertical-align: middle;
 }
 
-#ws_callflow .tool_name {
+#ws_callflow .tool_name,
+.callflow-preview .tool_name {
 	font-size: 11px;
 	line-height: 11px;
 }
 
-#ws_callflow .tools .category.inactive .content {
+#ws_callflow .tools .category.inactive .content,
+.callflow-preview .tools .category.inactive .content {
 	display: none;
 }
 
-#ws_callflow .tool .action.inactive {
+#ws_callflow .tool .action.inactive,
+.callflow-preview .tool .action.inactive {
 	display: none;
 }
 
-#ws_callflow .tool .action.active {
+#ws_callflow .tool .action.active,
+.callflow-preview .tool .action.active {
 	z-index: 10000;
 }
 
-#ws_callflow .title {
+#ws_callflow .title,
+.callflow-preview .title {
 	background: url("static/images/blue_bar.png");
 	font-size: 12px;
 	height: 25px;
@@ -561,25 +663,29 @@
 	font-weight: bold;
 }
 
-#callflow_container .wrapper_callflow_buttons {
+#callflow_container .wrapper_callflow_buttons,
+.callflow-preview .wrapper_callflow_buttons {
 	display: block;
 	width: 322px;
 	margin: auto;
 	margin-bottom: 5px;
 }
 
-#callflow_container .wrapper_callflow_buttons .monster-button {
+#callflow_container .wrapper_callflow_buttons .monster-button,
+.callflow-preview  .wrapper_callflow_buttons .monster-button {
 	width: 114px;
 	text-align: center;
 	display: inline-block;
 	margin-left: 0px;
 }
 
-#callflow_container .wrapper_callflow_buttons .monster-button:first-child {
+#callflow_container .wrapper_callflow_buttons .monster-button:first-child,
+.callflow-preview .wrapper_callflow_buttons .monster-button:first-child {
 	margin-right: 10px;
 }
 
-#callflow_container .callflow_helpbox_wrapper {
+#callflow_container .callflow_helpbox_wrapper,
+.callflow-preview .callflow_helpbox_wrapper {
 	position: absolute;
 	right: 185px;
 	width: 160px;
@@ -587,7 +693,8 @@
 	display: none;
 }
 
-#callflow_container .callflow_helpbox_wrapper .tip_box {
+#callflow_container .callflow_helpbox_wrapper .tip_box,
+.callflow_preview .callflow_helpbox_wrapper .tip_box {
 	background-color: #3D3D3D;
 	border: 1px solid #333333;
 	border-radius: 2px;
@@ -598,13 +705,15 @@
 	line-height: 12px;
 }
 
-#callflow_container .tooltip {
+#callflow_container .tooltip,
+.callflow_preview .tooltip {
 	float: right;
 	margin-top: 6px;
 	cursor: pointer;
 }
 
-#callflow_container .pulse-box {
+#callflow_container .pulse-box,
+.callflow-preview .pulse-box {
 	-webkit-animation: "pulse-box" 1s ease-in-out 0 infinite alternate;
 
 	animation-name: pulse-box;
@@ -626,7 +735,8 @@
 }
 
 /* JR's customization */
-#callflow_container {
+#callflow_container,
+.callflow-preview .callflow {
 	color: #ebebeb;
 	min-height: 100%;
 }
@@ -635,6 +745,11 @@
 /* JR's work for left bar, from accountBrowser */
 #callflow_container .callflow-content {
 	margin-left: 241px;
+	background-color: #fff;
+	overflow-y: auto;
+}
+
+.callflow-preview.callflow {
 	background-color: #fff;
 	overflow-y: auto;
 }
@@ -788,6 +903,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.callflow-preview #callflow_jump {
+	margin-bottom: 10px;
 }
 
 /* Popups.css */
