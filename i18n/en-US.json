@@ -807,7 +807,10 @@
 			"mp3": "mp3",
 			"mp4": "mp4",
 			"wav": "wav",
-			"default": "Account Default"
+			"default": "Account Default",
+			"__comment": "UI-3040: add temporary greeting",
+			"temporary_unavailable_message": "Temporary Message",
+			"temporary_unavailable_message_data_content": "Select the Temporary Unavailable message that you want to use for this this device. If you set this field, it will take precedence over the Unavailable message, but if you select - Not set -, then the Unavailable message will be played instead."
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
 		"__version": "3.22",
