@@ -406,7 +406,7 @@ define(function(require) {
 
 				monster.ui.tooltips(template);
 
-				template.find('.cid-number-select, .preflow-callflows-dropdown').chosen({ search_contains: true, width: '220px' });
+				monster.ui.chosen(template.find('.cid-number-select, .preflow-callflows-dropdown'));
 				container.empty().append(template);
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
@@ -1346,7 +1346,9 @@ define(function(require) {
 									title: self.i18n.active().oldCallflows.add_number
 								});
 
-							popup_html.find('#list_numbers').chosen({ search_contains: true, width: '160px' });
+							monster.ui.chosen(popup_html.find('#list_numbers'), {
+								width: '160px'
+							});
 							// Have to do that so that the chosen dropdown isn't hidden.
 							popup_html.parent().css('overflow', 'visible');
 
