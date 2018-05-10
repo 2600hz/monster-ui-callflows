@@ -72,15 +72,13 @@
 
 										{{#each field_data.provisioner.brands}}
 											<select class="dropdown_family" name="provision.endpoint_model" data-brand="{{ @key }}">
-												{{#select ../data.provision.endpoint_model}}
-													{{#each this.families}}
-														<optgroup data-family="{{ @key }}" label="{{ this.name }}">
-															{{#each this.models}}
-																<option id="{{ @key }}" value="{{ @key }}">{{ this.name }}</option>
-															{{/each}}
-														</optgroup>
+											{{#each this.families}}
+												<optgroup data-family="{{ @key }}" label="{{ this.name }}">
+													{{#each this.models}}
+														<option id="{{ @key }}" value="{{@../key}}.{{ @key }}">{{ this.name }}</option>
 													{{/each}}
-												{{/select}}
+												</optgroup>
+											{{/each}}
 											</select>
 										{{/each}}
 									</span>
