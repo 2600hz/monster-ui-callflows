@@ -517,9 +517,13 @@ define(function(require) {
 							self.deviceCleanFormData(form_data);
 
 							if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
+								var modelArray = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val().split('.'),
+									endpoint_family = modelArray[0],
+									endpoint_model = modelArray[1];
+
 								// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
-								form_data.provision.endpoint_model = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val();
-								form_data.provision.endpoint_family = $('#' + form_data.provision.endpoint_model, device_html).parents('optgroup').data('family');
+								form_data.provision.endpoint_model = endpoint_model;
+								form_data.provision.endpoint_family = endpoint_family;
 							}
 
 							self.deviceSave(form_data, data, callbacks.save_success);
@@ -634,14 +638,14 @@ define(function(require) {
 
 		deviceSetProvisionerStuff: function(device_html, data) {
 			var self = this,
-				set_value = function(brand_name, model_name) {
+				set_value = function(brand_name, model_family, model_name) {
 					device_html.find('.dropdown_family').hide();
 					if (brand_name in data.field_data.provisioner.brands) {
 						device_html.find('#dropdown_brand').val(brand_name);
 						device_html
 							.find('.dropdown_family[data-brand="' + brand_name + '"]')
 								.show()
-								.val(model_name);
+								.val(model_family + '.' + model_name);
 					}
 				},
 				provisionData = data.data.provision,
@@ -695,7 +699,7 @@ define(function(require) {
 					'001565': 'yealink'
 				};
 
-			set_value(provisionData.endpoint_brand, provisionData.endpoint_model);
+			set_value(provisionData.endpoint_brand, provisionData.endpoint_family, provisionData.endpoint_model);
 
 			device_html.find('#dropdown_brand').on('change', function() {
 				set_value($(this).val());
