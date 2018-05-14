@@ -2,7 +2,8 @@ define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster'),
-		timezone = require('monster-timezone');
+		timezone = require('monster-timezone'),
+		toastr = require('toastr');
 
 	var app = {
 		requests: {},
@@ -193,6 +194,7 @@ define(function(require){
 			var self = this,
 				wday,
 				timeofday_html = $(monster.template(self, 'timeofday-callflowEdit', data)),
+				selectedWdays = data.data.wdays.length,
 				_after_render,
 				timeofdayForm = timeofday_html.find('#timeofday-form');
 
@@ -257,7 +259,16 @@ define(function(require){
 			}
 
 			$('.fake_checkbox', timeofday_html).click(function() {
+				var $this = $(this),
+					toCheck = !$this.hasClass('checked');
+
 				$(this).toggleClass('checked');
+
+				if (toCheck) {
+					selectedWdays += 1;
+				} else {
+					selectedWdays -= 1;
+				}
 			});
 
 			$('#ordinal', timeofday_html).change(function() {
@@ -316,10 +327,12 @@ define(function(require){
 
 				var $this = $(this);
 
-				if(!$this.hasClass('disabled')) {
-					$this.addClass('disabled');
+				if (!$this.hasClass('disabled')) {
+					if ($('#cycle', timeofday_html).val() === 'weekly' && selectedWdays === 0) {
+						toastr.warning(self.i18n.active().callflows.timeofday.toastr.info.missingDay);
+					} else if (monster.ui.valid(timeofdayForm)) {
+						$this.addClass('disabled');
 
-					if(monster.ui.valid(timeofdayForm)) {
 						var form_data = monster.ui.getFormData('timeofday-form');
 
 						form_data.wdays = [];
