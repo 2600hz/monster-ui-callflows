@@ -3,8 +3,8 @@
 	"i18n": {
 		"en-US": {
 			"label": "Callflows",
-			"description": "The Callflow Manager allows you manage Callflows as well as various VOIP entities.",
-			"extended_description": "Advanced Callflows features a drag and drop interface which allows users to select from over 50 items in our “call handling toolbox” to chain together. These chains, known as callflows, allow you to manipulate the flow a call takes as a caller traverses various features, menus and call routing decisions in the system. Use the Advanced Callflow editor to configure every step a caller can take when calling a phone number or extension. Route calls to menus, ring groups, voicemails, conference bridges, call queues, call recordings and more.",
+			"description": "The Callflows allows you manage Callflows as well as various VOIP entities.",
+			"extended_description": "The Callflows app features a drag and drop interface which allows users to select from over 50 items in our “call handling toolbox” to chain together. These chains, known as callflows, allow you to manipulate the flow a call takes as a caller traverses various features, menus and call routing decisions in the system. Use the Callflows app editor to configure every step a caller can take when calling a phone number or extension. Route calls to menus, ring groups, voicemails, conference bridges, call queues, call recordings and more.",
 			"features": [
 				"Drag and drop management",
 				"50+ call handling actions such as: Time of Day Routing, Device/User Routing, Menus/IVRs, Call Pickup, BLF/Presence Manipulation, Outbound Call Routing...",
@@ -13,7 +13,9 @@
 			]
 		}
 	},
-	"tags": [],
+	"tags": [
+		"admin"
+	],
 	"icon": "Callflows_app.png",
 	"api_url": "http://10.26.0.41:8000/v2",
 	"author": "2600Hz",
