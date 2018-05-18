@@ -507,7 +507,7 @@ define(function(require) {
 					'hotdesk.pin': { regex: /^[0-9]*$/ },
 					'hotdesk.id': { regex: /^[0-9+#*]*$/ },
 					call_forward_number: { regex: /^[+]?[0-9]*$/ },
-					'caller_id.internal.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.internal.name': { maxlength: 30 },
 					'caller_id.external.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 					'caller_id.internal.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
