@@ -450,7 +450,7 @@ define(function(require) {
 					caller_name: '',
 					fax_header: '',
 					fax_timezone: 'inherit',
-					retries: 1,
+					retries: 3,
 					notifications: {
 						inbound: {
 							email: {
