@@ -322,6 +322,59 @@ define(function(require) {
 						}
 					}
 				},
+				'privacy[]': {
+					name: self.i18n.active().oldCallflows.privacy.toolbox_name,
+					icon: 'x_circle',
+					category: self.i18n.active().oldCallflows.caller_id_cat,
+					module: 'privacy',
+					tip: self.i18n.active().oldCallflows.privacy.toolbox_tip,
+					data: {
+						endpoint_strategy: 'overwrite',
+						mode: 'full'
+					},
+					isUsable: 'true',
+					weight: 10,
+					caption: function(node) {
+						return (node.getMetadata('endpoint_strategy') || '') + ' ' + (node.getMetadata('mode') || '');
+					},
+					edit: function(node, callback) {
+						var popup, popup_html;
+
+						popup_html = $(monster.template(self, 'misc-privacy', {
+							data_privacy: {
+								'endpoint_strategy': node.getMetadata('endpoint_strategy') || '',
+								'mode': node.getMetadata('mode') || ''
+							}
+						}));
+
+						$('#add', popup_html).click(function() {
+							var endpoint_strategy_val = $('#privacy_endpoint_strategy', popup_html).val(),
+								mode_val = $('#privacy_mode', popup_html).val();
+
+							node.setMetadata('endpoint_strategy', endpoint_strategy_val);
+							node.setMetadata('mode', mode_val);
+
+							node.caption = endpoint_strategy_val + ' ' + mode_val;
+
+							popup.dialog('close');
+						});
+
+						popup = monster.ui.dialog(popup_html, {
+							title: self.i18n.active().oldCallflows.privacy.caller_id_title,
+							beforeClose: function() {
+								if (typeof callback === 'function') {
+									callback();
+								}
+							}
+						});
+
+						monster.ui.tooltips(popup);
+
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				},
 				'prepend_cid[action=prepend]': {
 					name: self.i18n.active().oldCallflows.prepend,
 					icon: 'plus_circle',
