@@ -1262,6 +1262,19 @@
 				"current": "Current",
 				"original": "Original"
 			}
+		},
+		"privacy": {
+			"title": "Privacy",
+			"caller_id_title": "Privacy Caller-ID",
+			"toolbox_name": "Privacy cid",
+			"toolbox_tip": "Hide your CallerNumber or your CallerName",
+			"mode": "Mode",
+			"endpoint_strategy": "Endpoint strategy",
+			"full": "Full",
+			"name": "Name",
+			"number": "Number",
+			"overwrite": "Overwrite",
+			"merge": "Merge"
 		}
 	},
 	"__comment": "UI-1260: created common control for carrier selection",
