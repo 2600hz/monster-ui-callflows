@@ -329,7 +329,7 @@ define(function(require){
 
 				if (!$this.hasClass('disabled')) {
 					if ($('#cycle', timeofday_html).val() === 'weekly' && selectedWdays === 0) {
-						toastr.warning(self.i18n.active().callflows.timeofday.toastr.info.missingDay);
+						toastr.warning(self.i18n.active().callflows.timeofday.toastr.warning.missingDay);
 					} else if (monster.ui.valid(timeofdayForm)) {
 						$this.addClass('disabled');
 
