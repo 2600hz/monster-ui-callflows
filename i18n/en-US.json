@@ -637,8 +637,6 @@
 			"email_notifications": "Email Notifications",
 			"voicemail": "Voicemail",
 			"voicemail_data_content": "By checking this option, an email will be sent to the specified e-mail address each time this user gets a voicemail.",
-			"fax": "Fax",
-			"fax_data_content": "By checking this option, an email will be sent to the specified e-mail address each time you get a Fax.",
 			"in_house_calls": "In-House Calls",
 			"caller_id_name": "Caller ID Name",
 			"caller_id_name_placeholder": "Name",
