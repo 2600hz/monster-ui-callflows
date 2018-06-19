@@ -575,7 +575,7 @@
 			"name_regex": "/^[a-zA-Z0-9\\s_']+$/",
 			"toastr": {
 				"warning": {
-					"missingDay": "You need to select at least one day of the week"
+					"missingDay": "Please select at least one day of the week"
 				}
 			},
 			"__comment": "UI-1929: adding time of day sets to options in time of days",
