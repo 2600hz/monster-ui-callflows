@@ -1273,6 +1273,7 @@
 			"full": "Full",
 			"name": "Name",
 			"number": "Number",
+			"none": "None",
 			"overwrite": "Overwrite",
 			"merge": "Merge"
 		}
