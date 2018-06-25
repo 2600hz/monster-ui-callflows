@@ -28,6 +28,7 @@ define(function(require) {
 		css: [ 'app', 'icons' ],
 
 		i18n: {
+			'de-DE': { customCss: false },
 			'en-US': { customCss: false }
 		},
 
