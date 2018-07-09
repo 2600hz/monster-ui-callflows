@@ -190,7 +190,11 @@ define(function(require) {
 
 		timeofdayRender: function(data, target, callbacks) {
 			var self = this,
-				timeofday_html = $(monster.template(self, 'timeofday-callflowEdit', data)),
+				timeofday_html = $(self.getTemplate({
+					name: 'callflowEdit',
+					data: data,
+					submodule: 'timeofday'
+				})),
 				selectedWdays = data.data.wdays.length,
 				_after_render,
 				timeofdayForm = timeofday_html.find('#timeofday-form');
@@ -533,9 +537,13 @@ define(function(require) {
 
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'timeofday-callflowKey', {
-								items: formattedData,
-								selected: child_node.key
+							popup_html = $(self.getTemplate({
+								name: 'callflowKey',
+								data: {
+									items: formattedData,
+									selected: child_node.key
+								},
+								submodule: 'timeofday'
 							}));
 
 							$('.inline_action', popup_html).click(function(ev) {
@@ -589,9 +597,13 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'timeofday-callflowTimezone', {
-							items: {},
-							selected: {}
+						popup_html = $(self.getTemplate({
+							name: 'callflowTimezone',
+							data: {
+								items: {},
+								selected: {}
+							},
+							submodule: 'timeofday'
 						}));
 
 						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', {inherit: self.i18n.active().defaultTimezone});
@@ -663,15 +675,19 @@ define(function(require) {
 								unselected_rules = listRules;
 							}
 
-							popup_html = $(monster.template(self, 'timeofday-two_column', {
-								left: {
-									title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
-									items: unselected_rules
+							popup_html = $(self.getTemplate({
+								name: 'two_column',
+								data: {
+									left: {
+										title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
+										items: unselected_rules
+									},
+									right: {
+										title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
+										items: selected_rules
+									}
 								},
-								right: {
-									title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
-									items: selected_rules
-								}
+								submodule: 'timeofday'
 							}));
 
 							$('#add', popup_html).click(function() {
@@ -756,15 +772,19 @@ define(function(require) {
 								unselected_rules = listRules;
 							}
 
-							popup_html = $(monster.template(self, 'timeofday-two_column', {
-								left: {
-									title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
-									items: unselected_rules
+							popup_html = $(self.getTemplate({
+								name: 'two_column',
+								data: {
+									left: {
+										title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
+										items: unselected_rules
+									},
+									right: {
+										title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
+										items: selected_rules
+									}
 								},
-								right: {
-									title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
-									items: selected_rules
-								}
+								submodule: 'timeofday'
 							}));
 
 							$('#add', popup_html).click(function() {
@@ -849,15 +869,19 @@ define(function(require) {
 								unselected_rules = listRules;
 							}
 
-							popup_html = $(monster.template(self, 'timeofday-two_column', {
-								left: {
-									title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
-									items: unselected_rules
+							popup_html = $(self.getTemplate({
+								name: 'two_column',
+								data: {
+									left: {
+										title: self.i18n.active().callflows.timeofday.unselected_time_of_day_rules,
+										items: unselected_rules
+									},
+									right: {
+										title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
+										items: selected_rules
+									}
 								},
-								right: {
-									title: self.i18n.active().callflows.timeofday.selected_time_of_day_rules,
-									items: selected_rules
-								}
+								submodule: 'timeofday'
 							}));
 
 							$('#add', popup_html).click(function() {

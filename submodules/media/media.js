@@ -14,7 +14,11 @@ define(function(require) {
 
 		mediaRender: function(data, target, callbacks) {
 			var self = this,
-				media_html = $(monster.template(self, 'media-edit', data)),
+				media_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'media'
+				})),
 				mediaForm = media_html.find('#media-form'),
 				file;
 
@@ -351,12 +355,16 @@ define(function(require) {
 								isSilence = !mediaId || (mediaId && mediaId === 'silence_stream://300000'), // because silence is the default choice, we test for !mediaId
 								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000';
 
-							popup_html = $(monster.template(self, 'media-callflowEdit', {
-								items: medias,
-								selected: isShoutcast ? 'shoutcast' : mediaId,
-								isShoutcast: isShoutcast,
-								shoutcastValue: mediaId,
-								isEditable: !isShoutcast && !isSilence
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									items: medias,
+									selected: isShoutcast ? 'shoutcast' : mediaId,
+									isShoutcast: isShoutcast,
+									shoutcastValue: mediaId,
+									isEditable: !isShoutcast && !isSilence
+								},
+								submodule: 'media'
 							}));
 
 							if ($('#media_selector option:selected', popup_html).val() === undefined) {

@@ -447,7 +447,11 @@ define(function(require) {
 			}
 
 			if (typeof data.data === 'object' && data.data.device_type) {
-				device_html = $(monster.template(self, 'device-' + data.data.device_type, data));
+				device_html = $(self.getTemplate({
+					name: 'device-' + data.data.device_type,
+					data: data,
+					submodule: 'device'
+				}));
 
 				var deviceForm = device_html.find('#device-form');
 
@@ -599,7 +603,10 @@ define(function(require) {
 					});
 				});
 			} else {
-				device_html = $(monster.template(self, 'device-general_edit'));
+				device_html = $(self.getTemplate({
+					name: 'general_edit',
+					submodule: 'device'
+				}));
 
 				$('.media_pane', device_html).hide();
 				$('.media_tabs .buttons', device_html).click(function() {
@@ -1126,16 +1133,20 @@ define(function(require) {
 						self.deviceList(function(devices) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'device-callflowEdit', {
-								can_call_self: node.getMetadata('can_call_self') || false,
-								parameter: {
-									name: 'timeout (s)',
-									value: node.getMetadata('timeout') || '20'
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									can_call_self: node.getMetadata('can_call_self') || false,
+									parameter: {
+										name: 'timeout (s)',
+										value: node.getMetadata('timeout') || '20'
+									},
+									objects: {
+										items: _.sortBy(devices, 'name'),
+										selected: node.getMetadata('id') || ''
+									}
 								},
-								objects: {
-									items: _.sortBy(devices, 'name'),
-									selected: node.getMetadata('id') || ''
-								}
+								submodule: 'device'
 							}));
 
 							if ($('#device_selector option:selected', popup_html).val() === undefined) {
@@ -1233,7 +1244,11 @@ define(function(require) {
 									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
 									isRegistered: device.enabled ? (['sip_device', 'smartphone', 'softphone', 'fax', 'ata'].indexOf(device.device_type) >= 0 ? registeredDevices.indexOf(device.id) >= 0 : true) : false
 								};
-								device.customEntityTemplate = monster.template(self, 'device-entity-element', dataTemplate);
+								device.customEntityTemplate = $(self.getTemplate({
+									name: 'entity-element',
+									data: dataTemplate,
+									submodule: 'device'
+								}));
 							});
 
 							callback && callback(results.device);

@@ -128,7 +128,11 @@ define(function(require) {
 
 		menuRender: function(data, target, callbacks) {
 			var self = this,
-				menu_html = $(monster.template(self, 'menu-edit', data)),
+				menu_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'menu'
+				})),
 				menuForm = menu_html.find('#menu-form');
 
 			monster.ui.validate(menuForm, {
@@ -362,24 +366,28 @@ define(function(require) {
 						   The '#' Key is only displayed if it exists in the callflow, otherwise it is hidden by the template (see /tmpl/menu_key_callflow.html)
 						*/
 
-						popup_html = $(monster.template(self, 'menu-callflowKey', {
-							items: {
-								'_': self.i18n.active().callflows.menu.default_action,
-								'timeout': 'timeout',
-								'0': '0',
-								'1': '1',
-								'2': '2',
-								'3': '3',
-								'4': '4',
-								'5': '5',
-								'6': '6',
-								'7': '7',
-								'8': '8',
-								'9': '9',
-								'*': '*',
-								'#': '#'
+						popup_html = $(self.getTemplate({
+							name: 'menu-callflowKey',
+							data: {
+								items: {
+									'_': self.i18n.active().callflows.menu.default_action,
+									'timeout': 'timeout',
+									'0': '0',
+									'1': '1',
+									'2': '2',
+									'3': '3',
+									'4': '4',
+									'5': '5',
+									'6': '6',
+									'7': '7',
+									'8': '8',
+									'9': '9',
+									'*': '*',
+									'#': '#'
+								},
+								selected: child_node.key
 							},
-							selected: child_node.key
+							submodule: 'menu'
 						}));
 
 						popup_html.find('#add').on('click', function() {
@@ -414,9 +422,13 @@ define(function(require) {
 						self.menuList(function(menus) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'menu-callflowEdit', {
-								items: _.sortBy(menus, 'name'),
-								selected: node.getMetadata('id') || ''
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									items: _.sortBy(menus, 'name'),
+									selected: node.getMetadata('id') || ''
+								},
+								submodule: 'menu'
 							}));
 
 							if ($('#menu_selector option:selected', popup_html).val() === undefined) {

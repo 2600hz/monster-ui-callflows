@@ -42,7 +42,13 @@ define(function(require) {
 		blacklistEdit: function(args) {
 			var self = this,
 				afterGetData = function(data) {
-					var template = $(monster.template(self, 'blacklist-edit', {data: data})),
+					var template = $(self.getTemplate({
+							name: 'edit',
+							data: {
+								data: data
+							},
+							submodule: 'blacklist'
+						})),
 						blacklistForm = template.find('#blacklist-form'),
 						$listNumbers = template.find('.saved-numbers');
 
@@ -53,7 +59,13 @@ define(function(require) {
 					});
 
 					_.each(data.numbers, function(v, number) {
-						$listNumbers.append(monster.template(self, 'blacklist-addNumber', {number: number}));
+						$listNumbers.append($(self.getTemplate({
+							name: 'addNumber',
+							data: {
+								number: number
+							},
+							submodule: 'blacklist'
+						})));
 					});
 
 					self.blacklistBindEvents(data, template, args.callbacks);
@@ -78,7 +90,14 @@ define(function(require) {
 					var number = template.find('#number_value').val();
 
 					if (number) {
-						$('.list-numbers .saved-numbers', template).prepend(monster.template(self, 'blacklist-addNumber', { number: number }));
+						$('.list-numbers .saved-numbers', template)
+							.prepend($(self.getTemplate({
+								name: 'addNumber',
+								data: {
+									number: number
+								},
+								submodule: 'blacklist'
+							})));
 
 						$('#number_value', template).val('');
 					}
@@ -148,7 +167,14 @@ define(function(require) {
 					var number = template.find('#number_value').val();
 
 					if (number) {
-						$('.list-numbers .saved-numbers', template).prepend(monster.template(self, 'blacklist-addNumber', { number: number }));
+						$('.list-numbers .saved-numbers', template)
+							.prepend($(self.getTemplate({
+								name: 'addNumber',
+								data: {
+									number: number
+								},
+								submodule: 'blacklist'
+							})));
 
 						$('#number_value', template).val('');
 					}

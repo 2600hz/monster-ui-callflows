@@ -55,16 +55,20 @@ define(function(require) {
 								this.name = this.first_name + ' ' + this.last_name;
 							});
 
-							popup_html = $(monster.template(self, 'user-callflowEdit', {
-								can_call_self: node.getMetadata('can_call_self') || false,
-								parameter: {
-									name: 'timeout (s)',
-									value: node.getMetadata('timeout') || '20'
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									can_call_self: node.getMetadata('can_call_self') || false,
+									parameter: {
+										name: 'timeout (s)',
+										value: node.getMetadata('timeout') || '20'
+									},
+									objects: {
+										items: _.sortBy(users, 'name'),
+										selected: node.getMetadata('id') || ''
+									}
 								},
-								objects: {
-									items: _.sortBy(users, 'name'),
-									selected: node.getMetadata('id') || ''
-								}
+								submodule: 'user'
 							}));
 
 							if ($('#user_selector option:selected', popup_html).val() === undefined) {
@@ -460,7 +464,11 @@ define(function(require) {
 
 		userRender: function(data, target, callbacks) {
 			var self = this,
-				user_html = $(monster.template(self, 'user-edit', data)),
+				user_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'user'
+				})),
 				user_form = user_html.find('#user-form'),
 				data_devices,
 				hotdesk_pin = $('.hotdesk_pin', user_html),
@@ -826,7 +834,12 @@ define(function(require) {
 						$.each(_data, function(k, v) {
 							v.display_type = data.field_data.device_types[v.device_type];
 							v.not_enabled = this.enabled === false ? true : false;
-							$('.rows', parent).append($(monster.template(self, 'user-deviceRow', v)));
+							$('.rows', parent)
+								.append($(self.getTemplate({
+									name: 'deviceRow',
+									data: v,
+									submodule: 'user'
+								})));
 						});
 
 						self.callApi({
@@ -841,13 +854,20 @@ define(function(require) {
 							}
 						});
 					} else {
-						$('.rows', parent).append($(monster.template(self, 'user-deviceRow')));
+						$('.rows', parent)
+							.append($(self.getTemplate({
+								name: 'deviceRow',
+								submodule: 'user'
+							})));
 					}
 				});
 			} else {
 				$('.rows', parent)
 					.empty()
-					.append($(monster.template(self, 'user-deviceRow')));
+					.append($(self.getTemplate({
+						name: 'deviceRow',
+						submodule: 'user'
+					})));
 			}
 		},
 
