@@ -47,9 +47,13 @@ define(function(require) {
 						var _this = this;
 
 						self.faxboxList(function(data, status) {
-							var popup_html = $(monster.template(self, 'faxbox-callflowEdit', {
-									items: _.sortBy(data, 'name'),
-									selected: node.getMetadata('id') || ''
+							var popup_html = $(self.getTemplate({
+									name: 'callflowEdit',
+									data: {
+										items: _.sortBy(data, 'name'),
+										selected: node.getMetadata('id') || ''
+									},
+									submodule: 'faxbox'
 								})),
 								popup;
 
@@ -239,9 +243,13 @@ define(function(require) {
 
 		faxboxRender: function(data, target, callbacks) {
 			var self = this,
-				faxbox_html = $(monster.template(self, 'faxbox-edit', {
-					faxbox: self.faxboxNormalizedData(data.faxbox),
-					users: data.user_list
+				faxbox_html = $(self.getTemplate({
+					name: 'edit',
+					data: {
+						faxbox: self.faxboxNormalizedData(data.faxbox),
+						users: data.user_list
+					},
+					submodule: 'faxbox'
 				}));
 
 			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});

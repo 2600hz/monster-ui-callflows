@@ -13,7 +13,11 @@ define(function(require) {
 
 		directoryRender: function(data, target, callbacks) {
 			var self = this,
-				directory_html = $(monster.template(self, 'directory-edit', data)),
+				directory_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'directory'
+				})),
 				directoryForm = directory_html.find('#directory-form');
 
 			self.directoryRenderUserList(data, directory_html);
@@ -101,7 +105,12 @@ define(function(require) {
 						$('#row_no_data', directory_html).remove();
 					}
 
-					$('.rows', directory_html).prepend(monster.template(self, 'directory-userRow', user_data));
+					$('.rows', directory_html)
+						.prepend($(self.getTemplate({
+							name: 'userRow',
+							data: user_data,
+							submodule: 'directory'
+						})));
 					$('#option_user_' + user_id, directory_html).hide();
 
 					$user.val('empty_option_user');
@@ -119,7 +128,11 @@ define(function(require) {
 				$('#option_user_' + user_id, directory_html).show();
 				//if grid empty, add no data line
 				if ($('.rows .row', directory_html).size() === 0) {
-					$('.rows', directory_html).append(monster.template(self, 'directory-userRow'));
+					$('.rows', directory_html)
+						.append($(self.getTemplate({
+							name: 'userRow',
+							submodule: 'directory'
+						})));
 				}
 			});
 
@@ -145,19 +158,30 @@ define(function(require) {
 								}
 							};
 
-							$('.rows', parent).append(monster.template(self, 'directory-userRow', user_item));
+							$('.rows', parent)
+								.append($(self.getTemplate({
+									name: 'userRow',
+									data: user_item,
+									submodule: 'directory'
+								})));
 							$('#option_user_' + v.id, parent).hide();
 						}
 					});
 				} else {
 					$('.rows', parent)
 						.empty()
-						.append(monster.template(self, 'directory-userRow'));
+						.append($(self.getTemplate({
+							name: 'userRow',
+							submodule: 'directory'
+						})));
 				}
 			} else {
 				$('.rows', parent)
 					.empty()
-					.append(monster.template(self, 'directory-userRow'));
+					.append($(self.getTemplate({
+						name: 'userRow',
+						submodule: 'directory'
+					})));
 			}
 		},
 
@@ -466,9 +490,13 @@ define(function(require) {
 						self.directoryList(function(directories) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'directory-callflowEdit', {
-								items: _.sortBy(directories, 'name'),
-								selected: node.getMetadata('id') || ''
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									items: _.sortBy(directories, 'name'),
+									selected: node.getMetadata('id') || ''
+								},
+								submodule: 'directory'
 							}));
 
 							if ($('#directory_selector option:selected', popup_html).val() === undefined) {

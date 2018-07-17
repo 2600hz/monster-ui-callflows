@@ -60,10 +60,14 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'resource-account_carrier', {
-							data_resource: {
-								'hunt_account_id': node.getMetadata('hunt_account_id') || ''
-							}
+						popup_html = $(self.getTemplate({
+							name: 'account_carrier',
+							data: {
+								data_resource: {
+									'hunt_account_id': node.getMetadata('hunt_account_id') || ''
+								}
+							},
+							submodule: 'resource'
 						}));
 
 						$('#add', popup_html).click(function() {

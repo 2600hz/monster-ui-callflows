@@ -44,9 +44,13 @@ define(function(require) {
 					},
 					edit: function(node, callback) {
 						self.qubicleList(function(data) {
-							var popup_html = $(monster.template(self, 'qubicle-callflowEdit', {
-									items: _.sortBy(data, 'name'),
-									selected: node.getMetadata('id') || ''
+							var popup_html = $(self.getTemplate({
+									name: 'callflowEdit',
+									data: {
+										items: _.sortBy(data, 'name'),
+										selected: node.getMetadata('id') || ''
+									},
+									submodule: 'qubicle'
 								})),
 								popup;
 

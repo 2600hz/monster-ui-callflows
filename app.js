@@ -3,24 +3,28 @@ define(function(require) {
 		_ = require('lodash'),
 		monster = require('monster');
 
-	require([
-		'./submodules/misc/misc',
-		'./submodules/blacklist/blacklist',
-		'./submodules/conference/conference',
-		'./submodules/device/device',
-		'./submodules/directory/directory',
-		'./submodules/faxbox/faxbox',
-		'./submodules/groups/groups',
-		'./submodules/media/media',
-		'./submodules/menu/menu',
-		'./submodules/qubicle/qubicle',
-		'./submodules/resource/resource',
-		'./submodules/timeofday/timeofday',
-		'./submodules/user/user',
-		'./submodules/vmbox/vmbox',
-		'./submodules/featurecodes/featurecodes',
-		'./submodules/temporalset/temporalset'
-	]);
+	var appSubmodules = [
+		'blacklist',
+		'conference',
+		'device',
+		'directory',
+		'faxbox',
+		'featurecodes',
+		'groups',
+		'media',
+		'menu',
+		'misc',
+		'qubicle',
+		'resource',
+		'temporalset',
+		'timeofday',
+		'user',
+		'vmbox'
+	];
+
+	require(_.map(appSubmodules, function(name) {
+		return './submodules/' + name + '/' + name;
+	}));
 
 	var app = {
 		name: 'callflows',
@@ -36,11 +40,9 @@ define(function(require) {
 		requests: {},
 
 		// Define the events available for other apps
-		subscribe: {
-			'callflows.fetchActions': 'define_callflow_nodes'
-		},
+		subscribe: {},
 
-		subModules: ['misc', 'blacklist', 'conference', 'device', 'directory', 'faxbox', 'groups', 'media', 'menu', 'qubicle', 'resource', 'timeofday', 'user', 'vmbox', 'featurecodes', 'temporalset'],
+		subModules: appSubmodules,
 
 		appFlags: {
 			flow: {},
@@ -87,9 +89,12 @@ define(function(require) {
 
 		renderCallflows: function(container) {
 			var self = this,
-				callflowsTemplate = $(monster.template(self, 'callflow-manager', {
-					canToggleCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
-					hasAllCallflows: self.appFlags.showAllCallflows
+				callflowsTemplate = $(self.getTemplate({
+					name: 'callflow-manager',
+					data: {
+						canToggleCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
+						hasAllCallflows: self.appFlags.showAllCallflows
+					}
 				}));
 
 			self.bindCallflowsEvents(callflowsTemplate, container);
@@ -115,7 +120,9 @@ define(function(require) {
 				callflowList = template.find('.list-container .list'),
 				isLoading = false,
 				loader = $('<li class="content-centered list-loader"> <i class="fa fa-spinner fa-spin"></i></li>'),
-				searchLink = $(monster.template(self, 'callflowList-searchLink'));
+				searchLink = $(self.getTemplate({
+					name: 'callflowList-searchLink'
+				}));
 
 			template.find('.superadmin-mode #switch_role').on('change', function(e) {
 				self.appFlags.showAllCallflows = $(this).is(':checked');
@@ -151,7 +158,12 @@ define(function(require) {
 
 					self.listData({
 						callback: function(callflowData) {
-							var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
+							var listCallflows = $(self.getTemplate({
+								name: 'callflowList',
+								data: {
+									callflows: callflowData.data
+								}
+							}));
 
 							loader.remove();
 
@@ -361,7 +373,12 @@ define(function(require) {
 
 			actions[entityType].listEntities(function(entities) {
 				self.formatEntityData(entities, entityType);
-				var listEntities = $(monster.template(self, 'entity-list', { entities: entities }));
+				var listEntities = $(self.getTemplate({
+					name: 'entity-list',
+					data: {
+						entities: entities
+					}
+				}));
 
 				monster.ui.tooltips(listEntities);
 
@@ -402,7 +419,10 @@ define(function(require) {
 
 			self.loadAccountSettingsData(function(accountSettingsData) {
 				var formattedData = self.formatAccountSettingsData(accountSettingsData),
-					template = $(monster.template(self, 'accountSettings', formattedData)),
+					template = $(self.getTemplate({
+						name: 'accountSettings',
+						data: formattedData
+					})),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
 				monster.ui.tooltips(template);
@@ -737,7 +757,10 @@ define(function(require) {
 
 			self.listData({
 				callback: function(callflowData) {
-					var listCallflows = monster.template(self, 'callflowList', { callflows: callflowData.data });
+					var listCallflows = $(self.getTemplate({
+						name: 'callflowList',
+						data: { callflows: callflowData.data }
+					}));
 
 					template.find('.list-container .list')
 						.empty()
@@ -907,7 +930,9 @@ define(function(require) {
 
 		renderButtons: function() {
 			var self = this,
-				buttons = $(monster.template(self, 'buttons'));
+				buttons = $(self.getTemplate({
+					name: 'buttons'
+				}));
 
 			$('.buttons').empty();
 
@@ -1309,22 +1334,35 @@ define(function(require) {
 
 						if (node.actionName === 'root') {
 							$node.removeClass('icons_black root');
-							node_html = $(monster.template(self, 'root', { name: flow.name || 'Callflow' }));
+							node_html = $(self.getTemplate({
+								name: 'root',
+								data: {
+									name: flow.name || 'Callflow'
+								}
+							}));
 
 							for (var counter, size = flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
 								counter = i * 2;
 
 								var numbers = flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
-									row = monster.template(self, 'rowNumber', { numbers: numbers });
+									row = $(self.getTemplate({
+										name: 'rowNumber',
+										data: {
+											numbers: numbers
+										}
+									}));
 
 								node_html
 									.find('.content')
 									.append(row);
 							}
 						} else {
-							node_html = $(monster.template(self, 'node', {
-								node: node,
-								callflow: self.actions[node.actionName]
+							node_html = $(self.getTemplate({
+								name: 'node',
+								data: {
+									node: node,
+									callflow: self.actions[node.actionName]
+								}
 							}));
 						}
 						$(this).append(node_html);
@@ -1353,16 +1391,24 @@ define(function(require) {
 
 				if (node.actionName === 'root') {
 					$node.removeClass('icons_black root');
-					node_html = $(monster.template(self, 'root', { name: self.flow.name || 'Callflow' }));
+					node_html = $(self.getTemplate({
+						name: 'root',
+						data: {
+							name: self.flow.name || 'Callflow'
+						}
+					}));
 
 					$('.edit_icon', node_html).click(function() {
 						self.flow = $.extend(true, { contact_list: { exclude: false } }, self.flow);
 
-						var dialogTemplate = monster.template(self, 'editName', {
-								name: self.flow.name,
-								exclude: self.flow.contact_list.exclude,
-								ui_is_main_number_cf: self.dataCallflow.hasOwnProperty('ui_is_main_number_cf') ? self.dataCallflow.ui_is_main_number_cf : false
-							}),
+						var dialogTemplate = $(self.getTemplate({
+								name: 'editName',
+								data: {
+									name: self.flow.name,
+									exclude: self.flow.contact_list.exclude,
+									ui_is_main_number_cf: self.dataCallflow.hasOwnProperty('ui_is_main_number_cf') ? self.dataCallflow.ui_is_main_number_cf : false
+								}
+							})),
 							popup = monster.ui.dialog(dialogTemplate, {
 								title: self.i18n.active().oldCallflows.popup_title
 							});
@@ -1386,15 +1432,16 @@ define(function(require) {
 						});
 					});
 
-					$('.tooltip', node_html).click(function() {
-						monster.ui.dialog(monster.template(self, 'help_callflow'));
-					});
-
 					for (var counter, size = self.flow.numbers.length, j = Math.floor((size) / 2) + 1, i = 0; i < j; i++) {
 						counter = i * 2;
 
 						var numbers = self.flow.numbers.slice(counter, (counter + 2 < size) ? counter + 2 : size),
-							row = monster.template(self, 'rowNumber', { numbers: numbers });
+							row = $(self.getTemplate({
+								name: 'rowNumber',
+								data: {
+									numbers: numbers
+								}
+							}));
 
 						node_html
 							.find('.content')
@@ -1411,7 +1458,12 @@ define(function(require) {
 								}
 							});
 
-							var	popup_html = $(monster.template(self, 'addNumber', { phoneNumbers: parsedNumbers })),
+							var popup_html = $(self.getTemplate({
+									name: 'addNumber',
+									data: {
+										phoneNumbers: parsedNumbers
+									}
+								})),
 								popup = monster.ui.dialog(popup_html, {
 									title: self.i18n.active().oldCallflows.add_number
 								});
@@ -1509,9 +1561,12 @@ define(function(require) {
 						self.repaintFlow();
 					});
 				} else {
-					node_html = $(monster.template(self, 'node', {
-						node: node,
-						callflow: self.actions[node.actionName]
+					node_html = $(self.getTemplate({
+						name: 'node',
+						data: {
+							node: node,
+							callflow: self.actions[node.actionName]
+						}
 					}));
 
 					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end.
@@ -1537,7 +1592,12 @@ define(function(require) {
 				$('.details a', node_html).click(function(event) {
 					event.stopPropagation();
 					var previewCallflowId = self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id,
-						dialogTemplate = monster.template(self, 'callflows-callflowElementDetails', {id: previewCallflowId}),
+						dialogTemplate = $(self.getTemplate({
+							name: 'callflows-callflowElementDetails',
+							data: {
+								id: previewCallflowId
+							}
+						})),
 						popup;
 					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview) {
 						popup = monster.ui.dialog(dialogTemplate, {
@@ -1648,9 +1708,12 @@ define(function(require) {
 
 		renderBranch: function(branch) {
 			var self = this,
-				flow = $(monster.template(self, 'branch', {
-					node: branch,
-					display_key: branch.parent && ('key_caption' in self.actions[branch.parent.actionName])
+				flow = $(self.getTemplate({
+					name: 'branch',
+					data: {
+						node: branch,
+						display_key: branch.parent && ('key_caption' in self.actions[branch.parent.actionName])
+					}
 				})),
 				children;
 
@@ -1718,11 +1781,10 @@ define(function(require) {
 				});
 			});
 
-			tools = $(monster.template(self, 'tools', dataTemplate));
-
-			$('.tooltip', tools).click(function() {
-				monster.ui.dialog(monster.template(self, 'help_callflow'));
-			});
+			tools = $(self.getTemplate({
+				name: 'tools',
+				data: dataTemplate
+			}));
 
 			// Set the basic drawer to open
 			$('#Basic', tools).removeClass('inactive').addClass('active');
