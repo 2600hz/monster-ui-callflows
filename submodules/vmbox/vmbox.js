@@ -140,7 +140,11 @@ define(function(require) {
 		vmboxRender: function(data, target, callbacks) {
 			var self = this,
 				formattedData = self.vmboxFormatData(data),
-				vmbox_html = $(monster.template(self, 'vmbox-edit', formattedData)),
+				vmbox_html = $(self.getTemplate({
+					name: 'edit',
+					data: formattedData,
+					submodule: 'vmbox'
+				})),
 				vmboxForm = vmbox_html.find('#vmbox-form');
 
 			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
@@ -448,9 +452,13 @@ define(function(require) {
 							self.vmboxList(function(data) {
 								var popup, popup_html;
 
-								popup_html = $(monster.template(self, 'vmbox-callflowEdit', {
-									items: _.sortBy(data, 'name'),
-									selected: node.getMetadata('id') || ''
+								popup_html = $(self.getTemplate({
+									name: 'callflowEdit',
+									data: {
+										items: _.sortBy(data, 'name'),
+										selected: node.getMetadata('id') || ''
+									},
+									submodule: 'vmbox'
 								}));
 
 								if ($('#vmbox_selector option:selected', popup_html).val() === undefined) {

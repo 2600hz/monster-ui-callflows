@@ -103,12 +103,16 @@ define(function(require) {
 									}
 								});
 
-								popup_html = $(monster.template(self, 'callflow-edit_dialog', {
-									objects: {
-										type: 'callflow',
-										items: _.sortBy(_data, 'name'),
-										selected: node.getMetadata('id') || ''
-									}
+								popup_html = $(self.getTemplate({
+									name: 'edit_dialog',
+									data: {
+										objects: {
+											type: 'callflow',
+											items: _.sortBy(_data, 'name'),
+											selected: node.getMetadata('id') || ''
+										}
+									},
+									submodule: 'misc'
 								}));
 
 								$('#add', popup_html).click(function() {
@@ -330,12 +334,16 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-prepend_cid_callflow', {
-							data_cid: {
-								'caller_id_name_prefix': node.getMetadata('caller_id_name_prefix') || '',
-								'caller_id_number_prefix': node.getMetadata('caller_id_number_prefix') || '',
-								'apply_to': node.getMetadata('apply_to') || ''
-							}
+						popup_html = $(self.getTemplate({
+							name: 'prepend_cid_callflow',
+							data: {
+								data_cid: {
+									'caller_id_name_prefix': node.getMetadata('caller_id_name_prefix') || '',
+									'caller_id_number_prefix': node.getMetadata('caller_id_number_prefix') || '',
+									'apply_to': node.getMetadata('apply_to') || ''
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						$('#add', popup_html).click(function() {
@@ -414,11 +422,15 @@ define(function(require) {
 						return node.getMetadata('presence_id') || '';
 					},
 					edit: function(node, callback) {
-						var popup_html = $(monster.template(self, 'presence-callflowEdit', {
-								data_presence: {
-									'presence_id': node.getMetadata('presence_id') || '',
-									'status': node.getMetadata('status') || 'busy'
-								}
+						var popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									data_presence: {
+										'presence_id': node.getMetadata('presence_id') || '',
+										'status': node.getMetadata('status') || 'busy'
+									}
+								},
+								submodule: 'misc'
 							})),
 							popup;
 
@@ -464,10 +476,14 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-language', {
-							data_language: {
-								'language': node.getMetadata('language') || ''
-							}
+						popup_html = $(self.getTemplate({
+							name: 'language',
+							data: {
+								data_language: {
+									'language': node.getMetadata('language') || ''
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						$('#add', popup_html).click(function() {
@@ -511,11 +527,15 @@ define(function(require) {
 						self.miscGetGroupPickupData(function(results) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'misc-group_pickup', {
+							popup_html = $(self.getTemplate({
+								name: 'group_pickup',
 								data: {
-									items: results,
-									selected: node.getMetadata('device_id') || node.getMetadata('group_id') || node.getMetadata('user_id') || ''
-								}
+									data: {
+										items: results,
+										selected: node.getMetadata('device_id') || node.getMetadata('group_id') || node.getMetadata('user_id') || ''
+									}
+								},
+								submodule: 'misc'
 							}));
 
 							$('#add', popup_html).click(function() {
@@ -572,12 +592,16 @@ define(function(require) {
 								this.name = this.first_name + ' ' + this.last_name;
 							});
 
-							popup_html = $(monster.template(self, 'fax-callflowEdit', {
-								objects: {
-									items: data,
-									selected: node.getMetadata('owner_id') || '',
-									t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
-								}
+							popup_html = $(self.getTemplate({
+								name: 'callflowEdit',
+								data: {
+									objects: {
+										items: data,
+										selected: node.getMetadata('owner_id') || '',
+										t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
+									}
+								},
+								submodule: 'misc'
 							}));
 
 							if ($('#user_selector option:selected', popup_html).val() === undefined) {
@@ -640,12 +664,16 @@ define(function(require) {
 						return '';
 					},
 					edit: function(node, callback) {
-						var popup_html = $(monster.template(self, 'recordCall-callflowEdit', {
-								data_call_record: {
-									'format': node.getMetadata('format') || 'mp3',
-									'url': node.getMetadata('url') || '',
-									'time_limit': node.getMetadata('time_limit') || '600'
-								}
+						var popup_html = $(self.getTemplate({
+								name: 'recordCall-callflowEdit',
+								data: {
+									data_call_record: {
+										'format': node.getMetadata('format') || 'mp3',
+										'url': node.getMetadata('url') || '',
+										'time_limit': node.getMetadata('time_limit') || '600'
+									}
+								},
+								submodule: 'misc'
 							})),
 							popup;
 
@@ -717,13 +745,17 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-pivot', {
-							data_pivot: {
-								'method': node.getMetadata('method') || 'get',
-								'voice_url': node.getMetadata('voice_url') || '',
-								'req_timeout': node.getMetadata('req_timeout') || '5',
-								'req_format': node.getMetadata('req_format') || 'twiml'
-							}
+						popup_html = $(self.getTemplate({
+							name: 'pivot',
+							data: {
+								data_pivot: {
+									'method': node.getMetadata('method') || 'get',
+									'voice_url': node.getMetadata('voice_url') || '',
+									'req_timeout': node.getMetadata('req_timeout') || '5',
+									'req_format': node.getMetadata('req_format') || 'twiml'
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						$('#add', popup_html).click(function() {
@@ -769,15 +801,19 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-disa', {
-							data_disa: {
-								'pin': node.getMetadata('pin'),
-								'retries': node.getMetadata('retries'),
-								'interdigit': node.getMetadata('interdigit'),
-								'max_digits': node.getMetadata('max_digits'),
-								'preconnect_audio': node.getMetadata('preconnect_audio'),
-								'use_account_caller_id': node.getMetadata('use_account_caller_id')
-							}
+						popup_html = $(self.getTemplate({
+							name: 'disa',
+							data: {
+								data_disa: {
+									'pin': node.getMetadata('pin'),
+									'retries': node.getMetadata('retries'),
+									'interdigit': node.getMetadata('interdigit'),
+									'max_digits': node.getMetadata('max_digits'),
+									'preconnect_audio': node.getMetadata('preconnect_audio'),
+									'use_account_caller_id': node.getMetadata('use_account_caller_id')
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						monster.ui.tooltips(popup_html);
@@ -844,14 +880,18 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-collect-dtmf', {
-							data_dtmf: {
-								'interdigit_timeout': node.getMetadata('interdigit_timeout') || '',
-								'collection_name': node.getMetadata('collection_name') || '',
-								'max_digits': node.getMetadata('max_digits') || '',
-								'terminator': node.getMetadata('terminator') || '#',
-								'timeout': node.getMetadata('timeout') || '5000'
-							}
+						popup_html = $(self.getTemplate({
+							name: 'collect-dtmf',
+							data: {
+								data_dtmf: {
+									'interdigit_timeout': node.getMetadata('interdigit_timeout') || '',
+									'collection_name': node.getMetadata('collection_name') || '',
+									'max_digits': node.getMetadata('max_digits') || '',
+									'terminator': node.getMetadata('terminator') || '#',
+									'timeout': node.getMetadata('timeout') || '5000'
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						monster.ui.tooltips(popup_html);
@@ -908,10 +948,14 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-sleep', {
-							data_sleep: {
-								'duration': node.getMetadata('duration')
-							}
+						popup_html = $(self.getTemplate({
+							name: 'sleep',
+							data: {
+								data_sleep: {
+									'duration': node.getMetadata('duration')
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						monster.ui.tooltips(popup_html);
@@ -963,12 +1007,16 @@ define(function(require) {
 					edit: function(node, callback) {
 						var popup, popup_html;
 
-						popup_html = $(monster.template(self, 'misc-tts', {
-							data_tts: {
-								'text': node.getMetadata('text'),
-								'language': node.getMetadata('language'),
-								'voice': node.getMetadata('voice')
-							}
+						popup_html = $(self.getTemplate({
+							name: 'tts',
+							data: {
+								data_tts: {
+									'text': node.getMetadata('text'),
+									'language': node.getMetadata('language'),
+									'voice': node.getMetadata('voice')
+								}
+							},
+							submodule: 'misc'
 						}));
 
 						monster.ui.tooltips(popup_html);
@@ -1025,14 +1073,18 @@ define(function(require) {
 						self.miscMediaList(function(data) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'misc-response', {
-								response_data: {
-									items: data,
-									media_enabled: node.getMetadata('media') ? true : false,
-									selected_media: node.getMetadata('media') || '',
-									code: node.getMetadata('code') || '',
-									message: node.getMetadata('message') || ''
-								}
+							popup_html = $(self.getTemplate({
+								name: 'response',
+								data: {
+									response_data: {
+										items: data,
+										media_enabled: node.getMetadata('media') ? true : false,
+										selected_media: node.getMetadata('media') || '',
+										code: node.getMetadata('code') || '',
+										message: node.getMetadata('message') || ''
+									}
+								},
+								submodule: 'misc'
 							}));
 
 							if ($('#media_selector option:selected', popup_html).val() === undefined
@@ -1153,7 +1205,13 @@ define(function(require) {
 					}
 				});
 
-				var template = $(monster.template(self, 'misc-missedCallAlert-dialog', { emails: selectedEmails.toString() })),
+				var template = $(self.getTemplate({
+						name: 'missedCallAlert-dialog',
+						data: {
+							emails: selectedEmails.toString()
+						},
+						submodule: 'misc'
+					})),
 					widget = monster.ui.linkedColumns(template.find('.items-selector-wrapper'), items, selectedItems, {
 						i18n: {
 							columnsTitles: {

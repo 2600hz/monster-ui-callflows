@@ -17,7 +17,11 @@ define(function(require) {
 
 			self.featureCodeGetData(function(featureCodes) {
 				var formattedData = self.featureCodeFormatData(featureCodes),
-					template = $(monster.template(self, 'featurecodes-view', formattedData));
+					template = $(self.getTemplate({
+						name: 'view',
+						data: formattedData,
+						submodule: 'featurecodes'
+					}));
 
 				self.featureCodeBindEvents(template, formattedData.actions);
 
@@ -859,7 +863,7 @@ define(function(require) {
 				var popup,
 					formattedData = self.featureCodesFormatParkingData(data),
 					template = $(self.getTemplate({
-						name: 'featurecodes-parking-parkandretrieve',
+						name: 'parking-parkandretrieve',
 						submodule: 'featurecodes',
 						data: formattedData
 					}));
@@ -904,7 +908,7 @@ define(function(require) {
 				var popup,
 					formattedData = self.featureCodesFormatParkingData(data),
 					template = $(self.getTemplate({
-						name: 'featurecodes-parking-valet',
+						name: 'parking-valet',
 						submodule: 'featurecodes',
 						data: formattedData
 					}));

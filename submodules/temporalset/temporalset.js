@@ -168,7 +168,11 @@ define(function(require) {
 
 		temporalsetRender: function(data, target, callbacks) {
 			var self = this,
-				temporalset_html = $(monster.template(self, 'temporalset-callflowEdit', data)),
+				temporalset_html = $(self.getTemplate({
+					name: 'callflowEdit',
+					data: data,
+					submodule: 'temporalset'
+				})),
 				temporalsetForm = temporalset_html.find('#temporalset-form'),
 				widgetRules = self.temporalSetFormatRules(data);
 

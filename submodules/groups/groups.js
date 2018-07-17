@@ -13,7 +13,11 @@ define(function(require) {
 
 		groupsRender: function(data, target, callbacks) {
 			var self = this,
-				groups_html = $(monster.template(self, 'groups-edit', data)),
+				groups_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'groups'
+				})),
 				groupForm = groups_html.find('#group-form');
 
 			monster.ui.validate(groupForm, {
@@ -141,7 +145,11 @@ define(function(require) {
 				$('#option_endpoint_' + endpoint_id, groups_html).show();
 				//if grid empty, add no data line
 				if ($('.rows .row', groups_html).size() === 0) {
-					$('.rows', groups_html).append(monster.template(self, 'groups-endpoint_row'));
+					$('.rows', groups_html)
+						.append($(self.getTemplate({
+							name: 'endpoint_row',
+							submodule: 'groups'
+						})));
 				}
 
 				/* TODO For some reason splice doesn't work and I don't have time to make it better for now */
@@ -248,13 +256,21 @@ define(function(require) {
 
 			if ('endpoints' in data.data && data.data.endpoints.length > 0) {
 				$.each(data.data.endpoints, function(k, item) {
-					$('.rows', parent).append(monster.template(self, 'groups-endpoint_row', item));
+					$('.rows', parent)
+						.append($(self.getTemplate({
+							name: 'endpoint_row',
+							data: item,
+							submodule: 'groups'
+						})));
 					$('#option_endpoint_' + item.endpoint_id, parent).hide();
 				});
 			} else {
 				$('.rows', parent)
 					.empty()
-					.append(monster.template(self, 'groups-endpoint_row'));
+					.append($(self.getTemplate({
+						name: 'endpoint_row',
+						submodule: 'groups'
+					})));
 			}
 		},
 
@@ -397,12 +413,16 @@ define(function(require) {
 						self.groupsGetEndpoints(function(formattedData) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'misc-eavesdrop', {
-								fieldData: formattedData,
+							popup_html = $(self.getTemplate({
+								name: 'eavesdrop',
 								data: {
-									'selectedId': node.getMetadata('device_id') || node.getMetadata('user_id') || '',
-									'approvedId': node.getMetadata('approved_device_id') || node.getMetadata('approved_user_id') || node.getMetadata('approved_group_id') || ''
-								}
+									fieldData: formattedData,
+									data: {
+										'selectedId': node.getMetadata('device_id') || node.getMetadata('user_id') || '',
+										'approvedId': node.getMetadata('approved_device_id') || node.getMetadata('approved_user_id') || node.getMetadata('approved_group_id') || ''
+									}
+								},
+								submodule: 'groups'
 							}));
 
 							monster.ui.tooltips(popup_html);
@@ -466,12 +486,16 @@ define(function(require) {
 						self.groupsGetEndpoints(function(formattedData) {
 							var popup, popup_html;
 
-							popup_html = $(monster.template(self, 'misc-intercept', {
-								fieldData: formattedData,
+							popup_html = $(self.getTemplate({
+								name: 'intercept',
 								data: {
-									'selectedId': node.getMetadata('device_id') || node.getMetadata('user_id') || '',
-									'approvedId': node.getMetadata('approved_device_id') || node.getMetadata('approved_user_id') || node.getMetadata('approved_group_id') || ''
-								}
+									fieldData: formattedData,
+									data: {
+										'selectedId': node.getMetadata('device_id') || node.getMetadata('user_id') || '',
+										'approvedId': node.getMetadata('approved_device_id') || node.getMetadata('approved_user_id') || node.getMetadata('approved_group_id') || ''
+									}
+								},
+								submodule: 'groups'
 							}));
 
 							monster.ui.tooltips(popup_html);
@@ -563,12 +587,16 @@ define(function(require) {
 									}
 								});
 
-								popup_html = $(monster.template(self, 'groups-ring_group_login_dialog', {
-									objects: {
-										type: 'callflow',
-										items: _.sortBy(_data, 'name'),
-										selected: node.getMetadata('callflow_id') || ''
-									}
+								popup_html = $(self.getTemplate({
+									name: 'ring_group_login_dialog',
+									data: {
+										objects: {
+											type: 'callflow',
+											items: _.sortBy(_data, 'name'),
+											selected: node.getMetadata('callflow_id') || ''
+										}
+									},
+									submodule: 'groups'
 								}));
 
 								$('#add', popup_html).click(function() {
@@ -642,12 +670,16 @@ define(function(require) {
 									}
 								});
 
-								popup_html = $(monster.template(self, 'groups-ring_group_logout_dialog', {
-									objects: {
-										type: 'callflow',
-										items: _.sortBy(_data, 'name'),
-										selected: node.getMetadata('callflow_id') || ''
-									}
+								popup_html = $(self.getTemplate({
+									name: 'ring_group_logout_dialog',
+									data: {
+										objects: {
+											type: 'callflow',
+											items: _.sortBy(_data, 'name'),
+											selected: node.getMetadata('callflow_id') || ''
+										}
+									},
+									submodule: 'groups'
 								}));
 
 								$('#add', popup_html).click(function() {
@@ -768,28 +800,52 @@ define(function(require) {
 						});
 						unselected_users = _.sortBy(unselected_users, 'name');
 
-						popup_html = $(monster.template(self, 'groups-page_group_dialog', {
-							form: {
-								name: node.getMetadata('name') || '',
-								audio: node.getMetadata('audio') || 'one-way'
-							}
+						popup_html = $(self.getTemplate({
+							name: 'groups-page_group_dialog',
+							data: {
+								form: {
+									name: node.getMetadata('name') || '',
+									audio: node.getMetadata('audio') || 'one-way'
+								}
+							},
+							submodule: 'groups'
 						}));
 						$.each(unselected_groups, function() {
-							$('#groups_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', this)));
+							$('#groups_pane .connect.left', popup_html)
+								.append($(self.getTemplate({
+									name: 'groups-page_group_element',
+									data: this,
+									submodule: 'groups'
+								})));
 						});
 
 						$.each(unselected_devices, function() {
-							$('#devices_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', this)));
+							$('#devices_pane .connect.left', popup_html)
+								.append($(self.getTemplate({
+									name: 'groups-page_group_element',
+									data: this,
+									submodule: 'groups'
+								})));
 						});
 
 						$.each(unselected_users, function() {
-							$('#users_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', this)));
+							$('#users_pane .connect.left', popup_html)
+								.append($(self.getTemplate({
+									name: 'groups-page_group_element',
+									data: this,
+									submodule: 'groups'
+								})));
 						});
 
 						$.each(selected_endpoints, function() {
 							//Check if user/device exists.
 							if (this.endpoint_type) {
-								$('.connect.right', popup_html).append($(monster.template(self, 'groups-page_group_element', this)));
+								$('.connect.right', popup_html)
+									.append($(self.getTemplate({
+										name: 'groups-page_group_element',
+										data: this,
+										submodule: 'groups'
+									})));
 							}
 						});
 
@@ -967,7 +1023,12 @@ define(function(require) {
 							var $parent_li = li;
 							var data = $parent_li.data();
 							data.name = jQuery.trim($('.item_name', $parent_li).html());
-							$('#' + data.endpoint_type + 's_pane .connect.left', popup_html).append($(monster.template(self, 'groups-page_group_element', data)));
+							$('#' + data.endpoint_type + 's_pane .connect.left', popup_html)
+								.append($(self.getTemplate({
+									name: 'page_group_element',
+									data: data,
+									submodule: 'groups'
+								})));
 							$parent_li.remove();
 
 							if ($('.connect.right li', popup_html).size() === 0) {
@@ -1060,63 +1121,87 @@ define(function(require) {
 								mediaId = node.getMetadata('ringback') || 'default',
 								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000';
 
-							popup_html = $(monster.template(self, 'groups-ring_group_dialog', {
-								form: {
-									name: node.getMetadata('name') || '',
-									strategy: {
-										items: [
-											{
-												id: 'simultaneous',
-												name: self.i18n.active().oldCallflows.at_the_same_time
-											},
-											{
-												id: 'single',
-												name: self.i18n.active().oldCallflows.in_order
-											}
-										],
-										selected: node.getMetadata('strategy') || 'simultaneous'
-									},
-									timeout: node.getMetadata('timeout') || '30',
-									repeats: node.getMetadata('repeats') || 1,
-									ringback: {
-										items: $.merge([
-											{
-												id: 'default',
-												name: self.i18n.active().oldCallflows.default,
-												class: 'uneditable'
-											},
-											{
-												id: 'silence_stream://300000',
-												name: self.i18n.active().oldCallflows.silence,
-												class: 'uneditable'
-											},
-											{
-												id: 'shoutcast_url',
-												name: self.i18n.active().callflows.media.shoutcastURL,
-												class: 'uneditable'
-											}
-										], media_array),
-										selected: isShoutcast ? 'shoutcast_url' : mediaId,
-										shoutcastValue: mediaId
+							popup_html = $(self.getTemplate({
+								name: 'ring_group_dialog',
+								data: {
+									form: {
+										name: node.getMetadata('name') || '',
+										strategy: {
+											items: [
+												{
+													id: 'simultaneous',
+													name: self.i18n.active().oldCallflows.at_the_same_time
+												},
+												{
+													id: 'single',
+													name: self.i18n.active().oldCallflows.in_order
+												}
+											],
+											selected: node.getMetadata('strategy') || 'simultaneous'
+										},
+										timeout: node.getMetadata('timeout') || '30',
+										repeats: node.getMetadata('repeats') || 1,
+										ringback: {
+											items: $.merge([
+												{
+													id: 'default',
+													name: self.i18n.active().oldCallflows.default,
+													class: 'uneditable'
+												},
+												{
+													id: 'silence_stream://300000',
+													name: self.i18n.active().oldCallflows.silence,
+													class: 'uneditable'
+												},
+												{
+													id: 'shoutcast_url',
+													name: self.i18n.active().callflows.media.shoutcastURL,
+													class: 'uneditable'
+												}
+											], media_array),
+											selected: isShoutcast ? 'shoutcast_url' : mediaId,
+											shoutcastValue: mediaId
+										}
 									}
-								}
+								},
+								submodule: 'groups'
 							}));
 							$.each(unselected_groups, function() {
-								$('#groups_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', this)));
+								$('#groups_pane .connect.left', popup_html)
+									.append($(self.getTemplate({
+										name: 'ring_group_element',
+										data: this,
+										submodule: 'groups'
+									})));
 							});
 
 							$.each(unselected_devices, function() {
-								$('#devices_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', this)));
+								$('#devices_pane .connect.left', popup_html)
+									.append($(self.getTemplate({
+										name: 'ring_group_element',
+										data: this,
+										submodule: 'groups'
+									})));
 							});
 
 							$.each(unselected_users, function() {
-								$('#users_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', this)));
+								$('#users_pane .connect.left', popup_html)
+									.append($(self.getTemplate({
+										name: 'ring_group_element',
+										data: this,
+										submodule: 'groups'
+									})));
 							});
 
 							$.each(selected_endpoints, function() {
 								//Check if user/device exists.
 								if (this.endpoint_type) {
-									$('.connect.right', popup_html).append($(monster.template(self, 'groups-ring_group_element', this)));
+									$('.connect.right', popup_html)
+										.append($(self.getTemplate({
+											name: 'ring_group_element',
+											data: this,
+											submodule: 'groups'
+										})));
 								}
 							});
 
@@ -1372,7 +1457,12 @@ define(function(require) {
 								var $parent_li = li;
 								var data = $parent_li.data();
 								data.name = jQuery.trim($('.item_name', $parent_li).html());
-								$('#' + data.endpoint_type + 's_pane .connect.left', popup_html).append($(monster.template(self, 'groups-ring_group_element', data)));
+								$('#' + data.endpoint_type + 's_pane .connect.left', popup_html)
+									.append($(self.getTemplate({
+										name: 'ring_group_element',
+										data: data,
+										submodule: 'groups'
+									})));
 								$parent_li.remove();
 
 								if ($('.connect.right li', popup_html).size() === 0) {

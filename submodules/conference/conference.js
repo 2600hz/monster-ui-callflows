@@ -46,9 +46,13 @@ define(function(require) {
 					},
 					edit: function(node, callback) {
 						self.conferenceList(function(data, status) {
-							var popup_html = $(monster.template(self, 'conference-callflowEdit', {
-									items: _.sortBy(data, 'name'),
-									selected: node.getMetadata('id') || ''
+							var popup_html = $(self.getTemplate({
+									name: 'callflowEdit',
+									data: {
+										items: _.sortBy(data, 'name'),
+										selected: node.getMetadata('id') || ''
+									},
+									submodule: 'conference'
 								})),
 								popup;
 
@@ -253,7 +257,11 @@ define(function(require) {
 
 		conferenceRender: function(data, target, callbacks) {
 			var self = this,
-				conference_html = $(monster.template(self, 'conference-edit', data)),
+				conference_html = $(self.getTemplate({
+					name: 'edit',
+					data: data,
+					submodule: 'conference'
+				})),
 				conference_form = conference_html.find('#conference_form');
 
 			monster.ui.validate(conference_form, {
