@@ -1,8 +1,7 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster'),
-		toastr = require('toastr');
+		monster = require('monster');
 
 	var app = {
 		requests: {},
@@ -124,7 +123,10 @@ define(function(require) {
 					$this.addClass('disabled');
 
 					self.featureCodeMassUpdate(formData, function() {
-						toastr.success(self.i18n.active().callflows.featureCodes.successUpdate);
+						monster.ui.toast({
+							type: 'success',
+							message: self.i18n.active().callflows.featureCodes.successUpdate
+						});
 						$this.removeClass('disabled');
 
 						self.featureCodeRender();
@@ -345,7 +347,10 @@ define(function(require) {
 				});
 			} else {
 				errorCallback && errorCallback();
-				toastr.error(self.i18n.active().callflows.featureCodes.nothing_to_save);
+				monster.ui.toast({
+					type: 'error',
+					message: self.i18n.active().callflows.featureCodes.nothing_to_save
+				});
 			}
 		},
 
@@ -889,7 +894,10 @@ define(function(require) {
 							dataToUpdate = self.featureCodesNormalizeData(data, formData);
 
 						self.featureCodeUpdate(dataToUpdate.id, dataToUpdate, function() {
-							toastr.success(self.i18n.active().callflows.featureCodes.parkingParkAndRetrievePopup.successUpdate);
+							monster.ui.toast({
+								type: 'sucess',
+								message: self.i18n.active().callflows.featureCodes.parkingParkAndRetrievePopup.successUpdate
+							});
 							popup.dialog('close');
 						});
 					}
@@ -934,7 +942,10 @@ define(function(require) {
 							dataToUpdate = self.featureCodesNormalizeData(data, formData);
 
 						self.featureCodeUpdate(dataToUpdate.id, dataToUpdate, function() {
-							toastr.success(self.i18n.active().callflows.featureCodes.parkingValetPopup.successUpdate);
+							monster.ui.toast({
+								type: 'success',
+								message: self.i18n.active().callflows.featureCodes.parkingValetPopup.successUpdate
+							});
 							popup.dialog('close');
 						});
 					}

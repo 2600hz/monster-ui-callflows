@@ -2,8 +2,7 @@ define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
 		monster = require('monster'),
-		timezone = require('monster-timezone'),
-		toastr = require('toastr');
+		timezone = require('monster-timezone');
 
 	var app = {
 		requests: {},
@@ -326,7 +325,10 @@ define(function(require) {
 
 				if (!$this.hasClass('disabled')) {
 					if ($('#cycle', timeofday_html).val() === 'weekly' && selectedWdays === 0) {
-						toastr.warning(self.i18n.active().callflows.timeofday.toastr.warning.missingDay);
+						monster.ui.toast({
+							type: 'warning',
+							message: self.i18n.active().callflows.timeofday.toastr.warning.missingDay
+						});
 					} else if (monster.ui.valid(timeofdayForm)) {
 						$this.addClass('disabled');
 
