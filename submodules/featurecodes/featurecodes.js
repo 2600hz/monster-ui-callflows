@@ -895,7 +895,7 @@ define(function(require) {
 
 						self.featureCodeUpdate(dataToUpdate.id, dataToUpdate, function() {
 							monster.ui.toast({
-								type: 'sucess',
+								type: 'success',
 								message: self.i18n.active().callflows.featureCodes.parkingParkAndRetrievePopup.successUpdate
 							});
 							popup.dialog('close');
