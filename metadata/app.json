@@ -1,6 +1,17 @@
 {
 	"name": "callflows",
 	"i18n": {
+		"de-DE": {
+			"label": "Callflows",
+			"description": "Mithilfe der Callflows-App können Sie Callflows und verschiedene VoIP-Aspekte verwalten.",
+			"extended_description": "Die Callflows-App verfügt über eine Drag-and-Drop-fähige Benutzeroberfläche, in der Benutzer zwischen 50 Elementen in einer „Werkzeugkiste für die Verarbeitung von Anrufen“ wählen und diese miteinander verketten können. Diese Ketten werden auch als Callflows bezeichnet und ermöglichen es, den Verlauf zu beeinflussen, über den ein Anruf erfolgt. Das können zum Beispiel bestimmte Funktionen sein, über die ein Anruf geleitet werden soll, oder bestimmte Menüs, die einem Anrufer zugänglich sein sollen, oder bestimmte Entscheidungen, die das System bezüglich der Weiterleitung von Anrufen treffen soll. Verwenden Sie den Callflows-App-Editor, um die einzelnen Schritte zu konfigurieren, die bei Anrufen von Haupt- oder Nebenstellennummern erfolgen sollen. Leiten Sie Anrufe an Menüs, Rufgruppen, Voicemails, Konferenzbrücken, Warteschleifen, Anrufbeantworter und vieles mehr weiter.",
+			"features": [
+				"Management per Drag-and-Drop",
+				"Mehr als 50 Aktionen für die Verarbeitung von Anrufen, wie z.B. Weiterleitung je nach der Uhrzeit, Weiterleitung an bestimmte Geräte/Benutzer, Menüs/IVRs, Anrufübernahme, BLF/Anwesenheits-Manipulation, Weiterleitung ausgehender Anrufe...",
+				"Benutzerdefinierte Callflows erstellen",
+				"Funktionscodes anpassen"
+			]
+		},
 		"en-US": {
 			"label": "Callflows",
 			"description": "The Callflows allows you manage Callflows as well as various VOIP entities.",
