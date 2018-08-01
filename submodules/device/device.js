@@ -1244,11 +1244,12 @@ define(function(require) {
 									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
 									isRegistered: device.enabled ? (['sip_device', 'smartphone', 'softphone', 'fax', 'ata'].indexOf(device.device_type) >= 0 ? registeredDevices.indexOf(device.id) >= 0 : true) : false
 								};
-								device.customEntityTemplate = $(self.getTemplate({
+								// no jQuery wrapper since this template will be inserted directly with Handlebars
+								device.customEntityTemplate = self.getTemplate({
 									name: 'entity-element',
 									data: dataTemplate,
 									submodule: 'device'
-								}));
+								});
 							});
 
 							callback && callback(results.device);
