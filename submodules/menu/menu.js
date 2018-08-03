@@ -367,7 +367,7 @@ define(function(require) {
 						*/
 
 						popup_html = $(self.getTemplate({
-							name: 'menu-callflowKey',
+							name: 'callflowKey',
 							data: {
 								items: {
 									'_': self.i18n.active().callflows.menu.default_action,

@@ -801,7 +801,7 @@ define(function(require) {
 						unselected_users = _.sortBy(unselected_users, 'name');
 
 						popup_html = $(self.getTemplate({
-							name: 'groups-page_group_dialog',
+							name: 'page_group_dialog',
 							data: {
 								form: {
 									name: node.getMetadata('name') || '',
@@ -813,7 +813,7 @@ define(function(require) {
 						$.each(unselected_groups, function() {
 							$('#groups_pane .connect.left', popup_html)
 								.append($(self.getTemplate({
-									name: 'groups-page_group_element',
+									name: 'page_group_element',
 									data: this,
 									submodule: 'groups'
 								})));
@@ -822,7 +822,7 @@ define(function(require) {
 						$.each(unselected_devices, function() {
 							$('#devices_pane .connect.left', popup_html)
 								.append($(self.getTemplate({
-									name: 'groups-page_group_element',
+									name: 'page_group_element',
 									data: this,
 									submodule: 'groups'
 								})));
@@ -831,7 +831,7 @@ define(function(require) {
 						$.each(unselected_users, function() {
 							$('#users_pane .connect.left', popup_html)
 								.append($(self.getTemplate({
-									name: 'groups-page_group_element',
+									name: 'page_group_element',
 									data: this,
 									submodule: 'groups'
 								})));
@@ -842,7 +842,7 @@ define(function(require) {
 							if (this.endpoint_type) {
 								$('.connect.right', popup_html)
 									.append($(self.getTemplate({
-										name: 'groups-page_group_element',
+										name: 'page_group_element',
 										data: this,
 										submodule: 'groups'
 									})));
