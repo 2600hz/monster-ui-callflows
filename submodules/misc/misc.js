@@ -104,7 +104,7 @@ define(function(require) {
 								});
 
 								popup_html = $(self.getTemplate({
-									name: 'edit_dialog',
+									name: 'callflow-edit_dialog',
 									data: {
 										objects: {
 											type: 'callflow',
@@ -423,7 +423,7 @@ define(function(require) {
 					},
 					edit: function(node, callback) {
 						var popup_html = $(self.getTemplate({
-								name: 'callflowEdit',
+								name: 'presence-callflowEdit',
 								data: {
 									data_presence: {
 										'presence_id': node.getMetadata('presence_id') || '',
@@ -593,7 +593,7 @@ define(function(require) {
 							});
 
 							popup_html = $(self.getTemplate({
-								name: 'callflowEdit',
+								name: 'fax-callflowEdit',
 								data: {
 									objects: {
 										items: data,
