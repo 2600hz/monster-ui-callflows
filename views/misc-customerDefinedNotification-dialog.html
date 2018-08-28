@@ -1,0 +1,46 @@
+<div id="customer_defined_notification_popup" class="dialog_popup missed-call-alert callflows-port">
+	{{#monsterText}}
+		{{ i18n.callflows.customerDefinedNotification.help }}
+	{{/monsterText}}
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="nodification_selector">{{ i18n.callflows.customerDefinedNotification.notification }}</label>
+				<div class="select_wrapper">
+					<select id="nodification_selector">
+					{{#select notificationsList.selected}}
+						{{#each notificationsList.items}}
+							<option value="{{ id }}">{{friendly_name}}</option>
+						{{/each}}
+					{{/select}}
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="tts_voice_input">{{ i18n.callflows.customerDefinedNotification.at }}</label>
+				<div class="select_wrapper">
+					<select id="send_at">
+						{{#select sendAt}}
+							<option value="channel_destroy">{{ i18n.callflows.customerDefinedNotification.atChannelDestroy }}</option>
+							<option value="callflow_exec">{{ i18n.callflows.customerDefinedNotification.atCallflowExec }}</option>
+						{{/select}}
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="emails">{{ i18n.callflows.customerDefinedNotification.emails }}</label>
+				<textarea id="emails">{{emails}}</textarea>
+			</div>
+		</div>
+	</form>
+
+	<div class="items-selector-wrapper"></div>
+
+	<div class="buttons-center">
+		<button class="monster-button monster-button-primary" id="save_customer_defined_notification">{{ i18n.save }}</button>
+	</div>
+</div>

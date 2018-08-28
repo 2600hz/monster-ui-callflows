@@ -988,6 +988,20 @@
 			"unselectedUsers": "Unselected Users",
 			"selectedUsers": "Selected Users"
 		},
+		"customerDefinedNotification": {
+			"title": "Customer Defined Notification",
+			"tip": "Allows users to receive an custom email notification for received calls. Email may be send before call answered or after call disconected.",
+			"help": "This feature allows you to let users receive custom email notification for inbound calls. Please type a list of emails, separated by commas, or select users from the list below, then press Save, to create a callflow with this feature.",
+			"notification": "Send Notification",
+			"at": "At",
+			"atCallflowExec": "callflow execution",
+			"atChannelDestroy": "channel destroy",
+			"emails": "To Emails",
+			"emailsHelp": "List of email addresses separated by a comma that will receive a notification",
+			"popupTitle": "Customer Defined Notification",
+			"unselectedUsers": "Unselected Users",
+			"selectedUsers": "Selected Users"
+		},
 
 		"__comment": "UI-2646: adding ring group togle to adv. callflows",
 		"__version": "v4.1",

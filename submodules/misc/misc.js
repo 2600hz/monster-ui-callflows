@@ -37,6 +37,28 @@ define(function(require) {
 			});
 		},
 
+		miscGetNotificationData: function(callback) {
+			var self = this;
+
+			monster.parallel({
+				notifications: function(callback) {
+					self.miscNotificationList(function(data) {
+						callback(null, data);
+					});
+				},
+				users: function(callback) {
+					self.miscUserList(function(data) {
+						_.each(data, function(user) {
+							user.name = user.first_name + ' ' + user.last_name;
+						});
+						callback(null, data);
+					});
+				}
+			}, function(err, results) {
+				callback && callback(results);
+			});
+		},
+
 		miscDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions;
@@ -1169,6 +1191,30 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscEditMissedCallAlerts(node, callback);
 					}
+				},
+				'customer_defined_notification[]': {
+					name: self.i18n.active().callflows.customerDefinedNotification.title,
+					icon: 'bell1',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'customer_defined_notification',
+					tip: self.i18n.active().callflows.customerDefinedNotification.tip,
+					data: {
+						name: ''
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 31,
+					caption: function() {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscEditCustomerDefinedNotification(node, callback);
+					}
 				}
 			});
 		},
@@ -1258,6 +1304,93 @@ define(function(require) {
 			});
 		},
 
+		miscEditCustomerDefinedNotification: function(node, callback) {
+			var self = this,
+				recipients = node.getMetadata('recipients'),
+				sendAt = node.getMetadata('send_at'),
+				templateId = node.getMetadata('template_id'),
+				mapUsers = {},
+				selectedEmails = [],
+				popup;
+
+			_.each(recipients, function(recipient) {
+				if (recipient.type === 'user') {
+					mapUsers[recipient.id] = recipient;
+				} else if (recipient.type === 'email') {
+					selectedEmails.push(recipient.id);
+				}
+			});
+
+
+			self.miscGetNotificationData(function(results) {
+				var items = [],
+					notificationsList = {items: results.notifications, selected: templateId},
+					selectedItems = [];
+
+				_.each(results.users, function(user) {
+					var formattedUser = {
+						key: user.id,
+						value: user.first_name + ' ' + user.last_name
+					};
+
+					items.push(formattedUser);
+
+					if (mapUsers.hasOwnProperty(user.id)) {
+						selectedItems.push(formattedUser);
+					}
+				});
+
+				var template = $(monster.template(self, 'misc-customerDefinedNotification-dialog', { emails: selectedEmails.toString(), sendAt: sendAt, notificationsList: notificationsList })),
+					widget = monster.ui.linkedColumns(template.find('.items-selector-wrapper'), items, selectedItems, {
+						i18n: {
+							columnsTitles: {
+								available: self.i18n.active().callflows.customerDefinedNotification.unselectedUsers,
+								selected: self.i18n.active().callflows.customerDefinedNotification.selectedUsers
+							}
+						},
+						containerClasses: 'skinny'
+					});
+
+				template.find('#save_customer_defined_notification').on('click', function() {
+					var recipients = [],
+						templateId = template.find('#nodification_selector').val(),
+						sendAt = template.find('#send_at').val(),
+						emails = template.find('#emails').val();
+
+					emails = emails.replace(/\s/g, '').split(',');
+
+					_.each(emails, function(email) {
+						recipients.push({
+							type: 'email',
+							id: email
+						});
+					});
+
+					_.each(widget.getSelectedItems(), function(id) {
+						recipients.push({
+							type: 'user',
+							id: id
+						});
+					});
+
+					node.setMetadata('template_id', templateId);
+					node.setMetadata('send_at', sendAt);
+					node.setMetadata('recipients', recipients);
+
+					popup.dialog('close');
+				});
+
+				popup = monster.ui.dialog(template, {
+					title: self.i18n.active().callflows.customerDefinedNotification.popupTitle,
+					beforeClose: function() {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				});
+			});
+		},
+
 		miscDeviceList: function(callback) {
 			var self = this;
 
@@ -1283,6 +1416,24 @@ define(function(require) {
 				data: {
 					accountId: self.accountId,
 					filters: {
+						paginate: false
+					}
+				},
+				success: function(data, status) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		miscNotificationList: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'whitelabel.listNotifications',
+				data: {
+					accountId: self.accountId,
+					filters: {
+						filter_account_defined: true,
 						paginate: false
 					}
 				},
