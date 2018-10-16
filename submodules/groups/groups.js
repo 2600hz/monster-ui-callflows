@@ -199,7 +199,10 @@ define(function(require) {
 					self.callApi({
 						resource: 'device.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(data) {
 							defaults.field_data.devices = data.data;
@@ -211,7 +214,10 @@ define(function(require) {
 					self.callApi({
 						resource: 'user.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(data) {
 							defaults.field_data.users = data.data;
