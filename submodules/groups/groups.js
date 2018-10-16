@@ -196,14 +196,7 @@ define(function(require) {
 
 			monster.parallel({
 				device_list: function(callback) {
-					self.callApi({
-						resource: 'device.list',
-						data: {
-							accountId: self.accountId,
-							filters: {
-								paginate: false
-							}
-						},
+					self.groupsRequestDeviceList({
 						success: function(data) {
 							defaults.field_data.devices = data.data;
 							callback(null, data);
@@ -211,14 +204,7 @@ define(function(require) {
 					});
 				},
 				user_list: function(callback) {
-					self.callApi({
-						resource: 'user.list',
-						data: {
-							accountId: self.accountId,
-							filters: {
-								paginate: false
-							}
-						},
+					self.groupsRequestUserList({
 						success: function(data) {
 							defaults.field_data.users = data.data;
 							callback(null, data);
@@ -1488,14 +1474,7 @@ define(function(require) {
 		groupsDeviceList: function(callback) {
 			var self = this;
 
-			self.callApi({
-				resource: 'device.list',
-				data: {
-					accountId: self.accountId,
-					filters: {
-						paginate: false
-					}
-				},
+			self.groupsRequestDeviceList({
 				success: function(data, status) {
 					callback && callback(data.data);
 				}
@@ -1522,14 +1501,7 @@ define(function(require) {
 		groupsUserList: function(callback) {
 			var self = this;
 
-			self.callApi({
-				resource: 'user.list',
-				data: {
-					accountId: self.accountId,
-					filters: {
-						paginate: false
-					}
-				},
+			self.groupsRequestUserList({
 				success: function(data, status) {
 					callback && callback(data.data);
 				}
@@ -1603,6 +1575,46 @@ define(function(require) {
 					}
 				});
 			}
+		},
+
+		groupsRequestUserList: function(args) {
+			var self = this;
+
+			self.callApi({
+				resource: 'user.list',
+				data: _.merge({
+					accountId: self.accountId,
+					filters: {
+						paginate: false
+					}
+				}, args.data),
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data, status);
+				},
+				error: function(data, status) {
+					args.hasOwnProperty('error') & args.error(data, status);
+				}
+			});
+		},
+
+		groupsRequestDeviceList: function(args) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.list',
+				data: _.merge({
+					accountId: self.accountId,
+					filters: {
+						paginate: false
+					}
+				}, args.data),
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data);
+				},
+				error: function(data, status) {
+					args.hasOwnProperty('error') & args.error(data, status);
+				}
+			});
 		}
 	};
 
