@@ -206,8 +206,8 @@ define(function(require) {
 				user_list: function(callback) {
 					self.groupsRequestUserList({
 						success: function(data) {
-							defaults.field_data.users = data.data;
-							callback(null, data);
+							defaults.field_data.users = data;
+							callback(null, {});
 						}
 					});
 				},
@@ -707,13 +707,17 @@ define(function(require) {
 					});
 				},
 				'user': function(callback) {
-					self.groupsUserList(function(data) {
-						callback(null, data);
+					self.groupsRequestUserList({
+						success: function(data) {
+							callback(null, data);
+						}
 					});
 				},
 				'device': function(callback) {
-					self.groupsDeviceList(function(data) {
-						callback(null, data);
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							callback(null, data);
+						}
 					});
 				}
 			}, function(err, results) {
@@ -734,7 +738,15 @@ define(function(require) {
 		groupsEditPageGroup: function(node, callback) {
 			var self = this;
 
-			self.groupsDeviceList(function(data) {
+			monster.waterfall([
+				function(callback) {
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							callback(null, data);
+						}
+					});
+				}
+			], function(err, data) {
 				var popup,
 					popup_html,
 					endpoints = node.getMetadata('endpoints'),
@@ -779,7 +791,15 @@ define(function(require) {
 
 					unselected_groups = _.sortBy(unselected_groups, 'name');
 
-					self.groupsUserList(function(_data) {
+					monster.waterfall([
+						function(callback) {
+							self.groupsRequestUserList({
+								success: function(data) {
+									callback(null, data);
+								}
+							});
+						}
+					], function(err, _data) {
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
@@ -1041,7 +1061,17 @@ define(function(require) {
 				default_timeout = '20',
 				default_delay = '0';
 
-			self.groupsDeviceList(function(data) {
+			monster.waterfall([
+				function(callback) {
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							console.log(data);
+							callback(null, data);
+						}
+					});
+				}
+			], function(err, data) {
+				console.log(data);
 				var popup,
 					popup_html,
 					endpoints = node.getMetadata('endpoints'),
@@ -1090,7 +1120,15 @@ define(function(require) {
 
 					unselected_groups = _.sortBy(unselected_groups, 'name');
 
-					self.groupsUserList(function(_data, status) {
+					monster.waterfall([
+						function(callback) {
+							self.groupsRequestUserList({
+								success: function(data) {
+									callback(null, data);
+								}
+							});
+						}
+					], function(err, _data) {
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
@@ -1498,16 +1536,6 @@ define(function(require) {
 			});
 		},
 
-		groupsUserList: function(callback) {
-			var self = this;
-
-			self.groupsRequestUserList({
-				success: function(data, status) {
-					callback && callback(data.data);
-				}
-			});
-		},
-
 		groupsMediaList: function(callback) {
 			var self = this;
 
@@ -1589,10 +1617,10 @@ define(function(require) {
 					}
 				}, args.data),
 				success: function(data, status) {
-					args.hasOwnProperty('success') && args.success(data, status);
+					args.hasOwnProperty('success') && args.success(data.data);
 				},
-				error: function(data, status) {
-					args.hasOwnProperty('error') & args.error(data, status);
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
 		},
@@ -1609,10 +1637,10 @@ define(function(require) {
 					}
 				}, args.data),
 				success: function(data, status) {
-					args.hasOwnProperty('success') && args.success(data);
+					args.hasOwnProperty('success') && args.success(data.data);
 				},
-				error: function(data, status) {
-					args.hasOwnProperty('error') & args.error(data, status);
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
 		}
