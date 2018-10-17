@@ -196,26 +196,18 @@ define(function(require) {
 
 			monster.parallel({
 				device_list: function(callback) {
-					self.callApi({
-						resource: 'device.list',
-						data: {
-							accountId: self.accountId
-						},
+					self.groupsRequestDeviceList({
 						success: function(data) {
-							defaults.field_data.devices = data.data;
+							defaults.field_data.devices = data;
 							callback(null, data);
 						}
 					});
 				},
 				user_list: function(callback) {
-					self.callApi({
-						resource: 'user.list',
-						data: {
-							accountId: self.accountId
-						},
+					self.groupsRequestUserList({
 						success: function(data) {
-							defaults.field_data.users = data.data;
-							callback(null, data);
+							defaults.field_data.users = data;
+							callback(null, {});
 						}
 					});
 				},
@@ -715,13 +707,17 @@ define(function(require) {
 					});
 				},
 				'user': function(callback) {
-					self.groupsUserList(function(data) {
-						callback(null, data);
+					self.groupsRequestUserList({
+						success: function(data) {
+							callback(null, data);
+						}
 					});
 				},
 				'device': function(callback) {
-					self.groupsDeviceList(function(data) {
-						callback(null, data);
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							callback(null, data);
+						}
 					});
 				}
 			}, function(err, results) {
@@ -742,7 +738,15 @@ define(function(require) {
 		groupsEditPageGroup: function(node, callback) {
 			var self = this;
 
-			self.groupsDeviceList(function(data) {
+			monster.waterfall([
+				function(callback) {
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							callback(null, data);
+						}
+					});
+				}
+			], function(err, data) {
 				var popup,
 					popup_html,
 					endpoints = node.getMetadata('endpoints'),
@@ -787,7 +791,15 @@ define(function(require) {
 
 					unselected_groups = _.sortBy(unselected_groups, 'name');
 
-					self.groupsUserList(function(_data) {
+					monster.waterfall([
+						function(callback) {
+							self.groupsRequestUserList({
+								success: function(data) {
+									callback(null, data);
+								}
+							});
+						}
+					], function(err, _data) {
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
@@ -1049,7 +1061,17 @@ define(function(require) {
 				default_timeout = '20',
 				default_delay = '0';
 
-			self.groupsDeviceList(function(data) {
+			monster.waterfall([
+				function(callback) {
+					self.groupsRequestDeviceList({
+						success: function(data) {
+							console.log(data);
+							callback(null, data);
+						}
+					});
+				}
+			], function(err, data) {
+				console.log(data);
 				var popup,
 					popup_html,
 					endpoints = node.getMetadata('endpoints'),
@@ -1098,7 +1120,15 @@ define(function(require) {
 
 					unselected_groups = _.sortBy(unselected_groups, 'name');
 
-					self.groupsUserList(function(_data, status) {
+					monster.waterfall([
+						function(callback) {
+							self.groupsRequestUserList({
+								success: function(data) {
+									callback(null, data);
+								}
+							});
+						}
+					], function(err, _data) {
 						$.each(_data, function(i, obj) {
 							obj.name = obj.first_name + ' ' + obj.last_name;
 							obj.endpoint_type = 'user';
@@ -1479,45 +1509,11 @@ define(function(require) {
 			});
 		},
 
-		groupsDeviceList: function(callback) {
-			var self = this;
-
-			self.callApi({
-				resource: 'device.list',
-				data: {
-					accountId: self.accountId,
-					filters: {
-						paginate: false
-					}
-				},
-				success: function(data, status) {
-					callback && callback(data.data);
-				}
-			});
-		},
-
 		groupsGroupList: function(callback) {
 			var self = this;
 
 			self.callApi({
 				resource: 'group.list',
-				data: {
-					accountId: self.accountId,
-					filters: {
-						paginate: false
-					}
-				},
-				success: function(data, status) {
-					callback && callback(data.data);
-				}
-			});
-		},
-
-		groupsUserList: function(callback) {
-			var self = this;
-
-			self.callApi({
-				resource: 'user.list',
 				data: {
 					accountId: self.accountId,
 					filters: {
@@ -1597,6 +1593,46 @@ define(function(require) {
 					}
 				});
 			}
+		},
+
+		groupsRequestUserList: function(args) {
+			var self = this;
+
+			self.callApi({
+				resource: 'user.list',
+				data: _.merge({
+					accountId: self.accountId,
+					filters: {
+						paginate: false
+					}
+				}, args.data),
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data.data);
+				},
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
+				}
+			});
+		},
+
+		groupsRequestDeviceList: function(args) {
+			var self = this;
+
+			self.callApi({
+				resource: 'device.list',
+				data: _.merge({
+					accountId: self.accountId,
+					filters: {
+						paginate: false
+					}
+				}, args.data),
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data.data);
+				},
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
+				}
+			});
 		}
 	};
 
