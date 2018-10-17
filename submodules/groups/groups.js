@@ -198,7 +198,7 @@ define(function(require) {
 				device_list: function(callback) {
 					self.groupsRequestDeviceList({
 						success: function(data) {
-							defaults.field_data.devices = data.data;
+							defaults.field_data.devices = data;
 							callback(null, data);
 						}
 					});
