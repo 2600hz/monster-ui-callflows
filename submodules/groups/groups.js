@@ -1509,16 +1509,6 @@ define(function(require) {
 			});
 		},
 
-		groupsDeviceList: function(callback) {
-			var self = this;
-
-			self.groupsRequestDeviceList({
-				success: function(data, status) {
-					callback && callback(data.data);
-				}
-			});
-		},
-
 		groupsGroupList: function(callback) {
 			var self = this;
 
