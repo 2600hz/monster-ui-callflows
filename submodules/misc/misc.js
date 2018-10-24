@@ -402,6 +402,66 @@ define(function(require) {
 						}
 					}
 				},
+				'set_alert_info[]': {
+					name: self.i18n.active().oldCallflows.set_ringtone,
+					icon: 'play',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'set_alert_info',
+					tip: self.i18n.active().oldCallflows.set_ringtone_tip,
+					data: {
+						alert_info: ''
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '1'
+						}
+					],
+					isUsable: 'true',
+					weight: 20,
+
+					caption: function(node, caption_map) {
+						return (node.getMetadata('alert_info') || '');
+					},
+
+					edit: function(node, callback) {
+						var popup_html = $(self.getTemplate({
+								name: 'set-ringtone',
+								data: {
+									data_cid: {
+										'alert_info': node.getMetadata('alert_info') || ''
+									}
+								},
+								submodule: 'misc'
+							})),
+							popup;
+
+						$('#add', popup_html).click(function() {
+							var alert_info_val = $('#alert_info', popup_html).val();
+
+							node.setMetadata('alert_info', alert_info_val);
+
+							node.caption = alert_info_val;
+
+							popup.dialog('close');
+						});
+
+						popup = monster.ui.dialog(popup_html, {
+							title: self.i18n.active().oldCallflows.set_ringtone_title,
+							beforeClose: function() {
+								if (typeof callback === 'function') {
+									callback();
+								}
+							}
+						});
+
+						monster.ui.tooltips(popup);
+
+						if (typeof callback === 'function') {
+							callback();
+						}
+					}
+				},
 				'manual_presence[]': {
 					name: self.i18n.active().oldCallflows.manual_presence,
 					icon: 'lightbulb_on',
