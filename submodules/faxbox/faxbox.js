@@ -221,6 +221,41 @@ define(function(require) {
 					} else {
 						callback(null, {});
 					}
+				},
+				phone_numbers: function(callback) {
+					if (!monster.config.whitelabel.ensure_valid_caller_id) {
+						callback(null);
+						return;
+					}
+
+					self.callApi({
+						resource: 'numbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: function(_data) {
+							var numbers = _.get(_data, 'data.numbers', {});
+
+							_data.numbers = _.map(numbers, function(values, number) {
+								return {
+									label: number,
+									id: number
+								};
+							});
+
+							_data.numbers.unshift({
+								label: self.i18n.active().callflows.faxbox.caller_id_no_selected,
+								id: ''
+							});
+
+							_data.numbers.sort(function(a, b) {
+								return parseInt(a.id) - parseInt(b.id);
+							});
+
+							callback(null, _data.numbers);
+							return;
+						}
+					});
 				}
 			}, function(err, results) {
 				if (!data.hasOwnProperty('id')) {
@@ -247,7 +282,9 @@ define(function(require) {
 					name: 'edit',
 					data: {
 						faxbox: self.faxboxNormalizedData(data.faxbox),
-						users: data.user_list
+						users: data.user_list,
+						phone_numbers: data.phone_numbers,
+						ensure_valid_caller_id: monster.config.whitelabel.ensure_valid_caller_id
 					},
 					submodule: 'faxbox'
 				}));

@@ -73,7 +73,19 @@
 				<div class="clearfix">
 					<label for="caller_id">{{ i18n.callflows.faxbox.caller_id }}</label>
 					<div class="input">
-						<input class="span4" id="caller_id" name="caller_id" type="text" placeholder="{{ i18n.callflows.faxbox.caller_id_placeholder }}" value="{{faxbox.caller_id}}" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}"/>
+						{{#if ensure_valid_caller_id}}
+							<span rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}">
+								<select name="caller_id" id="caller_id" class="medium">
+								{{#select faxbox.caller_id}}
+									{{#each phone_numbers}}
+										<option value="{{id}}" id="{{id}}">{{label}}</option>
+									{{/each}}
+								{{/select}}
+								</select>
+							</span>
+						{{else}}
+							<input class="span4" id="caller_id" name="caller_id" type="text" placeholder="{{ i18n.callflows.faxbox.caller_id_placeholder }}" value="{{faxbox.caller_id}}" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}"/>
+						{{/if}}
 					</div>
 				</div>
 
