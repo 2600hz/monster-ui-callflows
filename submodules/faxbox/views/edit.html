@@ -75,12 +75,13 @@
 					<div class="input">
 						{{#if ensure_valid_caller_id}}
 							<span rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}">
-								<select name="caller_id" id="caller_id" class="medium">
-								{{#select faxbox.caller_id}}
-									{{#each phone_numbers}}
-										<option value="{{id}}" id="{{id}}">{{label}}</option>
-									{{/each}}
-								{{/select}}
+								<select name="caller_id" id="caller_id" class="medium callflows-caller-id-dropdown">
+									{{#select faxbox.caller_id}}
+										<option value="_disabled">{{ i18n.callflows.faxbox.caller_id_no_selected }}</option>
+										{{#each phone_numbers}}
+											<option value="{{label}}">{{formatPhoneNumber label}}</option>
+										{{/each}}
+									{{/select}}
 								</select>
 							</span>
 						{{else}}

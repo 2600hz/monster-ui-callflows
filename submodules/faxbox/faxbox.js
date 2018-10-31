@@ -223,37 +223,21 @@ define(function(require) {
 					}
 				},
 				phone_numbers: function(callback) {
-					if (!monster.config.whitelabel.ensure_valid_caller_id) {
-						callback(null);
-						return;
-					}
-
 					self.callApi({
-						resource: 'numbers.list',
+						resource: 'numbers.listAll',
 						data: {
 							accountId: self.accountId
 						},
 						success: function(_data) {
-							var numbers = _.get(_data, 'data.numbers', {});
-
-							_data.numbers = _.map(numbers, function(values, number) {
-								return {
-									label: number,
-									id: number
-								};
-							});
-
-							_data.numbers.unshift({
-								label: self.i18n.active().callflows.faxbox.caller_id_no_selected,
-								id: ''
-							});
-
-							_data.numbers.sort(function(a, b) {
-								return parseInt(a.id) - parseInt(b.id);
-							});
+							_data.numbers = _.chain(_data)
+								.get('data.numbers', {})
+								.map(function(value, number) {
+									return { label: number };
+								})
+								.sortBy('label')
+								.value();
 
 							callback(null, _data.numbers);
-							return;
 						}
 					});
 				}
@@ -288,6 +272,8 @@ define(function(require) {
 					},
 					submodule: 'faxbox'
 				}));
+
+			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
 			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
 
