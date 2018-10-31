@@ -153,6 +153,15 @@ define(function(require) {
 			self.faxboxEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
+		getCallerID: function(results) {
+			return _.chain(results.phone_numbers)
+				.find(function(number) {
+					return number.label === _.get(results.faxbox, 'caller_id', null);
+				})
+				.isNil()
+				.value();
+		},
+
 		faxboxEdit: function(data, _parent, _target, _callbacks) {
 			var self = this,
 				parent = _parent || $('#faxbox-content'),
@@ -251,6 +260,14 @@ define(function(require) {
 				}
 
 				delete results.current_user;
+
+				var invalidCallerID = self.getCallerID(results);
+
+				if (invalidCallerID) {
+					results.phone_numbers.unshift({
+						label: results.faxbox.caller_id
+					});
+				}
 
 				self.faxboxRender(results, target, callbacks);
 
