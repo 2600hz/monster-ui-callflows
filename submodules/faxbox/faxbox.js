@@ -224,9 +224,12 @@ define(function(require) {
 				},
 				phone_numbers: function(callback) {
 					self.callApi({
-						resource: 'numbers.listAll',
+						resource: 'numbers.list',
 						data: {
-							accountId: self.accountId
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
 						},
 						success: function(_data) {
 							_data.numbers = _.chain(_data)
