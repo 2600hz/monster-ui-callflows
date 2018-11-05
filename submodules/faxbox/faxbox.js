@@ -153,15 +153,6 @@ define(function(require) {
 			self.faxboxEdit(args.data, args.parent, args.target, args.callbacks, args.data_defaults);
 		},
 
-		getCallerID: function(results) {
-			return _.chain(results.phone_numbers)
-				.find(function(number) {
-					return number.label === _.get(results.faxbox, 'caller_id', null);
-				})
-				.isNil()
-				.value();
-		},
-
 		faxboxEdit: function(data, _parent, _target, _callbacks) {
 			var self = this,
 				parent = _parent || $('#faxbox-content'),
@@ -240,10 +231,8 @@ define(function(require) {
 						success: function(_data) {
 							_data.numbers = _.chain(_data)
 								.get('data.numbers', {})
-								.map(function(value, number) {
-									return { label: number };
-								})
-								.sortBy('label')
+								.keys()
+								.sortBy()
 								.value();
 
 							callback(null, _data.numbers);
@@ -261,12 +250,10 @@ define(function(require) {
 
 				delete results.current_user;
 
-				var invalidCallerID = self.getCallerID(results);
+				var invalidCallerID = _.find(results.phone_numbers, _.get(results.faxbox, 'caller_id', null));
 
-				if (invalidCallerID) {
-					results.phone_numbers.unshift({
-						label: results.faxbox.caller_id
-					});
+				if (!invalidCallerID) {
+					results.phone_numbers.unshift(results.faxbox.caller_id);
 				}
 
 				self.faxboxRender(results, target, callbacks);
@@ -605,6 +592,10 @@ define(function(require) {
 
 			if (form_data.fax_timezone && form_data.fax_timezone === 'inherit') {
 				delete form_data.fax_timezone;
+			}
+
+			if (form_data.caller_id === '_disabled') {
+				delete form_data.caller_id;
 			}
 
 			return form_data;

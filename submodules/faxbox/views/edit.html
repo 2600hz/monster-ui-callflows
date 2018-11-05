@@ -79,7 +79,7 @@
 									{{#select faxbox.caller_id}}
 										<option value="_disabled">{{ i18n.callflows.faxbox.caller_id_no_selected }}</option>
 										{{#each phone_numbers}}
-											<option value="{{label}}">{{formatPhoneNumber label}}</option>
+											<option value="{{this}}">{{formatPhoneNumber this}}</option>
 										{{/each}}
 									{{/select}}
 								</select>
