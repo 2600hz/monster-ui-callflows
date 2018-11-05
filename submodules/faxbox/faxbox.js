@@ -274,8 +274,7 @@ define(function(require) {
 					data: {
 						faxbox: self.faxboxNormalizedData(data.faxbox),
 						users: data.user_list,
-						phone_numbers: data.phone_numbers,
-						ensure_valid_caller_id: monster.config.whitelabel.ensure_valid_caller_id
+						phone_numbers: data.phone_numbers
 					},
 					submodule: 'faxbox'
 				}));
