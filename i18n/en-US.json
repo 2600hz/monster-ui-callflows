@@ -321,6 +321,7 @@
 			"caller_id": "Caller ID",
 			"caller_id_placeholder": "Caller ID",
 			"caller_id_data_content": "Caller ID for this fax box",
+			"caller_id_no_selected": "- No caller ID -",
 			"fax_header": "Fax header",
 			"fax_header_placeholder": "Fax header",
 			"fax_header_data_content": "Information imprinted on the fax",

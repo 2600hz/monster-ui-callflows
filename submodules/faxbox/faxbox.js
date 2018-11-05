@@ -221,6 +221,26 @@ define(function(require) {
 					} else {
 						callback(null, {});
 					}
+				},
+				phone_numbers: function(callback) {
+					self.callApi({
+						resource: 'numbers.list',
+						data: {
+							accountId: self.accountId,
+							filters: {
+								paginate: false
+							}
+						},
+						success: function(_data) {
+							_data.numbers = _.chain(_data)
+								.get('data.numbers', {})
+								.keys()
+								.sortBy()
+								.value();
+
+							callback(null, _data.numbers);
+						}
+					});
 				}
 			}, function(err, results) {
 				if (!data.hasOwnProperty('id')) {
@@ -232,6 +252,12 @@ define(function(require) {
 				}
 
 				delete results.current_user;
+
+				var invalidCallerID = _.find(results.phone_numbers, _.get(results.faxbox, 'caller_id', null));
+
+				if (!invalidCallerID) {
+					results.phone_numbers.unshift(results.faxbox.caller_id);
+				}
 
 				self.faxboxRender(results, target, callbacks);
 
@@ -247,10 +273,13 @@ define(function(require) {
 					name: 'edit',
 					data: {
 						faxbox: self.faxboxNormalizedData(data.faxbox),
-						users: data.user_list
+						users: data.user_list,
+						phone_numbers: data.phone_numbers
 					},
 					submodule: 'faxbox'
 				}));
+
+			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
 			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
 
@@ -565,6 +594,10 @@ define(function(require) {
 
 			if (form_data.fax_timezone && form_data.fax_timezone === 'inherit') {
 				delete form_data.fax_timezone;
+			}
+
+			if (form_data.caller_id === '_disabled') {
+				delete form_data.caller_id;
 			}
 
 			return form_data;
