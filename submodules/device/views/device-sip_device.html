@@ -282,19 +282,6 @@
 					</div>
 
 					<div class="clearfix">
-						<label for="media_peer_to_peer">{{ i18n.callflows.device.peer_to_peer_audio }}</label>
-						<div class="input">
-							<select name="media.peer_to_peer" id="media_peer_to_peer" class="medium" rel="popover" data-content="{{ i18n.callflows.device.peer_to_peer_audio_data_content }}">
-								{{#select data.media.peer_to_peer}}
-									{{#each field_data.media.peer_to_peer_options}}
-										<option value="{{ @key }}">{{ this }}</option>
-									{{/each}}
-								{{/select}}
-							</select>
-						</div>
-					</div>
-
-					<div class="clearfix">
 						<label for="secure_rtp">{{ i18n.callflows.device.secure_rtp }}</label>
 						<div class="input">
 							<select name="extra.encryptionMethod" id="secure_rtp" class="medium" rel="popover" data-content="{{ i18n.callflows.device.secure_rtp_help }}">
