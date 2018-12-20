@@ -89,7 +89,6 @@ define(function(require) {
 						call_restriction: { closed_groups: 'inherit' },
 						media: {
 							secure_rtp: 'none',
-							peer_to_peer: 'auto',
 							audio: {
 								codecs: ['PCMU', 'PCMA']
 							},
@@ -140,11 +139,6 @@ define(function(require) {
 									'srtp': self.i18n.active().callflows.device.srtp,
 									'zrtp': self.i18n.active().callflows.device.zrtp
 								}
-							},
-							peer_to_peer_options: {
-								'auto': self.i18n.active().callflows.device.automatic,
-								'true': self.i18n.active().callflows.device.always,
-								'false': self.i18n.active().callflows.device.never
 							},
 							fax: {
 								options: {
