@@ -428,9 +428,7 @@ define(function(require) {
 						var popup_html = $(self.getTemplate({
 								name: 'set-ringtone',
 								data: {
-									data_cid: {
-										'alert_info': node.getMetadata('alert_info') || ''
-									}
+									alert_info: node.getMetadata('alert_info') || ''
 								},
 								submodule: 'misc'
 							})),
@@ -454,12 +452,6 @@ define(function(require) {
 								}
 							}
 						});
-
-						monster.ui.tooltips(popup);
-
-						if (typeof callback === 'function') {
-							callback();
-						}
 					}
 				},
 				'manual_presence[]': {
