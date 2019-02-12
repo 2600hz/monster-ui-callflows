@@ -1103,6 +1103,14 @@
 				"label": "Toggle Do Not Disturb",
 				"tip": "Toggles Do Not Disturb"
 			}
+		},
+
+		"__comment": "UI-3210: Add Set Ringtone callflow element",
+		"setAlertInfo": {
+			"name": "Distinctive Ring",
+			"title": "Set Distinctive Ring",
+			"label": "\"Alert-Info\" Header",
+			"tip": "Set distinctive ring for incoming call"
 		}
 	},
 	"oldCallflows": {
@@ -1174,10 +1182,6 @@
 		"ringback": "Ringback",
 		"default": "Default",
 		"silence": "Silence",
-		"set_ringtone": "Set Ringtone",
-		"set_ringtone_title": "Set Ringtone",
-		"set_ringtone_select": "Enter Ringtone Name",
-		"set_ringtone_tip": "Set ringtone for incoming call",
 		"users": "Users",
 		"devices": "Devices",
 		"groups": "Groups",

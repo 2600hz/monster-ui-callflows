@@ -403,11 +403,11 @@ define(function(require) {
 					}
 				},
 				'set_alert_info[]': {
-					name: self.i18n.active().oldCallflows.set_ringtone,
+					name: self.i18n.active().callflows.setAlertInfo.name,
 					icon: 'play',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'set_alert_info',
-					tip: self.i18n.active().oldCallflows.set_ringtone_tip,
+					tip: self.i18n.active().callflows.setAlertInfo.tip,
 					data: {
 						alert_info: ''
 					},
@@ -426,7 +426,7 @@ define(function(require) {
 
 					edit: function(node, callback) {
 						var popup_html = $(self.getTemplate({
-								name: 'set-ringtone',
+								name: 'setAlertEdit',
 								data: {
 									alert_info: node.getMetadata('alert_info') || ''
 								},
@@ -445,7 +445,7 @@ define(function(require) {
 						});
 
 						popup = monster.ui.dialog(popup_html, {
-							title: self.i18n.active().oldCallflows.set_ringtone_title,
+							title: self.i18n.active().callflows.setAlertInfo.title,
 							beforeClose: function() {
 								if (typeof callback === 'function') {
 									callback();
