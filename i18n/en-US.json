@@ -819,8 +819,8 @@
 		"accountSettings": {
 			"title": "Account Settings",
 			"callerId": {
-				"titleOutbound": "Account's Outbound Caller ID",
-				"titleInbound": "Account's Inbound Caller ID",
+				"titleOutbound": "Account's External/Off-net Caller ID",
+				"titleInbound": "Account's Internal/On-net Caller ID",
 				"titleEmergency": "Account's Emergency Caller ID",
 				"nameLabel": "Caller ID Name:",
 				"numberLabel": "Caller ID Number:",
