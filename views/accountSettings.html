@@ -27,12 +27,7 @@
 							<div class="control-group">
 								<label class="control-label">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
 								<div class="controls">
-								<select name="caller_id.internal.number" class="cid-number-select">
-									<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.internal.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-									{{/each}}
-								</select>
+									<input type="text" name="caller_id.internal.number" value="{{account.caller_id.internal.number}}" placeholder="{{ i18n.callflows.accountSettings.callerId.defaultNumber }}"/>
 								</div>
 							</div>
 						</div>
