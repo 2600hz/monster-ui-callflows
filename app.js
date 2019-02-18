@@ -509,21 +509,20 @@ define(function(require) {
 						mediaSelect.append('<option value="' + newMedia.id + '">' + newMedia.name + '</option>');
 						mediaSelect.val(newMedia.id);
 					}
-				};
+				},
+				validateForm = monster.ui.validate(template.find('#account_settings_form'), {
+					rules: {
+						'extra.shoutcastUrl': {
+							protocol: true,
+							required: true
+						}
+					}
+				});
 
 			template.find('.account-settings-tabs a').click(function(e) {
 				e.preventDefault();
 
 				$(this).tab('show');
-			});
-
-			monster.ui.validate(template.find('#account_settings_form'), {
-				rules: {
-					'extra.shoutcastUrl': {
-						protocol: true,
-						required: true
-					}
-				}
 			});
 
 			template.find('.media-dropdown').on('change', function() {
@@ -607,8 +606,17 @@ define(function(require) {
 
 			template.find('.account-settings-update').on('click', function() {
 				if (monster.ui.valid(template.find('#account_settings_form'))) {
+
 					var formData = monster.ui.getFormData('account_settings_form'),
-						newData = $.extend(true, {}, data.account, formData);
+						newData = $.extend(true, {}, data.account, formData),
+						callerIdNumber = _.get(newData, 'caller_id.internal.number') ? monster.util.getFormatPhoneNumber(_.get(newData, 'caller_id.internal.number')) : false;
+
+					if (callerIdNumber && !callerIdNumber.hasOwnProperty('e164Number')) {
+						validateForm.showErrors({
+							'caller_id.internal.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
+						});
+						return;
+					}
 
 					if (formData.music_on_hold.media_id === '') {
 						delete newData.music_on_hold.media_id;

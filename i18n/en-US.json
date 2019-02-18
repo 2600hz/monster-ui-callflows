@@ -824,7 +824,10 @@
 				"titleEmergency": "Account's Emergency Caller ID",
 				"nameLabel": "Caller ID Name:",
 				"numberLabel": "Caller ID Number:",
-				"defaultNumber": "Default"
+				"defaultNumber": "Default",
+				"messages": {
+					"invalidNumber": "Please enter a valid number"
+				}
 			},
 			"musicOnHold": {
 				"title": "Account's Music on Hold",
