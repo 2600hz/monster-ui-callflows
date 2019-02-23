@@ -509,21 +509,20 @@ define(function(require) {
 						mediaSelect.append('<option value="' + newMedia.id + '">' + newMedia.name + '</option>');
 						mediaSelect.val(newMedia.id);
 					}
-				};
+				},
+				validateForm = monster.ui.validate(template.find('#account_settings_form'), {
+					rules: {
+						'extra.shoutcastUrl': {
+							protocol: true,
+							required: true
+						}
+					}
+				});
 
 			template.find('.account-settings-tabs a').click(function(e) {
 				e.preventDefault();
 
 				$(this).tab('show');
-			});
-
-			monster.ui.validate(template.find('#account_settings_form'), {
-				rules: {
-					'extra.shoutcastUrl': {
-						protocol: true,
-						required: true
-					}
-				}
 			});
 
 			template.find('.media-dropdown').on('change', function() {
@@ -606,50 +605,62 @@ define(function(require) {
 			});
 
 			template.find('.account-settings-update').on('click', function() {
-				if (monster.ui.valid(template.find('#account_settings_form'))) {
-					var formData = monster.ui.getFormData('account_settings_form'),
-						newData = $.extend(true, {}, data.account, formData);
-
-					if (formData.music_on_hold.media_id === '') {
-						delete newData.music_on_hold.media_id;
-					} else if (formData.music_on_hold.media_id === 'shoutcast') {
-						newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
-					}
-
-					if (formData.caller_id.external.name === '') {
-						delete newData.caller_id.external.name;
-					}
-					if (formData.caller_id.external.number === '') {
-						delete newData.caller_id.external.number;
-					}
-
-					if (formData.preflow.always === '_disabled') {
-						delete newData.preflow.always;
-					}
-
-					if (newData.hasOwnProperty('outbound_flags')) {
-						newData.outbound_flags.dynamic = newData.outbound_flags.dynamic ? newData.outbound_flags.dynamic.split(',') : [];
-						newData.outbound_flags.static = newData.outbound_flags.static ? newData.outbound_flags.static.split(',') : [];
-						_.isEmpty(newData.outbound_flags.dynamic) && delete newData.outbound_flags.dynamic;
-						_.isEmpty(newData.outbound_flags.static) && delete newData.outbound_flags.static;
-						_.isEmpty(newData.outbound_flags) && delete newData.outbound_flags;
-					}
-
-					newData.blacklists = widgetBlacklist.getSelectedItems();
-
-					delete newData.extra;
-
-					self.callApi({
-						resource: 'account.update',
-						data: {
-							accountId: newData.id,
-							data: newData
-						},
-						success: function(data, status) {
-							self.render();
-						}
-					});
+				if (!monster.ui.valid(template.find('#account_settings_form'))) {
+					return;
 				}
+
+				var formData = monster.ui.getFormData('account_settings_form'),
+					newData = $.extend(true, {}, data.account, formData),
+					callerIdNumber = _.has(newData, 'caller_id.internal.number')
+						? monster.util.getFormatPhoneNumber(_.get(newData, 'caller_id.internal.number'))
+						: {};
+
+				if (!callerIdNumber.hasOwnProperty('e164Number')) {
+					validateForm.showErrors({
+						'caller_id.internal.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
+					});
+					return;
+				}
+
+				if (formData.music_on_hold.media_id === '') {
+					delete newData.music_on_hold.media_id;
+				} else if (formData.music_on_hold.media_id === 'shoutcast') {
+					newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
+				}
+
+				if (formData.caller_id.external.name === '') {
+					delete newData.caller_id.external.name;
+				}
+				if (formData.caller_id.external.number === '') {
+					delete newData.caller_id.external.number;
+				}
+
+				if (formData.preflow.always === '_disabled') {
+					delete newData.preflow.always;
+				}
+
+				if (newData.hasOwnProperty('outbound_flags')) {
+					newData.outbound_flags.dynamic = newData.outbound_flags.dynamic ? newData.outbound_flags.dynamic.split(',') : [];
+					newData.outbound_flags.static = newData.outbound_flags.static ? newData.outbound_flags.static.split(',') : [];
+					_.isEmpty(newData.outbound_flags.dynamic) && delete newData.outbound_flags.dynamic;
+					_.isEmpty(newData.outbound_flags.static) && delete newData.outbound_flags.static;
+					_.isEmpty(newData.outbound_flags) && delete newData.outbound_flags;
+				}
+
+				newData.blacklists = widgetBlacklist.getSelectedItems();
+
+				delete newData.extra;
+
+				self.callApi({
+					resource: 'account.update',
+					data: {
+						accountId: newData.id,
+						data: newData
+					},
+					success: function(data, status) {
+						self.render();
+					}
+				});
 			});
 		},
 
