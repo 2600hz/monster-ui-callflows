@@ -71,7 +71,7 @@ define(function(require) {
 			});
 
 			formattedData.categories = categories;
-			formattedData.actions = actions;
+			formattedData.actions = _.sortBy(actions, 'name');
 
 			return formattedData;
 		},
