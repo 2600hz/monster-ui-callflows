@@ -64,7 +64,7 @@ define(function(require) {
 					.groupBy('category')
 					.map(function(codes, category) {
 						return {
-							key: category,
+							category: category,
 							items: _
 								.chain(codes)
 								.map(function(code, i) {
@@ -81,6 +81,7 @@ define(function(require) {
 								.value()
 						};
 					})
+					.sortBy('category')
 					.value()
 			};
 		},
