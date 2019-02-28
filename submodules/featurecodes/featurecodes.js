@@ -71,10 +71,13 @@ define(function(require) {
 									return _.merge(code, {
 										tag: i,
 										number: _.get(code, 'number', code.default_number),
+										parsedNumber: _.isNaN(_.toNumber(_.get(code, 'number', code.default_number)))
+											? 0
+											: _.toNumber(_.get(code, 'number', code.default_number)),
 										hasConfig: _.has(code, 'editConfiguration')
 									});
 								})
-								.sortBy('number')
+								.sortBy('parsedNumber')
 								.value()
 						};
 					})
