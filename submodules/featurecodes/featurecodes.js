@@ -22,6 +22,8 @@ define(function(require) {
 						submodule: 'featurecodes'
 					}));
 
+				console.log(formattedData);
+
 				self.featureCodeBindEvents(template, formattedData.actions);
 
 				container
@@ -40,40 +42,59 @@ define(function(require) {
 
 		featureCodeFormatData: function(data) {
 			var self = this,
-				actions = {},
-				categories = {},
-				formattedData = {
-					categories: {},
-					actions: {}
-				};
+				actions = self.featureCodesDefine();
 
-			self.featureCodesDefine(actions);
+			return {
+				actions: _
+					.chain(data)
+					.filter(function(callflow) {
+						return _.has(actions, callflow.featurecode.name);
+					})
+					.transform(function(object, callflow) {
+						_.merge(object[callflow.featurecode.name], {
+							id: callflow.id,
+							enabled: true,
+							number: callflow.featurecode.number.replace('\\', '')
+						});
+					}, actions)
+					.value(),
+				categories: _
+					.chain(actions)
+					.map(function(value, key) {
+						return _.merge(value, {
+							action: key
+						});
+					})
+					.groupBy('category')
+					.map(function(codes, category) {
+						return {
+							category: category,
+							items: _
+								.chain(codes)
+								.map(function(code) {
+									return _.merge({
+										hasConfig: _.isFunction(code.editConfiguration),
+										number: _.get(code, 'number', code.default_number),
+										tag: code.action
+									}, _.pick(code, [
+										'enabled',
+										'hasStar',
+										'id',
+										'name',
+										'number_type'
+									]));
+								})
+								.sortBy(function(code) {
+									var number = _.toNumber(code.number);
 
-			_.each(data, function(callflow) {
-				if (callflow.hasOwnProperty('featurecode') && callflow.featurecode !== false) {
-					if (actions.hasOwnProperty(callflow.featurecode.name)) {
-						actions[callflow.featurecode.name].id = callflow.id;
-						actions[callflow.featurecode.name].enabled = true;
-						actions[callflow.featurecode.name].number = callflow.featurecode.number.replace('\\', '');
-					}
-				}
-			});
-
-			$.each(actions, function(i, action) {
-				this.tag = i;
-				this.number = typeof action.number === 'undefined' ? action.default_number : action.number;
-				this.hasConfig = this.hasOwnProperty('editConfiguration');
-
-				if (action.hasOwnProperty('category')) {
-					categories[action.category] = categories[action.category] || [];
-					categories[action.category].push(action);
-				}
-			});
-
-			formattedData.categories = categories;
-			formattedData.actions = actions;
-
-			return formattedData;
+									return _.isNaN(number) ? -1 : number;
+								})
+								.value()
+						};
+					})
+					.sortBy('category')
+					.value()
+			};
 		},
 
 		featureCodeBindEvents: function(template, actions) {
@@ -357,7 +378,7 @@ define(function(require) {
 		featureCodesDefine: function(featurecodes) {
 			var self = this;
 
-			$.extend(featurecodes, {
+			return {
 				'call_forward[action=activate]': {
 					name: self.i18n.active().callflows.featureCodes.enable_call_forward,
 					icon: 'phone',
@@ -858,7 +879,7 @@ define(function(require) {
 						return '^\\*'+number+'([0-9]*)$';
 					}
 				}*/
-			});
+			};
 		},
 
 		featureCodesEditParkingParkAndRetrieve: function(featureCode) {
