@@ -22,6 +22,8 @@ define(function(require) {
 						submodule: 'featurecodes'
 					}));
 
+				console.log(formattedData);
+
 				self.featureCodeBindEvents(template, formattedData.actions);
 
 				container
@@ -58,18 +60,29 @@ define(function(require) {
 					.value(),
 				categories: _
 					.chain(actions)
+					.map(function(value, key) {
+						return _.merge(value, {
+							action: key
+						});
+					})
 					.groupBy('category')
 					.map(function(codes, category) {
 						return {
 							category: category,
 							items: _
 								.chain(codes)
-								.map(function(code, i) {
-									return _.merge(code, {
-										tag: i,
+								.map(function(code) {
+									return _.merge({
+										hasConfig: _.isFunction(code.editConfiguration),
 										number: _.get(code, 'number', code.default_number),
-										hasConfig: _.has(code, 'editConfiguration')
-									});
+										tag: code.action
+									}, _.pick(code, [
+										'enabled',
+										'hasStar',
+										'id',
+										'name',
+										'number_type'
+									]));
 								})
 								.sortBy(function(code) {
 									var number = _.toNumber(code.number);
