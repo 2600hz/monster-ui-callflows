@@ -46,9 +46,6 @@ define(function(require) {
 				actions: _
 					.chain(data)
 					.filter(function(callflow) {
-						return _.has(callflow, 'featurecode') && callflow.featurecode !== false;
-					})
-					.filter(function(callflow) {
 						return _.has(actions, callflow.featurecode.name);
 					})
 					.transform(function(object, callflow) {
@@ -71,13 +68,14 @@ define(function(require) {
 									return _.merge(code, {
 										tag: i,
 										number: _.get(code, 'number', code.default_number),
-										parsedNumber: _.isNaN(_.toNumber(_.get(code, 'number', code.default_number)))
-											? 0
-											: _.toNumber(_.get(code, 'number', code.default_number)),
 										hasConfig: _.has(code, 'editConfiguration')
 									});
 								})
-								.sortBy('parsedNumber')
+								.sortBy(function(code) {
+									var number = _.toNumber(code.number);
+
+									return _.isNaN(number) ? -1 : number;
+								})
 								.value()
 						};
 					})
