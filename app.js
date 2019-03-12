@@ -436,6 +436,8 @@ define(function(require) {
 		formatAccountSettingsData: function(data) {
 			var formattedData = data;
 
+			formattedData.showMediaUploadDisclosure = monster.config.whitelabel.showMediaUploadDisclosure;
+
 			formattedData.silenceMedia = 'silence_stream://300000';
 
 			formattedData.extra = formattedData.extra || {};
