@@ -16,7 +16,9 @@ define(function(require) {
 			var self = this,
 				media_html = $(self.getTemplate({
 					name: 'edit',
-					data: data,
+					data: _.merge({
+						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure
+					}, data),
 					submodule: 'media'
 				})),
 				mediaForm = media_html.find('#media-form'),
