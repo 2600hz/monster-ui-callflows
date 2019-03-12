@@ -403,19 +403,37 @@ define(function(require) {
 
 		deviceGetValidationByDeviceType: function(deviceType) {
 			var validation = {
+				ata: {
+					'sip.ip': {
+						required: true,
+						ipv4: true
+					}
+				},
 				sip_uri: {},
 				sip_device: {
 					'mac_address': { mac: true },
 					'sip_expire_seconds': {	digits: true },
+					'sip.ip': {
+						ipv4: true,
+						required: true
+					},
 					'extra.shoutcastUrl': { protocol: true }
 				},
 				fax: {
 					'mac_address': { mac: true },
-					'sip_expire_seconds': {	digits: true }
+					'sip_expire_seconds': {	digits: true },
+					'sip.ip': {
+						ipv4: true,
+						required: true
+					}
 				},
 				cellphone: {},
 				smartphone: {
-					'sip_expire_seconds': {	digits: true }
+					'sip_expire_seconds': {	digits: true },
+					'sip.ip': {
+						ipv4: true,
+						required: true
+					}
 				},
 				landline: {},
 				softphone: {
