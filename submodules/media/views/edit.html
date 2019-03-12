@@ -55,7 +55,23 @@
 								<button class="monster-button" id="download_link">{{ i18n.callflows.media.download_file }}</button>
 							</div>
 						</div>
+					{{#if showMediaUploadDisclosure}}
+						<div>
+							<br>
+							{{#monsterText}}
+								{{i18n.mediaUploadDisclosure.text}}
+							{{/monsterText}}
+						</div>
+					{{/if}}
 						{{else}}
+					{{#if showMediaUploadDisclosure}}
+						<div>
+							<br>
+							{{#monsterText}}
+								{{i18n.mediaUploadDisclosure.text}}
+							{{/monsterText}}
+						</div>
+					{{/if}}
 					</div>
 						{{/if}}
 
