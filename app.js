@@ -992,9 +992,10 @@ define(function(require) {
 			var self = this,
 				branch = self.branch(self.construct_action(json));
 
-			branch.data.data = ('data' in json) ? json.data : {};
+			branch.data.data = _.get(json, 'data', {});
 			branch.id = ++id;
 			branch.key = key;
+			branch.disabled = _.get(json, 'data.skip_module');
 
 			branch.caption = self.actions.hasOwnProperty(branch.actionName) ? self.actions[branch.actionName].caption(branch, self.flow.caption_map) : '';
 
@@ -1588,8 +1589,35 @@ define(function(require) {
 
 					node_html.find('.module').on('click', function() {
 						if (!isAlreadyClicked) {
-							self.actions[node.actionName].edit(node, function() {
-								self.repaintFlow();
+							monster.waterfall([
+								function(waterfallCallback) {
+									if (node.disabled) {
+										monster.ui.confirm(self.i18n.active().node.confirmEnable,
+											function() {
+												waterfallCallback(null, false);
+											},
+											function() {
+												waterfallCallback(null, true);
+											});
+									} else {
+										waterfallCallback(null, null);
+									}
+								}
+							], function(err, disabled) {
+								if (!_.isNull(disabled)) {
+									node.disabled = disabled;
+									if (_.has(node, 'data.data.skip_module')) {
+										node.data.data.skip_module = disabled;
+									}
+
+									if (!disabled) {
+										node_html.closest('.node').removeClass('disabled');
+									}
+								}
+
+								self.actions[node.actionName].edit(node, function() {
+									self.repaintFlow();
+								});
 							});
 
 							isAlreadyClicked = true;
