@@ -869,7 +869,9 @@ define(function(require) {
 
 			_.each(data.data, function(callflow) {
 				var formattedNumbers = _.map(callflow.numbers || '-', function(number) {
-						return monster.util.formatPhoneNumber(number);
+						return _.startsWith('+', number)
+							? monster.util.formatPhoneNumber(number)
+							: number;
 					}),
 					listNumbers = formattedNumbers.toString(),
 					isFeatureCode = callflow.featurecode !== false && !_.isEmpty(callflow.featurecode);
@@ -1452,7 +1454,11 @@ define(function(require) {
 							row = $(self.getTemplate({
 								name: 'rowNumber',
 								data: {
-									numbers: numbers
+									numbers: _.map(numbers, function(number) {
+										return _.startsWith('+', number)
+											? monster.util.formatPhoneNumber(number)
+											: number;
+									})
 								}
 							}));
 
