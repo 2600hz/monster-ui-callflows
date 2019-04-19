@@ -135,6 +135,11 @@
 	cursor: grab;
 }
 
+#ws_callflow .callflow .node.disabled,
+.callflow-preview .callflow .node.disabled {
+	opacity: 0.6;
+}
+
 #ws_callflow .callflow .node[name="root"],
 .callflow-preview .callflow .node[name="root"] {
 	cursor: default;
