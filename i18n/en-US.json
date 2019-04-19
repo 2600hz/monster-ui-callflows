@@ -1,4 +1,20 @@
 {
+	"callflowsApp": {
+		"editor": {
+			"confirmDialog": {
+				"enableModule": {
+					"text": "This action is currently disabled, do you want to enable it?",
+					"cancel": "No",
+					"ok": "Yes"
+				}
+			},
+			"moduleBox": {
+				"tooltip": {
+					"disabled": "Disabled"
+				}
+			}
+		}
+	},
 	"callflows": {
 		"addCallflow": "Add Callflow",
 		"searchDatabase": "Search Database",

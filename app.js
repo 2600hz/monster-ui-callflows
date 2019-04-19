@@ -1592,12 +1592,15 @@ define(function(require) {
 							monster.waterfall([
 								function(waterfallCallback) {
 									if (node.disabled) {
-										monster.ui.confirm(self.i18n.active().node.confirmEnable,
+										monster.ui.confirm(self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.text,
 											function() {
 												waterfallCallback(null, false);
 											},
 											function() {
 												waterfallCallback(null, true);
+											}, {
+												cancelButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.cancel,
+												confirmButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.ok
 											});
 									} else {
 										waterfallCallback(null, null);
