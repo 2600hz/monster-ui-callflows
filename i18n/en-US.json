@@ -1,4 +1,20 @@
 {
+	"callflowsApp": {
+		"editor": {
+			"confirmDialog": {
+				"enableModule": {
+					"text": "This action is currently disabled, do you want to enable it?",
+					"cancel": "No",
+					"ok": "Yes"
+				}
+			},
+			"moduleBox": {
+				"tooltip": {
+					"disabled": "Disabled"
+				}
+			}
+		}
+	},
 	"callflows": {
 		"addCallflow": "Add Callflow",
 		"searchDatabase": "Search Database",
@@ -1286,5 +1302,9 @@
 			"title": "Show All Callflows",
 			"help": "As an admin, you're allowed to see all the existing callflows in this page. This include \"Applications\" Callflows that are created by other apps, but that you don't necesserarily want to update. If you wish to reduce clutter, you can switch this off to hide these callflows."
 		}
+	},
+	"node": {
+		"disabled": "Node disabled",
+		"confirmEnable": "This node is disabled. Do you want to enable it?"
 	}
 }

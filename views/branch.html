@@ -1,6 +1,6 @@
 <div class="child">
 	{{#compare node.actionName "!==" "root"}}
-		{{#if display_key}}    
+		{{#if display_key}}
 			<div class="span_arrow small"></div>
 		{{else}}
 			<div class="span_arrow large"></div>
@@ -21,7 +21,7 @@
 
 	<div class="branch">
 		{{#compare node.actionName "!==" "root"}}
-			<div id="{{ node.id }}" name="{{ node.actionName }}" class="node icons_black"></div>
+			<div id="{{ node.id }}" name="{{ node.actionName }}" class="node icons_black{{#if node.disabled}} disabled{{/if}}"{{#if node.disabled}} data-title="{{i18n.callflowsApp.editor.moduleBox.tooltip.disabled}}" data-placement="top" data-toggle="tooltip"{{/if}}></div>
 		{{else}}
 			<div id="{{ node.id }}" name="root" class="node icons_black root"></div>
 		{{/compare}}
