@@ -1235,7 +1235,7 @@ define(function(require) {
 						{
 							type: 'quantity',
 							maxSize: '3'
-				}
+						}
 					],
 					isUsable: 'true',
 					weight: 31,
@@ -1331,6 +1331,38 @@ define(function(require) {
 						}
 					}
 				});
+			});
+		},
+
+		miscEditSetCAV: function(node, callback) {
+			var self = this,
+				variables = node.getMetadata('cf_set_variables'),
+				template = $(self.getTemplate({
+					name: 'setcav-dialog',
+					data: {
+						variables: variables
+					},
+					submodule: 'misc'
+				})),
+				popup;
+
+			template.find('#save_cav_variables').on('click', function() {
+				var keys = template.find('.cav-key').val(),
+					values = template.find('.cav-value').val();
+
+				node.setMetadata('cf_set_variables', variables);
+
+				popup.dialog('close');
+			});
+
+			popup = monster.ui.dialog(template, {
+				title: self.i18n.active().callflows.setCav.popupTitle,
+				width: 500,
+				beforeClose: function() {
+					if (typeof callback === 'function') {
+						callback();
+					}
+				}
 			});
 		},
 
