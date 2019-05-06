@@ -1221,6 +1221,30 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscEditMissedCallAlerts(node, callback);
 					}
+				},
+				'set_cav[]': {
+					name: self.i18n.active().callflows.setCav.title,
+					icon: 'sip',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'cf_set_variables',
+					tip: self.i18n.active().callflows.setCav.tip,
+					data: {
+						settings: []
+					},
+					rules: [
+						{
+							type: 'quantity',
+							maxSize: '3'
+				}
+					],
+					isUsable: 'true',
+					weight: 31,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscEditSetCAV(node, callback);
+					}
 				}
 			});
 		},
