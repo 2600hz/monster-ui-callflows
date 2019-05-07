@@ -1222,14 +1222,14 @@ define(function(require) {
 						self.miscEditMissedCallAlerts(node, callback);
 					}
 				},
-				'set_cav[]': {
+				'set_variables[]': {
 					name: self.i18n.active().callflows.setCav.title,
-					icon: 'sip',
+					icon: 'settings2',
 					category: self.i18n.active().oldCallflows.advanced_cat,
-					module: 'cf_set_variables',
+					module: 'set_variables',
 					tip: self.i18n.active().callflows.setCav.tip,
 					data: {
-						settings: []
+						custom_application_vars: {}
 					},
 					rules: [
 						{
@@ -1336,7 +1336,7 @@ define(function(require) {
 
 		miscEditSetCAV: function(node, callback) {
 			var self = this,
-				variables = node.getMetadata('cf_set_variables'),
+				variables = _.extend({}, node.getMetadata('custom_application_vars')),
 				template = $(self.getTemplate({
 					name: 'setcav-dialog',
 					data: {
@@ -1344,13 +1344,57 @@ define(function(require) {
 					},
 					submodule: 'misc'
 				})),
+				countRows = function() {
+					return template.find('.cav-list tbody tr').length;
+				},
+				addRow = function(data) {
+					var cavRow = $(self.getTemplate({
+						name: 'setcav-row',
+						submodule: 'misc',
+						data: data
+					}));
+
+					template.find('.cav-list tbody')
+						.append(cavRow);
+				},
+				hideAddRow = function() {
+					if (countRows() >= 3) {
+						template.find('.cav-add-row .svg-icon').hide();
+					}
+				},
 				popup;
 
-			template.find('#save_cav_variables').on('click', function() {
-				var keys = template.find('.cav-key').val(),
-					values = template.find('.cav-value').val();
+			if (_.size(variables) <= 0) {
+				addRow();
+			}
 
-				node.setMetadata('cf_set_variables', variables);
+			hideAddRow();
+
+			_.each(variables, function(variable, key) {
+				addRow({
+					key: key,
+					value: variable
+				});
+			});
+
+			template.find('.cav-add-row .svg-icon')
+				.on('click', function() {
+					addRow();
+					hideAddRow();
+				});
+
+			template.find('#save_cav_variables').on('click', function() {
+				var keys = template.find('.cav-key'),
+					values = template.find('.cav-value'),
+					variables = {};
+
+				_.each(keys, function(key, i) {
+					if (!_.isEmpty(key.value) && !_.isEmpty(values[i].value)) {
+						variables[key.value] = values[i].value;
+					}
+				});
+
+				node.setMetadata('custom_application_vars', variables);
 
 				popup.dialog('close');
 			});

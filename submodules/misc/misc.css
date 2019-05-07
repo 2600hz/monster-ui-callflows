@@ -190,6 +190,11 @@
 	margin-top: 20px;
 }
 
+/* Set CAV */
+#set_cav_alert_popup .cav-add-row .svg-icon {
+	cursor: pointer;
+}
+
 /* Collect DTMF Popup */
 .dialog_popup.collect-dtmf-popup .form_content .popup_field {
 	padding-bottom: 0;
