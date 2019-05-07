@@ -1231,12 +1231,7 @@ define(function(require) {
 					data: {
 						custom_application_vars: {}
 					},
-					rules: [
-						{
-							type: 'quantity',
-							maxSize: '3'
-						}
-					],
+					rules: [],
 					isUsable: 'true',
 					weight: 31,
 					caption: function(node) {
