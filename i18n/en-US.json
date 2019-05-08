@@ -1011,7 +1011,9 @@
 			"title": "Set CAV",
 			"popupTitle": "Setting custom application vars",
 			"tip": "Set Custom Application Var ",
-			"help": "This feature allows you to set custom application variables providing key/value"
+			"help": "This feature allows you to set custom application variables providing key/value",
+			"key": "Key",
+			"value": "Value"
 		},
 
 		"__comment": "UI-2646: adding ring group togle to adv. callflows",
