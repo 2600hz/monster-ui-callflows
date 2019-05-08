@@ -1394,13 +1394,15 @@ define(function(require) {
 				});
 
 			template.find('#save_cav_variables').on('click', function() {
-				var keys = template.find('.cav-key'),
-					values = template.find('.cav-value'),
-					variables = {};
+				var formData = monster.ui.getFormData('set_cav_form'),
+					keys = formData.key,
+					values = formData.value;
+
+				variables = {};
 
 				_.each(keys, function(key, i) {
-					if (!_.isEmpty(key.value) && !_.isEmpty(values[i].value)) {
-						variables[key.value] = values[i].value;
+					if (!_.isEmpty(key) && !_.isEmpty(values[i])) {
+						variables[key] = values[i];
 					}
 				});
 
