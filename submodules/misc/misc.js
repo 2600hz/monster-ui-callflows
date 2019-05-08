@@ -1360,25 +1360,13 @@ define(function(require) {
 
 							var row = $(this).parent().parent();
 							row.remove();
-
-							toggleAddRow();
 						});
-				},
-				toggleAddRow = function() {
-					if (countRows() >= 3) {
-						template.find('.cav-add-row .svg-icon').hide();
-						return;
-					}
-
-					template.find('.cav-add-row .svg-icon').show();
 				},
 				popup;
 
 			if (_.size(variables) <= 0) {
 				addRow();
 			}
-
-			toggleAddRow();
 
 			_.each(variables, function(variable, key) {
 				addRow({
@@ -1390,7 +1378,6 @@ define(function(require) {
 			template.find('.cav-add-row .svg-icon')
 				.on('click', function() {
 					addRow();
-					toggleAddRow();
 				});
 
 			template.find('#save_cav_variables').on('click', function() {
