@@ -1351,11 +1351,26 @@ define(function(require) {
 
 					template.find('.cav-list tbody')
 						.append(cavRow);
+
+					template.find('.cav-remove-row')
+						.on('click', function() {
+							if (countRows() <= 1) {
+								return;
+							}
+
+							var row = $(this).parent().parent();
+							row.remove();
+
+							toggleAddRow();
+						});
 				},
-				hideAddRow = function() {
+				toggleAddRow = function() {
 					if (countRows() >= 3) {
 						template.find('.cav-add-row .svg-icon').hide();
+						return;
 					}
+
+					template.find('.cav-add-row .svg-icon').show();
 				},
 				popup;
 
@@ -1363,7 +1378,7 @@ define(function(require) {
 				addRow();
 			}
 
-			hideAddRow();
+			toggleAddRow();
 
 			_.each(variables, function(variable, key) {
 				addRow({
@@ -1375,7 +1390,7 @@ define(function(require) {
 			template.find('.cav-add-row .svg-icon')
 				.on('click', function() {
 					addRow();
-					hideAddRow();
+					toggleAddRow();
 				});
 
 			template.find('#save_cav_variables').on('click', function() {
