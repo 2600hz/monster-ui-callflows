@@ -10,6 +10,15 @@ define(function(require) {
 			'callflows.fetchActions': 'miscDefineActions'
 		},
 
+		appFlags: {
+			misc: {
+				webhookHttpVerbs: {
+					get: 'GET',
+					post: 'POST'
+				}
+			}
+		},
+
 		miscGetGroupPickupData: function(callback) {
 			var self = this;
 
@@ -1240,10 +1249,30 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscEditSetCAV(node, callback);
 					}
+				},
+				'webhook[]': {
+					name: self.i18n.active().callflows.webhook.title,
+					icon: 'to_cloud',	//graph2
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'webhook',
+					tip: self.i18n.active().callflows.webhook.tip,
+					data: {
+						customData: {}
+					},
+					rules: [],
+					isUsable: 'true',
+					weight: 170,
+					caption: function() {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscRenderEditWebhook(node, callback);
+					}
 				}
 			});
 		},
 
+		/* Render edit dialogs */
 		miscEditMissedCallAlerts: function(node, callback) {
 			var self = this,
 				recipients = node.getMetadata('recipients'),
@@ -1419,6 +1448,33 @@ define(function(require) {
 			initTemplate();
 		},
 
+		miscRenderEditWebhook: function(node, callback) {
+			var self = this,
+				initTemplate = function(data) {
+					var $template = $(self.getTemplate({
+						name: 'webhook-callflowEdit',
+						data: _.merge(data, {
+							httpVerbsList: self.appFlags.misc.webhookHttpVerbs
+						}),
+						submodule: 'misc'
+					}));
+
+					monster.ui.tooltips($template);
+
+					return $template;
+				};
+
+			monster.ui.dialog(initTemplate(), {
+				title: self.i18n.active().callflows.webhook.popupTitle,
+				beforeClose: function() {
+					if (_.isFunction(callback)) {
+						callback();
+					}
+				}
+			});
+		},
+
+		/* API helpers */
 		miscDeviceList: function(callback) {
 			var self = this;
 

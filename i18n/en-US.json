@@ -1138,6 +1138,29 @@
 			"title": "Set Distinctive Ring",
 			"label": "\"Alert-Info\" Header",
 			"tip": "Set distinctive ring for incoming call"
+		},
+
+		"webhook": {
+			"help": "This feature allows you to trigger a webhook call at any level of the callflow, to get \"real time\" info on how the callflow is behaving.",
+			"popupTitle": "Trigger Webhook",
+			"title": "Webhook",
+			"tip": "Trigger a webhook at any level in a callflow to get \"real time\" info on how the callflow is behaving.",
+			"uri": {
+				"label": "URI",
+				"help": "The 3rd party URI to call out to an event"
+			},
+			"httpVerb": {
+				"label": "Request Type",
+				"help": "HTTP method to use when contacting the server"
+			},
+			"retries": {
+				"label": "Re-try attempts",
+				"help": "Retry the request this many times if it fails"
+			},
+			"customData": {
+				"label": "Custom data (optional)",
+				"help": "These properties will be added to the event and will overwrite existing values"
+			}
 		}
 	},
 	"oldCallflows": {
