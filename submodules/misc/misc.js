@@ -1332,17 +1332,72 @@ define(function(require) {
 		miscEditSetCAV: function(node, callback) {
 			var self = this,
 				variables = _.extend({}, node.getMetadata('custom_application_vars')),
-				template = $(self.getTemplate({
-					name: 'setcav-dialog',
-					data: {
-						variables: variables
-					},
-					submodule: 'misc'
-				})),
-				countRows = function() {
-					return template.find('.cav-list tbody tr').length;
+				initTemplate = function() {
+					var template = $(self.getTemplate({
+							name: 'setcav-dialog',
+							data: {
+								variables: variables
+							},
+							submodule: 'misc'
+						})),
+						popup;
+
+					if (_.size(variables) <= 0) {
+						addRow(template);
+					}
+
+					_.each(variables, function(variable, key) {
+						addRow(template, {
+							key: key,
+							value: variable
+						});
+					});
+
+					popup = monster.ui.dialog(template, {
+						title: self.i18n.active().callflows.setCav.popupTitle,
+						width: 500,
+						beforeClose: function() {
+							if (typeof callback === 'function') {
+								callback();
+							}
+						}
+					});
+
+					bindSetCavEvents({
+						template: template,
+						popup: popup
+					});
 				},
-				addRow = function(data) {
+				bindSetCavEvents = function(args) {
+					var template = args.template,
+						popup = args.popup,
+						formData,
+						keys,
+						values;
+
+					template.find('.cav-add-row .svg-icon')
+						.on('click', function() {
+							addRow(template);
+						});
+
+					template.find('#save_cav_variables').on('click', function() {
+						formData = monster.ui.getFormData('set_cav_form');
+						keys = formData.key;
+						values = formData.value;
+						variables = {};
+
+						_.each(keys, function(key, i) {
+							if (!_.isEmpty(key) && !_.isEmpty(values[i])) {
+								variables[key] = values[i];
+							}
+						});
+
+						node.setMetadata('custom_application_vars', variables);
+
+						popup.dialog('close');
+					});
+				},
+				addRow = function(template, data) {
 					var cavRow = $(self.getTemplate({
 						name: 'setcav-row',
 						submodule: 'misc',
@@ -1354,59 +1409,15 @@ define(function(require) {
 
 					template.find('.cav-remove-row')
 						.on('click', function() {
-							if (countRows() <= 1) {
+							if (template.find('.cav-list tbody tr').length <= 1) {
 								return;
 							}
 
-							var row = $(this).parent().parent();
-							row.remove();
+							$(this).parent().parent().remove();
 						});
-				},
-				popup;
+				};
 
-			if (_.size(variables) <= 0) {
-				addRow();
-			}
-
-			_.each(variables, function(variable, key) {
-				addRow({
-					key: key,
-					value: variable
-				});
-			});
-
-			template.find('.cav-add-row .svg-icon')
-				.on('click', function() {
-					addRow();
-				});
-
-			template.find('#save_cav_variables').on('click', function() {
-				var formData = monster.ui.getFormData('set_cav_form'),
-					keys = formData.key,
-					values = formData.value;
-
-				variables = {};
-
-				_.each(keys, function(key, i) {
-					if (!_.isEmpty(key) && !_.isEmpty(values[i])) {
-						variables[key] = values[i];
-					}
-				});
-
-				node.setMetadata('custom_application_vars', variables);
-
-				popup.dialog('close');
-			});
-
-			popup = monster.ui.dialog(template, {
-				title: self.i18n.active().callflows.setCav.popupTitle,
-				width: 500,
-				beforeClose: function() {
-					if (typeof callback === 'function') {
-						callback();
-					}
-				}
-			});
+			initTemplate();
 		},
 
 		miscDeviceList: function(callback) {
