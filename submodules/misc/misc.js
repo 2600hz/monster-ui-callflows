@@ -1371,9 +1371,7 @@ define(function(require) {
 				bindSetCavEvents = function(args) {
 					var template = args.template,
 						popup = args.popup,
-						formData,
-						keys,
-						values;
+						formData;
 
 					template.find('.cav-add-row .svg-icon')
 						.on('click', function() {
@@ -1382,15 +1380,14 @@ define(function(require) {
 
 					template.find('#save_cav_variables').on('click', function() {
 						formData = monster.ui.getFormData('set_cav_form');
-						keys = formData.key;
-						values = formData.value;
-						variables = {};
-
-						_.each(keys, function(key, i) {
-							if (!_.isEmpty(key) && !_.isEmpty(values[i])) {
-								variables[key] = values[i];
-							}
-						});
+						variables = _
+							.chain(formData.items)
+							.reject(function(item) {
+								return _.isEmpty(item.key) || _.isEmpty(item.value);
+							})
+							.keyBy('key')
+							.mapValues('value')
+							.value();
 
 						node.setMetadata('custom_application_vars', variables);
 
@@ -1401,7 +1398,9 @@ define(function(require) {
 					var cavRow = $(self.getTemplate({
 						name: 'setcav-row',
 						submodule: 'misc',
-						data: data
+						data: _.merge(data, {
+							index: template.find('.cav-list tbody tr').length + 1
+						})
 					}));
 
 					template.find('.cav-list tbody')
