@@ -1590,11 +1590,8 @@ define(function(require) {
 					}));
 
 					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end.
-					// So we set a 500ms timer that will prevent any other interaction with the callflow element.
-					var isAlreadyClicked = false;
-
-					node_html.find('.module').on('click', function() {
-						if (!isAlreadyClicked) {
+					// So we set a 500ms debounce wait that will prevent any other interaction with the callflow element.
+					node_html.find('.module').on('click', _.debounce(function() {
 						monster.waterfall([
 							function(waterfallCallback) {
 								if (node.disabled) {
@@ -1628,14 +1625,10 @@ define(function(require) {
 								self.repaintFlow();
 							});
 						});
-
-							isAlreadyClicked = true;
-
-							setTimeout(function() {
-								isAlreadyClicked = false;
-							}, 500);
-						}
-					});
+					}, 500, {
+						leading: true,
+						trailing: false
+					}));
 				}
 
 				//make names of callflow nodes clickable
