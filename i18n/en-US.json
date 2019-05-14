@@ -1147,7 +1147,10 @@
 			"tip": "Trigger a webhook at any level in a callflow to get \"real time\" info on how the callflow is behaving.",
 			"uri": {
 				"label": "URI",
-				"help": "The 3rd party URI to call out to an event"
+				"help": "The 3rd party URI to call out to an event",
+				"errorMessages": {
+					"url": "Invalid URL"
+				}
 			},
 			"httpVerb": {
 				"label": "Request Type",

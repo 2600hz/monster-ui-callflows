@@ -214,3 +214,27 @@
 .dialog_popup.collect-dtmf-popup .form_content .popup_field {
 	padding-bottom: 0;
 }
+
+/************ Webhooks *************/
+.callflows-port#webhook_popup {
+	max-width: 450px;
+
+	.custom-data {
+		label[for="custom_data"] {
+			display: block;
+			text-align: center;
+			width: 100%;
+		}
+		.custom-data-container {
+			clear: both;
+
+			.data-key {
+				flex: initial;
+				width: 140px;
+			}
+		}
+	}
+	.monster-invalid {
+		float: none;
+	}
+}

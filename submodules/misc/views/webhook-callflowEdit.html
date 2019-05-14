@@ -1,22 +1,22 @@
-<div class="dialog_popup callflows-port">
+<div id="webhook_popup" class="dialog_popup callflows-port">
 	{{#monsterText}}
 		{{ i18n.callflows.webhook.help }}
 	{{/monsterText}}
-	<form name="form" method="post" action="#">
+	<form id="webhook_form" method="post" action="#">
 		<div class="form_content">
 			<div class="popup_field">
 				<label for="uri">
 					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.uri.help }}"></i>
 					{{ i18n.callflows.webhook.uri.label }}
 				</label>
-				<input type="text" id="uri" value="{{uri}}"/>
+				<input type="text" id="uri" name="uri" value="{{uri}}"/>
 			</div>
 			<div class="popup_field">
 				<label for="http_verb">
 					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.httpVerb.help }}"></i>
 					{{ i18n.callflows.webhook.httpVerb.label }}
 				</label>
-				<select id="http_verb">
+				<select id="http_verb" name="http_verb">
 					{{#select http_verb}}
 						{{#each httpVerbsList}}
 							<option value="{{ @key }}">{{ this }}</option>
@@ -29,7 +29,7 @@
 					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.retries.help }}"></i>
 					{{ i18n.callflows.webhook.retries.label }}
 				</label>
-				<select id="retries">
+				<select id="retries" name="retries">
 					{{#select retries}}
 						<option value="1">1</option>
 						<option value="2">2</option>
@@ -38,11 +38,12 @@
 					{{/select}}
 				</select>
 			</div>
-			<div class="popup_field">
+			<div class="popup_field custom-data">
 				<label for="custom_data">
 					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.customData.help }}"></i>
 					{{ i18n.callflows.webhook.customData.label }}
 				</label>
+				<div class="custom-data-container"></div>
 			</div>
 		</div>
 	</form>

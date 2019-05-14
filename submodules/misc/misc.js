@@ -1256,9 +1256,7 @@ define(function(require) {
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'webhook',
 					tip: self.i18n.active().callflows.webhook.tip,
-					data: {
-						customData: {}
-					},
+					data: {},
 					rules: [],
 					isUsable: 'true',
 					weight: 170,
@@ -1450,21 +1448,83 @@ define(function(require) {
 
 		miscRenderEditWebhook: function(node, callback) {
 			var self = this,
-				initTemplate = function(data) {
-					var $template = $(self.getTemplate({
-						name: 'webhook-callflowEdit',
-						data: _.merge(data, {
-							httpVerbsList: self.appFlags.misc.webhookHttpVerbs
-						}),
-						submodule: 'misc'
-					}));
+				popup,
+				formatData = function() {
+					var data = {
+						httpVerbsList: self.appFlags.misc.webhookHttpVerbs
+					};
+					data.uri = node.getMetadata('uri', '');
+					data.http_verb = node.getMetadata('http_verb', 'get');
+					data.retries = node.getMetadata('retries', 1);
+					data.custom_data = node.getMetadata('custom_data', {});
+
+					// Clean data
+					if (data.uri === false) {
+						data.uri = '';
+					}
+
+					return data;
+				},
+				initTemplate = function() {
+					var formattedData = formatData(),
+						$template = $(self.getTemplate({
+							name: 'webhook-callflowEdit',
+							data: formatData(),
+							submodule: 'misc'
+						})),
+						$form = $template.find('#webhook_form');
+
+					monster.ui.keyValueEditor($template.find('.custom-data-container'), {
+						data: formattedData.custom_data,
+						inputName: 'custom_data'
+					});
 
 					monster.ui.tooltips($template);
+
+					monster.ui.validate($form, {
+						rules: {
+							uri: {
+								required: true,
+								url: true
+							}
+						},
+						messages: {
+							uri: {
+								url: self.i18n.active().callflows.webhook.uri.errorMessages.url
+							}
+						}
+					});
+
+					$template.find('#add').on('click', function(e) {
+						e.preventDefault();
+
+						if (!monster.ui.valid($form)) {
+							return;
+						}
+
+						var formData = monster.ui.getFormData('webhook_form');
+
+						_.each(formData, function(value, key) {
+							if (key === 'custom_data') {
+								value = _
+									.chain(value)
+									.keyBy('key')
+									.mapValues('value')
+									.value();
+							} else if (key === 'retries') {
+								value = _.parseInt(value, 10);
+							}
+
+							node.setMetadata(key, value);
+						});
+
+						popup.dialog('close');
+					});
 
 					return $template;
 				};
 
-			monster.ui.dialog(initTemplate(), {
+			popup = monster.ui.dialog(initTemplate(), {
 				title: self.i18n.active().callflows.webhook.popupTitle,
 				beforeClose: function() {
 					if (_.isFunction(callback)) {
