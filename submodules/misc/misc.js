@@ -1449,33 +1449,23 @@ define(function(require) {
 		miscRenderEditWebhook: function(node, callback) {
 			var self = this,
 				popup,
-				formatData = function() {
-					var data = {
-						httpVerbsList: self.appFlags.misc.webhookHttpVerbs
-					};
-					data.uri = node.getMetadata('uri', '');
-					data.http_verb = node.getMetadata('http_verb', 'get');
-					data.retries = node.getMetadata('retries', 1);
-					data.custom_data = node.getMetadata('custom_data', {});
-
-					// Clean data
-					if (data.uri === false) {
-						data.uri = '';
-					}
-
-					return data;
-				},
 				initTemplate = function() {
-					var formattedData = formatData(),
+					var data = {
+							httpVerbsList: self.appFlags.misc.webhookHttpVerbs,
+							uri: node.getMetadata('uri', ''),
+							http_verb: node.getMetadata('http_verb', 'get'),
+							retries: node.getMetadata('retries', 1),
+							custom_data: node.getMetadata('custom_data', {})
+						},
 						$template = $(self.getTemplate({
 							name: 'webhook-callflowEdit',
-							data: formatData(),
+							data: data,
 							submodule: 'misc'
 						})),
 						$form = $template.find('#webhook_form');
 
 					monster.ui.keyValueEditor($template.find('.custom-data-container'), {
-						data: formattedData.custom_data,
+						data: data.custom_data,
 						inputName: 'custom_data'
 					});
 
