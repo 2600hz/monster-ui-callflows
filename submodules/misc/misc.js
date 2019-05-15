@@ -1221,6 +1221,25 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscEditMissedCallAlerts(node, callback);
 					}
+				},
+				'set_variables[]': {
+					name: self.i18n.active().callflows.setCav.title,
+					icon: 'settings2',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'set_variables',
+					tip: self.i18n.active().callflows.setCav.tip,
+					data: {
+						custom_application_vars: {}
+					},
+					rules: [],
+					isUsable: 'true',
+					weight: 31,
+					caption: function(node) {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscEditSetCAV(node, callback);
+					}
 				}
 			});
 		},
@@ -1308,6 +1327,96 @@ define(function(require) {
 					}
 				});
 			});
+		},
+
+		miscEditSetCAV: function(node, callback) {
+			var self = this,
+				variables = _.extend({}, node.getMetadata('custom_application_vars')),
+				initTemplate = function() {
+					var template = $(self.getTemplate({
+							name: 'setcav-dialog',
+							data: {
+								variables: variables
+							},
+							submodule: 'misc'
+						})),
+						popup;
+
+					if (_.size(variables) <= 0) {
+						addRow(template);
+					}
+
+					_.each(variables, function(variable, key) {
+						addRow(template, {
+							key: key,
+							value: variable
+						});
+					});
+
+					popup = monster.ui.dialog(template, {
+						title: self.i18n.active().callflows.setCav.popupTitle,
+						width: 500,
+						beforeClose: function() {
+							if (typeof callback === 'function') {
+								callback();
+							}
+						}
+					});
+
+					bindSetCavEvents({
+						template: template,
+						popup: popup
+					});
+				},
+				bindSetCavEvents = function(args) {
+					var template = args.template,
+						popup = args.popup,
+						formData;
+
+					template.find('.cav-add-row .svg-icon')
+						.on('click', function() {
+							addRow(template);
+						});
+
+					template.find('#save_cav_variables').on('click', function() {
+						formData = monster.ui.getFormData('set_cav_form');
+						variables = _
+							.chain(formData.items)
+							.reject(function(item) {
+								return _.isEmpty(item.key) || _.isEmpty(item.value);
+							})
+							.keyBy('key')
+							.mapValues('value')
+							.value();
+
+						node.setMetadata('custom_application_vars', variables);
+
+						popup.dialog('close');
+					});
+				},
+				addRow = function(template, data) {
+					var cavRow = $(self.getTemplate({
+						name: 'setcav-row',
+						submodule: 'misc',
+						data: _.merge(data, {
+							index: template.find('.cav-list tbody tr').length + 1
+						})
+					}));
+
+					template.find('.cav-list tbody')
+						.append(cavRow);
+
+					template.find('.cav-remove-row')
+						.on('click', function() {
+							if (template.find('.cav-list tbody tr').length <= 1) {
+								return;
+							}
+
+							$(this).parent().parent().remove();
+						});
+				};
+
+			initTemplate();
 		},
 
 		miscDeviceList: function(callback) {

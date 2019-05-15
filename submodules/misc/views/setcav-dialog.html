@@ -1,0 +1,26 @@
+<div id="set_cav_alert_popup" class="dialog_popup set-cav-alert callflows-port">
+	{{#monsterText}}
+		{{ i18n.callflows.setCav.help }}
+	{{/monsterText}}
+	<form name="form" method="post" action="#" id="set_cav_form">
+		<table class="cav-list">
+			<thead>
+				<tr>
+					<th>{{i18n.callflows.setCav.key}}</th>
+					<th>{{i18n.callflows.setCav.value}}</th>
+					<th width="5"></th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<div class="cav-add-row">
+			{{telicon "plus--circle-o"}}
+		</div>
+	</form>
+
+	<div class="items-selector-wrapper"></div>
+
+	<div class="buttons-center">
+		<button class="monster-button monster-button-primary" id="save_cav_variables">{{ i18n.save }}</button>
+	</div>
+</div>

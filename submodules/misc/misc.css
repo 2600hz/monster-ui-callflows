@@ -190,6 +190,26 @@
 	margin-top: 20px;
 }
 
+/* Set CAV */
+#set_cav_alert_popup .cav-add-row .svg-icon {
+	cursor: pointer;
+}
+
+#set_cav_alert_popup .cav-remove-row {
+	margin-top: -10px;
+	cursor: pointer;
+	display: inline;
+	visibility: hidden;
+}
+
+#set_cav_alert_popup .cav-remove-row:hover {
+	color: #ff0000;
+}
+
+#set_cav_alert_popup .cav-list tr:hover .cav-remove-row {
+	visibility: visible;
+}
+
 /* Collect DTMF Popup */
 .dialog_popup.collect-dtmf-popup .form_content .popup_field {
 	padding-bottom: 0;
