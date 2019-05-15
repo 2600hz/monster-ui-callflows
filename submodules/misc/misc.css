@@ -198,7 +198,8 @@
 #set_cav_alert_popup .cav-remove-row {
 	margin-top: -10px;
 	cursor: pointer;
-	display: none;
+	display: inline;
+	visibility: hidden;
 }
 
 #set_cav_alert_popup .cav-remove-row:hover {
@@ -206,7 +207,7 @@
 }
 
 #set_cav_alert_popup .cav-list tr:hover .cav-remove-row {
-	display: inline;
+	visibility: visible;
 }
 
 /* Collect DTMF Popup */
