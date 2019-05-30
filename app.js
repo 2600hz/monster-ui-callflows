@@ -1139,16 +1139,16 @@ define(function(require) {
 					return true;
 				};
 
-				this.getMetadata = function(key) {
+				this.getMetadata = function(key, defaultValue) {
 					var value;
 
-					if ('data' in this.data && key in this.data.data) {
+					if (_.has(this.data, ['data', key])) {
 						value = this.data.data[key];
 
 						return (value === 'null') ? null : value;
 					}
 
-					return false;
+					return _.isUndefined(defaultValue) ? false : defaultValue;
 				};
 
 				this.setMetadata = function(key, value) {
@@ -1590,52 +1590,45 @@ define(function(require) {
 					}));
 
 					// If an API request takes some time, the user can try to re-click on the element, we do not want to let that re-fire a request to the back-end.
-					// So we set a 500ms timer that will prevent any other interaction with the callflow element.
-					var isAlreadyClicked = false;
-
-					node_html.find('.module').on('click', function() {
-						if (!isAlreadyClicked) {
-							monster.waterfall([
-								function(waterfallCallback) {
-									if (node.disabled) {
-										monster.ui.confirm(self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.text,
-											function() {
-												waterfallCallback(null, false);
-											},
-											function() {
-												waterfallCallback(null, true);
-											}, {
-												cancelButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.cancel,
-												confirmButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.ok
-											});
-									} else {
-										waterfallCallback(null, null);
-									}
+					// So we set a 500ms debounce wait that will prevent any other interaction with the callflow element.
+					node_html.find('.module').on('click', _.debounce(function() {
+						monster.waterfall([
+							function(waterfallCallback) {
+								if (node.disabled) {
+									monster.ui.confirm(self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.text,
+										function() {
+											waterfallCallback(null, false);
+										},
+										function() {
+											waterfallCallback(null, true);
+										}, {
+											cancelButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.cancel,
+											confirmButtonText: self.i18n.active().callflowsApp.editor.confirmDialog.enableModule.ok
+										});
+								} else {
+									waterfallCallback(null, null);
 								}
-							], function(err, disabled) {
-								if (!_.isNull(disabled)) {
-									node.disabled = disabled;
-									if (_.has(node, 'data.data.skip_module')) {
-										node.data.data.skip_module = disabled;
-									}
-
-									if (!disabled) {
-										node_html.closest('.node').removeClass('disabled');
-									}
+							}
+						], function(err, disabled) {
+							if (!_.isNull(disabled)) {
+								node.disabled = disabled;
+								if (_.has(node, 'data.data.skip_module')) {
+									node.data.data.skip_module = disabled;
 								}
 
-								self.actions[node.actionName].edit(node, function() {
-									self.repaintFlow();
-								});
+								if (!disabled) {
+									node_html.closest('.node').removeClass('disabled');
+								}
+							}
+
+							self.actions[node.actionName].edit(node, function() {
+								self.repaintFlow();
 							});
-
-							isAlreadyClicked = true;
-
-							setTimeout(function() {
-								isAlreadyClicked = false;
-							}, 500);
-						}
-					});
+						});
+					}, 500, {
+						leading: true,
+						trailing: false
+					}));
 				}
 
 				//make names of callflow nodes clickable

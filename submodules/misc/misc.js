@@ -10,6 +10,15 @@ define(function(require) {
 			'callflows.fetchActions': 'miscDefineActions'
 		},
 
+		appFlags: {
+			misc: {
+				webhookHttpVerbs: {
+					get: 'GET',
+					post: 'POST'
+				}
+			}
+		},
+
 		miscGetGroupPickupData: function(callback) {
 			var self = this;
 
@@ -1240,10 +1249,28 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscEditSetCAV(node, callback);
 					}
+				},
+				'webhook[]': {
+					name: self.i18n.active().callflows.webhook.title,
+					icon: 'to_cloud',	//graph2
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'webhook',
+					tip: self.i18n.active().callflows.webhook.tip,
+					data: {},
+					rules: [],
+					isUsable: 'true',
+					weight: 170,
+					caption: function() {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscRenderEditWebhook(node, callback);
+					}
 				}
 			});
 		},
 
+		/* Render edit dialogs */
 		miscEditMissedCallAlerts: function(node, callback) {
 			var self = this,
 				recipients = node.getMetadata('recipients'),
@@ -1419,6 +1446,85 @@ define(function(require) {
 			initTemplate();
 		},
 
+		miscRenderEditWebhook: function(node, callback) {
+			var self = this,
+				popup,
+				initTemplate = function() {
+					var data = {
+							httpVerbsList: self.appFlags.misc.webhookHttpVerbs,
+							uri: node.getMetadata('uri', ''),
+							http_verb: node.getMetadata('http_verb', 'get'),
+							retries: node.getMetadata('retries', 1),
+							custom_data: node.getMetadata('custom_data', {})
+						},
+						$template = $(self.getTemplate({
+							name: 'webhook-callflowEdit',
+							data: data,
+							submodule: 'misc'
+						})),
+						$form = $template.find('#webhook_form');
+
+					monster.ui.keyValueEditor($template.find('.custom-data-container'), {
+						data: data.custom_data,
+						inputName: 'custom_data'
+					});
+
+					monster.ui.tooltips($template);
+
+					monster.ui.validate($form, {
+						rules: {
+							uri: {
+								required: true,
+								url: true
+							}
+						},
+						messages: {
+							uri: {
+								url: self.i18n.active().callflows.webhook.uri.errorMessages.url
+							}
+						}
+					});
+
+					$template.find('#add').on('click', function(e) {
+						e.preventDefault();
+
+						if (!monster.ui.valid($form)) {
+							return;
+						}
+
+						var formData = monster.ui.getFormData('webhook_form');
+
+						_.each(formData, function(value, key) {
+							if (key === 'custom_data') {
+								value = _
+									.chain(value)
+									.keyBy('key')
+									.mapValues('value')
+									.value();
+							} else if (key === 'retries') {
+								value = _.parseInt(value, 10);
+							}
+
+							node.setMetadata(key, value);
+						});
+
+						popup.dialog('close');
+					});
+
+					return $template;
+				};
+
+			popup = monster.ui.dialog(initTemplate(), {
+				title: self.i18n.active().callflows.webhook.popupTitle,
+				beforeClose: function() {
+					if (_.isFunction(callback)) {
+						callback();
+					}
+				}
+			});
+		},
+
+		/* API helpers */
 		miscDeviceList: function(callback) {
 			var self = this;
 
