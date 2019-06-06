@@ -617,7 +617,7 @@ define(function(require) {
 						? monster.util.getFormatPhoneNumber(_.get(newData, 'caller_id.internal.number'))
 						: {};
 
-				if (!callerIdNumber.hasOwnProperty('e164Number')) {
+				if (!callerIdNumber.hasOwnProperty('e164Number') && !_.isEmpty(newData.caller_id.internal.number)) {
 					validateForm.showErrors({
 						'caller_id.internal.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
 					});
