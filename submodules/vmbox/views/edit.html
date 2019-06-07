@@ -258,6 +258,44 @@
 							</ul>
 						</div>
 					</div>
+					
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.fast_forward_rewind_data_content }}">
+											{{#if data.is_voicemail_ff_rw_enabled}}
+												<input type="checkbox" id="is_voicemail_ff_rw_enabled" name="is_voicemail_ff_rw_enabled" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="is_voicemail_ff_rw_enabled" name="is_voicemail_ff_rw_enabled" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.fast_forward_rewind }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.oldest_message_first_data_content }}">
+											{{#if data.oldest_message_first}}
+												<input type="checkbox" id="oldest_message_first" name="oldest_message_first" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="oldest_message_first" name="oldest_message_first" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.oldest_message_first }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
 
 					<div class="clearfix">
 						<label for="timezone">{{ i18n.callflows.vmbox.recipients }}</label>
