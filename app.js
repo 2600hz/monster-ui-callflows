@@ -511,15 +511,7 @@ define(function(require) {
 						mediaSelect.append('<option value="' + newMedia.id + '">' + newMedia.name + '</option>');
 						mediaSelect.val(newMedia.id);
 					}
-				},
-				validateForm = monster.ui.validate(template.find('#account_settings_form'), {
-					rules: {
-						'extra.shoutcastUrl': {
-							protocol: true,
-							required: true
-						}
-					}
-				});
+				};
 
 			template.find('.account-settings-tabs a').click(function(e) {
 				e.preventDefault();
