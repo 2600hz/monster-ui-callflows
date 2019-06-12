@@ -511,15 +511,7 @@ define(function(require) {
 						mediaSelect.append('<option value="' + newMedia.id + '">' + newMedia.name + '</option>');
 						mediaSelect.val(newMedia.id);
 					}
-				},
-				validateForm = monster.ui.validate(template.find('#account_settings_form'), {
-					rules: {
-						'extra.shoutcastUrl': {
-							protocol: true,
-							required: true
-						}
-					}
-				});
+				};
 
 			template.find('.account-settings-tabs a').click(function(e) {
 				e.preventDefault();
@@ -612,17 +604,7 @@ define(function(require) {
 				}
 
 				var formData = monster.ui.getFormData('account_settings_form'),
-					newData = $.extend(true, {}, data.account, formData),
-					callerIdNumber = _.has(newData, 'caller_id.internal.number')
-						? monster.util.getFormatPhoneNumber(_.get(newData, 'caller_id.internal.number'))
-						: {};
-
-				if (!callerIdNumber.hasOwnProperty('e164Number')) {
-					validateForm.showErrors({
-						'caller_id.internal.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
-					});
-					return;
-				}
+					newData = $.extend(true, {}, data.account, formData);
 
 				if (formData.music_on_hold.media_id === '') {
 					delete newData.music_on_hold.media_id;
