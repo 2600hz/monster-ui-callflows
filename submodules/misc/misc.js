@@ -1525,6 +1525,12 @@ define(function(require) {
 									.value();
 							} else if (key === 'retries') {
 								value = _.parseInt(value, 10);
+							} else if (
+								key === 'format'
+								&& !_.includes(self.appFlags.misc.webhook.verbsWithFormat, formData.http_verb)
+							) {
+								node.deleteMetadata('format');
+								return;
 							}
 
 							node.setMetadata(key, value);
