@@ -24,6 +24,19 @@
 					{{/select}}
 				</select>
 			</div>
+			<div class="popup_field" id="form_popup_field"{{#unless hasVerbWithFormat}} style="display: none;"{{/unless}}>
+				<label for="format">
+					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.format.help }}"></i>
+					{{ i18n.callflows.webhook.format.label }}
+				</label>
+				<select id="format" name="format">
+					{{#select format}}
+						{{#each bodyFormatList}}
+							<option value="{{value}}">{{label}}</option>
+						{{/each}}
+					{{/select}}
+				</select>
+			</div>
 			<div class="popup_field">
 				<label for="retries">
 					<i class="help-popover fa fa-question" data-toggle="tooltip" data-placement="right" data-original-title="{{ i18n.callflows.webhook.retries.help }}"></i>

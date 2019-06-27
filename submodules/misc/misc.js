@@ -12,9 +12,14 @@ define(function(require) {
 
 		appFlags: {
 			misc: {
-				webhookHttpVerbs: {
-					get: 'GET',
-					post: 'POST'
+				webhook: {
+					verbsWithFormat: ['post', 'put'],
+					bodyFormats: ['form-data', 'json'],
+					httpVerbs: {
+						get: 'GET',
+						post: 'POST',
+						put: 'PUT'
+					}
 				}
 			}
 		},
@@ -429,7 +434,7 @@ define(function(require) {
 					isUsable: 'true',
 					weight: 20,
 
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return (node.getMetadata('alert_info') || '');
 					},
 
@@ -659,7 +664,7 @@ define(function(require) {
 									objects: {
 										items: data,
 										selected: node.getMetadata('owner_id') || '',
-										t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
+										t_38: node.getMetadata('media') && (node.getMetadata('media').fax_option || false)
 									}
 								},
 								submodule: 'misc'
@@ -1451,7 +1456,15 @@ define(function(require) {
 				popup,
 				initTemplate = function() {
 					var data = {
-							httpVerbsList: self.appFlags.misc.webhookHttpVerbs,
+							hasVerbWithFormat: _.includes(self.appFlags.misc.webhook.verbsWithFormat, node.getMetadata('http_verb')),
+							bodyFormatList: _.map(self.appFlags.misc.webhook.bodyFormats, function(item) {
+								return {
+									value: item,
+									label: _.get(self.i18n.active().callflows.webhook.format.options, _.camelCase(item), monster.util.formatVariableToDisplay(item))
+								};
+							}),
+							httpVerbsList: self.appFlags.misc.webhook.httpVerbs,
+							format: node.getMetadata('format', ''),
 							uri: node.getMetadata('uri', ''),
 							http_verb: node.getMetadata('http_verb', 'get'),
 							retries: node.getMetadata('retries', 1),
@@ -1485,6 +1498,15 @@ define(function(require) {
 						}
 					});
 
+					$template.find('#http_verb').on('change', function() {
+						var $this = $(this),
+							newValue = $this.val(),
+							$formPopupField = $template.find('#form_popup_field'),
+							animationMethod = _.includes(self.appFlags.misc.webhook.verbsWithFormat, newValue) ? 'slideDown' : 'slideUp';
+
+						$formPopupField[animationMethod](250);
+					});
+
 					$template.find('#add').on('click', function(e) {
 						e.preventDefault();
 
@@ -1503,6 +1525,12 @@ define(function(require) {
 									.value();
 							} else if (key === 'retries') {
 								value = _.parseInt(value, 10);
+							} else if (
+								key === 'format'
+								&& !_.includes(self.appFlags.misc.webhook.verbsWithFormat, formData.http_verb)
+							) {
+								node.deleteMetadata('format');
+								return;
 							}
 
 							node.setMetadata(key, value);
