@@ -1156,6 +1156,14 @@
 				"label": "Request Type",
 				"help": "HTTP method to use when sending the request"
 			},
+			"format": {
+				"label": "Body Format",
+				"help": "Format to use when sending the webhook ",
+				"options": {
+					"formData": "FORM-DATA",
+					"json": "JSON"
+				}
+			},
 			"retries": {
 				"label": "Re-try attempts",
 				"help": "How many times to retry the request if the host isn't available"
