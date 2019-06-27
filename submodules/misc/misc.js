@@ -1498,6 +1498,15 @@ define(function(require) {
 						}
 					});
 
+					$template.find('#http_verb').on('change', function() {
+						var $this = $(this),
+							newValue = $this.val(),
+							$formPopupField = $template.find('#form_popup_field'),
+							animationMethod = _.includes(self.appFlags.misc.webhook.verbsWithFormat, newValue) ? 'slideDown' : 'slideUp';
+
+						$formPopupField[animationMethod](250);
+					});
+
 					$template.find('#add').on('click', function(e) {
 						e.preventDefault();
 
