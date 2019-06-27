@@ -12,9 +12,14 @@ define(function(require) {
 
 		appFlags: {
 			misc: {
-				webhookHttpVerbs: {
-					get: 'GET',
-					post: 'POST'
+				webhook: {
+					verbsWithFormat: ['post', 'put'],
+					bodyFormats: ['form-data', 'json'],
+					httpVerbs: {
+						get: 'GET',
+						post: 'POST',
+						put: 'PUT'
+					}
 				}
 			}
 		},
@@ -1451,7 +1456,15 @@ define(function(require) {
 				popup,
 				initTemplate = function() {
 					var data = {
-							httpVerbsList: self.appFlags.misc.webhookHttpVerbs,
+							hasVerbWithFormat: _.includes(self.appFlags.misc.webhook.verbsWithFormat, node.getMetadata('http_verb')),
+							bodyFormatList: _.map(self.appFlags.misc.webhook.bodyFormats, function(item) {
+								return {
+									value: item,
+									label: _.get(self.i18n.active().callflows.webhook.format.options, _.camelCase(item), monster.util.formatVariableToDisplay(item))
+								};
+							}),
+							httpVerbsList: self.appFlags.misc.webhook.httpVerbs,
+							format: node.getMetadata('format', ''),
 							uri: node.getMetadata('uri', ''),
 							http_verb: node.getMetadata('http_verb', 'get'),
 							retries: node.getMetadata('retries', 1),
