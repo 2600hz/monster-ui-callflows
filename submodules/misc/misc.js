@@ -429,7 +429,7 @@ define(function(require) {
 					isUsable: 'true',
 					weight: 20,
 
-					caption: function(node, caption_map) {
+					caption: function(node) {
 						return (node.getMetadata('alert_info') || '');
 					},
 
@@ -659,7 +659,7 @@ define(function(require) {
 									objects: {
 										items: data,
 										selected: node.getMetadata('owner_id') || '',
-										t_38: node.getMetadata('media') && node.getMetadata('media').fax_option || false
+										t_38: node.getMetadata('media') && (node.getMetadata('media').fax_option || false)
 									}
 								},
 								submodule: 'misc'
