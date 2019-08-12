@@ -470,7 +470,6 @@ define(function(require) {
 					submodule: 'user'
 				})),
 				user_form = user_html.find('#user-form'),
-				data_devices,
 				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
 
@@ -517,10 +516,13 @@ define(function(require) {
 					call_forward_number: { regex: /^[+]?[0-9]*$/ },
 					'caller_id.internal.name': { maxlength: 30 },
 					'caller_id.external.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.emergency.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 					'caller_id.internal.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
-					'caller_id.emergency.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
-					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ }
+					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
+					'caller_id.asserted.number': { phoneNumber: true },
+					'caller_id.asserted.realm': { realm: true }
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
@@ -531,13 +533,25 @@ define(function(require) {
 					'caller_id.internal.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
 					'caller_id.external.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
 					'caller_id.emergency.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.asserted.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
 					'caller_id.internal.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
 					'caller_id.external.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
-					'caller_id.emergency.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number }
+					'caller_id.emergency.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.asserted.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.asserted.realm': { regex: self.i18n.active().callflows.user.validation.caller_id.realm }
 				}
 			});
 
-			timezone.populateDropdown($('#timezone', user_html), data.data.timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#timezone', user_html),
+				_.get(data.data, 'timezone', 'inherit'),
+				{
+					inherit: self.i18n.active().defaultTimezone
+				});
+
+			user_html.find('input[data-mask]').each(function() {
+				var $this = $(this);
+				monster.ui.mask($this, $this.data('mask'));
+			});
 
 			if (data.data.id === monster.apps.auth.userId) {
 				$('.user-delete', user_html).hide();
@@ -555,6 +569,48 @@ define(function(require) {
 			self.winkstartLinkForm(user_html);
 
 			hotdesk_pin_require.is(':checked') ? hotdesk_pin.show() : hotdesk_pin.hide();
+
+			if (!$('#music_on_hold_media_id', user_html).val()) {
+				$('#edit_link_media', user_html).hide();
+			}
+
+			self.userBindEvents({
+				template: user_html,
+				userForm: user_form,
+				hotdeskPin: hotdesk_pin,
+				hotdeskPinRequire: hotdesk_pin_require,
+				data: data,
+				callbacks: callbacks
+			});
+
+			target
+				.empty()
+				.append(user_html);
+		},
+
+		/**
+		 * Bind events for the users page
+		 * @param  {Object} args
+		 * @param  {jQuery} args.template
+		 * @param  {jQuery} args.userForm
+		 * @param  {jQuery} args.hotdeskPin
+		 * @param  {jQuery} args.hotdeskPinRequire
+		 * @param  {Object} args.data
+		 * @param  {Object} args.callbacks
+		 * @param  {Function} args.callbacks.save_success
+		 * @param  {Function} args.callbacks.save_error
+		 * @param  {Function} args.callbacks.delete_success
+		 * @param  {Function} args.callbacks.delete_error
+		 */
+		userBindEvents: function(args) {
+			var self = this,
+				user_html = args.template,
+				user_form = args.userForm,
+				hotdesk_pin = args.hotdeskPin,
+				hotdesk_pin_require = args.hotdeskPinRequire,
+				data = args.data,
+				callbacks = args.callbacks,
+				data_devices;
 
 			hotdesk_pin_require.change(function() {
 				$(this).is(':checked') ? hotdesk_pin.show('blind') : hotdesk_pin.hide('blind');
@@ -654,10 +710,6 @@ define(function(require) {
 					self.userDelete(data.data.id, callbacks.delete_success, callbacks.delete_error);
 				});
 			});
-
-			if (!$('#music_on_hold_media_id', user_html).val()) {
-				$('#edit_link_media', user_html).hide();
-			}
 
 			$('#music_on_hold_media_id', user_html).change(function() {
 				!$('#music_on_hold_media_id option:selected', user_html).val() ? $('#edit_link_media', user_html).hide() : $('#edit_link_media', user_html).show();
@@ -775,10 +827,6 @@ define(function(require) {
 					data_defaults: defaults
 				});
 			});
-
-			(target)
-				.empty()
-				.append(user_html);
 		},
 
 		userRenderList: function(parent, callback) {
@@ -946,6 +994,7 @@ define(function(require) {
 			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
+			form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
 
