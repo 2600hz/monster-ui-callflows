@@ -427,8 +427,12 @@ define(function(require) {
 
 				monster.ui.tooltips(template);
 
+				// Setup input fields
 				monster.ui.chosen(template.find('.cid-number-select, .preflow-callflows-dropdown'));
+				monster.ui.mask(template.find('.phone-number'), 'phoneNumber');
+
 				container.empty().append(template);
+
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
 		},
@@ -599,25 +603,65 @@ define(function(require) {
 			});
 
 			template.find('.account-settings-update').on('click', function() {
-				if (!monster.ui.valid(template.find('#account_settings_form'))) {
+				// Validate form
+				var $form = template.find('#account_settings_form'),
+					validateForm = monster.ui.validate($form, {
+						rules: {
+							'caller_id.asserted.realm': {
+								realm: true
+							}
+						}
+					}),
+					errors = {},
+					numbersData = {},
+					formData,
+					newData;
+
+				if (!monster.ui.valid($form)) {
 					return;
 				}
 
-				var formData = monster.ui.getFormData('account_settings_form'),
-					newData = $.extend(true, {}, data.account, formData);
+				// Validate and extract phone numbers
+				$form.find('input.phone-number').each(function() {
+					var $this = $(this),
+						fieldName = $this.attr('name'),
+						number = $this.val(),
+						formattedNumber = monster.util.getFormatPhoneNumber(number);
 
+					if (_.has(formattedNumber, 'e164Number')) {
+						_.set(numbersData, fieldName, formattedNumber.e164Number);
+					} else {
+						errors[fieldName] = self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber;
+					}
+				});
+
+				if (!_.isEmpty(errors)) {
+					// Merge new errors with existing ones, in order to display all of them
+					validateForm.showErrors(_.merge(errors, validateForm.errorMap));
+
+					return;
+				}
+
+				// Collect data
+				formData = monster.ui.getFormData('account_settings_form');
+				newData = _.merge({}, data.account, formData);
+
+				// Clean empty data
 				if (formData.music_on_hold.media_id === '') {
 					delete newData.music_on_hold.media_id;
 				} else if (formData.music_on_hold.media_id === 'shoutcast') {
 					newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
 				}
 
-				if (formData.caller_id.external.name === '') {
-					delete newData.caller_id.external.name;
-				}
-				if (formData.caller_id.external.number === '') {
-					delete newData.caller_id.external.number;
-				}
+				_.each(formData.caller_id, function(callerIdObj, callerIdKey) {
+					_.each(callerIdObj, function(value, key) {
+						if (!_.isEmpty(value)) {
+							return;
+						}
+
+						_.unset(newData.caller_id, [callerIdKey, key]);
+					});
+				});
 
 				if (formData.preflow.always === '_disabled') {
 					delete newData.preflow.always;
