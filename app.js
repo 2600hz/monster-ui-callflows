@@ -2119,6 +2119,22 @@ define(function(require) {
 					input.unbind('.link');
 				}
 			});
+		},
+
+		/**
+		 * Unsets the empty properties of an object
+		 * @param  {Object} obj  Object to compact
+		 */
+		compactObject: function(obj) {
+			var self = this;
+			_.each(obj, function(value, key) {
+				if (_.isPlainObject(value)) {
+					self.compactObject(value);
+				}
+				if (_.isEmpty(value)) {
+					_.unset(obj, key);
+				}
+			});
 		}
 	};
 

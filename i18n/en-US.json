@@ -230,6 +230,19 @@
 			"mediaWebrtc": {
 				"content": "If checked, forces a WebRTC compatible SDP on the INVITE.",
 				"label": "WebRTC"
+			},
+			"asserted": "Asserted Identity",
+			"caller_id_name_data_content4": "Define the Caller ID Name of this Device, to be used for P-Asserted-Identity header (max. 30 chars).",
+			"caller_id_number_data_content4": "Define the Caller ID Number of this Device, to be used for P-Asserted-Identity header.",
+			"caller_id_realm": "Caller ID Realm",
+			"caller_id_realm_placeholder": "Realm",
+			"caller_id_realm_data_content4": "Define the Caller ID Realm of this Device, to be used for P-Asserted-Identity header.",
+			"validation": {
+				"caller_id": {
+					"name": "Please only enter alphanumeric characters, space or comma",
+					"number": "Please enter a valid phone number",
+					"realm": "Please enter a valid realm"
+				}
 			}
 		},
 		"disa": {
@@ -762,7 +775,7 @@
 			"__version": "4.2",
 			"impersonate": "Impersonate",
 			"asserted": "Asserted Identity",
-			"caller_id_name_data_content4": "Define the Caller ID Name of this User, to be used for P-Asserted-Identity header.",
+			"caller_id_name_data_content4": "Define the Caller ID Name of this User, to be used for P-Asserted-Identity header (max. 30 chars).",
 			"caller_id_number_data_content4": "Define the Caller ID Number of this User, to be used for P-Asserted-Identity header.",
 			"caller_id_realm": "Caller ID Realm",
 			"caller_id_realm_placeholder": "Realm",

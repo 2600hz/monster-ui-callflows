@@ -402,52 +402,72 @@ define(function(require) {
 		},
 
 		deviceGetValidationByDeviceType: function(deviceType) {
-			var validation = {
-				ata: {
-					'sip.ip': {
-						required: true,
-						ipv4: true
-					}
-				},
-				sip_uri: {},
-				sip_device: {
-					'mac_address': { mac: true },
-					'sip_expire_seconds': {	digits: true },
-					'sip.ip': {
-						ipv4: true,
-						required: true
+			var self = this,
+				i18n = self.i18n.active(),
+				validation = {
+					ata: {
+						'sip.ip': {
+							required: true,
+							ipv4: true
+						}
 					},
-					'extra.shoutcastUrl': { protocol: true }
-				},
-				fax: {
-					'mac_address': { mac: true },
-					'sip_expire_seconds': {	digits: true },
-					'sip.ip': {
-						ipv4: true,
-						required: true
+					sip_uri: {},
+					sip_device: {
+						'mac_address': { mac: true },
+						'sip_expire_seconds': {	digits: true },
+						'sip.ip': {
+							ipv4: true,
+							required: true
+						},
+						'extra.shoutcastUrl': { protocol: true }
+					},
+					fax: {
+						'mac_address': { mac: true },
+						'sip_expire_seconds': {	digits: true },
+						'sip.ip': {
+							ipv4: true,
+							required: true
+						}
+					},
+					cellphone: {},
+					smartphone: {
+						'sip_expire_seconds': {	digits: true },
+						'sip.ip': {
+							ipv4: true,
+							required: true
+						}
+					},
+					landline: {},
+					softphone: {
+						'sip_expire_seconds': {	digits: true },
+						'extra.shoutcastUrl': { protocol: true }
+					},
+					mobile: {
+						'mdn': { digits: true },
+						'sip_expire_seconds': {	digits: true },
+						'extra.shoutcastUrl': { protocol: true }
 					}
 				},
-				cellphone: {},
-				smartphone: {
-					'sip_expire_seconds': {	digits: true },
-					'sip.ip': {
-						ipv4: true,
-						required: true
-					}
-				},
-				landline: {},
-				softphone: {
-					'sip_expire_seconds': {	digits: true },
-					'extra.shoutcastUrl': { protocol: true }
-				},
-				mobile: {
-					'mdn': { digits: true },
-					'sip_expire_seconds': {	digits: true },
-					'extra.shoutcastUrl': { protocol: true }
-				}
-			};
+				deviceTypeValidation = {
+					rules: validation[deviceType]
+				};
 
-			return { rules: validation[deviceType] };
+			if (_.includes(['ata', 'fax', 'mobile', 'sip_device', 'softphone'], deviceType)) {
+				_.merge(deviceTypeValidation, {
+					rules: {
+						'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+						'caller_id.asserted.number': { phoneNumber: true },
+						'caller_id.asserted.realm': { realm: true }
+					},
+					messages: {
+						'caller_id.asserted.name': { regex: i18n.callflows.device.validation.caller_id.name },
+						'caller_id.asserted.number': { regex: i18n.callflows.device.validation.caller_id.number },
+						'caller_id.asserted.realm': { regex: i18n.callflows.device.validation.caller_id.realm }
+					}
+				});
+			}
+
+			return deviceTypeValidation;
 		},
 
 		deviceRender: function(data, target, callbacks) {
@@ -482,7 +502,69 @@ define(function(require) {
 					$('#edit_link', device_html).hide();
 				}
 
-				monster.ui.mask(device_html.find('#mac_address'), 'macAddress');
+				device_html.find('input[data-mask]').each(function() {
+					var $this = $(this);
+					monster.ui.mask($this, $this.data('mask'));
+				});
+
+				if (!$('#music_on_hold_media_id', device_html).val()) {
+					$('#edit_link_media', device_html).hide();
+				}
+
+				if (data.data.sip && data.data.sip.method === 'ip') {
+					$('#username_block', device_html).hide();
+				} else {
+					$('#ip_block', device_html).hide();
+				}
+			} else {
+				device_html = $(self.getTemplate({
+					name: 'general_edit',
+					submodule: 'device'
+				}));
+
+				$('.media_pane', device_html).hide();
+			}
+
+			$('*[rel=popover]:not([type="text"])', device_html).popover({
+				trigger: 'hover'
+			});
+
+			$('*[rel=popover][type="text"]', device_html).popover({
+				trigger: 'focus'
+			});
+
+			self.winkstartTabs(device_html);
+
+			self.deviceBindEvents({
+				data: data,
+				template: device_html,
+				callbacks: callbacks
+			});
+
+			(target)
+				.empty()
+				.append(device_html);
+
+			$('.media_tabs .buttons[device_type="sip_device"]', device_html).trigger('click');
+		},
+
+		/**
+		 * Bind events for the device edit template
+		 * @param  {Object} args
+		 * @param  {Object} args.data
+		 * @param  {Object} args.template
+		 * @param  {Object} args.callbacks
+		 * @param  {Function} args.callbacks.save_success
+		 * @param  {Function} args.callbacks.delete_success
+		 */
+		deviceBindEvents: function(args) {
+			var self = this,
+				data = args.data,
+				callbacks = args.callbacks,
+				device_html = args.template;
+
+			if (typeof data.data === 'object' && data.data.device_type) {
+				var deviceForm = device_html.find('#device-form');
 
 				$('#owner_id', device_html).change(function() {
 					!$('#owner_id option:selected', device_html).val() ? $('#edit_link', device_html).hide() : $('#edit_link', device_html).show();
@@ -560,16 +642,6 @@ define(function(require) {
 					});
 				}
 
-				if (!$('#music_on_hold_media_id', device_html).val()) {
-					$('#edit_link_media', device_html).hide();
-				}
-
-				if (data.data.sip && data.data.sip.method === 'ip') {
-					$('#username_block', device_html).hide();
-				} else {
-					$('#ip_block', device_html).hide();
-				}
-
 				device_html.find('#sip_method').on('change', function() {
 					if ($('#sip_method option:selected', device_html).val() === 'ip') {
 						$('#ip_block', device_html).slideDown();
@@ -615,12 +687,6 @@ define(function(require) {
 					});
 				});
 			} else {
-				device_html = $(self.getTemplate({
-					name: 'general_edit',
-					submodule: 'device'
-				}));
-
-				$('.media_pane', device_html).hide();
 				$('.media_tabs .buttons', device_html).click(function() {
 					var $this = $(this);
 					$('.media_pane', device_html).show();
@@ -637,22 +703,6 @@ define(function(require) {
 					}
 				});
 			}
-
-			$('*[rel=popover]:not([type="text"])', device_html).popover({
-				trigger: 'hover'
-			});
-
-			$('*[rel=popover][type="text"]', device_html).popover({
-				trigger: 'focus'
-			});
-
-			self.winkstartTabs(device_html);
-
-			(target)
-				.empty()
-				.append(device_html);
-
-			$('.media_tabs .buttons[device_type="sip_device"]', device_html).trigger('click');
 		},
 
 		deviceSetProvisionerStuff: function(device_html, data) {
@@ -810,6 +860,8 @@ define(function(require) {
 		},
 
 		deviceNormalizeData: function(data) {
+			var self = this;
+
 			if (data.hasOwnProperty('provision')) {
 				if (data.provision.endpoint_brand === 'none') {
 					delete data.provision;
@@ -836,16 +888,10 @@ define(function(require) {
 				delete data.media.bypass_media;
 			}
 
-			if (data.caller_id.internal.number === '' && data.caller_id.internal.name === '') {
-				delete data.caller_id.internal;
-			}
+			self.compactObject(data.caller_id);
 
-			if (data.caller_id.external.number === '' && data.caller_id.external.name === '') {
-				delete data.caller_id.external;
-			}
-
-			if (data.caller_id.emergency.number === '' && data.caller_id.emergency.name === '') {
-				delete data.caller_id.emergency;
+			if (_.isEmpty(data.caller_id)) {
+				delete data.caller_id;
 			}
 
 			if (!data.music_on_hold.media_id) {
@@ -931,6 +977,11 @@ define(function(require) {
 				form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
 				form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 				form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
+
+				if (_.trim(form_data.caller_id.asserted.number)) {
+					// If number is not empty or full of whitespaces
+					form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
+				}
 			}
 
 			if ('media' in form_data && 'audio' in form_data.media) {
