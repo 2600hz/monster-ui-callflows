@@ -431,6 +431,21 @@ define(function(require) {
 				monster.ui.chosen(template.find('.cid-number-select, .preflow-callflows-dropdown'));
 				monster.ui.mask(template.find('.phone-number'), 'phoneNumber');
 
+				// Set validation rules
+				monster.ui.validate(template.find('#account_settings_form'), {
+					rules: {
+						'caller_id.asserted.number': {
+							phoneNumber: true
+						},
+						'caller_id.asserted.realm': {
+							realm: true
+						}
+					},
+					messages: {
+						'caller_id.asserted.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
+					}
+				});
+
 				container.empty().append(template);
 
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
@@ -604,47 +619,19 @@ define(function(require) {
 
 			template.find('.account-settings-update').on('click', function() {
 				// Validate form
-				var $form = template.find('#account_settings_form'),
-					validateForm = monster.ui.validate($form, {
-						rules: {
-							'caller_id.asserted.realm': {
-								realm: true
-							}
-						}
-					}),
-					errors = {},
-					numbersData = {},
-					formData,
-					newData;
-
-				if (!monster.ui.valid($form)) {
-					return;
-				}
-
-				// Validate and extract phone numbers
-				$form.find('input.phone-number').each(function() {
-					var $this = $(this),
-						fieldName = $this.attr('name'),
-						number = $this.val(),
-						formattedNumber = monster.util.getFormatPhoneNumber(number);
-
-					if (_.has(formattedNumber, 'e164Number')) {
-						_.set(numbersData, fieldName, formattedNumber.e164Number);
-					} else {
-						errors[fieldName] = self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber;
-					}
-				});
-
-				if (!_.isEmpty(errors)) {
-					// Merge new errors with existing ones, in order to display all of them
-					validateForm.showErrors(_.merge(errors, validateForm.errorMap));
-
+				if (!monster.ui.valid(template.find('#account_settings_form'))) {
 					return;
 				}
 
 				// Collect data
-				formData = monster.ui.getFormData('account_settings_form');
-				newData = _.merge({}, data.account, formData);
+				var formData = monster.ui.getFormData('account_settings_form'),
+					newData = _.merge({}, data.account, formData);
+
+				// Format data
+				if (_.trim(newData.caller_id.asserted.number)) {
+					// If number is not empty or full of whitespaces
+					newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
+				}
 
 				// Clean empty data
 				if (formData.music_on_hold.media_id === '') {
@@ -653,15 +640,11 @@ define(function(require) {
 					newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
 				}
 
-				_.each(formData.caller_id, function(callerIdObj, callerIdKey) {
-					_.each(callerIdObj, function(value, key) {
-						if (!_.isEmpty(value)) {
-							return;
-						}
+				self.compactObject(newData.caller_id);
 
-						_.unset(newData.caller_id, [callerIdKey, key]);
-					});
-				});
+				if (_.isEmpty(newData.caller_id)) {
+					delete newData.caller_id;
+				}
 
 				if (formData.preflow.always === '_disabled') {
 					delete newData.preflow.always;

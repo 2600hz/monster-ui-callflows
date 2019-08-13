@@ -589,7 +589,7 @@ define(function(require) {
 		},
 
 		/**
-		 * Bind events for the users page
+		 * Bind events for the user edit template
 		 * @param  {Object} args
 		 * @param  {jQuery} args.template
 		 * @param  {jQuery} args.userForm
@@ -994,7 +994,11 @@ define(function(require) {
 			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
-			form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
+
+			if (_.trim(form_data.caller_id.asserted.number)) {
+				// If number is not empty or full of whitespaces
+				form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
+			}
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
 
@@ -1041,23 +1045,15 @@ define(function(require) {
 		},
 
 		userNormalizeData: function(data) {
+			var self = this;
+
 			if ($.isArray(data.directories)) {
 				data.directories = {};
 			}
 
-			$.each(data.caller_id, function(key, val) {
-				$.each(val, function(_key, _val) {
-					if (_val === '') {
-						delete val[_key];
-					}
-				});
+			self.compactObject(data.caller_id);
 
-				if ($.isEmptyObject(val)) {
-					delete data.caller_id[key];
-				}
-			});
-
-			if ($.isEmptyObject(data.caller_id)) {
+			if (_.isEmpty(data.caller_id)) {
 				delete data.caller_id;
 			}
 
