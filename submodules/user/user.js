@@ -542,11 +542,13 @@ define(function(require) {
 				}
 			});
 
-			timezone.populateDropdown($('#timezone', user_html),
+			timezone.populateDropdown(
+				$('#timezone', user_html),
 				_.get(data.data, 'timezone', 'inherit'),
 				{
 					inherit: self.i18n.active().defaultTimezone
-				});
+				}
+			);
 
 			user_html.find('input[data-mask]').each(function() {
 				var $this = $(this);
@@ -994,11 +996,9 @@ define(function(require) {
 			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
-
-			if (_.trim(form_data.caller_id.asserted.number)) {
-				// If number is not empty or full of whitespaces
-				form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
-			}
+			form_data.caller_id.asserted.number = _.isEmpty(form_data.caller_id.asserted.number)
+				? ''	// Need to keep the empty string so the new value is not lost when merging the form data with the original data
+				: monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
 

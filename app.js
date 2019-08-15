@@ -628,10 +628,7 @@ define(function(require) {
 					newData = _.merge({}, data.account, formData);
 
 				// Format data
-				if (_.trim(newData.caller_id.asserted.number)) {
-					// If number is not empty or full of whitespaces
-					newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
-				}
+				newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
 
 				// Clean empty data
 				if (formData.music_on_hold.media_id === '') {
