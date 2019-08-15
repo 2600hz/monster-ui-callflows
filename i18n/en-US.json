@@ -230,6 +230,19 @@
 			"mediaWebrtc": {
 				"content": "If checked, forces a WebRTC compatible SDP on the INVITE.",
 				"label": "WebRTC"
+			},
+			"asserted": "Asserted Identity",
+			"caller_id_name_data_content4": "Define the Caller ID Name of this Device, to be used for P-Asserted-Identity header (max. 30 chars).",
+			"caller_id_number_data_content4": "Define the Caller ID Number of this Device, to be used for P-Asserted-Identity header.",
+			"caller_id_realm": "Caller ID Realm",
+			"caller_id_realm_placeholder": "Realm",
+			"caller_id_realm_data_content4": "Define the Caller ID Realm of this Device, to be used for P-Asserted-Identity header.",
+			"validation": {
+				"caller_id": {
+					"name": "Please only enter alphanumeric characters, space or comma",
+					"number": "Please enter a valid phone number",
+					"realm": "Please enter a valid realm"
+				}
 			}
 		},
 		"disa": {
@@ -750,7 +763,8 @@
 				},
 				"caller_id": {
 					"name": "Please only enter alphanumeric characters, space or comma",
-					"number": "Please enter a valid phone number"
+					"number": "Please enter a valid phone number",
+					"realm": "Please enter a valid realm"
 				}
 			},
 			"__version": "4.0",
@@ -759,7 +773,13 @@
 			"failover_callforward_content": "When checked, if all this user's devices are unregistered, then the system will automatically call-forward (even if the Enable Call-Forward setting isn't enabled)",
 			"__comment": "UI-2921: adding way to impersonate users",
 			"__version": "4.2",
-			"impersonate": "Impersonate"
+			"impersonate": "Impersonate",
+			"asserted": "Asserted Identity",
+			"caller_id_name_data_content4": "Define the Caller ID Name of this User, to be used for P-Asserted-Identity header (max. 30 chars).",
+			"caller_id_number_data_content4": "Define the Caller ID Number of this User, to be used for P-Asserted-Identity header.",
+			"caller_id_realm": "Caller ID Realm",
+			"caller_id_realm_placeholder": "Realm",
+			"caller_id_realm_data_content4": "Define the Caller ID Realm of this User, to be used for P-Asserted-Identity header."
 		},
 		"vmbox": {
 			"voicemail": "Voicemail",
@@ -838,8 +858,10 @@
 				"titleOutbound": "Account's External/Off-net Caller ID",
 				"titleInbound": "Account's Internal/On-net Caller ID",
 				"titleEmergency": "Account's Emergency Caller ID",
+				"titleAsserted": "Account's Asserted ID",
 				"nameLabel": "Caller ID Name:",
 				"numberLabel": "Caller ID Number:",
+				"realmLabel": "Caller ID Realm:",
 				"defaultNumber": "Default",
 				"messages": {
 					"invalidNumber": "Please enter a valid number"

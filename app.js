@@ -427,8 +427,27 @@ define(function(require) {
 
 				monster.ui.tooltips(template);
 
+				// Setup input fields
 				monster.ui.chosen(template.find('.cid-number-select, .preflow-callflows-dropdown'));
+				monster.ui.mask(template.find('.phone-number'), 'phoneNumber');
+
+				// Set validation rules
+				monster.ui.validate(template.find('#account_settings_form'), {
+					rules: {
+						'caller_id.asserted.number': {
+							phoneNumber: true
+						},
+						'caller_id.asserted.realm': {
+							realm: true
+						}
+					},
+					messages: {
+						'caller_id.asserted.number': self.i18n.active().callflows.accountSettings.callerId.messages.invalidNumber
+					}
+				});
+
 				container.empty().append(template);
+
 				self.bindAccountSettingsEvents(template, accountSettingsData, widgetBlacklist);
 			});
 		},
@@ -607,24 +626,29 @@ define(function(require) {
 			});
 
 			template.find('.account-settings-update').on('click', function() {
+				// Validate form
 				if (!monster.ui.valid(template.find('#account_settings_form'))) {
 					return;
 				}
 
+				// Collect data
 				var formData = monster.ui.getFormData('account_settings_form'),
-					newData = $.extend(true, {}, data.account, formData);
+					newData = _.merge({}, data.account, formData);
 
+				// Format data
+				newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
+
+				// Clean empty data
 				if (formData.music_on_hold.media_id === '') {
 					delete newData.music_on_hold.media_id;
 				} else if (formData.music_on_hold.media_id === 'shoutcast') {
 					newData.music_on_hold.media_id = template.find('.shoutcast-url-input').val();
 				}
 
-				if (formData.caller_id.external.name === '') {
-					delete newData.caller_id.external.name;
-				}
-				if (formData.caller_id.external.number === '') {
-					delete newData.caller_id.external.number;
+				self.compactObject(newData.caller_id);
+
+				if (_.isEmpty(newData.caller_id)) {
+					delete newData.caller_id;
 				}
 
 				if (formData.preflow.always === '_disabled') {
@@ -2081,6 +2105,22 @@ define(function(require) {
 					}
 				} else {
 					input.unbind('.link');
+				}
+			});
+		},
+
+		/**
+		 * Recursively unsets `obj`'s empty properties by mutating it
+		 * @param  {Object} obj  Object to compact
+		 */
+		compactObject: function(obj) {
+			var self = this;
+			_.each(obj, function(value, key) {
+				if (_.isPlainObject(value)) {
+					self.compactObject(value);
+				}
+				if (_.isEmpty(value)) {
+					_.unset(obj, key);
 				}
 			});
 		}

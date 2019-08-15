@@ -55,7 +55,7 @@
 					<div class="clearfix">
 						<label for="mac_address">{{ i18n.callflows.device.device_mac_address }}</label>
 						<div class="input">
-							<input class="span4" id="mac_address" name="mac_address" type="text" placeholder="01:23:45:67:89:AB" value="{{ data.mac_address }}" rel="popover"/>
+							<input class="span4" id="mac_address" name="mac_address" type="text" placeholder="01:23:45:67:89:AB" value="{{ data.mac_address }}" rel="popover" data-mask="macAddress" />
 							<span class="provisioner">
 								{{#if field_data.provisioner.isEnabled}}
 								<div>
@@ -131,14 +131,14 @@
 					<div class="clearfix">
 						<label for="caller_id_name_internal">{{ i18n.callflows.device.caller_id_name }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="Name" value="{{ data.caller_id.internal.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content }}" />
+							<input class="span4" id="caller_id_name_internal" name="caller_id.internal.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.internal.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content }}" />
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_internal">{{ i18n.callflows.device.caller_id_number }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content }}"/>
+							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content }}" data-mask="phoneNumber" />
 						</div>
 					</div>
 					<hr />
@@ -147,14 +147,14 @@
 					<div class="clearfix">
 						<label for="caller_id_name_external">{{ i18n.callflows.device.caller_id_name }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="Name" value="{{ data.caller_id.external.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content2 }}" />
+							<input class="span4" id="caller_id_name_external" name="caller_id.external.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.external.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content2 }}" />
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_external">{{ i18n.callflows.device.caller_id_number }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.external.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content2 }}"/>
+							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.external.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content2 }}" data-mask="phoneNumber" />
 						</div>
 					</div>
 					<hr />
@@ -163,14 +163,37 @@
 					<div class="clearfix">
 						<label for="caller_id_name_emergency">{{ i18n.callflows.device.caller_id_name }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="Name" value="{{ data.caller_id.emergency.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content3 }}" />
+							<input class="span4" id="caller_id_name_emergency" name="caller_id.emergency.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.emergency.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content3 }}" />
 						</div>
 					</div>
 
 					<div class="clearfix">
 						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
 						<div class="input">
-							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.aller_id_number_data_content3 }}"/>
+							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.aller_id_number_data_content3 }}" data-mask="phoneNumber" />
+						</div>
+					</div>
+					<hr />
+
+					<h3>{{ i18n.callflows.device.asserted }}</h3>
+					<div class="clearfix">
+						<label for="advanced_caller_id_name_asserted">{{ i18n.callflows.device.caller_id_name }}</label>
+						<div class="input">
+							<input class="span4" id="advanced_caller_id_name_asserted" name="caller_id.asserted.name" type="text" placeholder="{{ i18n.callflows.device.name }}" value="{{ data.caller_id.asserted.name }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_name_data_content4 }}" />
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="advanced_caller_id_number_asserted">{{ i18n.callflows.device.caller_id_number }}</label>
+						<div class="input">
+							<input class="span4" id="advanced_caller_id_number_asserted" name="caller_id.asserted.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.asserted.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content4 }}" data-mask="phoneNumber" />
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="advanced_caller_id_realm_asserted">{{ i18n.callflows.device.caller_id_realm }}</label>
+						<div class="input">
+							<input class="span4" id="advanced_caller_id_realm_asserted" name="caller_id.asserted.realm" type="text" placeholder="{{ i18n.callflows.device.caller_id_realm_placeholder }}" value="{{ data.caller_id.asserted.realm }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_realm_data_content4 }}" />
 						</div>
 					</div>
 				</div>
