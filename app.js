@@ -2105,7 +2105,7 @@ define(function(require) {
 		},
 
 		/**
-		 * Unsets the empty properties of an object
+		 * Recursively unsets `obj`'s empty properties by mutating it
 		 * @param  {Object} obj  Object to compact
 		 */
 		compactObject: function(obj) {
