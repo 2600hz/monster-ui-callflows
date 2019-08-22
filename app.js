@@ -421,7 +421,9 @@ define(function(require) {
 				var formattedData = self.formatAccountSettingsData(accountSettingsData),
 					template = $(self.getTemplate({
 						name: 'accountSettings',
-						data: formattedData
+						data: _.merge({
+							showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+						}, formattedData)
 					})),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
