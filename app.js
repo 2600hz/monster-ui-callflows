@@ -638,7 +638,9 @@ define(function(require) {
 					newData = _.merge({}, data.account, formData);
 
 				// Format data
-				newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
+				if (_.has(newData.caller_id, 'asserted')) {
+					newData.caller_id.asserted.number = monster.util.getFormatPhoneNumber(newData.caller_id.asserted.number).e164Number;
+				}
 
 				// Clean empty data
 				if (formData.music_on_hold.media_id === '') {
