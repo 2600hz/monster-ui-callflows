@@ -322,11 +322,11 @@ define(function(require) {
 						}
 					}
 				},
-				'privacy[]': {
+				'privacy_cid[]': {
 					name: self.i18n.active().oldCallflows.privacy.toolbox_name,
 					icon: 'x_circle',
 					category: self.i18n.active().oldCallflows.caller_id_cat,
-					module: 'privacy',
+					module: 'privacy_cid',
 					tip: self.i18n.active().oldCallflows.privacy.toolbox_tip,
 					data: {
 						endpoint_strategy: 'overwrite',
