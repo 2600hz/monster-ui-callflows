@@ -4,7 +4,7 @@
 		<div class="form_content">
 			<div class="popup_field">
 				<label for="privacy_mode">{{ i18n.oldCallflows.privacy.mode }}: </label>
-				<select id="privacy_mode" style="width: 100px; height: 28px;">
+				<select id="privacy_mode">
 					<option value="full"{{#compare data_privacy.mode "===" "full"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.full }}</option>
 					<option value="name"{{#compare data_privacy.mode "===" "name"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.name }}</option>
 					<option value="number"{{#compare data_privacy.mode "===" "number"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.number }}</option>
@@ -14,7 +14,7 @@
 
 			<div class="popup_field">
 				<label for="privacy_endpoint_strategy">{{ i18n.oldCallflows.privacy.endpoint_strategy }}: </label>
-				<select id="privacy_endpoint_strategy" style="width: 100px; height: 28px;">
+				<select id="privacy_endpoint_strategy">
 					<option value="overwrite"{{#compare data_privacy.endpoint_strategy "===" "overwrite"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.overwrite }}</option>
 					<option value="merge"{{#compare data_privacy.endpoint_strategy "===" "merge"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.merge }}</option>
 				</select>
