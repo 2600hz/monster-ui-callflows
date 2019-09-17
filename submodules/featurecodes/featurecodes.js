@@ -22,8 +22,6 @@ define(function(require) {
 						submodule: 'featurecodes'
 					}));
 
-				console.log(formattedData);
-
 				self.featureCodeBindEvents(template, formattedData.actions);
 
 				container
@@ -219,8 +217,8 @@ define(function(require) {
 					children: {}
 				};
 
-			/*	if (callflow.type === 'number') { callflow.type = 'numbers'}
-				if (callflow.type === 'pattern') { callflow.type = 'patterns'}*/
+				// if (callflow.type === 'number') { callflow.type = 'numbers'}
+				// if (callflow.type === 'pattern') { callflow.type = 'patterns'}
 
 				/* if a star is in the pattern, then we need to escape it */
 				if (callflow.type === 'patterns' && typeof callflow.number === 'string') {
