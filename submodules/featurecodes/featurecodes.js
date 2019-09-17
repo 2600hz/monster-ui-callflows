@@ -377,6 +377,19 @@ define(function(require) {
 			var self = this;
 
 			return {
+				directed_ext_pickup: {
+					name: self.i18n.active().callflows.featureCodes.directed_ext_pickup,
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'group_pickup_feature',
+					number_type: 'patterns',
+					enabled: false,
+					hasStar: true,
+					default_number: '87',
+					number: this.default_number,
+					build_regex: function(number) {
+						return '^\\*' + number + '([0-9]+)$';
+					}
+				},
 				'call_forward[action=activate]': {
 					name: self.i18n.active().callflows.featureCodes.enable_call_forward,
 					icon: 'phone',
