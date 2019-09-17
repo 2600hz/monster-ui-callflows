@@ -43,19 +43,13 @@ define(function(require) {
 				actions = self.featureCodesDefine();
 
 			return {
-				actions: _
-					.chain(data)
-					.filter(function(callflow) {
-						return _.has(actions, callflow.featurecode.name);
-					})
-					.transform(function(object, callflow) {
-						_.merge(object[callflow.featurecode.name], {
-							id: callflow.id,
-							enabled: true,
-							number: callflow.featurecode.number.replace('\\', '')
-						});
-					}, actions)
-					.value(),
+				actions: _.transform(data, function(object, callflow) {
+					_.merge(object[callflow.featurecode.name], {
+						id: callflow.id,
+						enabled: true,
+						number: callflow.featurecode.number.replace('\\', '')
+					});
+				}, actions),
 				categories: _
 					.chain(actions)
 					.map(function(value, key) {
@@ -173,6 +167,7 @@ define(function(require) {
 				data: {
 					accountId: self.accountId,
 					filters: {
+						has_key: 'featurecode.name',
 						paginate: false
 					}
 				},
