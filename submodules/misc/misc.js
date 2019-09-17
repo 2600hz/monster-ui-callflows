@@ -324,7 +324,7 @@ define(function(require) {
 				},
 				'privacy_cid[]': {
 					name: self.i18n.active().oldCallflows.privacy.toolbox_name,
-					icon: 'x_circle',
+					icon: 'lock',
 					category: self.i18n.active().oldCallflows.caller_id_cat,
 					module: 'privacy_cid',
 					tip: self.i18n.active().oldCallflows.privacy.toolbox_tip,
