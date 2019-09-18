@@ -915,6 +915,7 @@
 			"star_data_content": "The star is mandatory for any feature code, that's why it has been added by default.",
 			"feature_codes_label": "Feature Codes",
 			"nothing_to_save": "Nothing to save",
+			"directed_ext_pickup": "Directed Extension Pickup",
 			"enable_call_forward": "Enable Call-Forward",
 			"call_forward_cat": "Call-Forward",
 			"disable_call_forward": "Disable Call-Forward",

@@ -22,8 +22,6 @@ define(function(require) {
 						submodule: 'featurecodes'
 					}));
 
-				console.log(formattedData);
-
 				self.featureCodeBindEvents(template, formattedData.actions);
 
 				container
@@ -45,19 +43,13 @@ define(function(require) {
 				actions = self.featureCodesDefine();
 
 			return {
-				actions: _
-					.chain(data)
-					.filter(function(callflow) {
-						return _.has(actions, callflow.featurecode.name);
-					})
-					.transform(function(object, callflow) {
-						_.merge(object[callflow.featurecode.name], {
-							id: callflow.id,
-							enabled: true,
-							number: callflow.featurecode.number.replace('\\', '')
-						});
-					}, actions)
-					.value(),
+				actions: _.transform(data, function(object, callflow) {
+					_.merge(object[callflow.featurecode.name], {
+						id: callflow.id,
+						enabled: true,
+						number: callflow.featurecode.number.replace('\\', '')
+					});
+				}, actions),
 				categories: _
 					.chain(actions)
 					.map(function(value, key) {
@@ -175,6 +167,7 @@ define(function(require) {
 				data: {
 					accountId: self.accountId,
 					filters: {
+						has_key: 'featurecode.name',
 						paginate: false
 					}
 				},
@@ -219,8 +212,8 @@ define(function(require) {
 					children: {}
 				};
 
-			/*	if (callflow.type === 'number') { callflow.type = 'numbers'}
-				if (callflow.type === 'pattern') { callflow.type = 'patterns'}*/
+				// if (callflow.type === 'number') { callflow.type = 'numbers'}
+				// if (callflow.type === 'pattern') { callflow.type = 'patterns'}
 
 				/* if a star is in the pattern, then we need to escape it */
 				if (callflow.type === 'patterns' && typeof callflow.number === 'string') {
@@ -379,6 +372,19 @@ define(function(require) {
 			var self = this;
 
 			return {
+				directed_ext_pickup: {
+					name: self.i18n.active().callflows.featureCodes.directed_ext_pickup,
+					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
+					module: 'group_pickup_feature',
+					number_type: 'patterns',
+					enabled: false,
+					hasStar: true,
+					default_number: '87',
+					number: this.default_number,
+					build_regex: function(number) {
+						return '^\\*' + number + '([0-9]+)$';
+					}
+				},
 				'call_forward[action=activate]': {
 					name: self.i18n.active().callflows.featureCodes.enable_call_forward,
 					icon: 'phone',
