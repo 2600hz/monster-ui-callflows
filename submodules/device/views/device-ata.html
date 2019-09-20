@@ -131,6 +131,7 @@
 					</div>
 					<hr />
 
+				{{#if showPAssertedIdentity}}
 					<h3>{{ i18n.callflows.device.asserted }}</h3>
 					<div class="clearfix">
 						<label for="advanced_caller_id_name_asserted">{{ i18n.callflows.device.caller_id_name }}</label>
@@ -152,6 +153,7 @@
 							<input class="span4" id="advanced_caller_id_realm_asserted" name="caller_id.asserted.realm" type="text" placeholder="{{ i18n.callflows.device.caller_id_realm_placeholder }}" value="{{ data.caller_id.asserted.realm }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_realm_data_content4 }}" />
 						</div>
 					</div>
+				{{/if}}
 				</div>
 
 
