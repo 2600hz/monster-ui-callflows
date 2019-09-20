@@ -466,7 +466,9 @@ define(function(require) {
 			var self = this,
 				user_html = $(self.getTemplate({
 					name: 'edit',
-					data: data,
+					data: _.merge({
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+					}, data),
 					submodule: 'user'
 				})),
 				user_form = user_html.find('#user-form'),
