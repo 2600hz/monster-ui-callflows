@@ -481,7 +481,9 @@ define(function(require) {
 			if (typeof data.data === 'object' && data.data.device_type) {
 				device_html = $(self.getTemplate({
 					name: 'device-' + data.data.device_type,
-					data: data,
+					data: _.merge({
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+					}, data),
 					submodule: 'device'
 				}));
 
