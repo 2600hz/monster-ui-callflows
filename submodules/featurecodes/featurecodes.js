@@ -377,6 +377,9 @@ define(function(require) {
 					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
 					module: 'group_pickup_feature',
 					number_type: 'patterns',
+					data: {
+						type: 'extension'
+					},
 					enabled: false,
 					hasStar: true,
 					default_number: '87',
