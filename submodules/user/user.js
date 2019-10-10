@@ -1001,7 +1001,7 @@ define(function(require) {
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
 
-			if (!_.chain(form_data.caller_id).get('asserted.number').isEmpty().value()) {
+			if (!_.chain(form_data.caller_id).get('asserted.number', '').isEmpty().value()) {
 				form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
 			}
 
