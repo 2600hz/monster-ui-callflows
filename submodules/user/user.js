@@ -998,11 +998,12 @@ define(function(require) {
 			form_data.caller_id.internal.number = form_data.caller_id.internal.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
-			form_data.caller_id.asserted.number = _.isEmpty(form_data.caller_id.asserted.number)
-				? ''	// Need to keep the empty string so the new value is not lost when merging the form data with the original data
-				: monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
 
 			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
+
+			if (!_.chain(form_data.caller_id).get('asserted.number').isEmpty().value()) {
+				form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
+			}
 
 			if (!form_data.hotdesk.require_pin) {
 				delete form_data.hotdesk.pin;
