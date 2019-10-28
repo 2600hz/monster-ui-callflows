@@ -375,7 +375,7 @@ define(function(require) {
 				directed_ext_pickup: {
 					name: self.i18n.active().callflows.featureCodes.directed_ext_pickup,
 					category: self.i18n.active().callflows.featureCodes.miscellaneous_cat,
-					module: 'group_pickup_feature',
+					module: 'directed_ext_pickup',
 					number_type: 'patterns',
 					data: {
 						type: 'extension'
