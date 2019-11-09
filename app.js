@@ -832,7 +832,8 @@ define(function(require) {
 							'callqueues-pro',
 							'dynamic-callerid',
 							'accounts',
-							'pivot'
+							'pivot',
+							'migration'
 						]
 					}
 				});
@@ -1256,7 +1257,7 @@ define(function(require) {
 			}
 
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
-				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.includes(['voip', 'migration', 'mobile', 'callqueues'], metadata.origin);
+				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.includes(['voip', 'migration', 'mobile', 'callqueues', 'csv-onboarding', 'callqueues-pro', 'dynamic-callerid', 'accounts', 'pivot'], metadata.origin);
 
 			isHiddenCallflow ? $('#hidden_callflow_warning').show() : $('#hidden_callflow_warning').hide();
 		},
