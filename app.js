@@ -827,7 +827,12 @@ define(function(require) {
 					filters: {
 						'filter_not_ui_metadata.origin': [
 							'voip',
-							'callqueues'
+							'callqueues', 
+							'csv-onboarding',
+							'callqueues-pro',
+							'dynamic-callerid',
+							'accounts',
+							'pivot'
 						]
 					}
 				});
