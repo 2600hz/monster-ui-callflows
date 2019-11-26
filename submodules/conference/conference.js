@@ -217,8 +217,8 @@ define(function(require) {
 						success: function(_data, status) {
 							_data.data.unshift({
 								id: '',
-								first_name: '- No',
-								last_name: 'owner -'
+								first_name: self.i18n.active().callflowsApp.common.noOwner,
+								last_name: ''
 							});
 
 							defaults.field_data.users = _data.data;

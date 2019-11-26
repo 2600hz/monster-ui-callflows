@@ -242,8 +242,8 @@ define(function(require) {
 
 									_data.data.unshift({
 										id: '',
-										first_name: '- No',
-										last_name: 'owner -'
+										first_name: self.i18n.active().callflowsApp.common.noOwner,
+										last_name: ''
 									});
 
 									if (deviceData.hasOwnProperty('device_type') && deviceData.device_type === 'mobile') {
@@ -253,8 +253,8 @@ define(function(require) {
 											defaults.field_data.users = userData;
 										} else {
 											defaults.field_data.users = {
-												first_name: '- No',
-												last_name: 'owner -'
+												first_name: self.i18n.active().callflowsApp.common.noOwner,
+												last_name: ''
 											};
 										}
 									} else {
