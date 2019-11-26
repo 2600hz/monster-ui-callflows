@@ -28,7 +28,7 @@
 						<div class="clearfix">
 							<label for="owner_id">{{ i18n.callflows.device.assign_to }}</label>
 							<div class="input">
-								<div class="text">{{field_data.users.first_name}} {{field_data.users.last_name}}</div>
+								<div class="text">{{getUserFullName field_data.users}}</div>
 							</div>
 						</div>
 					{{/unless}}
