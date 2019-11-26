@@ -205,8 +205,8 @@ define(function(require) {
 
 							_data.data.unshift({
 								id: '',
-								first_name: self.i18n.active().callflows.faxbox.no,
-								last_name: self.i18n.active().callflows.faxbox.owner
+								first_name: self.i18n.active().callflowsApp.common.noOwner,
+								last_name: ''
 							});
 
 							callback(null, _data.data);

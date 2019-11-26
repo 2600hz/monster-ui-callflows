@@ -93,8 +93,8 @@ define(function(require) {
 					self.vmboxUserList(function(_data) {
 						_data.unshift({
 							id: '',
-							first_name: self.i18n.active().callflows.vmbox.no,
-							last_name: self.i18n.active().callflows.vmbox.owner
+							first_name: self.i18n.active().callflowsApp.common.noOwner,
+							last_name: ''
 						});
 
 						defaults.field_data.users = _data;

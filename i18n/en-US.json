@@ -1,5 +1,8 @@
 {
 	"callflowsApp": {
+		"common": {
+			"noOwner": "- No owner -"
+		},
 		"editor": {
 			"confirmDialog": {
 				"enableModule": {
@@ -335,8 +338,6 @@
 			"options": "Options",
 			"no_name": "(no name)",
 			"assign_to": "Assign to",
-			"no": "- No",
-			"owner": "owner -",
 			"edit_user": "Edit",
 			"create_user": "Create",
 			"belongs_to_data_content": "Select the owner of this faxbox",
@@ -834,8 +835,6 @@
 			"save": "Save",
 			"voicemail_boxes_label": "Voicemail Boxes",
 			"not_set": "- Not set -",
-			"no": "- No",
-			"owner": "owner -",
 			"there_were_errors_on_the_form": "There were errors on the form, please correct!",
 			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this voicemail box?",
 			"no_name": "(no name)",
