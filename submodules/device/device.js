@@ -242,19 +242,22 @@ define(function(require) {
 
 									_data.data.unshift({
 										id: '',
-										first_name: '- No',
-										last_name: 'owner -'
+										first_name: self.i18n.active().callflowsApp.common.noOwner,
+										last_name: ''
 									});
 
-									if (deviceData.hasOwnProperty('device_type') && deviceData.device_type === 'mobile') {
+									if (
+										deviceData.hasOwnProperty('device_type')
+										&& _.includes(['application', 'mobile'], deviceData.device_type)
+									) {
 										var userData = _.find(_data.data, function(user) { return user.id === deviceData.owner_id; });
 
 										if (userData) {
 											defaults.field_data.users = userData;
 										} else {
 											defaults.field_data.users = {
-												first_name: '- No',
-												last_name: 'owner -'
+												first_name: self.i18n.active().callflowsApp.common.noOwner,
+												last_name: ''
 											};
 										}
 									} else {
