@@ -1,0 +1,92 @@
+<div>
+	<div>
+		<div class="whapp-header clearfix">
+			<h1>
+				{{i18n.callflows.device.view_application_device}}
+			</h1>
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">
+					{{i18n.callflows.device.basic}}
+				</button>
+			</div>
+		</div>
+	</div>
+	<div>
+		<ul class="tabs" data-tabs="tabs">
+			<li class="active">
+				<a href="#basic">
+					{{i18n.callflows.device.basic}}
+				</a>
+			</li>
+		</ul>
+		<form id="device-form" action="" method="post">
+			<div class="pill-content">
+				<div class="active basic_view" id="basic">
+					<div class="clearfix">
+						<label for="name">
+							{{i18n.callflows.device.device_nickname}}
+						</label>
+						<div class="input">
+							<div class="text">
+								{{data.name}}
+							</div>
+						</div>
+					</div>
+
+				{{#unless field_data.hide_owner}}
+					<div class="clearfix">
+						<label for="owner_id">
+							{{i18n.callflows.device.assign_to}}
+						</label>
+						<div class="input">
+							<div class="text">
+								{{getUserFullName field_data.users}}
+							</div>
+						</div>
+					</div>
+				{{/unless}}
+
+					<div class="clearfix">
+						<label for="sip_realm">
+							{{i18n.callflows.device.realm}}
+						</label>
+						<div class="input">
+							<div class="text">
+								{{field_data.sip.realm}}
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="sip_username">
+							{{i18n.callflows.device.username}}
+						</label>
+						<div class="input">
+							<div class="text">
+								{{data.sip.username}}
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<label for="sip_password">
+							{{i18n.callflows.device.password}}
+						</label>
+						<div class="input">
+							<div class="text">
+								{{data.sip.password}}
+							</div>
+						</div>
+					</div>
+
+					<input type="hidden" value="{{ data.device_type }}" name="device_type"/>
+				</div>
+			</div>
+		</form>
+		<div class="buttons-right">
+			<button class="monster-button monster-button-danger device-delete">
+				{{i18n.callflows.device.delete}}
+			</button>
+		</div>
+	</div>
+</div>
