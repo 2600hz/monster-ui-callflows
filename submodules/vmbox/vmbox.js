@@ -128,11 +128,19 @@ define(function(require) {
 		},
 
 		vmboxFormatData: function(data) {
-			var self = this;
+			var self = this,
+				transcription = monster.util.getCapability('voicemail.transcription');
 
 			data.data.extra = data.data.extra || {};
 
 			data.data.extra.recipients = (data.data.notify_email_addresses || []).toString();
+
+			data.data = _.merge(data.data, {
+				hasTranscribe: _.get(transcription, 'isEnabled', false),
+				transcribe: _.get(data.data, 'transcribe', transcription.defaultValue),
+				announcement_only: _.get(data.data, 'announcement_only', false),
+				include_message_on_notify: _.get(data.data, 'include_message_on_notify', false)
+			});
 
 			return data;
 		},
