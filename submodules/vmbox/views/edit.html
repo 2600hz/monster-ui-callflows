@@ -226,6 +226,25 @@
 							<ul class="inputs-list">
 								<li>
 									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.announceOnly.help }}">
+											{{#if data.announcement_only}}
+												<input type="checkbox" id="announcement_only" name="announcement_only" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="announcement_only" name="announcement_only"/>
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.announceOnly.help }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
 										<span rel="popover" data-content="{{ i18n.callflows.vmbox.delete_after_notification_data_content }}">
 											{{#if data.delete_after_notify}}
 												<input type="checkbox" id="delete_after_notify" name="delete_after_notify" checked="checked" />
@@ -258,7 +277,7 @@
 							</ul>
 						</div>
 					</div>
-					
+
 					<div class="clearfix">
 						<div class="input">
 							<ul class="inputs-list">
@@ -296,6 +315,46 @@
 							</ul>
 						</div>
 					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.emailAsAttachment.help }}">
+											{{#if data.include_message_on_notify}}
+												<input type="checkbox" id="include_message_on_notify" name="include_message_on_notify" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="include_message_on_notify" name="include_message_on_notify" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.emailAsAttachment.label }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					{{#if data.hasTranscribe}}
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.transcription.help }}">
+											{{#if data.transcribe}}
+												<input type="checkbox" id="transcribe" name="transcribe" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="transcribe" name="transcribe" />
+											{{/if}}
+											<span>{{ i18n.callflows.vmbox.transcription.label }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					{{/if}}
 
 					<div class="clearfix">
 						<label for="timezone">{{ i18n.callflows.vmbox.recipients }}</label>
