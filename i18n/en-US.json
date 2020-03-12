@@ -852,7 +852,19 @@
 			"default": "Account Default",
 			"__comment": "UI-3040: add temporary greeting",
 			"temporary_unavailable_message": "Temporary Message",
-			"temporary_unavailable_message_data_content": "Select the Temporary Unavailable message that you want to use for this this device. If you set this field, it will take precedence over the Unavailable message, but if you select - Not set -, then the Unavailable message will be played instead."
+			"temporary_unavailable_message_data_content": "Select the Temporary Unavailable message that you want to use for this this device. If you set this field, it will take precedence over the Unavailable message, but if you select - Not set -, then the Unavailable message will be played instead.",
+			"transcription": {
+				"label": "Transcribe Messages",
+				"help": "Control recent enhancements to the voicemail system"
+			},
+			"announceOnly": {
+				"label": "Announce only-mode",
+				"help": "Set a voicemail box to announce-only mode"
+			},
+			"emailAsAttachment": {
+				"label": "Attach messages to e-mail",
+				"help": "E-mail not having the message as an attachment"
+			}
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
 		"__version": "3.22",
