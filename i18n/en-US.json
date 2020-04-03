@@ -859,7 +859,7 @@
 			},
 			"announceOnly": {
 				"label": "Announce only-mode",
-				"help": "Set a voicemail box to announce-only mode"
+				"help": "Set a voicemail box to announce only-mode"
 			},
 			"emailAsAttachment": {
 				"label": "Attach messages to e-mail",
