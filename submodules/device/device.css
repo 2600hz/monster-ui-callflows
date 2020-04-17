@@ -47,7 +47,7 @@
 	opacity: 0.6;
 }
 
-.callflows-port .media_tabs .buttons.current, 
+.callflows-port .media_tabs .buttons.current,
 .callflows-port .media_tabs .buttons.current:hover {
 	-moz-box-shadow: 3px 5px 10px #383838;
 	-webkit-box-shadow: 3px 5px 10px #383838;
@@ -96,3 +96,12 @@
 .callflows-port #device-form .shoutcast-div.active {
 	display: block;
 }
+
+.callflows-port #device-form .handler-autocomplete-input {
+	width:0;
+	height:0;
+	position:absolute;
+	opacity:0;
+	padding:0;
+}
+
