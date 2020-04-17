@@ -1098,6 +1098,10 @@ define(function(require) {
 				delete data.timezone;
 			}
 
+			if (!_.has(data, 'password')) {
+				data.password = monster.util.randomString(8, 'safe');
+			}
+
 			return data;
 		},
 
