@@ -235,14 +235,14 @@
 						<div class="clearfix">
 							<label for="sip_username">{{ i18n.callflows.device.username }}</label>
 							<div class="input">
-								<input class="span4" id="sip_username" name="sip.username" type="text" placeholder="{{ i18n.callflows.device.username }}" value="{{ data.sip.username }}" rel="popover" data-content="{{ i18n.callflows.device.username_data_content }}" required/>
+								<input class="span4" id="sip_username" name="sip.username" autocomplete="new-username" type="text" placeholder="{{ i18n.callflows.device.username }}" value="{{ data.sip.username }}" rel="popover" data-content="{{ i18n.callflows.device.username_data_content }}" required/>
 							</div>
 						</div>
 
 						<div class="clearfix">
 							<label for="sip_password">{{ i18n.callflows.device.password }}</label>
 							<div class="input">
-								<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
+								<input class="span4" id="sip_password" name="sip.password" autocomplete="new-password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
 							</div>
 						</div>
 					</div>
