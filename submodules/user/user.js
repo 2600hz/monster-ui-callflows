@@ -467,7 +467,10 @@ define(function(require) {
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
-						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
+						data: {
+							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
+						}
 					}, data),
 					submodule: 'user'
 				})),
