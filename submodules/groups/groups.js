@@ -1065,13 +1065,11 @@ define(function(require) {
 				function(callback) {
 					self.groupsRequestDeviceList({
 						success: function(data) {
-							console.log(data);
 							callback(null, data);
 						}
 					});
 				}
 			], function(err, data) {
-				console.log(data);
 				var popup,
 					popup_html,
 					endpoints = node.getMetadata('endpoints'),
@@ -1149,7 +1147,8 @@ define(function(require) {
 									return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
 								}),
 								mediaId = node.getMetadata('ringback') || 'default',
-								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000';
+								isShoutcast = mediaId.indexOf('://') >= 0 && mediaId !== 'silence_stream://300000',
+								strategy = node.getMetadata('strategy');
 
 							popup_html = $(self.getTemplate({
 								name: 'ring_group_dialog',
@@ -1196,6 +1195,7 @@ define(function(require) {
 								},
 								submodule: 'groups'
 							}));
+
 							$.each(unselected_groups, function() {
 								$('#groups_pane .connect.left', popup_html)
 									.append($(self.getTemplate({
@@ -1234,6 +1234,9 @@ define(function(require) {
 										})));
 								}
 							});
+
+							//Hide delay column if ring strategy is set to 'In order'
+							strategy === 'single' ? $('.options .option.delay', popup_html).hide() : '';
 
 							$('#name', popup_html).bind('keyup blur change', function() {
 								$('.column.right .title', popup_html).html(self.i18n.active().oldCallflows.ring_group_val + $(this).val());
@@ -1343,6 +1346,20 @@ define(function(require) {
 
 							$('.options .option.timeout', popup_html).bind('keyup', function() {
 								$(this).parents('li').data('timeout', $(this).val());
+							});
+
+							$('#strategy', popup_html).bind('change', function() {
+								var strategy = $(this).val(),
+									$delay = $('.options .option.delay', popup_html);
+									$delayTitle = $('.options .delay_title', popup_html);
+
+								if (strategy === 'single') {
+									$delay.hide();
+									$delayTitle.hide();
+								} else {
+									$delay.show();
+									$delayTitle.show();
+								}
 							});
 
 							$('#save_ring_group', popup_html).click(function() {
