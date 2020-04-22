@@ -1236,7 +1236,9 @@ define(function(require) {
 							});
 
 							//Hide delay column if ring strategy is set to 'In order'
-							strategy === 'single' ? $('.options .option.delay', popup_html).hide() : '';
+							if (strategy === 'single') {
+								$('.options .option.delay', popup_html).hide();
+							}
 
 							$('#name', popup_html).bind('keyup blur change', function() {
 								$('.column.right .title', popup_html).html(self.i18n.active().oldCallflows.ring_group_val + $(this).val());
@@ -1396,8 +1398,12 @@ define(function(require) {
 
 								$('.right .connect li', popup_html).each(function() {
 									var item_data = $(this).data();
+
+									if (strategy === 'single') {
+										delete item_data.delay;
+										console.log(item_data);
+									}
 									delete item_data.owner_id;
-									strategy === 'single' ? delete item_data.delay : '';
 									endpoints.push(item_data);
 									global_timeout = computeTimeout(parseFloat(item_data.delay), parseFloat(item_data.timeout), global_timeout);
 								});
