@@ -1388,7 +1388,7 @@ define(function(require) {
 									};
 								} else {
 									var computeTimeout = function(delay, local_timeout, global_timeout) {
-										global_timeout += delay + local_timeout;
+										global_timeout += local_timeout;
 
 										return global_timeout;
 									};
@@ -1397,6 +1397,7 @@ define(function(require) {
 								$('.right .connect li', popup_html).each(function() {
 									var item_data = $(this).data();
 									delete item_data.owner_id;
+									strategy === 'single' ? delete item_data.delay : '';
 									endpoints.push(item_data);
 									global_timeout = computeTimeout(parseFloat(item_data.delay), parseFloat(item_data.timeout), global_timeout);
 								});
