@@ -1401,7 +1401,6 @@ define(function(require) {
 
 									if (strategy === 'single') {
 										delete item_data.delay;
-										console.log(item_data);
 									}
 									delete item_data.owner_id;
 									endpoints.push(item_data);
