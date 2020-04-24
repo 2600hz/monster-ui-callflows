@@ -76,7 +76,8 @@
 			"play_entry_tone": "Play Entry Tone",
 			"play_entry_tone_help": "Will play a tone whenever a caller joins the conference if checked",
 			"play_exit_tone": "Play Exit Tone",
-			"play_exit_tone_help": "Will play a tone whenever a caller exits the conference if checked"
+			"play_exit_tone_help": "Will play a tone whenever a caller exits the conference if checked",
+			"enableVideoConferencing": "Enable Video Conferencing"
 		},
 		"device": {
 			"device": "Device",
