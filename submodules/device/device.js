@@ -521,6 +521,8 @@ define(function(require) {
 				} else {
 					$('#ip_block', device_html).hide();
 				}
+
+				monster.ui.disableAutoFill(deviceForm);
 			} else {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
@@ -603,39 +605,41 @@ define(function(require) {
 					});
 				});
 
-				$('.device-save', device_html).click(function(ev) {
-					ev.preventDefault();
+				device_html
+					.find('#device-form')
+						.on('submit', function(ev) {
+							ev.preventDefault();
 
-					var $this = $(this);
+							var $this = $(this);
 
-					if (!$this.hasClass('disabled')) {
-						$this.addClass('disabled');
-						if (monster.ui.valid(deviceForm)) {
-							var form_data = monster.ui.getFormData('device-form');
+							if (!$this.hasClass('disabled')) {
+								$this.addClass('disabled');
+								if (monster.ui.valid(deviceForm)) {
+									var form_data = monster.ui.getFormData('device-form');
 
-							if (form_data.hasOwnProperty('music_on_hold') && form_data.music_on_hold.media_id === 'shoutcast') {
-								form_data.music_on_hold.media_id = device_html.find('.shoutcast-url-input').val();
+									if (form_data.hasOwnProperty('music_on_hold') && form_data.music_on_hold.media_id === 'shoutcast') {
+										form_data.music_on_hold.media_id = device_html.find('.shoutcast-url-input').val();
+									}
+
+									self.deviceCleanFormData(form_data);
+
+									if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
+										var modelArray = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val().split('.'),
+											endpoint_family = modelArray[0],
+											endpoint_model = modelArray[1];
+
+										// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
+										form_data.provision.endpoint_model = endpoint_model;
+										form_data.provision.endpoint_family = endpoint_family;
+									}
+
+									self.deviceSave(form_data, data, callbacks.save_success);
+								} else {
+									$this.removeClass('disabled');
+									monster.ui.alert('error', self.i18n.active().callflows.device.there_were_errors_on_the_form);
+								}
 							}
-
-							self.deviceCleanFormData(form_data);
-
-							if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
-								var modelArray = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val().split('.'),
-									endpoint_family = modelArray[0],
-									endpoint_model = modelArray[1];
-
-								// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
-								form_data.provision.endpoint_model = endpoint_model;
-								form_data.provision.endpoint_family = endpoint_family;
-							}
-
-							self.deviceSave(form_data, data, callbacks.save_success);
-						} else {
-							$this.removeClass('disabled');
-							monster.ui.alert('error', self.i18n.active().callflows.device.there_were_errors_on_the_form);
-						}
-					}
-				});
+						});
 
 				if (data.device_type !== 'mobile') {
 					$('.device-delete', device_html).click(function(ev) {

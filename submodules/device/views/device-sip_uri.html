@@ -91,12 +91,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="buttons-right">
+				{{#if data.id}}
+					<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
+				{{/if}}
+				<button type="submit" class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
+			</div>
 		</form>
-		<div class="buttons-right">
-			{{#if data.id}}
-				<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
-			{{/if}}
-			<button class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
-		</div>
 	</div>
 </div>

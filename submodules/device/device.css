@@ -97,11 +97,7 @@
 	display: block;
 }
 
-.callflows-port #device-form .handler-autocomplete-input {
-	width:0;
-	height:0;
-	position:absolute;
-	opacity:0;
-	padding:0;
+.callflows-port  .pill-content{
+	margin-bottom: 20px;
 }
 
