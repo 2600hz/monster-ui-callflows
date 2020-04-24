@@ -107,7 +107,14 @@
 				</div>
 			</div>
 			<div class="column right">
-				<div class="title_column"><div class="title">{{ i18n.oldCallflows.ring_group }} - {{form.name}}</div><div class="options">&nbsp;{{ i18n.oldCallflows.delays }}&nbsp;&nbsp;&nbsp;{{ i18n.oldCallflows.timeouts }}</div><div class="actions_item">{{ i18n.oldCallflows.delete }}</div></div>
+				<div class="title_column">
+					<div class="title">{{ i18n.oldCallflows.ring_group }} - {{form.name}}</div>
+					<div class="options">
+						<span class="delay_title"{{#compare form.strategy.selected "==" "single"}} style="display: none;"{{/compare}}>&nbsp;{{ i18n.oldCallflows.delays }}&nbsp;</span>
+						<span>&nbsp;&nbsp;{{ i18n.oldCallflows.timeouts }}</span>
+					</div>
+					<div class="actions_item">{{ i18n.oldCallflows.delete }}</div>
+					</div>
 				<div class="scrollable">
 					<ul class="connect right">
 					</ul>
