@@ -561,12 +561,12 @@ define(function(require) {
 			delete data.member.pins_string;
 			delete data.conference_numbers_string;
 
-			// Set conferencing verto settings
+			// Set conferencing video settings
 			if (data.enable_video_conferencing) {
 				data = _.merge(data, {
-					profile_name: 'verto',
-					caller_controls: 'verto-participant',
-					moderator_controls: 'verto-moderator'
+					profile_name: 'video',
+					caller_controls: 'video-participant',
+					moderator_controls: 'video-moderator'
 				});
 			} else {
 				delete data.profile_name;
