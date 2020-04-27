@@ -752,6 +752,13 @@ define(function(require) {
 				});
 			});
 
+			user_html.find('#pwd_mngt_pwd1').on('keyup', function(event) {
+				event.preventDefault();
+
+				user_html.find('#was_password_updated').prop('checked', 'checked');
+				user_html.find('#pwd_mngt_pwd2').val('');
+			});
+
 			$(user_html).delegate('.enabled_checkbox', 'click', function() {
 				self.userUpdateSingleDevice($(this), user_html);
 			});
@@ -1012,12 +1019,13 @@ define(function(require) {
 				delete form_data.hotdesk.pin;
 			}
 
-			if (form_data.pwd_mngt_pwd1 !== 'fakePassword') {
+			if (form_data.was_password_updated) {
 				form_data.password = form_data.pwd_mngt_pwd1;
 			}
 
 			delete form_data.pwd_mngt_pwd1;
 			delete form_data.pwd_mngt_pwd2;
+			delete form_data.was_password_updated;
 			delete form_data.extra;
 
 			return form_data;
