@@ -354,6 +354,7 @@
 
 #ws_callflow .module,
 .callflow-preview .module {
+	position: relative;
 	font-size: 13px;
 	height: 59px;
 	margin-top: 25px;
