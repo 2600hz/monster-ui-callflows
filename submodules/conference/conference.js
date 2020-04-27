@@ -198,7 +198,7 @@ define(function(require) {
 						member: {},
 						play_entry_tone: true,
 						play_exit_tone: true,
-						enable_video_conferencing: false
+						video: false
 					}, data_defaults || {}),
 					field_data: {
 						users: []
@@ -247,8 +247,6 @@ define(function(require) {
 				if (typeof data === 'object' && data.id) {
 					render_data = $.extend(true, defaults, { data: results.get_conference });
 				}
-
-				render_data.data.enable_video_conferencing = _.has(render_data, 'data.profile_name');
 
 				self.conferenceRender(render_data, target, callbacks);
 
@@ -562,19 +560,19 @@ define(function(require) {
 			delete data.conference_numbers_string;
 
 			// Set conferencing video settings
-			if (data.enable_video_conferencing) {
+			if (data.video) {
 				data = _.merge(data, {
+					video: true,
 					profile_name: 'video',
 					caller_controls: 'video-participant',
 					moderator_controls: 'video-moderator'
 				});
 			} else {
+				delete data.video;
 				delete data.profile_name;
 				delete data.caller_controls;
 				delete data.moderator_controls;
 			}
-
-			delete data.enable_video_conferencing;
 
 			return data;
 		},
