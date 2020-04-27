@@ -1101,7 +1101,7 @@ define(function(require) {
 				delete data.timezone;
 			}
 
-			if (!_.has(data, 'password')) {
+			if (!_.has(data, 'password') && !_.has(data, 'id')) {
 				data.password = monster.util.randomString(8, 'safe');
 			}
 
