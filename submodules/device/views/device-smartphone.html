@@ -19,7 +19,7 @@
 			<li><a href="#sip_settings">{{ i18n.callflows.device.wifi_calling }}</a></li>
 			<li><a href="#restrictions">{{ i18n.callflows.device.restrictions }}</a></li>
 		</ul>
-		<form id="device-form" autocomplete="off" action="" method="post">
+		<form id="device-form" action="" method="post">
 			<div class="pill-content">
 				<div class="active basic_view" id="basic">
 					<div class="clearfix">
@@ -53,7 +53,7 @@
 					<div class="clearfix">
 						<label for="call_forward.number" >{{ i18n.callflows.device.number }}</label>
 						<div class="input">
-							<input class="span4" id="call_forward_number" autocomplete="off" name="call_forward.number" type="text" placeholder="{{ i18n.callflows.device.number }}" value="{{ data.call_forward.number }}" rel="popover" data-content="{{ i18n.callflows.device.number_data_content }}"/>
+							<input class="span4" id="call_forward_number" name="call_forward.number" type="text" placeholder="{{ i18n.callflows.device.number }}" value="{{ data.call_forward.number }}" rel="popover" data-content="{{ i18n.callflows.device.number_data_content }}"/>
 						</div>
 					</div>
 
@@ -156,7 +156,7 @@
 						<div class="clearfix">
 							<label for="sip_username">{{ i18n.callflows.device.username }}</label>
 							<div class="input">
-								<input class="span4" id="sip_username" name="sip.username"  autocomplete="new-username" type="text" placeholder="{{ i18n.callflows.device.username }}" value="{{ data.sip.username }}" rel="popover" data-content="{{ i18n.callflows.device.username_data_content }}"/>
+								<input class="span4" id="sip_username" name="sip.username" type="text" placeholder="{{ i18n.callflows.device.username }}" value="{{ data.sip.username }}" rel="popover" data-content="{{ i18n.callflows.device.username_data_content }}"/>
 							</div>
 						</div>
 
