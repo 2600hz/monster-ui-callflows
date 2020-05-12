@@ -496,6 +496,11 @@ define(function(require) {
 					self.deviceSetProvisionerStuff(device_html, data);
 				}
 
+				/* Do device type specific things here */
+				if ($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile', 'ata']) > -1) {
+					monster.ui.protectField(device_html.find('#sip_password'), device_html);
+				}
+
 				monster.ui.validate(deviceForm, self.deviceGetValidationByDeviceType(data.data.device_type));
 
 				if (!$('#owner_id', device_html).val()) {
