@@ -286,7 +286,7 @@
 #ws_callflow .children > .child > .span_arrow,
 .callflow-preview .children > .child > .span_arrow {
 	display: inline-block;
-	width: 145px;
+	width: 100%;
 	background-repeat: no-repeat;
 	background-position: center center;
 	margin: 2px 0px 2px;
