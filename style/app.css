@@ -1594,6 +1594,40 @@
 	float: right;
 }
 
+#callflow_container .entity-header .breadcrumbs {
+	float: left;
+}
+#callflow_container .entity-header .breadcrumbs .entity-title {
+	float: none;
+	font-size: 19px;
+}
+#callflow_container .entity-header .breadcrumbs a {
+	color: black;
+	cursor: pointer;
+}
+#callflow_container .entity-header .breadcrumbs a:hover {
+	border-bottom: 2px solid black;
+}
+#callflow_container .entity-header .breadcrumbs span {
+	color: black;
+	font-size: 19px;
+}
+#callflow_container .entity-header .breadcrumbs span.current {
+	font-weight: 600;
+	border-bottom: 2px solid black;
+}
+#callflow_container .entity-header .breadcrumbs span:not(.current):not(.hide-separator):after {
+	content: "\03031";
+	display: inline-block;
+	font-size: 13px;
+	margin: 0 8px 0 10px;
+	transform: scaleX(-1.2) translateY(-1px);
+}
+
+#callflow_container .entity-header .buttons {
+	float: right;
+}
+
 #callflow_container .entity-header .superadmin-mode {
 	float: right;
 	line-height: 35px;

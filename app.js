@@ -334,6 +334,20 @@ define(function(require) {
 				template.find('.entity-manager').show();
 			});
 
+			// Clicking the 'Callflows' breadcrumb closes any open callflow
+			template.on('click', '.entity-header .hide-callflow', function() {
+				$('#ws_cf_flow').empty();
+				$('.buttons').empty();
+				$('#ws_cf_tools').empty();
+				$('#hidden_callflow_warning').hide();
+				$('#pending_change').hide();
+				$('.breadcrumbs .current').empty();
+				$('.breadcrumbs span:first-child').addClass('hide-separator');
+
+				self.repaintList();
+				self.resetFlow();
+			});
+
 			template.find('.entity-edition .list-add').on('click', function() {
 				var type = template.find('.entity-edition .list-container .list').data('type');
 				editEntity(type);
@@ -983,6 +997,8 @@ define(function(require) {
 								$('.buttons').empty();
 								$('#ws_cf_tools').empty();
 								$('#hidden_callflow_warning').hide();
+								$('.breadcrumbs .current').empty();
+								$('.breadcrumbs span:first-child').addClass('hide-separator');
 
 								self.repaintList();
 								self.resetFlow();
@@ -1242,6 +1258,14 @@ define(function(require) {
 				self.show_pending_change(self.original_flow !== current_flow);
 			}
 
+			// Add the name of the current callflow (or its numbers if no name given)
+			// to the breadcrumbs in the action bar
+			const callflowTitle = this.flow.name
+				|| this.flow.numbers.join(', ')
+				|| this.i18n.active().callflowsApp.editor.current;
+			$('.entity-header .breadcrumbs .current').text(callflowTitle);
+			$('.breadcrumbs .hide-separator').removeClass('hide-separator');
+
 			var metadata = self.dataCallflow.hasOwnProperty('ui_metadata') ? self.dataCallflow.ui_metadata : false,
 				isHiddenCallflow = metadata && metadata.hasOwnProperty('origin') && _.includes(['voip', 'migration', 'mobile', 'callqueues'], metadata.origin);
 
@@ -1252,10 +1276,10 @@ define(function(require) {
 			var self = this;
 			if (pending_change) {
 				$('#pending_change', '#ws_callflow').show();
-				$('.save', '#ws_callflow').addClass('pulse-box');
+				$('.entity-header .save', '#callflow_container').addClass('pulse-box');
 			} else {
 				$('#pending_change', '#ws_callflow').hide();
-				$('.save', '#ws_callflow').removeClass('pulse-box');
+				$('.entity-header .save', '#callflow_container').removeClass('pulse-box');
 			}
 		},
 
