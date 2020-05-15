@@ -248,7 +248,10 @@
 					"number": "Please enter a valid phone number",
 					"realm": "Please enter a valid realm"
 				}
-			}
+			},
+			"reboot": "Reboot",
+			"reboot_confirm": "Are you sure you want to reboot this device?",
+			"reboot_success": "Reboot Command Sent"
 		},
 		"disa": {
 			"title": "DISA",

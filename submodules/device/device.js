@@ -12,13 +12,19 @@ define(function(require) {
 				'headers': {
 					'Accept': '*/*'
 				}
+			},
+			'device.reboot': {
+				url: 'accounts/{accountId}/devices/{deviceId}/sync',
+				verb: 'POST',
+				contentType: 'application/json'
 			}
 		},
 
 		subscribe: {
 			'callflows.fetchActions': 'deviceDefineActions',
 			'callflows.device.popupEdit': 'devicePopupEdit',
-			'callflows.device.edit': '_deviceEdit'
+			'callflows.device.edit': '_deviceEdit',
+			'callflows.device.reboot': 'deviceReboot'
 		},
 
 		devicePopupEdit: function(args) {
@@ -317,7 +323,7 @@ define(function(require) {
 						self.deviceRender(render_data, target, callbacks);
 
 						if (typeof callbacks.after_render === 'function') {
-							callbacks.after_render();
+							callbacks.after_render(undefined, render_data.data.name);
 						}
 					});
 				};
@@ -690,6 +696,12 @@ define(function(require) {
 							}
 						}
 					});
+				});
+
+				// Reboot device - for SIP Devices only
+				$('.device-reboot', device_html).click(function(event) {
+					event.preventDefault();
+					self.deviceReboot({ id: data.data.id });
 				});
 			} else {
 				$('.media_tabs .buttons', device_html).click(function() {
@@ -1325,6 +1337,35 @@ define(function(require) {
 					editEntity: 'callflows.device.edit'
 				}
 			});
+		},
+
+		/**
+		 * Trigger a reboot for the given device after a confirmation dialog.
+		 *
+		 * @param {Object} args
+		 * @param {string} args.id - ID of the device to reboot
+		 */
+		deviceReboot: function(args) {
+			var id = args.id,
+				self = this;
+
+			function makeRequest() {
+				monster.request({
+					resource: 'device.reboot',
+					data: {
+						deviceId: id,
+						accountId: self.accountId
+					},
+					success: function() {
+						monster.ui.toast({
+							type: 'success',
+							message: self.i18n.active().callflows.device.reboot_success
+						});
+					}
+				});
+			}
+
+			monster.ui.confirm(this.i18n.active().callflows.device.reboot_confirm, makeRequest);
 		}
 	};
 
