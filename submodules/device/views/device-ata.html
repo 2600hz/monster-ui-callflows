@@ -198,7 +198,7 @@
 						<div class="clearfix">
 							<label for="sip_password">{{ i18n.callflows.device.password }}</label>
 							<div class="input">
-								<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
+								<input class="span4" id="sip_password" name="sip.password" autocomplete="new-password" type="password" placeholder="" value="{{ data.sip.password }}" required/>
 							</div>
 						</div>
 					</div>
@@ -295,12 +295,12 @@
 					{{/each}}
 				</div>
 			</div>
+			<div class="buttons-right">
+				{{#if data.id}}
+					<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
+				{{/if}}
+				<button type="submit" class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
+			</div>
 		</form>
-		<div class="buttons-right">
-			{{#if data.id}}
-				<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
-			{{/if}}
-			<button class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
-		</div>
 	</div>
 </div>
