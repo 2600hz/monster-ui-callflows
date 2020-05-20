@@ -38,6 +38,10 @@
 	margin-left: 10px;
 	font-weight: bold;
 	cursor: default;
+	width: 270px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #ws_callflow .callflow .root > .top_bar .add_number,
