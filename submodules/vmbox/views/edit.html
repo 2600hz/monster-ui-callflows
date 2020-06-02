@@ -208,14 +208,19 @@
 								<li>
 									<label>
 										<span rel="popover" data-content="{{ i18n.callflows.vmbox.skip_instructions_data_content }}">
-											{{#if data.skip_instructions}}
-												<input type="checkbox" id="skip_instructions" name="skip_instructions" checked="checked" />
+											{{#if data.announcement_only}}
+													<input type="checkbox" id="skip_instructions" name="skip_instructions" checked="checked" disabled />
 											{{else}}
-												<input type="checkbox" id="skip_instructions" name="skip_instructions"/>
+												{{#if data.skip_instructions}}
+													<input type="checkbox" id="skip_instructions" name="skip_instructions" checked="checked" />
+												{{else}}
+													<input type="checkbox" id="skip_instructions" name="skip_instructions"/>
+												{{/if}}
 											{{/if}}
 											<span>{{ i18n.callflows.vmbox.skip_instructions }}</span>
 										</span>
 									</label>
+									<input id="skip_instructions_input" type="hidden" value="{{data.skip_instructions}}">
 								</li>
 							</ul>
 						</div>
