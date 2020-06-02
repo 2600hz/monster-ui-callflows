@@ -375,6 +375,7 @@ define(function(require) {
 							form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;
 						} else {
 							delete form_data.announcement_only;
+							delete data.data.announcement_only;
 						}
 
 						/* self.clean_form_data(form_data); */
