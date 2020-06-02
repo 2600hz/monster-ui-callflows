@@ -373,9 +373,6 @@ define(function(require) {
 
 						if (form_data.announcement_only) {
 							form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;
-						} else {
-							delete form_data.announcement_only;
-							delete data.data.announcement_only;
 						}
 
 						/* self.clean_form_data(form_data); */
@@ -447,6 +444,10 @@ define(function(require) {
 
 			if (mergedData.media_extension === 'default') {
 				delete mergedData.media_extension;
+			}
+
+			if (!mergedData.announcement_only) {
+				delete mergedData.announcement_only;
 			}
 
 			mergedData.not_configurable = !mergedData.extra.allow_configuration;
