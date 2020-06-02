@@ -319,6 +319,34 @@ define(function(require) {
 				});
 			});
 
+			$('#announcement_only', vmbox_html).click(function(ev) {
+				var $this = $(this),
+					isChecked = $this.prop('checked'),
+					$skipInstructions = vmbox_html.find('#skip_instructions'),
+					$parentDiv = $skipInstructions.parents('.inputs-list'),
+					$skipInstructionsInput = vmbox_html.find('#skip_instructions_input').val(),
+					isSkipInstructions = $skipInstructionsInput === 'true' ? true : false,
+					isDisabled = false;
+
+				if (isChecked) {
+					isDisabled = true;
+					isSkipInstructions = true;
+
+					$parentDiv
+						.addClass('disabled');
+				} else {
+					$parentDiv
+						.removeClass('disabled');
+
+				}
+
+				$skipInstructions
+					.prop('checked', isSkipInstructions);
+
+				$skipInstructions
+					.prop('disabled', isDisabled);
+			});
+
 			var validateEmail = function(email) {
 					var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 					return re.test(email);
@@ -338,12 +366,16 @@ define(function(require) {
 					$this.addClass('disabled');
 
 					if (monster.ui.valid(vmboxForm)) {
-						var form_data = monster.ui.getFormData('vmbox-form');
+						var form_data = monster.ui.getFormData('vmbox-form'),
+							$skipInstructionsInput = vmbox_html.find('#skip_instructions_input').val();
 
 						form_data.notify_email_addresses = getRecipients();
 
-						/* self.clean_form_data(form_data); */
+						if (form_data.announcement_only) {
+							form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;
+						}
 
+						/* self.clean_form_data(form_data); */
 						if ('field_data' in data) {
 							delete data.field_data;
 						}
@@ -412,6 +444,10 @@ define(function(require) {
 
 			if (mergedData.media_extension === 'default') {
 				delete mergedData.media_extension;
+			}
+
+			if (!mergedData.announcement_only) {
+				delete mergedData.announcement_only;
 			}
 
 			mergedData.not_configurable = !mergedData.extra.allow_configuration;
