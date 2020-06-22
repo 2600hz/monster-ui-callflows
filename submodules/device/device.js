@@ -496,11 +496,6 @@ define(function(require) {
 					self.deviceSetProvisionerStuff(device_html, data);
 				}
 
-				/* Do device type specific things here */
-				if ($.inArray(data.data.device_type, ['fax', 'softphone', 'sip_device', 'smartphone', 'mobile', 'ata']) > -1) {
-					monster.ui.protectField(device_html.find('#sip_password'), device_html);
-				}
-
 				monster.ui.validate(deviceForm, self.deviceGetValidationByDeviceType(data.data.device_type));
 
 				if (!$('#owner_id', device_html).val()) {
@@ -522,7 +517,9 @@ define(function(require) {
 					$('#ip_block', device_html).hide();
 				}
 
-				monster.ui.disableAutoFill(deviceForm);
+				monster.ui.disableAutoFill(deviceForm, {
+					validator: _.partial(monster.ui.valid, deviceForm)
+				});
 			} else {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
