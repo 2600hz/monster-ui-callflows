@@ -719,7 +719,7 @@ define(function(require) {
 						device_html.find('#dropdown_brand').val(brand_name);
 						device_html
 							.find('.dropdown_family[data-brand="' + brand_name + '"]')
-								.show()
+								.css('display', 'inline-block')
 								.val(model_family + '.' + model_name);
 					}
 				},
