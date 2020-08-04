@@ -783,7 +783,7 @@ define(function(require) {
 					accountId: self.accountId
 				}, nextStartKey && {
 					filters: {
-						start_key: encodeURIComponent(nextStartKey)
+						start_key: nextStartKey
 					}
 				}, !self.appFlags.showAllCallflows && {
 					filters: {
@@ -793,7 +793,7 @@ define(function(require) {
 						]
 					}
 				}, searchValue && {
-					value: encodeURIComponent(searchValue)
+					value: searchValue
 				});
 
 			self.callApi({
