@@ -778,34 +778,23 @@ define(function(require) {
 				nextStartKey = args.nextStartKey,
 				searchValue = args.searchValue,
 				callback = args.callback,
-				apiResource = 'callflow.list',
-				apiData = {
+				apiResource = searchValue ? 'callflow.searchByNameAndNumber' : 'callflow.list',
+				apiData = _.merge({
 					accountId: self.accountId
-				};
-
-			if (nextStartKey) {
-				$.extend(true, apiData, {
+				}, nextStartKey && {
 					filters: {
-						'start_key': encodeURIComponent(nextStartKey)
+						start_key: encodeURIComponent(nextStartKey)
 					}
-				});
-			}
-
-			if (!self.appFlags.showAllCallflows) {
-				$.extend(true, apiData, {
+				}, !self.appFlags.showAllCallflows && {
 					filters: {
 						'filter_not_ui_metadata.origin': [
 							'voip',
 							'callqueues'
 						]
 					}
+				}, searchValue && {
+					value: encodeURIComponent(searchValue)
 				});
-			}
-
-			if (searchValue) {
-				apiResource = 'callflow.searchByNameAndNumber';
-				apiData.value = encodeURIComponent(searchValue);
-			}
 
 			self.callApi({
 				resource: apiResource,
