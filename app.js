@@ -210,7 +210,7 @@ define(function(require) {
 						.find('.search-query')
 						.prop('disabled', false)
 						.val('');
-					self.repaintList({template: template});
+					self.repaintList({ template: template });
 				} else {
 					var searchValue = searchLink.find('.search-value').text();
 					searchLink
@@ -1599,7 +1599,7 @@ define(function(require) {
 							}
 						})),
 						popup;
-					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview) {
+					self.getCallflowPreview({ id: previewCallflowId }, function(callflowPreview) {
 						popup = monster.ui.dialog(dialogTemplate, {
 							position: ['top', 20], // put preview near top of screen to have lots of space for it
 							title: self.i18n.active().oldCallflows.callflow_preview_title,
@@ -1607,7 +1607,7 @@ define(function(require) {
 						});
 						popup.find('.callflow-preview-section.callflow').append(callflowPreview);
 						$('#callflow_jump').click(function() {
-							self.editCallflow({id: previewCallflowId});
+							self.editCallflow({ id: previewCallflowId });
 							popup.dialog('close').remove();
 						});
 					});
@@ -1749,7 +1749,7 @@ define(function(require) {
 
 			$.each(self.actions, function(i, data) {
 				if ('category' in data && (!data.hasOwnProperty('isListed') || data.isListed)) {
-					data.category in categories ? true : categories[data.category] = [];
+					_.set(categories, data.category, _.get(categories, data.category, []));
 					data.key = i;
 					categories[data.category].push(data);
 				}
@@ -1948,7 +1948,7 @@ define(function(require) {
 						},
 						success: function(json) {
 							self.repaintList();
-							self.editCallflow({id: json.data.id});
+							self.editCallflow({ id: json.data.id });
 						}
 					});
 				} else {
@@ -1960,7 +1960,7 @@ define(function(require) {
 						},
 						success: function(json) {
 							self.repaintList();
-							self.editCallflow({id: json.data.id});
+							self.editCallflow({ id: json.data.id });
 						}
 					});
 				}
