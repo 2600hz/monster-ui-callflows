@@ -210,7 +210,7 @@ define(function(require) {
 						.find('.search-query')
 						.prop('disabled', false)
 						.val('');
-					self.repaintList({template: template});
+					self.repaintList({ template: template });
 				} else {
 					var searchValue = searchLink.find('.search-value').text();
 					searchLink
@@ -801,34 +801,23 @@ define(function(require) {
 				nextStartKey = args.nextStartKey,
 				searchValue = args.searchValue,
 				callback = args.callback,
-				apiResource = 'callflow.list',
-				apiData = {
+				apiResource = searchValue ? 'callflow.searchByNameAndNumber' : 'callflow.list',
+				apiData = _.merge({
 					accountId: self.accountId
-				};
-
-			if (nextStartKey) {
-				$.extend(true, apiData, {
+				}, nextStartKey && {
 					filters: {
-						'start_key': encodeURIComponent(nextStartKey)
+						start_key: nextStartKey
 					}
-				});
-			}
-
-			if (!self.appFlags.showAllCallflows) {
-				$.extend(true, apiData, {
+				}, !self.appFlags.showAllCallflows && {
 					filters: {
 						'filter_not_ui_metadata.origin': [
 							'voip',
 							'callqueues'
 						]
 					}
+				}, searchValue && {
+					value: searchValue
 				});
-			}
-
-			if (searchValue) {
-				apiResource = 'callflow.searchByNameAndNumber';
-				apiData.value = encodeURIComponent(searchValue);
-			}
 
 			self.callApi({
 				resource: apiResource,
@@ -1652,7 +1641,7 @@ define(function(require) {
 							}
 						})),
 						popup;
-					self.getCallflowPreview({id: previewCallflowId}, function(callflowPreview) {
+					self.getCallflowPreview({ id: previewCallflowId }, function(callflowPreview) {
 						popup = monster.ui.dialog(dialogTemplate, {
 							position: ['top', 20], // put preview near top of screen to have lots of space for it
 							title: self.i18n.active().oldCallflows.callflow_preview_title,
@@ -1660,7 +1649,7 @@ define(function(require) {
 						});
 						popup.find('.callflow-preview-section.callflow').append(callflowPreview);
 						$('#callflow_jump').click(function() {
-							self.editCallflow({id: previewCallflowId});
+							self.editCallflow({ id: previewCallflowId });
 							popup.dialog('close').remove();
 						});
 					});
@@ -1802,7 +1791,7 @@ define(function(require) {
 
 			$.each(self.actions, function(i, data) {
 				if ('category' in data && (!data.hasOwnProperty('isListed') || data.isListed)) {
-					data.category in categories ? true : categories[data.category] = [];
+					_.set(categories, data.category, _.get(categories, data.category, []));
 					data.key = i;
 					categories[data.category].push(data);
 				}
@@ -2001,7 +1990,7 @@ define(function(require) {
 						},
 						success: function(json) {
 							self.repaintList();
-							self.editCallflow({id: json.data.id});
+							self.editCallflow({ id: json.data.id });
 						}
 					});
 				} else {
@@ -2013,7 +2002,7 @@ define(function(require) {
 						},
 						success: function(json) {
 							self.repaintList();
-							self.editCallflow({id: json.data.id});
+							self.editCallflow({ id: json.data.id });
 						}
 					});
 				}
