@@ -1271,6 +1271,24 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscRenderEditWebhook(node, callback);
 					}
+				},
+				'json_editor[]': {
+					name: self.i18n.active().callflows.jsonEditor.title,
+					icon: 'pencil',	//graph2
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'jsonEditor',
+					tip: self.i18n.active().callflows.jsonEditor.tip,
+					data: {},
+					rules: [],
+					isUsable: 'true',
+					weight: 170,
+					caption: function() {
+						return '';
+					},
+					edit: function(node, callback) {
+						self.miscRenderEditJson(node, callback);
+					}
+
 				}
 			});
 		},
@@ -1544,6 +1562,45 @@ define(function(require) {
 
 			popup = monster.ui.dialog(initTemplate(), {
 				title: self.i18n.active().callflows.webhook.popupTitle,
+				beforeClose: function() {
+					if (_.isFunction(callback)) {
+						callback();
+					}
+				}
+			});
+		},
+
+		miscRenderEditJson: function(node, callback) {
+			var self = this,
+				popup,
+				initTemplate = function() {
+					var $template = $(self.getTemplate({
+							name: 'json_editor',
+							submodule: 'misc'
+						})),
+						$target = $template.find('#jsoneditor'),
+						jsoneditor = monster.ui.jsoneditor($target);
+
+					jsoneditor.set(node.getMetadata('custom_json', {}));
+					$template.find('#save').on('click', function(e) {
+						e.preventDefault();
+
+						var content = jsoneditor.get();
+
+						if(!Object.keys(content).length){
+							return;
+						}
+
+						node.setMetadata('custom_json', content);
+						popup.dialog('close');
+					});
+
+					return $template;
+				};
+
+			popup = monster.ui.dialog(initTemplate(), {
+				title: self.i18n.active().callflows.jsonEditor.popupTitle,
+				width: 500,
 				beforeClose: function() {
 					if (_.isFunction(callback)) {
 						callback();
