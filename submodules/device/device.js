@@ -516,10 +516,6 @@ define(function(require) {
 				} else {
 					$('#ip_block', device_html).hide();
 				}
-
-				monster.ui.disableAutoFill(deviceForm, {
-					validator: _.partial(monster.ui.valid, deviceForm)
-				});
 			} else {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
