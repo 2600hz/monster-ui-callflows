@@ -1067,7 +1067,7 @@ define(function(require) {
 				this.id = -1;
 				//set actionName to json_editor[] and module to their current module for non supported actions
 				this.actionName = _.isEmpty(action) ? 'json_editor[]' : actionName;
-				this.module = action.module ? action.module : actionName.replace('[]', '');
+				this.module = action.module ? action.module : actionName.replace(/\[(.*?)\]/g, '');
 				this.key = '_';
 				this.parent = null;
 				this.children = [];
