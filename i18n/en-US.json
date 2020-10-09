@@ -1216,6 +1216,10 @@
 		"jsonEditor": {
 			"title": "Json Editor",
 			"popupTitle": "Add/Edit json action",
+			"name": "Name",
+			"placeholder": {
+				"name": "Action Name"
+			},
 			"editor": {
 				"label": "Json data",
 				"errorMessages": {

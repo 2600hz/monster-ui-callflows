@@ -1286,6 +1286,8 @@ define(function(require) {
 						return '';
 					},
 					edit: function(node, callback) {
+						node.caption = node.module;
+
 						self.miscRenderEditJson(node, callback);
 					}
 
@@ -1576,23 +1578,44 @@ define(function(require) {
 				initTemplate = function() {
 					var $template = $(self.getTemplate({
 							name: 'json_editor',
+							data: {
+								name: node.caption ? node.caption : ''
+							},
 							submodule: 'misc'
 						})),
 						$target = $template.find('#jsoneditor'),
 						jsoneditor = monster.ui.jsoneditor($target);
 
-					jsoneditor.set(node.getMetadata('custom_json', {}));
+					jsoneditor.set(node.data.data, {});
+
 					$template.find('#save').on('click', function(e) {
 						e.preventDefault();
 
-						var content = jsoneditor.get();
+						var content = jsoneditor.get(),
+							$form = $template.find('#form_json_editor'),
+							formData = monster.ui.getFormData('form_json_editor');
 
-						if(!Object.keys(content).length){
-							return;
+						monster.ui.validate($form, {
+							rules: {
+								'name': {
+									required: true,
+									minlength: 1,
+									maxlength: 128
+								}
+							}
+						});
+
+						if(Object.keys(content).length && monster.ui.valid($form)) {
+							_.each(content, function(value, key) {
+								node.setMetadata(key, value);
+							});
+
+							node.caption = formData.name;
+							node.module = formData.name;
+
+							popup.dialog('close');
 						}
 
-						node.setMetadata('custom_json', content);
-						popup.dialog('close');
 					});
 
 					return $template;
