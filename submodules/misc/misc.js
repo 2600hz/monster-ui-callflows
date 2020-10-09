@@ -1282,12 +1282,10 @@ define(function(require) {
 					rules: [],
 					isUsable: 'true',
 					weight: 170,
-					caption: function() {
-						return '';
+					caption: function(node) {
+						return node.module !== 'jsonEditor' ? node.module : '';
 					},
 					edit: function(node, callback) {
-						node.caption = node.module;
-
 						self.miscRenderEditJson(node, callback);
 					}
 
