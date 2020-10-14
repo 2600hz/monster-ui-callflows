@@ -1212,6 +1212,20 @@
 				"label": "Custom data (optional)",
 				"help": "These properties will be added to the event and will overwrite existing values"
 			}
+		},
+		"jsonEditor": {
+			"title": "Json Editor",
+			"popupTitle": "Add/Edit json action",
+			"name": "Name",
+			"placeholder": {
+				"name": "Action Name"
+			},
+			"editor": {
+				"label": "Json data",
+				"errorMessages": {
+					"jsonEditor": "Invalid Content"
+				}
+			}
 		}
 	},
 	"oldCallflows": {
