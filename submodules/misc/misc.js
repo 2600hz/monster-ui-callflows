@@ -1271,6 +1271,24 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscRenderEditWebhook(node, callback);
 					}
+				},
+				'json_editor[]': {
+					name: self.i18n.active().callflows.jsonEditor.title,
+					icon: 'pencil',	//graph2
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'jsonEditor',
+					tip: self.i18n.active().callflows.jsonEditor.tip,
+					data: {},
+					rules: [],
+					isUsable: 'true',
+					weight: 170,
+					caption: function(node) {
+						return node.module !== 'jsonEditor' ? node.module : '';
+					},
+					edit: function(node, callback) {
+						self.miscRenderEditJson(node, callback);
+					}
+
 				}
 			});
 		},
@@ -1544,6 +1562,66 @@ define(function(require) {
 
 			popup = monster.ui.dialog(initTemplate(), {
 				title: self.i18n.active().callflows.webhook.popupTitle,
+				beforeClose: function() {
+					if (_.isFunction(callback)) {
+						callback();
+					}
+				}
+			});
+		},
+
+		miscRenderEditJson: function(node, callback) {
+			var self = this,
+				popup,
+				initTemplate = function() {
+					var $template = $(self.getTemplate({
+							name: 'json_editor',
+							data: {
+								name: node.caption ? node.caption : ''
+							},
+							submodule: 'misc'
+						})),
+						$target = $template.find('#jsoneditor'),
+						jsoneditor = monster.ui.jsoneditor($target);
+
+					jsoneditor.set(node.data.data, {});
+
+					$template.find('#save').on('click', function(e) {
+						e.preventDefault();
+
+						var content = jsoneditor.get(),
+							$form = $template.find('#form_json_editor'),
+							formData = monster.ui.getFormData('form_json_editor');
+
+						monster.ui.validate($form, {
+							rules: {
+								'name': {
+									required: true,
+									minlength: 1,
+									maxlength: 128
+								}
+							}
+						});
+
+						if(Object.keys(content).length && monster.ui.valid($form)) {
+							_.each(content, function(value, key) {
+								node.setMetadata(key, value);
+							});
+
+							node.caption = formData.name;
+							node.module = formData.name;
+
+							popup.dialog('close');
+						}
+
+					});
+
+					return $template;
+				};
+
+			popup = monster.ui.dialog(initTemplate(), {
+				title: self.i18n.active().callflows.jsonEditor.popupTitle,
+				width: 500,
 				beforeClose: function() {
 					if (_.isFunction(callback)) {
 						callback();
