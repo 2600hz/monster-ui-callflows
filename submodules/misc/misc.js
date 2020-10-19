@@ -20,6 +20,9 @@ define(function(require) {
 						post: 'POST',
 						put: 'PUT'
 					}
+				},
+				jsonEditor: {
+					unsupportedCallflowsList: {}
 				}
 			}
 		},
@@ -1286,7 +1289,31 @@ define(function(require) {
 						return node.module !== 'jsonEditor' ? node.module : '';
 					},
 					edit: function(node, callback) {
-						self.miscRenderEditJson(node, callback);
+						if (_.isEmpty(self.appFlags.misc.jsonEditor.unsupportedCallflowsList)) {
+							self.miscSchemasList(function(data) {
+								var supportedModules = _
+										.chain(monster.apps.callflows.actions)
+										.map('module')
+										.uniq()
+										.filter(_.isString)
+										.value(),
+									getCallflowModules = _
+										.chain(data)
+										.filter(function(module) {
+											return module.startsWith('callflows');
+										})
+										.map(function(module) {
+											return module.replace('callflows.', '');
+										})
+										.value();
+									unsupportedModules = _.difference(getCallflowModules, supportedModules);
+
+								self.appFlags.misc.jsonEditor.unsupportedCallflowsList = unsupportedModules;
+								self.miscRenderEditJson(node, callback);
+							});
+						} else {
+							self.miscRenderEditJson(node, callback);
+						}
 					}
 
 				}
@@ -1577,7 +1604,8 @@ define(function(require) {
 					var $template = $(self.getTemplate({
 							name: 'json_editor',
 							data: {
-								name: node.caption ? node.caption : ''
+								name: node.caption ? node.caption : '',
+								unsupportedCallflowsList: self.appFlags.misc.jsonEditor.unsupportedCallflowsList
 							},
 							submodule: 'misc'
 						})),
@@ -1692,6 +1720,20 @@ define(function(require) {
 					filters: {
 						paginate: false
 					}
+				},
+				success: function(data, status) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		miscSchemasList: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'system.schemas',
+				data: {
+					accountId: self.accountId
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
