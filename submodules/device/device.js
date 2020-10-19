@@ -1257,27 +1257,14 @@ define(function(require) {
 						});
 					},
 					listEntities: function(callback) {
-						monster.parallel({
-							device: function(callback) {
+						monster.waterfall([
+							function(callback) {
 								self.callApi({
 									resource: 'device.list',
 									data: {
 										accountId: self.accountId,
 										filters: {
-											paginate: false
-										}
-									},
-									success: function(data, status) {
-										callback && callback(null, data.data);
-									}
-								});
-							},
-							status: function(callback) {
-								self.callApi({
-									resource: 'device.getStatus',
-									data: {
-										accountId: self.accountId,
-										filters: {
+											with_status: true,
 											paginate: false
 										}
 									},
@@ -1286,9 +1273,14 @@ define(function(require) {
 									}
 								});
 							}
-						},
-						function(err, results) {
-							var registeredDevices = _.map(results.status, function(registration) { if (registration.registered === true) { return registration.device_id; } }),
+						],
+						function(err, devices) {
+							var isRegistered = function(device) {
+									return _.every([
+										device.enabled,
+										device.registrable ? device.registered : true
+									]);
+								},
 								deviceIcons = {
 									'cellphone': 'fa fa-phone',
 									'smartphone': 'icon-telicon-mobile-phone',
@@ -1302,11 +1294,11 @@ define(function(require) {
 									'unknown': 'fa fa-circle'
 								};
 
-							_.each(results.device, function(device) {
+							_.each(devices, function(device) {
 								var dataTemplate = device;
 								dataTemplate.extra = {
 									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
-									isRegistered: device.enabled ? (['sip_device', 'smartphone', 'softphone', 'fax', 'ata'].indexOf(device.device_type) >= 0 ? registeredDevices.indexOf(device.id) >= 0 : true) : false
+									isRegistered: isRegistered(device)
 								};
 								// no jQuery wrapper since this template will be inserted directly with Handlebars
 								device.customEntityTemplate = self.getTemplate({
@@ -1316,7 +1308,7 @@ define(function(require) {
 								});
 							});
 
-							callback && callback(results.device);
+							callback && callback(devices);
 						});
 					},
 					editEntity: 'callflows.device.edit'
