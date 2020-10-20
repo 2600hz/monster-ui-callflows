@@ -888,7 +888,13 @@ define(function(require) {
 				parent = $('#tab_devices', parent);
 
 			if (data.data.id) {
-				var filter = data.data.new_user ? { filter_new_user: data.data.id } : { filter_owner_id: data.data.id };
+				var filter = _.merge({
+					with_status: true
+				}, data.data.new_user ? {
+					filter_new_user: data.data.id
+				} : {
+					filter_owner_id: data.data.id
+				});
 
 				self.userListDevice(filter, function(_data, status) {
 					$('.rows', parent).empty();
@@ -902,17 +908,8 @@ define(function(require) {
 									data: v,
 									submodule: 'user'
 								})));
-						});
-
-						self.callApi({
-							resource: 'device.getStatus',
-							data: {
-								accountId: self.accountId
-							},
-							success: function(_data, status) {
-								$.each(_data.data, function(key, val) {
-									$('#' + val.device_id + ' .column.third', parent).addClass('registered');
-								});
+							if (v.registrable && v.registered) {
+								$('#' + v.device_id + ' .column.third', parent).addClass('registered');
 							}
 						});
 					} else {
