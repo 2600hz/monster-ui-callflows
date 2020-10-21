@@ -22,7 +22,8 @@ define(function(require) {
 					}
 				},
 				jsonEditor: {
-					unsupportedCallflowsList: {}
+					unsupportedCallflowsList: {},
+					callflowsListSchema: {}
 				}
 			}
 		},
@@ -1610,37 +1611,64 @@ define(function(require) {
 							submodule: 'misc'
 						})),
 						$target = $template.find('#jsoneditor'),
-						jsoneditor = monster.ui.jsoneditor($target);
+						options = {
+							mode: 'code',
+							modes: ['code', 'text'],
+							onValidate: function(json) {
+								var errors = [];
+
+								if (_.isEmpty(json)) {
+									errors.push({
+										path: ['empty'],
+										message: 'Required json properties are missing.'
+									});
+								}
+
+								return errors;
+							},
+							onValidationError: function (errors) {
+								if (_.isEmpty(errors)) {
+									$template
+										.find('#save')
+											.removeClass('disabled');
+								} else {
+									//disable save button when there are errors
+									$template
+										.find('#save')
+											.addClass('disabled');
+								}
+							}
+						},
+						jsoneditor = monster.ui.jsoneditor($target, options, node.data.data);
 
 					jsoneditor.set(node.data.data, {});
+					self.miscSetSchema($template, jsoneditor, callback);
 
 					$template.find('#save').on('click', function(e) {
 						e.preventDefault();
 
-						var content = jsoneditor.get(),
-							$form = $template.find('#form_json_editor'),
-							formData = monster.ui.getFormData('form_json_editor');
+						//do nothing when button is disabled
+						if ($(this).hasClass('disabled')) {
+							return;
+						}
 
-						monster.ui.validate($form, {
-							rules: {
-								'name': {
-									required: true,
-									minlength: 1,
-									maxlength: 128
-								}
-							}
+						var selectedOption = $template.find('#name').val();
+							content = jsoneditor.get();
+
+						node.caption = selectedOption;
+						node.module = selectedOption;
+
+						_.each(content, function(value, key) {
+							node.setMetadata(key, value);
 						});
 
-						if(Object.keys(content).length && monster.ui.valid($form)) {
-							_.each(content, function(value, key) {
-								node.setMetadata(key, value);
-							});
+						popup.dialog('close');
+					});
 
-							node.caption = formData.name;
-							node.module = formData.name;
+					$template.find('#name').on('change', function(e) {
+						e.preventDefault();
 
-							popup.dialog('close');
-						}
+						self.miscSetSchema($template, jsoneditor, callback);
 
 					});
 
@@ -1656,6 +1684,51 @@ define(function(require) {
 					}
 				}
 			});
+		},
+
+		miscSetSchema: function(template, jsoneditor, callback) {
+			var self = this,
+				$template = template,
+				selectedOption = $template.find('#name').val(),
+				callflowSchema = self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption];
+
+			if (callflowSchema) {
+				jsoneditor.setSchema(callflowSchema);
+			} else {
+				//disable save button and select options until schema is set for validation
+				$template
+					.find('#save')
+						.addClass('disabled');
+
+				$template
+					.find('#name')
+						.prop('disabled', true);
+
+				//get schema from API if it's not stored locally and set it in jsoneditor
+				self.miscGetSchema({
+					data: {
+						schemaId: 'callflows.' + selectedOption
+					},
+					success: function(data) {
+						//set schema to validate schema
+						jsoneditor.setSchema(data);
+
+						//set schema in local storage
+						self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption] = data;
+
+						//enable save button and select options after schema is set
+						$template
+							.find('#save')
+								.removeClass('disabled');
+
+						$template
+							.find('#name')
+								.prop('disabled', false);
+
+						callback(null, data);
+					}
+				});
+			}
 		},
 
 		/* API helpers */
@@ -1731,12 +1804,27 @@ define(function(require) {
 			var self = this;
 
 			self.callApi({
-				resource: 'system.schemas',
-				data: {
-					accountId: self.accountId
-				},
+				resource: 'schemas.list',
 				success: function(data, status) {
 					callback && callback(data.data);
+				}
+			});
+		},
+
+		miscGetSchema: function(args) {
+			var self = this,
+				data = args.data;
+
+			self.callApi({
+				resource: 'schemas.get',
+				data: {
+					schemaId: data.schemaId
+				},
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data.data);
+				},
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
 		}
