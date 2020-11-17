@@ -51,7 +51,7 @@
 					{{/unless}}
 
 					<div class="clearfix">
-						<label for="call_forward_number">{{ i18n.callflows.device.number }}</label>
+						<label for="call_forward_number" >{{ i18n.callflows.device.number }}</label>
 						<div class="input">
 							<input class="span4" id="call_forward_number" name="call_forward.number" type="text" placeholder="{{ i18n.callflows.device.number }}" value="{{ data.call_forward.number }}" rel="popover" data-content="{{ i18n.callflows.device.number_data_content }}"/>
 						</div>
@@ -163,7 +163,7 @@
 						<div class="clearfix">
 							<label for="sip_password">{{ i18n.callflows.device.password }}</label>
 							<div class="input">
-								<input class="span4" id="sip_password" name="sip.password" type="password" placeholder="" value="{{ data.sip.password }}"/>
+								<input class="span4" id="sip_password" name="sip.password" autocomplete="new-password" type="text" placeholder="" value="{{ data.sip.password }}"/>
 							</div>
 						</div>
 					</div>
@@ -227,12 +227,12 @@
 					{{/each}}
 				</div>
 			</div>
+			<div class="buttons-right">
+				{{#if data.id}}
+					<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
+				{{/if}}
+				<button type="submit" class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
+			</div>
 		</form>
-		<div class="buttons-right">
-			{{#if data.id}}
-				<button class="monster-button monster-button-danger device-delete">{{ i18n.callflows.device.delete }}</button>
-			{{/if}}
-			<button class="monster-button monster-button-success device-save">{{ i18n.callflows.device.save }}</button>
-		</div>
 	</div>
 </div>
