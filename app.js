@@ -2095,6 +2095,13 @@ define(function(require) {
 			});
 		},
 
+		isDeviceCallable: function(device) {
+			return _.every([
+				device.enabled,
+				device.registrable ? device.registered : true
+			]);
+		},
+
 		/**
 		 * Recursively unsets `obj`'s empty properties by mutating it
 		 * @param  {Object} obj  Object to compact
