@@ -908,7 +908,7 @@ define(function(require) {
 									data: v,
 									submodule: 'user'
 								})));
-							if (v.registrable && v.registered) {
+							if (self.isDeviceCallable(v)) {
 								$('#' + v.device_id + ' .column.third', parent).addClass('registered');
 							}
 						});
