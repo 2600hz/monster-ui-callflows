@@ -909,7 +909,7 @@ define(function(require) {
 									submodule: 'user'
 								})));
 							if (self.isDeviceCallable(v)) {
-								$('#' + v.device_id + ' .column.third', parent).addClass('registered');
+								$('#' + v.id + ' .column.third', parent).addClass('registered');
 							}
 						});
 					} else {
