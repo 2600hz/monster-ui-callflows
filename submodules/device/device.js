@@ -1275,30 +1275,24 @@ define(function(require) {
 							}
 						],
 						function(err, devices) {
-							var isRegistered = function(device) {
-									return _.every([
-										device.enabled,
-										device.registrable ? device.registered : true
-									]);
-								},
-								deviceIcons = {
-									'cellphone': 'fa fa-phone',
-									'smartphone': 'icon-telicon-mobile-phone',
-									'landline': 'icon-telicon-home',
-									'mobile': 'icon-telicon-sprint-phone',
-									'softphone': 'icon-telicon-soft-phone',
-									'sip_device': 'icon-telicon-voip-phone',
-									'sip_uri': 'icon-telicon-voip-phone',
-									'fax': 'icon-telicon-fax',
-									'ata': 'icon-telicon-ata',
-									'unknown': 'fa fa-circle'
-								};
+							var deviceIcons = {
+								'cellphone': 'fa fa-phone',
+								'smartphone': 'icon-telicon-mobile-phone',
+								'landline': 'icon-telicon-home',
+								'mobile': 'icon-telicon-sprint-phone',
+								'softphone': 'icon-telicon-soft-phone',
+								'sip_device': 'icon-telicon-voip-phone',
+								'sip_uri': 'icon-telicon-voip-phone',
+								'fax': 'icon-telicon-fax',
+								'ata': 'icon-telicon-ata',
+								'unknown': 'fa fa-circle'
+							};
 
 							_.each(devices, function(device) {
 								var dataTemplate = device;
 								dataTemplate.extra = {
 									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
-									isRegistered: isRegistered(device)
+									isRegistered: self.isDeviceCallable(device)
 								};
 								// no jQuery wrapper since this template will be inserted directly with Handlebars
 								device.customEntityTemplate = self.getTemplate({
