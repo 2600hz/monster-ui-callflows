@@ -908,8 +908,8 @@ define(function(require) {
 									data: v,
 									submodule: 'user'
 								})));
-							if (v.registrable && v.registered) {
-								$('#' + v.device_id + ' .column.third', parent).addClass('registered');
+							if (self.isDeviceCallable(v)) {
+								$('#' + v.id + ' .column.third', parent).addClass('registered');
 							}
 						});
 					} else {
