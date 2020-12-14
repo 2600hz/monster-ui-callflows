@@ -1257,6 +1257,12 @@ define(function(require) {
 						});
 					},
 					listEntities: function(callback) {
+						var getStatusCssClass = function(device) {
+							return !device.enabled ? ''
+								: self.isDeviceCallable(device) ? 'monster-green'
+								: 'monster-red';
+						};
+
 						monster.waterfall([
 							function(callback) {
 								self.callApi({
@@ -1292,7 +1298,7 @@ define(function(require) {
 								var dataTemplate = device;
 								dataTemplate.extra = {
 									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
-									isRegistered: self.isDeviceCallable(device)
+									statusCssClass: getStatusCssClass(device)
 								};
 								// no jQuery wrapper since this template will be inserted directly with Handlebars
 								device.customEntityTemplate = self.getTemplate({
