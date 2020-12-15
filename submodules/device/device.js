@@ -1257,6 +1257,43 @@ define(function(require) {
 						});
 					},
 					listEntities: function(callback) {
+						var getDeviceWithTemplate = function(device) {
+								var type = device.device_type,
+									dataToTemplate = _.merge({
+										iconCssClass: getIconCssClass(type),
+										statusCssClass: getStatusCssClass(device),
+										type: type
+									}, _.pick(device, [
+										'name'
+									]));
+
+								return _.merge({
+									customEntityTemplate: self.getTemplate({
+										name: 'entity-element',
+										data: dataToTemplate,
+										submodule: 'device'
+									})
+								}, device);
+							},
+							getIconCssClass = function(type) {
+								return _.get({
+									'cellphone': 'fa fa-phone',
+									'smartphone': 'icon-telicon-mobile-phone',
+									'landline': 'icon-telicon-home',
+									'mobile': 'icon-telicon-sprint-phone',
+									'softphone': 'icon-telicon-soft-phone',
+									'sip_device': 'icon-telicon-voip-phone',
+									'sip_uri': 'icon-telicon-voip-phone',
+									'fax': 'icon-telicon-fax',
+									'ata': 'icon-telicon-ata'
+								}, type, 'fa fa-circle');
+							},
+							getStatusCssClass = function(device) {
+								return !device.enabled ? ''
+									: self.isDeviceCallable(device) ? 'monster-green'
+									: 'monster-red';
+							};
+
 						monster.waterfall([
 							function(callback) {
 								self.callApi({
@@ -1275,34 +1312,7 @@ define(function(require) {
 							}
 						],
 						function(err, devices) {
-							var deviceIcons = {
-								'cellphone': 'fa fa-phone',
-								'smartphone': 'icon-telicon-mobile-phone',
-								'landline': 'icon-telicon-home',
-								'mobile': 'icon-telicon-sprint-phone',
-								'softphone': 'icon-telicon-soft-phone',
-								'sip_device': 'icon-telicon-voip-phone',
-								'sip_uri': 'icon-telicon-voip-phone',
-								'fax': 'icon-telicon-fax',
-								'ata': 'icon-telicon-ata',
-								'unknown': 'fa fa-circle'
-							};
-
-							_.each(devices, function(device) {
-								var dataTemplate = device;
-								dataTemplate.extra = {
-									deviceIcon: deviceIcons.hasOwnProperty(device.device_type) ? deviceIcons[device.device_type] : deviceIcons.unknown,
-									isRegistered: self.isDeviceCallable(device)
-								};
-								// no jQuery wrapper since this template will be inserted directly with Handlebars
-								device.customEntityTemplate = self.getTemplate({
-									name: 'entity-element',
-									data: dataTemplate,
-									submodule: 'device'
-								});
-							});
-
-							callback && callback(devices);
+							callback && callback(_.map(devices, getDeviceWithTemplate));
 						});
 					},
 					editEntity: 'callflows.device.edit'
