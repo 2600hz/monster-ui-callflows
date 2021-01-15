@@ -90,7 +90,7 @@ define(function(require) {
 						media: {
 							secure_rtp: 'none',
 							audio: {
-								codecs: ['PCMU', 'PCMA']
+								codecs: []
 							},
 							video: {
 								codecs: []
