@@ -1301,7 +1301,7 @@ define(function(require) {
 									getCallflowModules = _
 										.chain(data)
 										.filter(function(module) {
-											return module.startsWith('callflows');
+											return module.startsWith('callflows.');
 										})
 										.map(function(module) {
 											return module.replace('callflows.', '');
