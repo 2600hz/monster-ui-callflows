@@ -813,7 +813,9 @@ define(function(require) {
 						filter_not_numbers: 'no_match',
 						'filter_not_ui_metadata.origin': [
 							'voip',
-							'callqueues'
+							'callqueues',
+							'callqueues-pro',
+							'csv-onboarding'
 						]
 					}
 				}, searchValue && {
