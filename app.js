@@ -402,15 +402,14 @@ define(function(require) {
 		},
 
 		formatEntityData: function(entities, entityType) {
-			var self = this;
+			var self = this,
+				getDisplayName = function(entity) {
+					return entity.first_name && entity.last_name ? entity.first_name + ' ' + entity.last_name
+						: entity.name ? entity.name
+						: entity.id;
+				};
 			_.each(entities, function(entity) {
-				if (entity.first_name && entity.last_name) {
-					entity.displayName = entity.first_name + ' ' + entity.last_name;
-				} else if (entity.name) {
-					entity.displayName = entity.name;
-				} else {
-					entity.displayName = entity.id;
-				}
+				entity.displayName = getDisplayName(entity);
 
 				if (entityType === 'play' && entity.media_source) {
 					entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source];
