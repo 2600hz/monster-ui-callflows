@@ -366,6 +366,10 @@ define(function(require) {
 
 		refreshEntityList: function(args) {
 			var self = this,
+				getLowerCasedDisplayName = _.flow(
+					_.partial(_.get, _, 'displayName'),
+					_.toLower
+				),
 				template = args.template,
 				actions = args.actions,
 				entityType = args.entityType,
@@ -376,7 +380,7 @@ define(function(require) {
 				var listEntities = $(self.getTemplate({
 					name: 'entity-list',
 					data: {
-						entities: entities
+						entities: _.sortBy(entities, getLowerCasedDisplayName)
 					}
 				}));
 
