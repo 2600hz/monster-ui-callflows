@@ -407,11 +407,14 @@ define(function(require) {
 					return entity.first_name && entity.last_name ? entity.first_name + ' ' + entity.last_name
 						: entity.name ? entity.name
 						: entity.id;
+				},
+				isMediaSource = function(entity) {
+					return entityType === 'play' && entity.media_source;
 				};
 			_.each(entities, function(entity) {
 				entity.displayName = getDisplayName(entity);
 
-				if (entityType === 'play' && entity.media_source) {
+				if (isMediaSource(entity)) {
 					entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source];
 				}
 			});
