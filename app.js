@@ -407,8 +407,21 @@ define(function(require) {
 
 		formatEntityData: function(entities, entityType) {
 			var self = this,
+				isStringAndNotEmpty = _.overEvery(
+					_.isString,
+					_.negate(_.isEmpty)
+				),
+				getFullName = function(entity) {
+					var values = _.map([
+							'first_name',
+							'last_name'
+						], _.partial(_.ary(_.get, 2), entity)),
+						hasInvalidValue = _.some(values, _.negate(isStringAndNotEmpty));
+
+					return hasInvalidValue ? undefined : _.join(values, ' ');
+				},
 				getDisplayName = function(entity) {
-					return entity.first_name && entity.last_name ? entity.first_name + ' ' + entity.last_name
+					return entity.first_name && entity.last_name ? getFullName(entity)
 						: entity.name ? entity.name
 						: entity.id;
 				},
