@@ -421,9 +421,17 @@ define(function(require) {
 					return hasInvalidValue ? undefined : _.join(values, ' ');
 				},
 				getDisplayName = function(entity) {
-					return entity.first_name && entity.last_name ? getFullName(entity)
-						: entity.name ? entity.name
-						: entity.id;
+					return _
+						.chain([
+							getFullName(entity),
+							_.map([
+								'name',
+								'id'
+							], _.partial(_.ary(_.get, 2), entity))
+						])
+						.flatten()
+						.find(isStringAndNotEmpty)
+						.value();
 				},
 				isMediaSource = function(entity) {
 					return entityType === 'play' && entity.media_source;
