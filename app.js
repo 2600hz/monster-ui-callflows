@@ -373,14 +373,18 @@ define(function(require) {
 				template = args.template,
 				actions = args.actions,
 				entityType = args.entityType,
-				callback = args.callbacks;
+				callback = args.callbacks,
+				formatEntityData = _.bind(self.formatEntityData, self, _, entityType);
 
 			actions[entityType].listEntities(function(entities) {
-				self.formatEntityData(entities, entityType);
 				var listEntities = $(self.getTemplate({
 					name: 'entity-list',
 					data: {
-						entities: _.sortBy(entities, getLowerCasedDisplayName)
+						entities: _
+							.chain(entities)
+							.thru(formatEntityData)
+							.sortBy(getLowerCasedDisplayName)
+							.value()
 					}
 				}));
 
@@ -411,12 +415,13 @@ define(function(require) {
 				isMediaSource = function(entity) {
 					return entityType === 'play' && entity.media_source;
 				};
-			_.each(entities, function(entity) {
-				entity.displayName = getDisplayName(entity);
 
-				if (isMediaSource(entity)) {
-					entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source];
-				}
+			return _.map(entities, function(entity) {
+				return _.merge({
+					displayName: getDisplayName(entity)
+				}, isMediaSource(entity) && {
+					additionalInfo: self.i18n.active().callflows.media.mediaSources[entity.media_source]
+				}, entity);
 			});
 		},
 
