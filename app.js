@@ -366,17 +366,25 @@ define(function(require) {
 
 		refreshEntityList: function(args) {
 			var self = this,
+				getLowerCasedDisplayName = _.flow(
+					_.partial(_.get, _, 'displayName'),
+					_.toLower
+				),
 				template = args.template,
 				actions = args.actions,
 				entityType = args.entityType,
-				callback = args.callbacks;
+				callback = args.callbacks,
+				formatEntityData = _.bind(self.formatEntityData, self, _, entityType);
 
 			actions[entityType].listEntities(function(entities) {
-				self.formatEntityData(entities, entityType);
 				var listEntities = $(self.getTemplate({
 					name: 'entity-list',
 					data: {
-						entities: entities
+						entities: _
+							.chain(entities)
+							.thru(formatEntityData)
+							.sortBy(getLowerCasedDisplayName)
+							.value()
 					}
 				}));
 
@@ -398,19 +406,43 @@ define(function(require) {
 		},
 
 		formatEntityData: function(entities, entityType) {
-			var self = this;
-			_.each(entities, function(entity) {
-				if (entity.first_name && entity.last_name) {
-					entity.displayName = entity.first_name + ' ' + entity.last_name;
-				} else if (entity.name) {
-					entity.displayName = entity.name;
-				} else {
-					entity.displayName = entity.id;
-				}
+			var self = this,
+				isStringAndNotEmpty = _.overEvery(
+					_.isString,
+					_.negate(_.isEmpty)
+				),
+				getFullName = function(entity) {
+					var values = _.map([
+							'first_name',
+							'last_name'
+						], _.partial(_.ary(_.get, 2), entity)),
+						hasInvalidValue = _.some(values, _.negate(isStringAndNotEmpty));
 
-				if (entityType === 'play' && entity.media_source) {
-					entity.additionalInfo = self.i18n.active().callflows.media.mediaSources[entity.media_source];
-				}
+					return hasInvalidValue ? undefined : _.join(values, ' ');
+				},
+				getDisplayName = function(entity) {
+					return _
+						.chain([
+							getFullName(entity),
+							_.map([
+								'name',
+								'id'
+							], _.partial(_.ary(_.get, 2), entity))
+						])
+						.flatten()
+						.find(isStringAndNotEmpty)
+						.value();
+				},
+				isMediaSource = function(entity) {
+					return entityType === 'play' && entity.media_source;
+				};
+
+			return _.map(entities, function(entity) {
+				return _.merge({
+					displayName: getDisplayName(entity)
+				}, isMediaSource(entity) && {
+					additionalInfo: self.i18n.active().callflows.media.mediaSources[entity.media_source]
+				}, entity);
 			});
 		},
 
