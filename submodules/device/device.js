@@ -719,7 +719,15 @@ define(function(require) {
 								.val(model_family + '.' + model_name);
 					}
 				},
-				provisionData = data.data.provision,
+				provisionData = _
+					.chain(data.data.provision)
+					.pick([
+						'endpoint_brand',
+						'endpoint_family',
+						'endpoint_model'
+					])
+					.mapValues(_.toLower)
+					.value(),
 				regex_brands = {
 					'00085d': 'aastra',
 					'0010bc': 'aastra',
