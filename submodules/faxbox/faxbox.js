@@ -174,6 +174,19 @@ define(function(require) {
 				};
 
 			monster.parallel({
+				external_numbers: function(callback) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(callback, null)
+						),
+						error: _.partial(_.ary(callback, 2), null, [])
+					});
+				},
 				faxbox: function(callback) {
 					if (typeof data === 'object' && data.id) {
 						self.faxboxGet(data.id, function(_data, status) {
@@ -269,15 +282,27 @@ define(function(require) {
 
 		faxboxRender: function(data, target, callbacks) {
 			var self = this,
+				normalizedFaxbox = self.faxboxNormalizedData(data.faxbox),
 				faxbox_html = $(self.getTemplate({
 					name: 'edit',
 					data: {
-						faxbox: self.faxboxNormalizedData(data.faxbox),
-						users: data.user_list,
-						phone_numbers: data.phone_numbers
+						faxbox: normalizedFaxbox,
+						users: data.user_list
 					},
 					submodule: 'faxbox'
 				}));
+
+			monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
+				noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
+				selectName: 'caller_id',
+				selected: normalizedFaxbox.caller_id,
+				cidNumbers: data.external_numbers,
+				phoneNumbers: _.map(data.phone_numbers, function(number) {
+					return {
+						number: number
+					};
+				})
+			});
 
 			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
@@ -372,7 +397,7 @@ define(function(require) {
 				});
 			});
 
-			$('#caller_id', faxbox_html).change(function(ev) {
+			$('select[name="caller_id"]', faxbox_html).change(function(ev) {
 				var number = $(this).val(),
 					fax_identity = $('#fax_identity', faxbox_html);
 
@@ -596,7 +621,7 @@ define(function(require) {
 				delete form_data.fax_timezone;
 			}
 
-			if (form_data.caller_id === '_disabled') {
+			if (form_data.caller_id === '') {
 				delete form_data.caller_id;
 			}
 
