@@ -621,7 +621,6 @@
 			"allDay": "All Day"
 		},
 		"user": {
-			"none": "None",
 			"user": "User",
 			"user_tip": "Direct a caller to a specific user",
 			"hot_desk_login": "Hot Desk login",

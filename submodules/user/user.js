@@ -323,7 +323,7 @@ define(function(require) {
 			self.random_id = false;
 
 			monster.parallel({
-				cidNumbers: function(next) {
+				externalNumbers: function(callback) {
 					self.callApi({
 						resource: 'externalNumbers.list',
 						data: {
@@ -331,31 +331,9 @@ define(function(require) {
 						},
 						success: _.flow(
 							_.partial(_.get, _, 'data'),
-							_.partial(next, null)
+							_.partial(callback, null)
 						),
-						error: _.partial(_.ary(next, 2), null, [])
-					});
-				},
-				phoneNumbers: function(next) {
-					self.callApi({
-						resource: 'numbers.listAll',
-						data: {
-							accountId: self.accountId,
-							filters: {
-								paginate: false
-							}
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data.numbers'),
-							_.partial(_.map, _, function(meta, number) {
-								return {
-									number: number
-								};
-							}),
-							_.partial(_.sortBy, _, 'number'),
-							_.partial(next, null)
-						),
-						error: _.partial(_.ary(next, 2), null, [])
+						error: _.partial(_.ary(callback, 2), null, [])
 					});
 				},
 				list_classifiers: function(callback) {
@@ -473,12 +451,9 @@ define(function(require) {
 
 					render_data = $.extend(true, defaults, { data: results.user_get });
 
-					render_data.extra = _.merge({}, render_data.extra, {
-						isShoutcast: false
-					}, _.pick(results, [
-						'cidNumbers',
-						'phoneNumbers'
-					]));
+					render_data.extra = render_data.extra || {};
+					render_data.extra.isShoutcast = false;
+					render_data.extra.externalNumbers = results.externalNumbers;
 
 					// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 					// but we also need to store the  value so we can display it
@@ -503,15 +478,6 @@ define(function(require) {
 
 		userRender: function(data, target, callbacks) {
 			var self = this,
-				cidSelectors = {
-					internal: [
-						'cidNumbers'
-					],
-					external: [
-						'cidNumbers',
-						'phoneNumbers'
-					]
-				},
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
@@ -519,9 +485,7 @@ define(function(require) {
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
 						}
-					}, _.pick(data.extra, [
-						'phoneNumbers'
-					]), data),
+					}, data),
 					submodule: 'user'
 				})),
 				user_form = user_html.find('#user-form'),
@@ -534,14 +498,18 @@ define(function(require) {
 			], function(view) {
 				_.forEach([
 					'internal',
-					'external'
+					'external',
+					'emergency',
+					'asserted'
 				], function(type) {
 					var $target = user_html.find('#' + view + ' .caller-id-' + type + '-target');
 
-					monster.ui.cidNumberSelector($target, _.merge({
+					monster.ui.cidNumberSelector($target, {
 						selectName: 'caller_id.' + type + '.number',
-						selected: _.get(data.data, ['caller_id', type, 'number'])
-					}, _.pick(data.extra, _.get(cidSelectors, type))));
+						selected: _.get(data.data, ['caller_id', type, 'number']),
+						cidNumbers: data.extra.externalNumbers
+
+					});
 				});
 			});
 
