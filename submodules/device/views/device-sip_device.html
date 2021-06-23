@@ -137,7 +137,9 @@
 
 					<div class="clearfix">
 						<label for="caller_id_number_internal">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input caller-id-internal-target"></div>
+						<div class="input">
+							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content }}" data-mask="phoneNumber" />
+						</div>
 					</div>
 					<hr />
 
@@ -151,7 +153,9 @@
 
 					<div class="clearfix">
 						<label for="caller_id_number_external">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input caller-id-external-target"></div>
+						<div class="input">
+							<input class="span4" id="caller_id_number_external" name="caller_id.external.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.external.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content2 }}" data-mask="phoneNumber" />
+						</div>
 					</div>
 					<hr />
 
@@ -165,7 +169,9 @@
 
 					<div class="clearfix">
 						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input caller-id-emergency-target"></div>
+						<div class="input">
+							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.aller_id_number_data_content3 }}" data-mask="phoneNumber" />
+						</div>
 					</div>
 					<hr />
 
@@ -180,7 +186,9 @@
 
 					<div class="clearfix">
 						<label for="advanced_caller_id_number_asserted">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input caller-id-asserted-target"></div>
+						<div class="input">
+							<input class="span4" id="advanced_caller_id_number_asserted" name="caller_id.asserted.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.asserted.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content4 }}" data-mask="phoneNumber" />
+						</div>
 					</div>
 
 					<div class="clearfix">
