@@ -73,15 +73,15 @@
 				<div class="clearfix">
 					<label for="caller_id">{{ i18n.callflows.faxbox.caller_id }}</label>
 					<div class="input">
-						<span class="caller-id-target" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}">
-							{{!-- <select name="caller_id" id="caller_id" class="medium callflows-caller-id-dropdown">
+						<span rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}">
+							<select name="caller_id" id="caller_id" class="medium callflows-caller-id-dropdown">
 								{{#select faxbox.caller_id}}
 									<option value="_disabled">{{ i18n.callflows.faxbox.caller_id_no_selected }}</option>
 									{{#each phone_numbers}}
 										<option value="{{this}}">{{formatPhoneNumber this}}</option>
 									{{/each}}
 								{{/select}}
-							</select> --}}
+							</select>
 						</span>
 					</div>
 				</div>
