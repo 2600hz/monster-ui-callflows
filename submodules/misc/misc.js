@@ -20,6 +20,10 @@ define(function(require) {
 						post: 'POST',
 						put: 'PUT'
 					}
+				},
+				jsonEditor: {
+					unsupportedCallflowsList: {},
+					callflowsListSchema: {}
 				}
 			}
 		},
@@ -1271,6 +1275,48 @@ define(function(require) {
 					edit: function(node, callback) {
 						self.miscRenderEditWebhook(node, callback);
 					}
+				},
+				'json_editor[]': {
+					name: self.i18n.active().callflows.jsonEditor.title,
+					icon: 'pencil',	//graph2
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'jsonEditor',
+					tip: self.i18n.active().callflows.jsonEditor.tip,
+					data: {},
+					rules: [],
+					isUsable: 'true',
+					weight: 170,
+					caption: function(node) {
+						return node.module !== 'jsonEditor' ? node.module : '';
+					},
+					edit: function(node, callback) {
+						if (_.isEmpty(self.appFlags.misc.jsonEditor.unsupportedCallflowsList)) {
+							self.miscSchemasList(function(data) {
+								var supportedModules = _
+										.chain(monster.apps.callflows.actions)
+										.map('module')
+										.uniq()
+										.filter(_.isString)
+										.value(),
+									getCallflowModules = _
+										.chain(data)
+										.filter(function(module) {
+											return module.startsWith('callflows.');
+										})
+										.map(function(module) {
+											return module.replace('callflows.', '');
+										})
+										.value();
+									unsupportedModules = _.difference(getCallflowModules, supportedModules);
+
+								self.appFlags.misc.jsonEditor.unsupportedCallflowsList = unsupportedModules;
+								self.miscRenderEditJson(node, callback);
+							});
+						} else {
+							self.miscRenderEditJson(node, callback);
+						}
+					}
+
 				}
 			});
 		},
@@ -1552,6 +1598,139 @@ define(function(require) {
 			});
 		},
 
+		miscRenderEditJson: function(node, callback) {
+			var self = this,
+				popup,
+				initTemplate = function() {
+					var $template = $(self.getTemplate({
+							name: 'json_editor',
+							data: {
+								name: node.caption ? node.caption : '',
+								unsupportedCallflowsList: self.appFlags.misc.jsonEditor.unsupportedCallflowsList
+							},
+							submodule: 'misc'
+						})),
+						$target = $template.find('#jsoneditor'),
+						options = {
+							mode: 'code',
+							modes: ['code', 'text'],
+							onValidate: function(json) {
+								var errors = [];
+
+								if (_.isEmpty(json)) {
+									errors.push({
+										path: ['empty'],
+										message: 'Required json properties are missing.'
+									});
+								}
+
+								return errors;
+							},
+							onValidationError: function (errors) {
+								if (_.isEmpty(errors)) {
+									$template
+										.find('#save')
+											.removeClass('disabled');
+								} else {
+									//disable save button when there are errors
+									$template
+										.find('#save')
+											.addClass('disabled');
+								}
+							}
+						},
+						jsoneditor = monster.ui.jsoneditor($target, options, node.data.data);
+
+					jsoneditor.set(node.data.data, {});
+					self.miscSetSchema($template, jsoneditor, callback);
+
+					$template.find('#save').on('click', function(e) {
+						e.preventDefault();
+
+						//do nothing when button is disabled
+						if ($(this).hasClass('disabled')) {
+							return;
+						}
+
+						var selectedOption = $template.find('#name').val();
+							content = jsoneditor.get();
+
+						node.caption = selectedOption;
+						node.module = selectedOption;
+
+						_.each(content, function(value, key) {
+							node.setMetadata(key, value);
+						});
+
+						popup.dialog('close');
+					});
+
+					$template.find('#name').on('change', function(e) {
+						e.preventDefault();
+
+						self.miscSetSchema($template, jsoneditor, callback);
+
+					});
+
+					return $template;
+				};
+
+			popup = monster.ui.dialog(initTemplate(), {
+				title: self.i18n.active().callflows.jsonEditor.popupTitle,
+				width: 500,
+				beforeClose: function() {
+					if (_.isFunction(callback)) {
+						callback();
+					}
+				}
+			});
+		},
+
+		miscSetSchema: function(template, jsoneditor, callback) {
+			var self = this,
+				$template = template,
+				selectedOption = $template.find('#name').val(),
+				callflowSchema = self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption];
+
+			if (callflowSchema) {
+				jsoneditor.setSchema(callflowSchema);
+			} else {
+				//disable save button and select options until schema is set for validation
+				$template
+					.find('#save')
+						.addClass('disabled');
+
+				$template
+					.find('#name')
+						.prop('disabled', true);
+
+				//get schema from API if it's not stored locally and set it in jsoneditor
+				self.miscGetSchema({
+					data: {
+						schemaId: 'callflows.' + selectedOption
+					},
+					success: function(data) {
+						//set schema to validate schema
+						jsoneditor.setSchema(data);
+
+						//set schema in local storage
+						self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption] = data;
+
+						//enable save button and select options after schema is set
+						$template
+							.find('#save')
+								.removeClass('disabled');
+
+						$template
+							.find('#name')
+								.prop('disabled', false);
+
+						callback(null, data);
+					}
+				});
+			}
+		},
+
 		/* API helpers */
 		miscDeviceList: function(callback) {
 			var self = this;
@@ -1617,6 +1796,35 @@ define(function(require) {
 				},
 				success: function(data, status) {
 					callback && callback(data.data);
+				}
+			});
+		},
+
+		miscSchemasList: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'schemas.list',
+				success: function(data, status) {
+					callback && callback(data.data);
+				}
+			});
+		},
+
+		miscGetSchema: function(args) {
+			var self = this,
+				data = args.data;
+
+			self.callApi({
+				resource: 'schemas.get',
+				data: {
+					schemaId: data.schemaId
+				},
+				success: function(data, status) {
+					args.hasOwnProperty('success') && args.success(data.data);
+				},
+				error: function(parsedError) {
+					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
 		}

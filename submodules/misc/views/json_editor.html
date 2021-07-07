@@ -1,0 +1,26 @@
+<div class="dialog_popup callflows-port">
+	<form id="form_json_editor" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="name" class="control-label">
+					{{i18n.callflows.jsonEditor.name}}
+				</label>
+				<select id="name" name="name">
+					{{#select name}}
+						{{#each unsupportedCallflowsList}}
+							<option value="{{ this }}">{{ this }}</option>
+						{{/each}}
+					{{/select}}
+				</select>
+				<div class="form_content">
+					<div class="popup_field">
+						<div id="jsoneditor" style="width: 400px; height: 400px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="save" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>
