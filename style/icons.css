@@ -1326,3 +1326,17 @@
     background-position: -992px -448px;
 }
 
+/**
+ * Icon fixes for the default icon sets, each set requiring
+ * a different correction (tops being cut off in 32x32,
+ * bottoms being cut off in 24x24)
+ */
+.icon:not(.medium) {
+	margin-top: -10px;
+	padding-top: 10px;
+	background-origin: content-box;
+}
+.icon.medium {
+	margin-top: -2px;
+	padding-top: 2px;
+}
