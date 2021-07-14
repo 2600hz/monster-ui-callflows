@@ -16,3 +16,7 @@
 	font-weight: bold;
 	line-height: 30px;
 }
+
+#callflow_container #faxbox_form #caller_id_tab .input {
+	display: flex;
+}
