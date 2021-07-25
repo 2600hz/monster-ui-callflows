@@ -38,6 +38,12 @@
 				"scope": "Scope",
 				"id": "Document ID",
 				"variable": "Variable (or path to it)"
+			},
+			"editKey": {
+				"action": "Branch on",
+				"default": "Default",
+				"variable": "Specific value",
+				"value": "Value"
 			}
 		},
 		"conference": {

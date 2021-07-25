@@ -21,7 +21,15 @@ define(function(require) {
 					caption: function(node) {
 						return node.getMetadata('variable', '');
 					},
-					edit: _.bind(self.branchvariableCallflowEdit, self)
+					edit: _.bind(self.branchvariableCallflowEdit, self),
+					key_caption: function(node) {
+						var key = node.key;
+
+						return _.get({
+							_: self.i18n.active().callflows.menu.default_action
+						}, key, key);
+					},
+					key_edit: _.bind(self.branchvariableCallflowKeyEdit, self)
 				}, _.pick(self.i18n.active().callflows.branchvariable, [
 					'name',
 					'tip'
@@ -32,10 +40,11 @@ define(function(require) {
 		branchvariableCallflowEdit: function(node, callback) {
 			var self = this,
 				initTemplate = function(scopeSchema) {
+					var id = node.getMetadata('id');
+
 					return $(self.getTemplate({
 						name: 'callflowEdit',
-						data: {
-							id: node.getMetadata('id', undefined),
+						data: _.merge({
 							scope: {
 								selected: node.getMetadata('scope', scopeSchema.default),
 								options: _.sortBy(scopeSchema.enum)
@@ -47,7 +56,9 @@ define(function(require) {
 								.flatten()
 								.join('.')
 								.value()
-						},
+						}, id && {
+							id: id
+						}),
 						submodule: 'branchvariable'
 					}));
 				},
@@ -120,6 +131,67 @@ define(function(require) {
 					next
 				)
 			});
+		},
+
+		branchvariableCallflowKeyEdit: function(node, callback) {
+			var self = this,
+				initTemplate = function(key) {
+					return $(self.getTemplate({
+						name: 'callflowKey',
+						data: key === '_' ? {
+							action: 'default',
+							value: ''
+						} : {
+							action: 'variable',
+							value: key
+						},
+						submodule: 'branchvariable'
+					}));
+				},
+				bindEvents = function($popup) {
+					var $form = $popup.find('form');
+
+					monster.ui.validate($form, {
+						rules: {
+							value: {
+								required: true
+							}
+						}
+					});
+
+					$form.find('select[name="action"]').on('change', function(event) {
+						event.preventDefault();
+
+						var $select = $(this),
+							newValue = $select.val();
+
+						$select.parents('.control-group').siblings('.control-group').toggle(newValue === 'variable');
+					});
+
+					$popup.find('#save').on('click', function(event) {
+						event.preventDefault();
+
+						if (!monster.ui.valid($form)) {
+							return;
+						}
+						var formData = monster.ui.getFormData($form.get(0));
+
+						node.key = formData.action === 'default' ? '_' : formData.value;
+						node.key_caption = formData.action === 'default' ? self.i18n.active().callflows.menu.default_action : formData.value;
+
+						$popup.dialog('close');
+					});
+				},
+				renderTemplate = _.flow(
+					initTemplate,
+					_.bind(monster.ui.dialog, monster.ui, _, {
+						title: self.i18n.active().callflows.branchvariable.name,
+						beforeClose: callback
+					}),
+					bindEvents
+				);
+
+			renderTemplate(node.key);
 		}
 	};
 });
