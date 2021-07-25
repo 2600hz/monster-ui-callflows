@@ -5,6 +5,7 @@ define(function(require) {
 
 	var appSubmodules = [
 		'blacklist',
+		'branchvariable',
 		'conference',
 		'device',
 		'directory',
