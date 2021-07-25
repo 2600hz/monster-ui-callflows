@@ -32,7 +32,13 @@
 		},
 		"branchvariable": {
 			"name": "Branch Variable",
-			"tip": "Enables you to branch based on value of some field inside one of the a call CCVs, user, device or account's document"
+			"tip": "Enables you to branch based on value of some field inside one of the a call CCVs, user, device or account's document",
+			"edit": {
+				"title": "Setup variable to lookup",
+				"scope": "Scope",
+				"id": "Document ID",
+				"variable": "Variable (or path to it)"
+			}
 		},
 		"conference": {
 			"conference": "Conference",
