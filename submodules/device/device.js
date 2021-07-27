@@ -188,7 +188,7 @@ define(function(require) {
 				},
 				parallelRequests = function(deviceData) {
 					monster.parallel({
-						externalNumbers: function(callback) {
+						cidNumbers: function(callback) {
 							self.callApi({
 								resource: 'externalNumbers.list',
 								data: {
@@ -196,6 +196,28 @@ define(function(require) {
 								},
 								success: _.flow(
 									_.partial(_.get, _, 'data'),
+									_.partial(callback, null)
+								),
+								error: _.partial(_.ary(callback, 2), null, [])
+							});
+						},
+						phoneNumbers: function(callback) {
+							self.callApi({
+								resource: 'numbers.listAll',
+								data: {
+									accountId: self.accountId,
+									filters: {
+										paginate: false
+									}
+								},
+								success: _.flow(
+									_.partial(_.get, _, 'data.numbers'),
+									_.partial(_.map, _, function(meta, number) {
+										return {
+											number: number
+										};
+									}),
+									_.partial(_.sortBy, _, 'number'),
 									_.partial(callback, null)
 								),
 								error: _.partial(_.ary(callback, 2), null, [])
@@ -399,9 +421,12 @@ define(function(require) {
 				dataGlobal.data.provision = $.extend(true, {}, default_provision_data, dataGlobal.data.provision);
 			}
 
-			dataGlobal.extra = dataGlobal.extra || {};
-			dataGlobal.extra.isShoutcast = false;
-			dataGlobal.extra.externalNumbers = results.externalNumbers;
+			dataGlobal.extra = _.merge({}, dataGlobal.extra, {
+				isShoutcast: false
+			}, _.pick(results, [
+				'cidNumbers',
+				'phoneNumbers'
+			]));
 
 			// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 			// but we also need to store the  value so we can display it
@@ -489,6 +514,15 @@ define(function(require) {
 
 		deviceRender: function(data, target, callbacks) {
 			var self = this,
+				cidSelectors = {
+					internal: [
+						'cidNumbers'
+					],
+					external: [
+						'cidNumbers',
+						'phoneNumbers'
+					]
+				},
 				device_html;
 
 			if ('media' in data.data && 'fax_option' in data.data.media) {
@@ -500,27 +534,26 @@ define(function(require) {
 					name: 'device-' + data.data.device_type,
 					data: _.merge({
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
-					}, data),
+					}, _.pick(data.extra, [
+						'phoneNumbers'
+					]), data),
 					submodule: 'device'
 				}));
 
 				if (device_html.find('#caller_id').length) {
 					_.forEach([
 						'internal',
-						'external',
-						'emergency',
-						'asserted'
+						'external'
 					], function(type) {
 						var $target = device_html.find('.caller-id-' + type + '-target');
 
 						if (!$target.length) {
 							return;
 						}
-						monster.ui.cidNumberSelector($target, {
+						monster.ui.cidNumberSelector($target, _.merge({
 							selectName: 'caller_id.' + type + '.number',
-							selected: _.get(data.data, ['caller_id', type, 'number']),
-							cidNumbers: data.extra.externalNumbers
-						});
+							selected: _.get(data.data, ['caller_id', type, 'number'])
+						}, _.pick(data.extra, _.get(cidSelectors, type))));
 					});
 				}
 
