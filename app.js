@@ -459,30 +459,6 @@ define(function(require) {
 					})),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
-				_.forEach([
-					'internal',
-					'external',
-					'emergency',
-					'asserted'
-				], function(type) {
-					var $target = template.find('.caller-id-' + type + '-target');
-
-					if (!$target.length) {
-						return;
-					}
-					monster.ui.cidNumberSelector($target, {
-						noneLabel: self.i18n.active().callflows.accountSettings.callerId.defaultNumber,
-						selectName: 'caller_id.' + type + '.number',
-						selected: _.get(accountSettingsData.account, ['caller_id', type, 'number']),
-						cidNumbers: accountSettingsData.externalNumbers,
-						phoneNumbers: _.map(accountSettingsData.numberList, function(value, number) {
-							return {
-								number: number
-							};
-						})
-					});
-				});
-
 				monster.ui.tooltips(template);
 
 				// Setup input fields
@@ -735,19 +711,6 @@ define(function(require) {
 		loadAccountSettingsData: function(callback) {
 			var self = this;
 			monster.parallel({
-				externalNumbers: function(next) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(next, null)
-						),
-						error: _.partial(_.ary(next, 2), null, [])
-					});
-				},
 				account: function(parallelCallback) {
 					self.callApi({
 						resource: 'account.get',
