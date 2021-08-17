@@ -188,19 +188,6 @@ define(function(require) {
 				},
 				parallelRequests = function(deviceData) {
 					monster.parallel({
-						externalNumbers: function(callback) {
-							self.callApi({
-								resource: 'externalNumbers.list',
-								data: {
-									accountId: self.accountId
-								},
-								success: _.flow(
-									_.partial(_.get, _, 'data'),
-									_.partial(callback, null)
-								),
-								error: _.partial(_.ary(callback, 2), null, [])
-							});
-						},
 						list_classifier: function(callback) {
 							self.callApi({
 								resource: 'numbers.listClassifiers',
@@ -401,7 +388,6 @@ define(function(require) {
 
 			dataGlobal.extra = dataGlobal.extra || {};
 			dataGlobal.extra.isShoutcast = false;
-			dataGlobal.extra.externalNumbers = results.externalNumbers;
 
 			// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 			// but we also need to store the  value so we can display it
@@ -503,26 +489,6 @@ define(function(require) {
 					}, data),
 					submodule: 'device'
 				}));
-
-				if (device_html.find('#caller_id').length) {
-					_.forEach([
-						'internal',
-						'external',
-						'emergency',
-						'asserted'
-					], function(type) {
-						var $target = device_html.find('.caller-id-' + type + '-target');
-
-						if (!$target.length) {
-							return;
-						}
-						monster.ui.cidNumberSelector($target, {
-							selectName: 'caller_id.' + type + '.number',
-							selected: _.get(data.data, ['caller_id', type, 'number']),
-							cidNumbers: data.extra.externalNumbers
-						});
-					});
-				}
 
 				var deviceForm = device_html.find('#device-form');
 

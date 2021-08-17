@@ -323,19 +323,6 @@ define(function(require) {
 			self.random_id = false;
 
 			monster.parallel({
-				externalNumbers: function(callback) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(callback, null)
-						),
-						error: _.partial(_.ary(callback, 2), null, [])
-					});
-				},
 				list_classifiers: function(callback) {
 					self.callApi({
 						resource: 'numbers.listClassifiers',
@@ -453,7 +440,6 @@ define(function(require) {
 
 					render_data.extra = render_data.extra || {};
 					render_data.extra.isShoutcast = false;
-					render_data.extra.externalNumbers = results.externalNumbers;
 
 					// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 					// but we also need to store the  value so we can display it
@@ -491,49 +477,6 @@ define(function(require) {
 				user_form = user_html.find('#user-form'),
 				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
-
-			_.forEach([
-				'basic',
-				'caller_id'
-			], function(view) {
-				_.forEach([
-					'internal',
-					'external',
-					'emergency',
-					'asserted'
-				], function(type) {
-					var $target = user_html.find('#' + view + ' .caller-id-' + type + '-target');
-
-					monster.ui.cidNumberSelector($target, {
-						selectName: 'caller_id.' + type + '.number',
-						selected: _.get(data.data, ['caller_id', type, 'number']),
-						cidNumbers: data.extra.externalNumbers
-
-					});
-				});
-			});
-
-			_.forEach([
-				'internal',
-				'external'
-			], function(type) {
-				user_html.find('#basic .caller-id-' + type + '-target select').on('change', function(event) {
-					event.preventDefault();
-
-					user_html
-						.find('#caller_id .caller-id-' + type + '-target select')
-						.val($(this).val())
-						.trigger('chosen:updated');
-				});
-				user_html.find('#caller_id .caller-id-' + type + '-target select').on('change', function(event) {
-					event.preventDefault();
-
-					user_html
-						.find('#basic .caller-id-' + type + '-target select')
-						.val($(this).val())
-						.trigger('chosen:updated');
-				});
-			});
 
 			self.userRenderDeviceList(data, user_html);
 
