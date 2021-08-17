@@ -138,20 +138,7 @@
 
 					<div class="clearfix">
 						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input">
-							<select name="caller_id.emergency.number">
-							{{#select data.caller_id.emergency.number}}
-								<option value="">
-									{{ i18n.callflows.device.none }}
-								</option>
-								{{#each phoneNumbers}}
-									<option value="{{number}}">
-										{{formatPhoneNumber number}}
-									</option>
-								{{/each}}
-							{{/select}}
-							</select>
-						</div>
+						<div class="input caller-id-emergency-target"></div>
 					</div>
 					<hr />
 
@@ -166,20 +153,7 @@
 
 					<div class="clearfix">
 						<label for="advanced_caller_id_number_asserted">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input">
-							<select name="caller_id.asserted.number">
-							{{#select data.caller_id.asserted.number}}
-								<option value="">
-									{{ i18n.callflows.device.none }}
-								</option>
-								{{#each phoneNumbers}}
-									<option value="{{number}}">
-										{{formatPhoneNumber number}}
-									</option>
-								{{/each}}
-							{{/select}}
-							</select>
-						</div>
+						<div class="input caller-id-asserted-target"></div>
 					</div>
 
 					<div class="clearfix">
