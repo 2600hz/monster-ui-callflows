@@ -5,6 +5,7 @@ define(function(require) {
 
 	var appSubmodules = [
 		'blacklist',
+		'branchvariable',
 		'conference',
 		'device',
 		'directory',
@@ -453,9 +454,7 @@ define(function(require) {
 				var formattedData = self.formatAccountSettingsData(accountSettingsData),
 					template = $(self.getTemplate({
 						name: 'accountSettings',
-						data: _.merge({
-							showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
-						}, formattedData)
+						data: formattedData
 					})),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
@@ -511,47 +510,59 @@ define(function(require) {
 		},
 
 		formatAccountSettingsData: function(data) {
-			var formattedData = data;
+			var silenceMedia = 'silence_stream://300000',
+				isShoutcast = _
+					.chain(data.account)
+					.get('music_on_hold.media_id')
+					.thru(_.overEvery(
+						_.partial(_.includes, _, '://'),
+						_.partial(_.negate(_.isEqual), silenceMedia)
+					))
+					.value(),
+				preflowCallflows = _
+					.chain(data.callflows)
+					.filter(_.overEvery(
+						{ featurecode: false },
+						_.flow(
+							_.partial(_.get, _, 'numbers'),
+							_.partial(_.negate(_.includes), _, 'no_match')
+						)
+					))
+					.map(function(callflow) {
+						return _.merge({
+							friendlyName: _.get(callflow, 'name', _.toString(callflow.numbers))
+						}, _.pick(callflow, [
+							'id'
+						]));
+					})
+					.sortBy(_.flow(
+						_.partial(_.get, _, 'friendlyName'),
+						_.toLower
+					))
+					.value();
 
-			formattedData.showMediaUploadDisclosure = monster.config.whitelabel.showMediaUploadDisclosure;
-
-			formattedData.silenceMedia = 'silence_stream://300000';
-
-			formattedData.extra = formattedData.extra || {};
-			formattedData.extra.isShoutcast = false;
-
-			formattedData.extra.preflowCallflows = [];
-			_.each(formattedData.callflows, function(callflow) {
-				if (callflow.featurecode === false && callflow.numbers && callflow.numbers.length && callflow.numbers.indexOf('no_match') < 0) {
-					formattedData.extra.preflowCallflows.push({
-						id: callflow.id,
-						friendlyName: callflow.name || callflow.numbers.toString()
-					});
-				}
-			});
-
-			formattedData.extra.preflowCallflows = _.sortBy(formattedData.extra.preflowCallflows, 'friendlyName');
-
-			delete formattedData.callflows;
-
-			if (formattedData.account.hasOwnProperty('music_on_hold') && formattedData.account.music_on_hold.hasOwnProperty('media_id')) {
-				if (formattedData.account.music_on_hold.media_id.indexOf('://') >= 0) {
-					if (formattedData.account.music_on_hold.media_id !== formattedData.silenceMedia) {
-						formattedData.extra.isShoutcast = true;
-					}
-				}
-			}
-
-			if (formattedData.hasOwnProperty('outbound_flags')) {
-				if (formattedData.outbound_flags.hasOwnProperty('dynamic')) {
-					formattedData.outbound_flags.dynamic = formattedData.outbound_flags.dynamic.join(',');
-				}
-				if (formattedData.outbound_flags.hasOwnProperty('static')) {
-					formattedData.outbound_flags.static = formattedData.outbound_flags.static.join(',');
-				}
-			}
-
-			return formattedData;
+			return _.merge({
+				extra: {
+					isShoutcast: isShoutcast,
+					preflowCallflows: preflowCallflows
+				},
+				outbound_flags: _
+					.chain(data.outbound_flags)
+					.pick([
+						'dynamic',
+						'static'
+					])
+					.mapValues(
+						_.partial(_.ary(_.join, 2), _, ',')
+					)
+					.value(),
+				silenceMedia: silenceMedia
+			}, _.pick(monster.config.whitelabel, [
+				'showMediaUploadDisclosure',
+				'showPAssertedIdentity'
+			]), _.omit(data, [
+				'callflows'
+			]));
 		},
 
 		renderBlacklists: function(template, accountSettingsData) {

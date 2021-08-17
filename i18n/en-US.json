@@ -30,6 +30,22 @@
 			"qubicle_tip": "Route to a queue",
 			"which_queue": "Which queue?"
 		},
+		"branchvariable": {
+			"name": "Branch Variable",
+			"tip": "Enables you to branch based on value of some field inside one of the a call CCVs, user, device or account's document",
+			"edit": {
+				"title": "Setup variable to lookup",
+				"scope": "Scope",
+				"id": "Document ID",
+				"variable": "Variable (or path to it)"
+			},
+			"editKey": {
+				"action": "Branch on",
+				"default": "Default",
+				"variable": "Specific value",
+				"value": "Value"
+			}
+		},
 		"conference": {
 			"conference": "Conference",
 			"conference_tip": "Connect a caller to a Meet-Me conference bridge",
