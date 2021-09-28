@@ -266,12 +266,6 @@ define(function(require) {
 
 				delete results.current_user;
 
-				var invalidCallerID = _.find(results.phone_numbers, _.get(results.faxbox, 'caller_id', null));
-
-				if (!invalidCallerID) {
-					results.phone_numbers.unshift(results.faxbox.caller_id);
-				}
-
 				self.faxboxRender(results, target, callbacks);
 
 				if (typeof callbacks.after_render === 'function') {
