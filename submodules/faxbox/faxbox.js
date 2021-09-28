@@ -391,7 +391,7 @@ define(function(require) {
 				});
 			});
 
-			$('select[name="caller_id"]', faxbox_html).change(function(ev) {
+			faxbox_html.on('change', 'select[name="caller_id"]', function(ev) {
 				var number = $(this).val(),
 					fax_identity = $('#fax_identity', faxbox_html);
 
