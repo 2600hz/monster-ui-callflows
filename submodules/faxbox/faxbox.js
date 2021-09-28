@@ -266,12 +266,6 @@ define(function(require) {
 
 				delete results.current_user;
 
-				var invalidCallerID = _.find(results.phone_numbers, _.get(results.faxbox, 'caller_id', null));
-
-				if (!invalidCallerID) {
-					results.phone_numbers.unshift(results.faxbox.caller_id);
-				}
-
 				self.faxboxRender(results, target, callbacks);
 
 				if (typeof callbacks.after_render === 'function') {
@@ -397,21 +391,22 @@ define(function(require) {
 				});
 			});
 
-			$('select[name="caller_id"]', faxbox_html).change(function(ev) {
+			faxbox_html.on('change', 'select[name="caller_id"]', function(ev) {
 				var number = $(this).val(),
+					formattedNumber = monster.util.getFormatPhoneNumber(number),
 					fax_identity = $('#fax_identity', faxbox_html);
 
-				if (/^(\+1|1)([0-9]{10})$|^([0-9]{10})$/.test(number)) {
-					if (/^(\+1)/.test(number)) {
-						fax_identity.val(number.replace(/^\+1([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					} else if (/^1([0-9]{10})$/.test(number)) {
-						fax_identity.val(number.replace(/^1([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					} else {
-						fax_identity.val(number.replace(/^([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					}
-				} else {
-					fax_identity.val('');
-				}
+				fax_identity.val(_
+					.chain([
+						'internationalFormat',
+						'originalNumber'
+					])
+					.map(
+						_.partial(_.get, formattedNumber)
+					)
+					.find(_.isString)
+					.value()
+				);
 			});
 
 			$('.faxbox-save', faxbox_html).click(function(ev) {
