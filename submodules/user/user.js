@@ -503,15 +503,17 @@ define(function(require) {
 
 		userRender: function(data, target, callbacks) {
 			var self = this,
-				cidSelectors = {
-					internal: [
-						'cidNumbers'
+				cidSelectorsPerTab = {
+					basic: [
+						'external'
 					],
-					external: [
-						'cidNumbers',
-						'phoneNumbers'
+					caller_id: [
+						'external',
+						'emergency',
+						'asserted'
 					]
 				},
+				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
@@ -528,40 +530,34 @@ define(function(require) {
 				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
 
-			_.forEach([
-				'basic',
-				'caller_id'
-			], function(view) {
-				_.forEach([
-					'internal',
-					'external'
-				], function(type) {
-					var $target = user_html.find('#' + view + ' .caller-id-' + type + '-target');
+			_.forEach(tabsWithCidSelectors, function(tab) {
+				_.forEach(cidSelectorsPerTab[tab], function(selector) {
+					var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
 
 					monster.ui.cidNumberSelector($target, _.merge({
-						selectName: 'caller_id.' + type + '.number',
-						selected: _.get(data.data, ['caller_id', type, 'number'])
-					}, _.pick(data.extra, _.get(cidSelectors, type))));
+						selectName: 'caller_id.' + selector + '.number',
+						selected: _.get(data.data, ['caller_id', selector, 'number'])
+					}, _.pick(data.extra, [
+						'cidNumbers',
+						'phoneNumbers'
+					])));
 				});
 			});
 
-			_.forEach([
-				'internal',
-				'external'
-			], function(type) {
-				user_html.find('#basic .caller-id-' + type + '-target select').on('change', function(event) {
+			_.forEach(cidSelectorsPerTab.basic, function(selector) {
+				user_html.find('#basic .caller-id-' + selector + '-target select').on('change', function(event) {
 					event.preventDefault();
 
 					user_html
-						.find('#caller_id .caller-id-' + type + '-target select')
+						.find('#caller_id .caller-id-' + selector + '-target select')
 						.val($(this).val())
 						.trigger('chosen:updated');
 				});
-				user_html.find('#caller_id .caller-id-' + type + '-target select').on('change', function(event) {
+				user_html.find('#caller_id .caller-id-' + selector + '-target select').on('change', function(event) {
 					event.preventDefault();
 
 					user_html
-						.find('#basic .caller-id-' + type + '-target select')
+						.find('#basic .caller-id-' + selector + '-target select')
 						.val($(this).val())
 						.trigger('chosen:updated');
 				});
