@@ -514,15 +514,11 @@ define(function(require) {
 
 		deviceRender: function(data, target, callbacks) {
 			var self = this,
-				cidSelectors = {
-					internal: [
-						'cidNumbers'
-					],
-					external: [
-						'cidNumbers',
-						'phoneNumbers'
-					]
-				},
+				cidSelectors = [
+					'external',
+					'emergency',
+					'asserted'
+				],
 				device_html;
 
 			if ('media' in data.data && 'fax_option' in data.data.media) {
@@ -541,19 +537,19 @@ define(function(require) {
 				}));
 
 				if (device_html.find('#caller_id').length) {
-					_.forEach([
-						'internal',
-						'external'
-					], function(type) {
-						var $target = device_html.find('.caller-id-' + type + '-target');
+					_.forEach(cidSelectors, function(selector) {
+						var $target = device_html.find('.caller-id-' + selector + '-target');
 
 						if (!$target.length) {
 							return;
 						}
 						monster.ui.cidNumberSelector($target, _.merge({
-							selectName: 'caller_id.' + type + '.number',
-							selected: _.get(data.data, ['caller_id', type, 'number'])
-						}, _.pick(data.extra, _.get(cidSelectors, type))));
+							selectName: 'caller_id.' + selector + '.number',
+							selected: _.get(data.data, ['caller_id', selector, 'number'])
+						}, _.pick(data.extra, [
+							'cidSelectors',
+							'phoneNumbers'
+						])));
 					});
 				}
 
