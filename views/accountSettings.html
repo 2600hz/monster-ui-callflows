@@ -26,8 +26,8 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_internal_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-								<div class="controls caller-id-internal-target">
-									{{!-- <input type="text" id="caller_id_internal_number" name="caller_id.internal.number" value="{{account.caller_id.internal.number}}" placeholder="{{ i18n.callflows.accountSettings.callerId.defaultNumber }}"/> --}}
+								<div class="controls">
+									<input type="text" id="caller_id_internal_number" name="caller_id.internal.number" value="{{account.caller_id.internal.number}}" placeholder="{{ i18n.callflows.accountSettings.callerId.defaultNumber }}"/>
 								</div>
 							</div>
 						</div>
@@ -44,14 +44,7 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_external_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-								<div class="controls caller-id-external-target">
-									{{!-- <select id="caller_id_external_number" name="caller_id.external.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.external.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-									{{/each}}
-									</select> --}}
-								</div>
+								<div class="controls caller-id-external-target"></div>
 							</div>
 						</div>
 					</div>
@@ -67,14 +60,7 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_emergency_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-								<div class="controls caller-id-emergency-target">
-									{{!-- <select id="caller_id_emergency_number" name="caller_id.emergency.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
-									{{/each}}
-									</select> --}}
-								</div>
+								<div class="controls caller-id-emergency-target"></div>
 							</div>
 						</div>
 					</div>
@@ -91,9 +77,7 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
-								<div class="controls">
-									<input type="text" class="phone-number" id="caller_id_asserted_number" name="caller_id.asserted.number" value="{{account.caller_id.asserted.number}}"/>
-								</div>
+								<div class="controls caller-id-asserted-target"></div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_realm">{{ i18n.callflows.accountSettings.callerId.realmLabel }}</label>
