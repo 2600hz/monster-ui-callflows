@@ -97,7 +97,9 @@
 
 					<div class="clearfix">
 						<label for="caller_id_number_internal">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input caller-id-internal-target"></div>
+						<div class="input">
+							<input class="span4" id="caller_id_number_internal" name="caller_id.internal.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.internal.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content }}" data-mask="phoneNumber" />
+						</div>
 					</div>
 					<hr />
 
@@ -123,20 +125,7 @@
 
 					<div class="clearfix hidden">
 						<label for="caller_id_number_emergency">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input">
-							<select name="caller_id.emergency.number">
-							{{#select caller_id.emergency.number}}
-								<option value="">
-									{{ i18n.callflows.device.none }}
-								</option>
-								{{#each phoneNumbers}}
-									<option value="{{number}}">
-										{{formatPhoneNumber number}}
-									</option>
-								{{/each}}
-							{{/select}}
-							</select>
-						</div>
+						<div class="input caller-id-emergency-target"></div>
 					</div>
 					<hr />
 
@@ -151,20 +140,7 @@
 
 					<div class="clearfix">
 						<label for="advanced_caller_id_number_asserted">{{ i18n.callflows.device.caller_id_number }}</label>
-						<div class="input">
-							<select name="caller_id.asserted.number">
-							{{#select caller_id.asserted.number}}
-								<option value="">
-									{{ i18n.callflows.device.none }}
-								</option>
-								{{#each phoneNumbers}}
-									<option value="{{number}}">
-										{{formatPhoneNumber number}}
-									</option>
-								{{/each}}
-							{{/select}}
-							</select>
-						</div>
+						<div class="input caller-id-asserted-target"></div>
 					</div>
 
 					<div class="clearfix">

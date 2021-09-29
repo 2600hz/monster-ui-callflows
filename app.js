@@ -459,7 +459,6 @@ define(function(require) {
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
 				_.forEach([
-					'internal',
 					'external',
 					'emergency',
 					'asserted'
