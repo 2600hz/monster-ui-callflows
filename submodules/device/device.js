@@ -547,7 +547,7 @@ define(function(require) {
 							selectName: 'caller_id.' + selector + '.number',
 							selected: _.get(data.data, ['caller_id', selector, 'number'])
 						}, _.pick(data.extra, [
-							'cidSelectors',
+							'cidNumbers',
 							'phoneNumbers'
 						])));
 					});
