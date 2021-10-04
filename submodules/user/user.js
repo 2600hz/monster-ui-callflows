@@ -550,6 +550,14 @@ define(function(require) {
 									}))
 									.trigger('chosen:updated');
 							});
+
+							if (selector !== 'external') {
+								return;
+							}
+							user_html
+								.find('#' + tab === 'basic' ? 'caller_id' : 'basic' + ' .caller-id-' + selector + '-target')
+								.val(numberMetadata.number)
+								.trigger('chosen:updated');
 						},
 						selectName: 'caller_id.' + selector + '.number',
 						selected: _.get(data.data, ['caller_id', selector, 'number'])
@@ -557,25 +565,6 @@ define(function(require) {
 						'cidNumbers',
 						'phoneNumbers'
 					])));
-				});
-			});
-
-			_.forEach(cidSelectorsPerTab.basic, function(selector) {
-				user_html.find('#basic .caller-id-' + selector + '-target select').on('change', function(event) {
-					event.preventDefault();
-
-					user_html
-						.find('#caller_id .caller-id-' + selector + '-target select')
-						.val($(this).val())
-						.trigger('chosen:updated');
-				});
-				user_html.find('#caller_id .caller-id-' + selector + '-target select').on('change', function(event) {
-					event.preventDefault();
-
-					user_html
-						.find('#basic .caller-id-' + selector + '-target select')
-						.val($(this).val())
-						.trigger('chosen:updated');
 				});
 			});
 
