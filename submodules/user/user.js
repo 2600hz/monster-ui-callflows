@@ -535,6 +535,22 @@ define(function(require) {
 					var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
 
 					monster.ui.cidNumberSelector($target, _.merge({
+						onAdded: function(numberMetadata) {
+							user_html.find('select[name^="caller_id."]').each(function() {
+								var $select = $(this),
+									hasNumber = $select.find('option[value="' + numberMetadata.number + '"]') > 0;
+
+								if (hasNumber) {
+									return;
+								}
+								$select
+									.append($('<option>', {
+										value: numberMetadata.number,
+										text: monster.util.formatPhoneNumber(numberMetadata.number)
+									}))
+									.trigger('chosen:updated');
+							});
+						},
 						selectName: 'caller_id.' + selector + '.number',
 						selected: _.get(data.data, ['caller_id', selector, 'number'])
 					}, _.pick(data.extra, [
