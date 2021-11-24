@@ -419,7 +419,7 @@ define(function(require) {
 			if (form_data.start_date === '') {
 				delete form_data.start_date;
 			} else {
-				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
+				form_data.start_date = monster.util.dateToEndOfGregorianDay(form_data.start_date, 'UTC');
 			}
 
 			form_data.time_window_start = parseInt(monster.util.timeToSeconds(timeStart));
