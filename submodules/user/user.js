@@ -554,8 +554,11 @@ define(function(require) {
 							if (selector !== 'external') {
 								return;
 							}
+							var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
+								reflectedSelect = '#' + reflectedTab + ' .caller-id-' + selector + '-target select';
+
 							user_html
-								.find('#' + tab === 'basic' ? 'caller_id' : 'basic' + ' .caller-id-' + selector + '-target')
+								.find(reflectedSelect)
 								.val(numberMetadata.number)
 								.trigger('chosen:updated');
 						},
