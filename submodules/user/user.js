@@ -514,6 +514,7 @@ define(function(require) {
 					]
 				},
 				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
+				selectorsWithReflectedValue = _.spread(_.intersection)(_.map(cidSelectorsPerTab)),
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
@@ -551,7 +552,7 @@ define(function(require) {
 									.trigger('chosen:updated');
 							});
 
-							if (selector !== 'external') {
+							if (!_.includes(selectorsWithReflectedValue, selector)) {
 								return;
 							}
 							var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
