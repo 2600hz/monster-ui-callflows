@@ -515,9 +515,11 @@ define(function(require) {
 				},
 				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
 				selectorsWithReflectedValue = _.spread(_.intersection)(_.map(cidSelectorsPerTab)),
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
@@ -531,46 +533,67 @@ define(function(require) {
 				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
 
-			_.forEach(tabsWithCidSelectors, function(tab) {
-				_.forEach(cidSelectorsPerTab[tab], function(selector) {
-					var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
+			if (hasExternalCallerId) {
+				_.forEach(tabsWithCidSelectors, function(tab) {
+					_.forEach(cidSelectorsPerTab[tab], function(selector) {
+						var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
 
-					monster.ui.cidNumberSelector($target, _.merge({
-						onAdded: function(numberMetadata) {
-							user_html.find('select[name^="caller_id."]').each(function() {
-								var $select = $(this),
-									hasNumber = $select.find('option[value="' + numberMetadata.number + '"]') > 0;
+						monster.ui.cidNumberSelector($target, _.merge({
+							onAdded: function(numberMetadata) {
+								user_html.find('select[name^="caller_id."]').each(function() {
+									var $select = $(this),
+										hasNumber = $select.find('option[value="' + numberMetadata.number + '"]') > 0;
 
-								if (hasNumber) {
+									if (hasNumber) {
+										return;
+									}
+									$select
+										.append($('<option>', {
+											value: numberMetadata.number,
+											text: monster.util.formatPhoneNumber(numberMetadata.number)
+										}))
+										.trigger('chosen:updated');
+								});
+
+								if (!_.includes(selectorsWithReflectedValue, selector)) {
 									return;
 								}
-								$select
-									.append($('<option>', {
-										value: numberMetadata.number,
-										text: monster.util.formatPhoneNumber(numberMetadata.number)
-									}))
+								var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
+									reflectedSelect = '#' + reflectedTab + ' .caller-id-' + selector + '-target select';
+
+								user_html
+									.find(reflectedSelect)
+									.val(numberMetadata.number)
 									.trigger('chosen:updated');
-							});
-
-							if (!_.includes(selectorsWithReflectedValue, selector)) {
-								return;
-							}
-							var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
-								reflectedSelect = '#' + reflectedTab + ' .caller-id-' + selector + '-target select';
-
-							user_html
-								.find(reflectedSelect)
-								.val(numberMetadata.number)
-								.trigger('chosen:updated');
-						},
-						selectName: 'caller_id.' + selector + '.number',
-						selected: _.get(data.data, ['caller_id', selector, 'number'])
-					}, _.pick(data.extra, [
-						'cidNumbers',
-						'phoneNumbers'
-					])));
+							},
+							selectName: 'caller_id.' + selector + '.number',
+							selected: _.get(data.data, ['caller_id', selector, 'number'])
+						}, _.pick(data.extra, [
+							'cidNumbers',
+							'phoneNumbers'
+						])));
+					});
 				});
-			});
+
+				_.forEach(selectorsWithReflectedValue, function(type) {
+					user_html.find('#basic .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#caller_id .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+					user_html.find('#caller_id .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#basic .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+				});
+			}
 
 			self.userRenderDeviceList(data, user_html);
 
