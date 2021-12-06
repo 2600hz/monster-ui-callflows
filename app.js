@@ -458,11 +458,11 @@ define(function(require) {
 					})),
 					widgetBlacklist = self.renderBlacklists(template, accountSettingsData);
 
-				_.forEach([
+				_.forEach(monster.util.getCapability('caller_id.external_numbers').isEnabled ? [
 					'external',
 					'emergency',
 					'asserted'
-				], function(type) {
+				] : [], function(type) {
 					var $target = template.find('.caller-id-' + type + '-target');
 
 					if (!$target.length) {
@@ -471,9 +471,9 @@ define(function(require) {
 					monster.ui.cidNumberSelector($target, {
 						noneLabel: self.i18n.active().callflows.accountSettings.callerId.defaultNumber,
 						selectName: 'caller_id.' + type + '.number',
-						selected: _.get(accountSettingsData.account, ['caller_id', type, 'number']),
-						cidNumbers: accountSettingsData.externalNumbers,
-						phoneNumbers: _.map(accountSettingsData.numberList, function(value, number) {
+						selected: _.get(formattedData.account, ['caller_id', type, 'number']),
+						cidNumbers: formattedData.externalNumbers,
+						phoneNumbers: _.map(formattedData.numberList, function(number) {
 							return {
 								number: number
 							};
@@ -541,6 +541,8 @@ define(function(require) {
 					.value();
 
 			return _.merge({
+				hasExternalCallerId: monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				numberList: _.keys(data.numberList),
 				extra: {
 					isShoutcast: isShoutcast,
 					preflowCallflows: preflowCallflows
@@ -560,6 +562,7 @@ define(function(require) {
 				'showMediaUploadDisclosure',
 				'showPAssertedIdentity'
 			]), _.omit(data, [
+				'numberList',
 				'callflows'
 			]));
 		},
@@ -744,20 +747,7 @@ define(function(require) {
 
 		loadAccountSettingsData: function(callback) {
 			var self = this;
-			monster.parallel({
-				externalNumbers: function(next) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(next, null)
-						),
-						error: _.partial(_.ary(next, 2), null, [])
-					});
-				},
+			monster.parallel(_.merge({
 				account: function(parallelCallback) {
 					self.callApi({
 						resource: 'account.get',
@@ -825,7 +815,21 @@ define(function(require) {
 						}
 					});
 				}
-			}, function(err, results) {
+			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
+				externalNumbers: function(next) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(next, null)
+						),
+						error: _.partial(_.ary(next, 2), null, [])
+					});
+				}
+			}), function(err, results) {
 				callback && callback(results);
 			});
 		},

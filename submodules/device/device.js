@@ -187,42 +187,7 @@ define(function(require) {
 					}
 				},
 				parallelRequests = function(deviceData) {
-					monster.parallel({
-						cidNumbers: function(callback) {
-							self.callApi({
-								resource: 'externalNumbers.list',
-								data: {
-									accountId: self.accountId
-								},
-								success: _.flow(
-									_.partial(_.get, _, 'data'),
-									_.partial(callback, null)
-								),
-								error: _.partial(_.ary(callback, 2), null, [])
-							});
-						},
-						phoneNumbers: function(callback) {
-							self.callApi({
-								resource: 'numbers.listAll',
-								data: {
-									accountId: self.accountId,
-									filters: {
-										paginate: false
-									}
-								},
-								success: _.flow(
-									_.partial(_.get, _, 'data.numbers'),
-									_.partial(_.map, _, function(meta, number) {
-										return {
-											number: number
-										};
-									}),
-									_.partial(_.sortBy, _, 'number'),
-									_.partial(callback, null)
-								),
-								error: _.partial(_.ary(callback, 2), null, [])
-							});
-						},
+					monster.parallel(_.merge({
 						list_classifier: function(callback) {
 							self.callApi({
 								resource: 'numbers.listClassifiers',
@@ -343,7 +308,43 @@ define(function(require) {
 								callback(null, {});
 							}
 						}
-					},
+					}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
+						cidNumbers: function(callback) {
+							self.callApi({
+								resource: 'externalNumbers.list',
+								data: {
+									accountId: self.accountId
+								},
+								success: _.flow(
+									_.partial(_.get, _, 'data'),
+									_.partial(callback, null)
+								),
+								error: _.partial(_.ary(callback, 2), null, [])
+							});
+						},
+						phoneNumbers: function(callback) {
+							self.callApi({
+								resource: 'numbers.listAll',
+								data: {
+									accountId: self.accountId,
+									filters: {
+										paginate: false
+									}
+								},
+								success: _.flow(
+									_.partial(_.get, _, 'data.numbers'),
+									_.partial(_.map, _, function(meta, number) {
+										return {
+											number: number
+										};
+									}),
+									_.partial(_.sortBy, _, 'number'),
+									_.partial(callback, null)
+								),
+								error: _.partial(_.ary(callback, 2), null, [])
+							});
+						}
+					}),
 					function(err, results) {
 						var render_data = self.devicePrepareDataForTemplate(data, defaults, $.extend(true, results, {
 							get_device: deviceData
@@ -514,6 +515,7 @@ define(function(require) {
 
 		deviceRender: function(data, target, callbacks) {
 			var self = this,
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
 				cidSelectors = [
 					'external',
 					'emergency',
@@ -529,6 +531,7 @@ define(function(require) {
 				device_html = $(self.getTemplate({
 					name: 'device-' + data.data.device_type,
 					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
 					}, _.pick(data.extra, [
 						'phoneNumbers'
@@ -536,7 +539,7 @@ define(function(require) {
 					submodule: 'device'
 				}));
 
-				if (device_html.find('#caller_id').length) {
+				if (device_html.find('#caller_id').length && hasExternalCallerId) {
 					_.forEach(cidSelectors, function(selector) {
 						var $target = device_html.find('.caller-id-' + selector + '-target');
 

@@ -118,7 +118,7 @@ define(function(require) {
 
 		faxboxPopupEdit: function(args) {
 			var self = this,
-				popup_html = popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
 				data = args.data,
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
@@ -173,20 +173,7 @@ define(function(require) {
 					after_render: _callbacks.after_render
 				};
 
-			monster.parallel({
-				external_numbers: function(callback) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(callback, null)
-						),
-						error: _.partial(_.ary(callback, 2), null, [])
-					});
-				},
+			monster.parallel(_.merge({
 				faxbox: function(callback) {
 					if (typeof data === 'object' && data.id) {
 						self.faxboxGet(data.id, function(_data, status) {
@@ -255,7 +242,21 @@ define(function(require) {
 						}
 					});
 				}
-			}, function(err, results) {
+			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
+				external_numbers: function(callback) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(callback, null)
+						),
+						error: _.partial(_.ary(callback, 2), null, [])
+					});
+				}
+			}), function(err, results) {
 				if (!data.hasOwnProperty('id')) {
 					if (_.size(results.current_user) === 0) {
 						results.faxbox = $.extend(true, self.faxboxGetDefaultSettings(), results.faxbox);
@@ -276,31 +277,39 @@ define(function(require) {
 
 		faxboxRender: function(data, target, callbacks) {
 			var self = this,
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
 				normalizedFaxbox = self.faxboxNormalizedData(data.faxbox),
 				faxbox_html = $(self.getTemplate({
 					name: 'edit',
-					data: {
+					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
 						faxbox: normalizedFaxbox,
 						users: data.user_list
-					},
+					}, !hasExternalCallerId && _.pick(data, [
+						'phone_numbers'
+					])),
 					submodule: 'faxbox'
 				}));
 
-			monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
-				noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
-				selectName: 'caller_id',
-				selected: normalizedFaxbox.caller_id,
-				cidNumbers: data.external_numbers,
-				phoneNumbers: _.map(data.phone_numbers, function(number) {
-					return {
-						number: number
-					};
-				})
-			});
+			if (hasExternalCallerId) {
+				monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
+					noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
+					selectName: 'caller_id',
+					selected: normalizedFaxbox.caller_id,
+					cidNumbers: data.external_numbers,
+					phoneNumbers: _.map(data.phone_numbers, function(number) {
+						return {
+							number: number
+						};
+					})
+				});
+			}
 
 			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
-			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {
+				inherit: self.i18n.active().defaultTimezone
+			});
 
 			$('*[rel=popover]:not([type="text"])', faxbox_html).popover({
 				trigger: 'hover'
