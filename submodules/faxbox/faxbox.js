@@ -118,7 +118,7 @@ define(function(require) {
 
 		faxboxPopupEdit: function(args) {
 			var self = this,
-				popup_html = popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
 				data = args.data,
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
@@ -276,31 +276,39 @@ define(function(require) {
 
 		faxboxRender: function(data, target, callbacks) {
 			var self = this,
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
 				normalizedFaxbox = self.faxboxNormalizedData(data.faxbox),
 				faxbox_html = $(self.getTemplate({
 					name: 'edit',
-					data: {
+					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
 						faxbox: normalizedFaxbox,
 						users: data.user_list
-					},
+					}, !hasExternalCallerId && _.pick(data, [
+						'phone_numbers'
+					])),
 					submodule: 'faxbox'
 				}));
 
-			monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
-				noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
-				selectName: 'caller_id',
-				selected: normalizedFaxbox.caller_id,
-				cidNumbers: data.external_numbers,
-				phoneNumbers: _.map(data.phone_numbers, function(number) {
-					return {
-						number: number
-					};
-				})
-			});
+			if (hasExternalCallerId) {
+				monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
+					noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
+					selectName: 'caller_id',
+					selected: normalizedFaxbox.caller_id,
+					cidNumbers: data.external_numbers,
+					phoneNumbers: _.map(data.phone_numbers, function(number) {
+						return {
+							number: number
+						};
+					})
+				});
+			}
 
 			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
-			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {
+				inherit: self.i18n.active().defaultTimezone
+			});
 
 			$('*[rel=popover]:not([type="text"])', faxbox_html).popover({
 				trigger: 'hover'
