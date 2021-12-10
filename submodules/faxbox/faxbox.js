@@ -399,9 +399,9 @@ define(function(require) {
 				});
 			});
 
-			faxbox_html.on('change chosen:updated', 'select[name="caller_id"]', function(ev) {
+			faxbox_html.on('change', 'select[name="caller_id"]', function(ev) {
 				var number = $(this).val(),
-					numberFormats = monster.util.getFormatPhoneNumber(number),
+					formattedNumber = monster.util.getFormatPhoneNumber(number),
 					fax_identity = $('#fax_identity', faxbox_html);
 
 				fax_identity.val(_
@@ -410,10 +410,9 @@ define(function(require) {
 						'originalNumber'
 					])
 					.map(
-						_.partial(_.get, numberFormats)
+						_.partial(_.get, formattedNumber)
 					)
 					.find(_.isString)
-					.defaults('')
 					.value()
 				);
 			});
