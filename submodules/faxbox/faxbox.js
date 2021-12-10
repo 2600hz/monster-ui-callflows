@@ -173,7 +173,20 @@ define(function(require) {
 					after_render: _callbacks.after_render
 				};
 
-			monster.parallel(_.merge({
+			monster.parallel({
+				external_numbers: function(callback) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(callback, null)
+						),
+						error: _.partial(_.ary(callback, 2), null, [])
+					});
+				},
 				faxbox: function(callback) {
 					if (typeof data === 'object' && data.id) {
 						self.faxboxGet(data.id, function(_data, status) {
@@ -242,21 +255,7 @@ define(function(require) {
 						}
 					});
 				}
-			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
-				external_numbers: function(callback) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(callback, null)
-						),
-						error: _.partial(_.ary(callback, 2), null, [])
-					});
-				}
-			}), function(err, results) {
+			}, function(err, results) {
 				if (!data.hasOwnProperty('id')) {
 					if (_.size(results.current_user) === 0) {
 						results.faxbox = $.extend(true, self.faxboxGetDefaultSettings(), results.faxbox);
