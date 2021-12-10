@@ -399,7 +399,7 @@ define(function(require) {
 				});
 			});
 
-			faxbox_html.on('change', 'select[name="caller_id"]', function(ev) {
+			$('select[name="caller_id"]', faxbox_html).change(function(ev) {
 				var number = $(this).val(),
 					fax_identity = $('#fax_identity', faxbox_html);
 
