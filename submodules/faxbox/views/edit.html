@@ -73,16 +73,22 @@
 				<div class="clearfix">
 					<label for="caller_id">{{ i18n.callflows.faxbox.caller_id }}</label>
 					<div class="input">
-						<span rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}">
-							<select name="caller_id" id="caller_id" class="medium callflows-caller-id-dropdown">
-								{{#select faxbox.caller_id}}
-									<option value="_disabled">{{ i18n.callflows.faxbox.caller_id_no_selected }}</option>
-									{{#each phone_numbers}}
-										<option value="{{this}}">{{formatPhoneNumber this}}</option>
-									{{/each}}
-								{{/select}}
-							</select>
-						</span>
+					{{#if hasExternalCallerId}}
+						<span class="caller-id-target" rel="popover" data-content="{{ i18n.callflows.faxbox.caller_id_data_content }}"></span>
+					{{else}}
+						<select name="caller_id" id="caller_id" class="medium callflows-caller-id-dropdown">
+							{{#select faxbox.caller_id}}
+								<option value="_disabled">
+									{{i18n.callflows.faxbox.caller_id_no_selected}}
+								</option>
+								{{#each phone_numbers as |phone_number|}}
+									<option value="{{phone_number}}">
+										{{formatPhoneNumber phone_number}}
+									</option>
+								{{/each}}
+							{{/select}}
+						</select>
+					{{/if}}
 					</div>
 				</div>
 
@@ -123,12 +129,11 @@
 					</div>
 				</div>
 
-			{{#if faxbox.smtp_email_address}}
+			{{#if faxbox._read_only.custom_smtp_address}}
 				<div class="clearfix">
-					<label for="smtp_email_address">{{ i18n.callflows.faxbox.smtp_email_address }}</label>
+					<label for="custom_smtp_address">{{ i18n.callflows.faxbox.smtp_email_address }}</label>
 					<div class="input">
-						<span class="text">{{faxbox.smtp_email_address}}</span>
-						<input type="hidden" name="smtp_email_address" value="{{faxbox.smtp_email_address}}">
+						<span class="text">{{faxbox._read_only.custom_smtp_address}}</span>
 					</div>
 				</div>
 			{{/if}}

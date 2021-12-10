@@ -118,7 +118,7 @@ define(function(require) {
 
 		faxboxPopupEdit: function(args) {
 			var self = this,
-				popup_html = popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
 				data = args.data,
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
@@ -173,7 +173,7 @@ define(function(require) {
 					after_render: _callbacks.after_render
 				};
 
-			monster.parallel({
+			monster.parallel(_.merge({
 				faxbox: function(callback) {
 					if (typeof data === 'object' && data.id) {
 						self.faxboxGet(data.id, function(_data, status) {
@@ -242,7 +242,21 @@ define(function(require) {
 						}
 					});
 				}
-			}, function(err, results) {
+			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
+				external_numbers: function(callback) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(callback, null)
+						),
+						error: _.partial(_.ary(callback, 2), null, [])
+					});
+				}
+			}), function(err, results) {
 				if (!data.hasOwnProperty('id')) {
 					if (_.size(results.current_user) === 0) {
 						results.faxbox = $.extend(true, self.faxboxGetDefaultSettings(), results.faxbox);
@@ -252,12 +266,6 @@ define(function(require) {
 				}
 
 				delete results.current_user;
-
-				var invalidCallerID = _.find(results.phone_numbers, _.get(results.faxbox, 'caller_id', null));
-
-				if (!invalidCallerID) {
-					results.phone_numbers.unshift(results.faxbox.caller_id);
-				}
 
 				self.faxboxRender(results, target, callbacks);
 
@@ -269,19 +277,39 @@ define(function(require) {
 
 		faxboxRender: function(data, target, callbacks) {
 			var self = this,
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				normalizedFaxbox = self.faxboxNormalizedData(data.faxbox),
 				faxbox_html = $(self.getTemplate({
 					name: 'edit',
-					data: {
-						faxbox: self.faxboxNormalizedData(data.faxbox),
-						users: data.user_list,
-						phone_numbers: data.phone_numbers
-					},
+					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
+						faxbox: normalizedFaxbox,
+						users: data.user_list
+					}, !hasExternalCallerId && _.pick(data, [
+						'phone_numbers'
+					])),
 					submodule: 'faxbox'
 				}));
 
+			if (hasExternalCallerId) {
+				monster.ui.cidNumberSelector(faxbox_html.find('.caller-id-target'), {
+					noneLabel: self.i18n.active().callflows.faxbox.caller_id_no_selected,
+					selectName: 'caller_id',
+					selected: normalizedFaxbox.caller_id,
+					cidNumbers: data.external_numbers,
+					phoneNumbers: _.map(data.phone_numbers, function(number) {
+						return {
+							number: number
+						};
+					})
+				});
+			}
+
 			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
-			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {
+				inherit: self.i18n.active().defaultTimezone
+			});
 
 			$('*[rel=popover]:not([type="text"])', faxbox_html).popover({
 				trigger: 'hover'
@@ -372,21 +400,23 @@ define(function(require) {
 				});
 			});
 
-			$('#caller_id', faxbox_html).change(function(ev) {
+			faxbox_html.on('change chosen:updated', 'select[name="caller_id"]', function(ev) {
 				var number = $(this).val(),
+					numberFormats = monster.util.getFormatPhoneNumber(number),
 					fax_identity = $('#fax_identity', faxbox_html);
 
-				if (/^(\+1|1)([0-9]{10})$|^([0-9]{10})$/.test(number)) {
-					if (/^(\+1)/.test(number)) {
-						fax_identity.val(number.replace(/^\+1([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					} else if (/^1([0-9]{10})$/.test(number)) {
-						fax_identity.val(number.replace(/^1([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					} else {
-						fax_identity.val(number.replace(/^([0-9]{3})([0-9]{3})([0-9]{4})$/, '+1 ($1) $2-$3'));
-					}
-				} else {
-					fax_identity.val('');
-				}
+				fax_identity.val(_
+					.chain([
+						'internationalFormat',
+						'originalNumber'
+					])
+					.map(
+						_.partial(_.get, numberFormats)
+					)
+					.find(_.isString)
+					.defaults('')
+					.value()
+				);
 			});
 
 			$('.faxbox-save', faxbox_html).click(function(ev) {
@@ -596,7 +626,7 @@ define(function(require) {
 				delete form_data.fax_timezone;
 			}
 
-			if (form_data.caller_id === '_disabled') {
+			if (form_data.caller_id === '') {
 				delete form_data.caller_id;
 			}
 

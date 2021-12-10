@@ -125,9 +125,11 @@ define(function(require) {
 						],
 
 						cycle: [
+							{ id: 'daily', value: 'Daily' },
 							{ id: 'weekly', value: 'Weekly' },
 							{ id: 'monthly', value: 'Monthly' },
-							{ id: 'yearly', value: 'Yearly' }
+							{ id: 'yearly', value: 'Yearly' },
+							{ id: 'date', value: 'Date' }
 						],
 
 						ordinals: [
@@ -233,10 +235,13 @@ define(function(require) {
 			$('#specific_day', timeofday_html).hide();
 
 			if (data.data.id === undefined) {
-				$('#weekly_every', timeofday_html).show();
-				$('#days_checkboxes', timeofday_html).show();
+				$('#every', timeofday_html).hide();
+				$('#on', timeofday_html).hide();
 			} else {
-				if (data.data.cycle === 'monthly') {
+				if (data.data.cycle === 'daily' || data.data.cycle === 'date') {
+					$('#every', timeofday_html).hide();
+					$('#on', timeofday_html).hide();
+				} else if (data.data.cycle === 'monthly') {
 					$('#monthly_every', timeofday_html).show();
 					$('#ordinal', timeofday_html).show();
 					if (data.data.days !== undefined && data.data.days[0] !== undefined) {
@@ -291,6 +296,8 @@ define(function(require) {
 				$('#days_checkboxes', timeofday_html).hide();
 				$('#weekdays', timeofday_html).hide();
 				$('#specific_day', timeofday_html).hide();
+				$('#every', timeofday_html).show();
+				$('#on', timeofday_html).show();
 
 				if ($this.val() === 'yearly') {
 					$('#yearly_every', timeofday_html).show();
@@ -315,6 +322,9 @@ define(function(require) {
 				} else if ($this.val() === 'weekly') {
 					$('#weekly_every', timeofday_html).show();
 					$('#days_checkboxes', timeofday_html).show();
+				} else if ($this.val() === 'daily' || $this.val() === 'date') {
+					$('#every', timeofday_html).hide();
+					$('#on', timeofday_html).hide();
 				}
 			});
 
@@ -409,7 +419,7 @@ define(function(require) {
 			if (form_data.start_date === '') {
 				delete form_data.start_date;
 			} else {
-				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
+				form_data.start_date = monster.util.dateToEndOfGregorianDay(form_data.start_date, 'UTC');
 			}
 
 			form_data.time_window_start = parseInt(monster.util.timeToSeconds(timeStart));
@@ -429,6 +439,11 @@ define(function(require) {
 				delete form_data.ordinal;
 				delete form_data.days;
 				delete form_data.month;
+			} else if (form_data.cycle === 'daily' || form_data.cycle === 'date') {
+				delete form_data.ordinal;
+				delete form_data.days;
+				delete form_data.month;
+				delete form_data.interval;
 			} else {
 				form_data.cycle === 'yearly' ? delete form_data.interval : delete form_data.month;
 				form_data.ordinal !== 'every' ? delete form_data.days : delete form_data.wdays;

@@ -44,14 +44,24 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_external_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-external-target"></div>
+							{{else}}
 								<div class="controls">
 									<select id="caller_id_external_number" name="caller_id.external.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.external.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{#select account.caller_id.external.number}}
+										<option value="">
+											{{ i18n.callflows.accountSettings.callerId.defaultNumber }}
+										</option>
+									{{#each numberList as |number|}}
+										<option value="{{number}}">
+											{{formatPhoneNumber number}}
+										</option>
 									{{/each}}
+									{{/select}}
 									</select>
 								</div>
+							{{/if}}
 							</div>
 						</div>
 					</div>
@@ -67,14 +77,24 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_emergency_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-emergency-target"></div>
+							{{else}}
 								<div class="controls">
 									<select id="caller_id_emergency_number" name="caller_id.emergency.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{#select account.caller_id.emergency.number}}
+										<option value="">
+											{{ i18n.callflows.accountSettings.callerId.defaultNumber }}
+										</option>
+									{{#each numberList as |number|}}
+										<option value="{{number}}">
+											{{formatPhoneNumber number}}
+										</option>
 									{{/each}}
+									{{/select}}
 									</select>
 								</div>
+							{{/if}}
 							</div>
 						</div>
 					</div>
@@ -91,9 +111,13 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-asserted-target"></div>
+							{{else}}
 								<div class="controls">
 									<input type="text" class="phone-number" id="caller_id_asserted_number" name="caller_id.asserted.number" value="{{account.caller_id.asserted.number}}"/>
 								</div>
+							{{/if}}
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_realm">{{ i18n.callflows.accountSettings.callerId.realmLabel }}</label>
