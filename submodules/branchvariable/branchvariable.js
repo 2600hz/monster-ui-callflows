@@ -10,10 +10,8 @@ define(function(require) {
 
 		branchvariableDefineAction: function(args) {
 			var self = this,
-				nodes = args.actions;
-
-			$.extend(nodes, {
-				'branch_variable[id=*]': _.merge({
+				nodes = args.actions,
+				config = _.merge({
 					icon: 'arrow_sign',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'branch_variable',
@@ -33,7 +31,11 @@ define(function(require) {
 				}, _.pick(self.i18n.active().callflows.branchvariable, [
 					'name',
 					'tip'
-				]))
+				]));
+
+			$.extend(nodes, {
+				'branch_variable[id=*]': config,
+				'branch_variable[]': config
 			});
 		},
 
@@ -100,7 +102,12 @@ define(function(require) {
 
 						node.setMetadata('scope', formData.scope);
 						node.setMetadata('variable', _.split(formData.variable, '.'));
-						node.setMetadata('id', id);
+
+						if (formData.scope === 'doc') {
+							node.setMetadata('id', id);
+						} else {
+							node.deleteMetadata('id');
+						}
 
 						$popup.dialog('close');
 					});
