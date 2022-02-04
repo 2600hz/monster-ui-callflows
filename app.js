@@ -1121,18 +1121,9 @@ define(function(require) {
 				actionParams = '[]';
 			}
 
-			var actionWithParamsExists = _
-				.chain(self.actions)
-				.keys()
-				.some(function(actionKey) {
-					return actionKey === json.module + actionParams;
-				})
-				.value(),
-				actionName = actionWithParamsExists
-					? json.module + actionParams
-					: json.module + '[]';
-
-			return actionName;
+			return _.has(self.actions, json.module + actionParams)
+				? json.module + actionParams
+				: json.module + '[]';
 		},
 
 		resetFlow: function() {
