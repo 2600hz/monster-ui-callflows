@@ -1102,25 +1102,28 @@ define(function(require) {
 		},
 
 		construct_action: function(json) {
-			var action = '';
+			var self = this,
+				actionParams = '';
 
 			if ('data' in json) {
 				if ('id' in json.data) {
-					action = 'id=*,';
+					actionParams = 'id=*,';
 				}
 
 				if ('action' in json.data) {
-					action += 'action=' + json.data.action + ',';
+					actionParams += 'action=' + json.data.action + ',';
 				}
 			}
 
-			if (action !== '') {
-				action = '[' + action.replace(/,$/, ']');
+			if (actionParams !== '') {
+				actionParams = '[' + actionParams.replace(/,$/, ']');
 			} else {
-				action = '[]';
+				actionParams = '[]';
 			}
 
-			return json.module + action;
+			return _.has(self.actions, json.module + actionParams)
+				? json.module + actionParams
+				: json.module + '[]';
 		},
 
 		resetFlow: function() {

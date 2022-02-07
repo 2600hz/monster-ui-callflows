@@ -10,34 +10,30 @@ define(function(require) {
 
 		branchvariableDefineAction: function(args) {
 			var self = this,
-				nodes = args.actions,
-				buildActionConfig = function() {
-					return _.merge({
-						icon: 'arrow_sign',
-						category: self.i18n.active().oldCallflows.advanced_cat,
-						module: 'branch_variable',
-						isUsable: 'true',
-						caption: function(node) {
-							return node.getMetadata('variable', '');
-						},
-						edit: _.bind(self.branchvariableCallflowEdit, self),
-						key_caption: function(node) {
-							var key = node.key;
-
-							return _.get({
-								_: self.i18n.active().callflows.menu.default_action
-							}, key, key);
-						},
-						key_edit: _.bind(self.branchvariableCallflowKeyEdit, self)
-					}, _.pick(self.i18n.active().callflows.branchvariable, [
-						'name',
-						'tip'
-					]));
-				};
+				nodes = args.actions;
 
 			$.extend(nodes, {
-				'branch_variable[id=*]': buildActionConfig(),
-				'branch_variable[]': buildActionConfig()
+				'branch_variable[]': _.merge({
+					icon: 'arrow_sign',
+					category: self.i18n.active().oldCallflows.advanced_cat,
+					module: 'branch_variable',
+					isUsable: 'true',
+					caption: function(node) {
+						return node.getMetadata('variable', '');
+					},
+					edit: _.bind(self.branchvariableCallflowEdit, self),
+					key_caption: function(node) {
+						var key = node.key;
+
+						return _.get({
+							_: self.i18n.active().callflows.menu.default_action
+						}, key, key);
+					},
+					key_edit: _.bind(self.branchvariableCallflowKeyEdit, self)
+				}, _.pick(self.i18n.active().callflows.branchvariable, [
+					'name',
+					'tip'
+				]))
 			});
 		},
 
