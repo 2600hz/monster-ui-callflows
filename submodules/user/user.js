@@ -322,20 +322,7 @@ define(function(require) {
 
 			self.random_id = false;
 
-			monster.parallel({
-				cidNumbers: function(next) {
-					self.callApi({
-						resource: 'externalNumbers.list',
-						data: {
-							accountId: self.accountId
-						},
-						success: _.flow(
-							_.partial(_.get, _, 'data'),
-							_.partial(next, null)
-						),
-						error: _.partial(_.ary(next, 2), null, [])
-					});
-				},
+			monster.parallel(_.merge({
 				phoneNumbers: function(next) {
 					self.callApi({
 						resource: 'numbers.listAll',
@@ -459,7 +446,21 @@ define(function(require) {
 						callback(null, defaults);
 					}
 				}
-			},
+			}, monster.util.getCapability('caller_id.external_numbers').isEnable && {
+				cidNumbers: function(next) {
+					self.callApi({
+						resource: 'externalNumbers.list',
+						data: {
+							accountId: self.accountId
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.partial(next, null)
+						),
+						error: _.partial(_.ary(next, 2), null, [])
+					});
+				}
+			}),
 			function(err, results) {
 				var render_data = defaults;
 				if (typeof data === 'object' && data.id) {
