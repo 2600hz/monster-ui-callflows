@@ -1711,7 +1711,7 @@ define(function(require) {
 					},
 					success: function(data) {
 						//validate if schema has references to othe subschemas
-            			var refList = self.miscValidateSubSchema(data)
+						var refList = self.miscValidateSubSchema(data)
 
 						/*if refList is true, fetch subschemas and set them in jsoneditor,
 						otherwise set schema directly*/
@@ -1836,7 +1836,7 @@ define(function(require) {
 		/*@param reflist: array of the references to other schemas
 		*@param parentSchema: schema with references to other schemas
 		*@param jsoneditor: function to set schema in jsoneditor whith its references
-    	fetch all subschemas of partenSchema so they can be set on the jsoneditor*/
+		fetch all subschemas of partenSchema so they can be set on the jsoneditor*/
 		miscGetSubSchema: function(refList,parentSchema,jsoneditor) {
 			var self = this;
 
