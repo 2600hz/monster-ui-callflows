@@ -1710,8 +1710,12 @@ define(function(require) {
 						schemaId: 'callflows.' + selectedOption
 					},
 					success: function(data) {
-						//set schema to validate schema
-						jsoneditor.setSchema(data);
+						//validate if schema has references to othe subschemas
+            			var refList = self.miscValidateSubSchema(data)
+
+						/*if refList is true, fetch subschemas and set them in jsoneditor,
+						otherwise set schema directly*/
+						refList ? self.miscGetSubSchema(refList,data,jsoneditor) : jsoneditor.setSchema(data);
 
 						//set schema in local storage
 						self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption] = data;
@@ -1827,7 +1831,47 @@ define(function(require) {
 					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
-		}
+		},
+
+		/*@param reflist: array of the references to other schemas
+		*@param parentSchema: schema with references to other schemas
+		*@param jsoneditor: function to set schema in jsoneditor whith its references
+    	fetch all subschemas of partenSchema so they can be set on the jsoneditor*/
+		miscGetSubSchema: function(refList,parentSchema,jsoneditor) {
+			var self = this;
+
+			monster.series(refList.map(ref =>
+			  function(callback) {
+				  self.miscGetSchema({
+						data: {
+						  schemaId: ref
+						},
+						success: function(data) {
+						  /*passing array with id,data pair to return on result callback*/   
+						  callback(null,[data.id,data]);
+						}
+				  })
+			  },
+			),	function(err,results) {
+					/*convert results array of arrays to object
+					and setting it on the jsoneditor alongside its
+					parent schema*/
+					jsoneditor.setSchema(parentSchema,Object.fromEntries(results));
+				})
+	  	},
+
+	  	/*@param schema: a json schema to  verify if it has references
+	  	validates according to the path where references can be found
+	  	if no references foun return false*/
+	  	miscValidateSubSchema: function(schema) {
+			if(_.has(schema,  "properties.config.$ref")) {
+			  return [schema.properties.config["$ref]"]]
+			} else  if(_.has(schema,  "properties.macros.items.oneOf")) {
+			  return  schema.properties.macros.items.oneOf.map(item => item["$ref"]);
+			} else {
+			  return false
+			}
+	  	}
 	};
 
 	return app;
