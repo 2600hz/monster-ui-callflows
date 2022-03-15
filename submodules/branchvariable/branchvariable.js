@@ -13,7 +13,7 @@ define(function(require) {
 				nodes = args.actions;
 
 			$.extend(nodes, {
-				'branch_variable[id=*]': _.merge({
+				'branch_variable[]': _.merge({
 					icon: 'arrow_sign',
 					category: self.i18n.active().oldCallflows.advanced_cat,
 					module: 'branch_variable',
@@ -100,7 +100,12 @@ define(function(require) {
 
 						node.setMetadata('scope', formData.scope);
 						node.setMetadata('variable', _.split(formData.variable, '.'));
-						node.setMetadata('id', id);
+
+						if (formData.scope === 'doc') {
+							node.setMetadata('id', id);
+						} else {
+							node.deleteMetadata('id');
+						}
 
 						$popup.dialog('close');
 					});
