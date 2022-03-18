@@ -1,3 +1,9 @@
 <div class="title standalone">
-	<i data-toggle="tooltip" data-placement="top" data-original-title="{{ tryI18n @root.i18n.callflows.device type }}" class="{{iconCssClass}} {{statusCssClass}}"></i>{{name}}</div>
+	<i data-toggle="tooltip" data-placement="top" data-original-title="{{ tryI18n @root.i18n.callflows.device type }}" class="{{iconCssClass}} {{statusCssClass}}">
+		{{#compare iconCssClass "!==" "fa fa-circle"}} 
+			{{telicon iconCssClass}}
+		{{/compare}}
+	</i>
+	{{name}}
+</div>
 </div>
