@@ -15,10 +15,13 @@
 				<span class="icon white active_phone"/>
 				<span class="label_device">{{ i18n.callflows.device.smart_phone }}</span>
 			</span>
+
+			{{#if showTeammateDevice}}
 			<span class="buttons" device_type="teammate">
 				{{telicon "device-mst" class="icon white"}}
 				<span class="label_device">{{ i18n.callflows.device.teammate }}</span>
 			</span>
+			{{/if}}
 
 			<span class="buttons" device_type="landline">
 				<span class="icon white active_phone"/>
