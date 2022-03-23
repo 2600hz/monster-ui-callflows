@@ -55,6 +55,10 @@
 	opacity: 1;
 }
 
+.callflows-port .media_tabs .buttons .telicon2 {
+	background-image: none;
+}
+
 .callflows-port .media_tabs .buttons .label_device {
 	font-size: 12px;
 	text-transform: uppercase;

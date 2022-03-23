@@ -585,6 +585,13 @@ define(function(require) {
 			} else {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
+					data: {
+						showTeammateDevice: _
+							.chain(monster.config)
+							.get('allowedExtraDeviceTypes', [])
+							.includes('teammate')
+							.value()
+					},
 					submodule: 'device'
 				}));
 
@@ -1096,6 +1103,20 @@ define(function(require) {
 				}
 			}
 
+			if (form_data.device_type === 'teammate') {
+				form_data.ignore_completed_elsewhere = false;
+				form_data.media = {
+					audio: {
+						codecs: ['PCMU', 'PCMA']
+					},
+					encryption: {
+						enforce_security: true,
+						methods: ['srtp']
+					},
+					webrtc: false
+				};
+			}
+
 			delete form_data.extra;
 
 			return form_data;
@@ -1351,16 +1372,17 @@ define(function(require) {
 							},
 							getIconCssClass = function(type) {
 								return _.get({
-									'cellphone': 'fa fa-phone',
-									'smartphone': 'icon-telicon-mobile-phone',
-									'landline': 'icon-telicon-home',
-									'mobile': 'icon-telicon-sprint-phone',
-									'softphone': 'icon-telicon-soft-phone',
-									'sip_device': 'icon-telicon-voip-phone',
-									'sip_uri': 'icon-telicon-voip-phone',
-									'fax': 'icon-telicon-fax',
-									'ata': 'icon-telicon-ata'
-								}, type, 'fa fa-circle');
+									'cellphone': 'phone',
+									'smartphone': 'device-mobile',
+									'landline': 'home',
+									'mobile': 'device-sprint-phone',
+									'softphone': 'device-soft-phone',
+									'sip_device': 'device-voip-phone',
+									'sip_uri': 'device-voip-phone',
+									'teammate': 'device-mst',
+									'fax': 'device-fax',
+									'ata': 'device-ata'
+								}, type, 'dot');
 							},
 							getStatusCssClass = function(device) {
 								return !device.enabled ? ''
