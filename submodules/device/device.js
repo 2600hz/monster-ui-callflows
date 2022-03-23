@@ -1382,7 +1382,7 @@ define(function(require) {
 									'teammate': 'device-mst',
 									'fax': 'device-fax',
 									'ata': 'device-ata'
-								}, type, 'fa fa-circle');
+								}, type, 'dot');
 							},
 							getStatusCssClass = function(device) {
 								return !device.enabled ? ''
