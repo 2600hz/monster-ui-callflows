@@ -1306,8 +1306,8 @@ define(function(require) {
 										.map(function(module) {
 											return module.replace('callflows.', '');
 										})
-										.value();
-								unsupportedModules = _.difference(getCallflowModules, supportedModules);
+										.value(),
+									unsupportedModules = _.difference(getCallflowModules, supportedModules);
 
 								self.appFlags.misc.jsonEditor.unsupportedCallflowsList = unsupportedModules;
 								self.miscRenderEditJson(node, callback);
@@ -1652,8 +1652,8 @@ define(function(require) {
 							return;
 						}
 
-						var selectedOption = $template.find('#name').val();
-						content = jsoneditor.get();
+						var selectedOption = $template.find('#name').val(),
+							content = jsoneditor.get();
 
 						node.caption = selectedOption;
 						node.module = selectedOption;

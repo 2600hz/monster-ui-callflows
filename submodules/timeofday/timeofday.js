@@ -623,7 +623,7 @@ define(function(require) {
 							submodule: 'timeofday'
 						}));
 
-						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', { inherit: self.i18n.active().defaultTimezone });
 
 						$('#add', popup_html).click(function() {
 							var timezone = $('#timezone_selector', popup_html).val();

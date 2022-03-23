@@ -155,7 +155,7 @@ define(function(require) {
 				})),
 				vmboxForm = vmbox_html.find('#vmbox-form');
 
-			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone || 'inherit', { inherit: self.i18n.active().defaultTimezone });
 
 			monster.ui.validate(vmboxForm, {
 				rules: {
@@ -337,7 +337,6 @@ define(function(require) {
 				} else {
 					$parentDiv
 						.removeClass('disabled');
-
 				}
 
 				$skipInstructions

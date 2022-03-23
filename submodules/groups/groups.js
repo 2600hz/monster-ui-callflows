@@ -1352,7 +1352,7 @@ define(function(require) {
 
 							$('#strategy', popup_html).bind('change', function() {
 								var strategy = $(this).val(),
-									$delay = $('.options .option.delay', popup_html);
+									$delay = $('.options .option.delay', popup_html),
 									$delayTitle = $('.options .delay_title', popup_html);
 
 								if (strategy === 'single') {
