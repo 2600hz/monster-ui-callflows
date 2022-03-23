@@ -586,9 +586,11 @@ define(function(require) {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
 					data: {
-						showTeammateDevice: monster.config.hasOwnProperty('extraDevices')
-							&& monster.config.extraDevices.length
-							&& $.inArray('teammate', monster.config.extraDevices) > -1
+						showTeammateDevice: _
+							.chain(monster.config)
+							.get('allowedExtraDeviceTypes', [])
+							.includes('teammate')
+							.value()
 					},
 					submodule: 'device'
 				}));
