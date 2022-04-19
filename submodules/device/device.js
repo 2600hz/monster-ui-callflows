@@ -1106,7 +1106,7 @@ define(function(require) {
 			if (form_data.device_type === 'teammate') {
 				form_data.caller_id_options = {
 					outbound_privacy: "none"
-				}
+				};
 				form_data.ignore_completed_elsewhere = false;
 				form_data.media = {
 					audio: {
