@@ -23,7 +23,8 @@ define(function(require) {
 				},
 				jsonEditor: {
 					unsupportedCallflowsList: {},
-					callflowsListSchema: {}
+					callflowsListSchema: {},
+					callflowsListSubSchema: {}
 				}
 			}
 		},
@@ -1306,8 +1307,8 @@ define(function(require) {
 										.map(function(module) {
 											return module.replace('callflows.', '');
 										})
-										.value(),
-									unsupportedModules = _.difference(getCallflowModules, supportedModules);
+										.value();
+								var unsupportedModules = _.difference(getCallflowModules, supportedModules);
 
 								self.appFlags.misc.jsonEditor.unsupportedCallflowsList = unsupportedModules;
 								self.miscRenderEditJson(node, callback);
@@ -1628,35 +1629,28 @@ define(function(require) {
 							},
 							onValidationError: function(errors) {
 								if (_.isEmpty(errors)) {
-									$template
-										.find('#save')
-											.removeClass('disabled');
+									self.toggleEditorSaveButton($template, true);
 								} else {
-									//disable save button when there are errors
-									$template
-										.find('#save')
-											.addClass('disabled');
+									self.toggleEditorSaveButton($template, false);
 								}
 							}
 						},
 						jsoneditor = monster.ui.jsoneditor($target, options, node.data.data);
-
 					jsoneditor.set(node.data.data, {});
 					self.miscSetSchema($template, jsoneditor, callback);
 
 					$template.find('#save').on('click', function(e) {
 						e.preventDefault();
 
-						//do nothing when button is disabled
 						if ($(this).hasClass('disabled')) {
 							return;
 						}
 
-						var selectedOption = $template.find('#name').val(),
-							content = jsoneditor.get();
+						var selectedSchema = $template.find('#name').val();
+						var content = jsoneditor.get();
 
-						node.caption = selectedOption;
-						node.module = selectedOption;
+						node.caption = selectedSchema;
+						node.module = selectedSchema;
 
 						_.each(content, function(value, key) {
 							node.setMetadata(key, value);
@@ -1688,41 +1682,31 @@ define(function(require) {
 		miscSetSchema: function(template, jsoneditor, callback) {
 			var self = this,
 				$template = template,
-				selectedOption = $template.find('#name').val(),
-				callflowSchema = self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption];
+				selectedSchema = $template.find('#name').val(),
+				callflowSchema = self.appFlags.misc.jsonEditor.callflowsListSchema[selectedSchema],
+				callflowSubSchema = self.appFlags.misc.jsonEditor.callflowsListSubSchema[selectedSchema];
 
 			if (callflowSchema) {
-				jsoneditor.setSchema(callflowSchema);
+				jsoneditor.setSchema(callflowSchema, callflowSubSchema);
 			} else {
-				//disable save button and select options until schema is set for validation
-				$template
-					.find('#save')
-						.addClass('disabled');
+				self.toggleEditorSaveButton($template, false);
 
 				$template
 					.find('#name')
 						.prop('disabled', true);
 
-				//get schema from API if it's not stored locally and set it in jsoneditor
 				self.miscGetSchema({
 					data: {
-						schemaId: 'callflows.' + selectedOption
+						schemaId: 'callflows.' + selectedSchema
 					},
 					success: function(data) {
-						//validate if schema has references to othe subschemas
 						var refList = self.miscValidateSubSchema(data);
 
-						/*if refList is true, fetch subschemas and set them in jsoneditor,
-						otherwise set schema directly*/
-						refList ? self.miscGetSubSchema(refList, data, jsoneditor) : jsoneditor.setSchema(data);
+						self.miscSetEditorSchema(refList, data, jsoneditor, selectedSchema);
 
-						//set schema in local storage
-						self.appFlags.misc.jsonEditor.callflowsListSchema[selectedOption] = data;
+						self.saveSchemaLocally(data, selectedSchema);
 
-						//enable save button and select options after schema is set
-						$template
-							.find('#save')
-								.removeClass('disabled');
+						self.toggleEditorSaveButton($template, true);
 
 						$template
 							.find('#name')
@@ -1731,6 +1715,97 @@ define(function(require) {
 						callback(null, data);
 					}
 				});
+			}
+		},
+		/**
+		 * toggle editor save button enabled/disabled
+		 * @param  {object} template - JSON editor template
+		 * @param  {boolean} enable - true to enable save button, false to disable
+		 */
+		toggleEditorSaveButton: function(template, enabled) {
+			if (enabled) {
+				template.find('#save').removeClass('disabled');
+			} else {
+				template.find('#save').addClass('disabled');
+			}
+		},
+
+		/**
+		 * save the schema in local storage
+		 * @param  {object} data - JSON schema
+		 * @param  {object} selectedSchema - selected JSON SCHEMA option
+		 * @param  {boolean} isSubSchema - flag if schema is sub schema
+		 */
+		saveSchemaLocally: function(data, selectedSchema, isSubSchema) {
+			var self = this;
+			if (isSubSchema) {
+				self.appFlags.misc.jsonEditor.callflowsListSubSchema[selectedSchema] = data;
+			} else {
+				self.appFlags.misc.jsonEditor.callflowsListSchema[selectedSchema] = data;
+			}
+		},
+
+		/**
+		 * validate if the JSON schema should be set with sub schemas or not
+		 * @param  {string[]} refList - list of references
+		 * @param  {object} data - JSON schema
+		 * @param  {object} jsoneditor - JSON editor instance
+		 * @param  {string} selectedSchema - selected JSON SCHEMA option
+		 */
+		miscSetEditorSchema: function(refList, data, jsoneditor, selectedSchema) {
+			var self = this;
+			if (refList) {
+				self.miscGetSubSchema(refList, data, jsoneditor, selectedSchema);
+			} else {
+				jsoneditor.setSchema(data);
+			}
+		},
+
+		/**
+		 *  Get the required sub schemas from the main JSON schema
+		 * @param  {string[]} refList - list of subschemas to fetch
+		 * @param  {object} parentSchema - schema to which subschemas are added
+		 * @param  {object} jsoneditor - jsoneditor instance
+		 * @param  {string} selectedSchema - selected JSON SCHEMA option
+		 */
+		miscGetSubSchema: function(refList, parentSchema, jsoneditor, selectedSchema) {
+			var self = this;
+
+			monster.parallel(
+				_.chain(refList)
+				.keyBy()
+				.mapValues(function(ref) {
+					//api call to get subschema
+					return function(callback) {
+						self.miscGetSchema({
+							data: {
+								schemaId: ref
+							},
+							success: function(data) {
+								callback(null, data);
+							}
+						});
+					};
+				})
+				.value()
+				, function(err, results) {
+					console.log('results', results);
+					self.saveSchemaLocally(results, selectedSchema, true);
+					jsoneditor.setSchema(parentSchema, results);
+				});
+		},
+
+		/**
+		 * Verify if json schema has references
+		 * @param  {object} schema
+		 */
+		miscValidateSubSchema: function(schema) {
+			if (_.has(schema, 'properties.config.$ref')) {
+				return [schema.properties.config['$ref]']];
+			} else if (_.has(schema, 'properties.macros.items.oneOf')) {
+				return schema.properties.macros.items.oneOf.map(item => item.$ref);
+			} else {
+				return false;
 			}
 		},
 
@@ -1830,46 +1905,6 @@ define(function(require) {
 					args.hasOwnProperty('error') && args.error(parsedError);
 				}
 			});
-		},
-
-		/*@param reflist: array of the references to other schemas
-		*@param parentSchema: schema with references to other schemas
-		*@param jsoneditor: function to set schema in jsoneditor whith its references
-		fetch all subschemas of partenSchema so they can be set on the jsoneditor*/
-		miscGetSubSchema: function(refList, parentSchema, jsoneditor) {
-			var self = this;
-
-			monster.series(refList.map(ref =>
-				function(callback) {
-					self.miscGetSchema({
-						data: {
-							schemaId: ref
-						},
-						success: function(data) {
-						/*passing array with id,data pair to return on result callback*/
-							callback(null, [data.id, data]);
-						}
-					});
-				},
-			),	function(err, results) {
-				/*convert results array of arrays to object
-					and setting it on the jsoneditor alongside its
-					parent schema*/
-				jsoneditor.setSchema(parentSchema, Object.fromEntries(results));
-			});
-		},
-
-		/*@param schema: a json schema to  verify if it has references
-	  	validates according to the path where references can be found
-	  	if no references foun return false*/
-		miscValidateSubSchema: function(schema) {
-			if (_.has(schema, 'properties.config.$ref')) {
-				return [schema.properties.config['$ref]']];
-			} else if (_.has(schema, 'properties.macros.items.oneOf')) {
-				return schema.properties.macros.items.oneOf.map(item => item.$ref);
-			} else {
-				return false;
-			}
 		}
 	};
 
