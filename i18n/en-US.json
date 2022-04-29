@@ -1231,14 +1231,14 @@
 			}
 		},
 		"jsonEditor": {
-			"title": "Json Editor",
-			"popupTitle": "Add/Edit json action",
+			"title": "JSON Editor",
+			"popupTitle": "Add/Edit JSON action",
 			"name": "Name",
 			"placeholder": {
 				"name": "Action Name"
 			},
 			"editor": {
-				"label": "Json data",
+				"label": "JSON data",
 				"errorMessages": {
 					"jsonEditor": "Invalid Content"
 				}
