@@ -118,7 +118,7 @@ define(function(require) {
 
 		faxboxPopupEdit: function(args) {
 			var self = this,
-				popup_html = popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
+				popup_html = $('<div class="inline_popup callflows-port"><div class="inline_content main_content"/></div>'),
 				data = args.data,
 				callback = args.callback,
 				data_defaults = args.data_defaults || {},
@@ -281,7 +281,9 @@ define(function(require) {
 
 			monster.ui.chosen(faxbox_html.find('.callflows-caller-id-dropdown'));
 
-			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			timezone.populateDropdown($('#fax_timezone', faxbox_html), data.faxbox.fax_timezone || 'inherit', {
+				inherit: self.i18n.active().defaultTimezone
+			});
 
 			$('*[rel=popover]:not([type="text"])', faxbox_html).popover({
 				trigger: 'hover'

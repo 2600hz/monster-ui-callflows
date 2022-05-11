@@ -1,0 +1,34 @@
+<div class="dialog_popup callflows-port">
+	<form id="branchvariable_key_form" class="form-horizontal">
+		<div class="control-group">
+			<label for="action" class="control-label">
+				{{ i18n.callflows.branchvariable.editKey.action }}
+			</label>
+			<div class="controls">
+				<select name="action">
+				{{#select action}}
+					<option value="default">
+						{{ i18n.callflows.branchvariable.editKey.default }}
+					</option>
+					<option value="variable">
+						{{ i18n.callflows.branchvariable.editKey.variable }}
+					</option>
+				{{/select}}
+				</select>
+			</div>
+		</div>
+		<div class="control-group"{{#compare action "===" "default"}} style="display: none;"{{/compare}}>
+			<label for="value" class="control-label">
+				{{i18n.callflows.branchvariable.editKey.value}}
+			</label>
+			<div class="controls">
+				<input type="text" name="value" value="{{value}}">
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="save" class="monster-button-primary">
+			{{ i18n.save }}
+		</button>
+	</div>
+</div>

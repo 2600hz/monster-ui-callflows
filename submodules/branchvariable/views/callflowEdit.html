@@ -1,0 +1,44 @@
+<div class="dialog_popup callflows-port">
+	<h1>
+		{{ i18n.callflows.branchvariable.edit.title }}
+	</h1>
+	<form id="branchvariable_form" class="form-horizontal">
+		<div class="control-group">
+			<label for="scope" class="control-label">
+				{{i18n.callflows.branchvariable.edit.scope}}
+			</label>
+			<div class="controls">
+				<select name="scope" id="scope">
+				{{#select scope.selected}}
+					{{#each scope.options as |option|}}
+						<option value="{{option}}">
+							{{option}}
+						</option>
+					{{/each}}
+				{{/select}}
+			</select>
+			</div>
+		</div>
+		<div class="control-group"{{#compare scope.selected "!==" "doc"}} style="display: none;"{{/compare}}>
+			<label for="id" class="control-label">
+				{{i18n.callflows.branchvariable.edit.id}}
+			</label>
+			<div class="controls">
+				<input type="text" id="id" name="id" value="{{id}}">
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="variable" class="control-label">
+				{{i18n.callflows.branchvariable.edit.variable}}
+			</label>
+			<div class="controls">
+				<input type="text" id="variable" name="variable" value="{{variable}}">
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="save" class="monster-button-primary">
+			{{ i18n.save }}
+		</button>
+	</div>
+</div>

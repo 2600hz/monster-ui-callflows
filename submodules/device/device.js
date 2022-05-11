@@ -187,7 +187,7 @@ define(function(require) {
 					}
 				},
 				parallelRequests = function(deviceData) {
-					monster.parallel({
+					monster.parallel(_.merge({
 						list_classifier: function(callback) {
 							self.callApi({
 								resource: 'numbers.listClassifiers',
@@ -308,7 +308,43 @@ define(function(require) {
 								callback(null, {});
 							}
 						}
-					},
+					}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
+						cidNumbers: function(callback) {
+							self.callApi({
+								resource: 'externalNumbers.list',
+								data: {
+									accountId: self.accountId
+								},
+								success: _.flow(
+									_.partial(_.get, _, 'data'),
+									_.partial(callback, null)
+								),
+								error: _.partial(_.ary(callback, 2), null, [])
+							});
+						},
+						phoneNumbers: function(callback) {
+							self.callApi({
+								resource: 'numbers.listAll',
+								data: {
+									accountId: self.accountId,
+									filters: {
+										paginate: false
+									}
+								},
+								success: _.flow(
+									_.partial(_.get, _, 'data.numbers'),
+									_.partial(_.map, _, function(meta, number) {
+										return {
+											number: number
+										};
+									}),
+									_.partial(_.sortBy, _, 'number'),
+									_.partial(callback, null)
+								),
+								error: _.partial(_.ary(callback, 2), null, [])
+							});
+						}
+					}),
 					function(err, results) {
 						var render_data = self.devicePrepareDataForTemplate(data, defaults, $.extend(true, results, {
 							get_device: deviceData
@@ -386,8 +422,12 @@ define(function(require) {
 				dataGlobal.data.provision = $.extend(true, {}, default_provision_data, dataGlobal.data.provision);
 			}
 
-			dataGlobal.extra = dataGlobal.extra || {};
-			dataGlobal.extra.isShoutcast = false;
+			dataGlobal.extra = _.merge({}, dataGlobal.extra, {
+				isShoutcast: false
+			}, _.pick(results, [
+				'cidNumbers',
+				'phoneNumbers'
+			]));
 
 			// if the value is set to a stream, we need to set the value of the media_id to shoutcast so it gets selected by the old select mechanism,
 			// but we also need to store the  value so we can display it
@@ -475,6 +515,12 @@ define(function(require) {
 
 		deviceRender: function(data, target, callbacks) {
 			var self = this,
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				cidSelectors = [
+					'external',
+					'emergency',
+					'asserted'
+				],
 				device_html;
 
 			if ('media' in data.data && 'fax_option' in data.data.media) {
@@ -485,10 +531,30 @@ define(function(require) {
 				device_html = $(self.getTemplate({
 					name: 'device-' + data.data.device_type,
 					data: _.merge({
+						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
-					}, data),
+					}, _.pick(data.extra, [
+						'phoneNumbers'
+					]), data),
 					submodule: 'device'
 				}));
+
+				if (device_html.find('#caller_id').length && hasExternalCallerId) {
+					_.forEach(cidSelectors, function(selector) {
+						var $target = device_html.find('.caller-id-' + selector + '-target');
+
+						if (!$target.length) {
+							return;
+						}
+						monster.ui.cidNumberSelector($target, _.merge({
+							selectName: 'caller_id.' + selector + '.number',
+							selected: _.get(data.data, ['caller_id', selector, 'number'])
+						}, _.pick(data.extra, [
+							'cidNumbers',
+							'phoneNumbers'
+						])));
+					});
+				}
 
 				var deviceForm = device_html.find('#device-form');
 
@@ -519,6 +585,13 @@ define(function(require) {
 			} else {
 				device_html = $(self.getTemplate({
 					name: 'general_edit',
+					data: {
+						showTeammateDevice: _
+							.chain(monster.config)
+							.get('allowedExtraDeviceTypes', [])
+							.includes('teammate')
+							.value()
+					},
 					submodule: 'device'
 				}));
 
@@ -1030,6 +1103,23 @@ define(function(require) {
 				}
 			}
 
+			if (form_data.device_type === 'teammate') {
+				form_data.caller_id_options = {
+					outbound_privacy: "none"
+				};
+				form_data.ignore_completed_elsewhere = false;
+				form_data.media = {
+					audio: {
+						codecs: ['PCMU', 'PCMA']
+					},
+					encryption: {
+						enforce_security: true,
+						methods: ['srtp']
+					},
+					webrtc: false
+				};
+			}
+
 			delete form_data.extra;
 
 			return form_data;
@@ -1285,16 +1375,17 @@ define(function(require) {
 							},
 							getIconCssClass = function(type) {
 								return _.get({
-									'cellphone': 'fa fa-phone',
-									'smartphone': 'icon-telicon-mobile-phone',
-									'landline': 'icon-telicon-home',
-									'mobile': 'icon-telicon-sprint-phone',
-									'softphone': 'icon-telicon-soft-phone',
-									'sip_device': 'icon-telicon-voip-phone',
-									'sip_uri': 'icon-telicon-voip-phone',
-									'fax': 'icon-telicon-fax',
-									'ata': 'icon-telicon-ata'
-								}, type, 'fa fa-circle');
+									'cellphone': 'phone',
+									'smartphone': 'device-mobile',
+									'landline': 'home',
+									'mobile': 'device-sprint-phone',
+									'softphone': 'device-soft-phone',
+									'sip_device': 'device-voip-phone',
+									'sip_uri': 'device-voip-phone',
+									'teammate': 'device-mst',
+									'fax': 'device-fax',
+									'ata': 'device-ata'
+								}, type, 'dot');
 							},
 							getStatusCssClass = function(device) {
 								return !device.enabled ? ''

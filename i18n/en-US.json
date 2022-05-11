@@ -30,6 +30,22 @@
 			"qubicle_tip": "Route to a queue",
 			"which_queue": "Which queue?"
 		},
+		"branchvariable": {
+			"name": "Branch Variable",
+			"tip": "Enables you to branch based on value of some field inside one of the a call CCVs, user, device or account's document",
+			"edit": {
+				"title": "Setup variable to lookup",
+				"scope": "Scope",
+				"id": "Document ID",
+				"variable": "Variable (or path to it)"
+			},
+			"editKey": {
+				"action": "Branch on",
+				"default": "Default",
+				"variable": "Specific value",
+				"value": "Value"
+			}
+		},
 		"conference": {
 			"conference": "Conference",
 			"conference_tip": "Connect a caller to a Meet-Me conference bridge",
@@ -95,6 +111,7 @@
 			"cell_phone": "Cell Phone",
 			"cellphone": "Cell Phone",
 			"smart_phone": "Smart Phone",
+			"teammate": "TeamMate",
 			"landline": "Landline",
 			"soft_phone": "Soft Phone",
 			"mobile": "Mobile",
@@ -149,6 +166,8 @@
 			"add_a_cell_phone": "Add a Cell Phone",
 			"edit_soft_phone": "Edit Soft Phone",
 			"add_a_soft_phone": "Add a Soft Phone",
+			"edit_teammate": "Edit TeamMate",
+			"add_a_teammate": "Add a TeamMate",
 			"caller_id": "Caller ID",
 			"sip_settings": "SIP Settings",
 			"audio_settings": "Audio Settings",
@@ -487,7 +506,7 @@
 			"whitelist_of_numbers": "Whitelist of numbers",
 			"whitelist_of_numbers_placeholder": "Regex",
 			"whitelist_of_numbers_data_content": "List of numbers that users are allowed to dial when hunting (ex: ^[0-9]{0,11}$ is a simple regex catching a group of 0 to 11 numbers)",
-			"blacklist_of_numbers": "Blacklist of numbers",
+			"blacklist_of_numbers": "Blocklist of numbers",
 			"blacklist_of_numbers_placeholder": "Regex",
 			"blacklist_of_numbers_data_content": "List of numbers that users are not allowed to dial when hunting (ex: ^[0-9]{0,11}$ is a simple regex catching a group of 0 to 11 numbers)",
 			"number_of_retries_on_misdial": "Number of retries on misdial",
@@ -621,6 +640,7 @@
 			"allDay": "All Day"
 		},
 		"user": {
+			"none": "None",
 			"user": "User",
 			"user_tip": "Direct a caller to a specific user",
 			"hot_desk_login": "Hot Desk login",
@@ -899,7 +919,7 @@
 				"shoutcastURLWarning": "WARNING: If the stream selected here attempts to be played, and is unavailable, the call may fail completely. Please make sure the stream you use is available 24/7."
 			},
 			"blacklist": {
-				"title": "Blacklists"
+				"title": "Blocklists"
 			},
 			"preflow": {
 				"title": "Preflow",
@@ -981,15 +1001,15 @@
 		"__version": "v4.0",
 
 		"blacklist": {
-			"title": "Blacklist",
+			"title": "Blocklist",
 			"addNumber": "Add Number",
-			"create": "Create Blacklist",
-			"edit": "Edit Blacklist",
+			"create": "Create Blocklist",
+			"edit": "Edit Blocklist",
 			"name": "Name",
 			"blockAnonymous": "Block Anonymous",
 			"listNumbers": "List of existing numbers",
-			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blacklist?",
-			"help": "In order to activate this blacklist, head to the Account Settings section"
+			"are_you_sure_you_want_to_delete": "Are you sure you want to delete this blocklist?",
+			"help": "In order to activate this blocklist, head to the Account Settings section"
 		},
 
 		"__comment": "UI-2216: adding tts to adv. callflows",

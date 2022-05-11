@@ -1635,6 +1635,10 @@
 	margin: auto;
 }
 
+#callflow_container .account-settings-container #account_settings_form .tab-content {
+	overflow: visible;
+}
+
 #callflow_container .account-settings-container .tab-content {
 	background-color: #f0f0f9;
 	padding: 20px;
