@@ -1394,7 +1394,7 @@
 	"__comment": "UI-1260: created common control for carrier selection",
 	"__version": "v3.20_s2",
 	"entityManager": {
-		"header": "Click on what you would you like to configure:",
+		"header": "Click on what you would like to configure:",
 		"callflowsTitle": "Callflows",
 		"backButton": "Return to Callflows Home",
 		"accountTitle": "Account Settings",
