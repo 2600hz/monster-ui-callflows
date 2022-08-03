@@ -744,7 +744,7 @@ define(function(require) {
 							popup;
 
 						$('#add', popup_html).click(function() {
-							const callRecordUrl = $('#url', popup_html).val();
+							var callRecordUrl = $('#url', popup_html).val();
 							if (callRecordUrl.trim() !== '') {
 								node.setMetadata('url', callRecordUrl);
 							} else {
