@@ -289,6 +289,9 @@ define(function(require) {
 						call_forward: {
 							substitute: true
 						},
+						call_failover: {
+							enabled: false
+						},
 						call_restriction: {
 							closed_groups: { action: 'inherit' }
 						},
@@ -1210,6 +1213,10 @@ define(function(require) {
 
 			if (data.hotdesk.hasOwnProperty('endpoint_ids') && data.hotdesk.endpoint_ids.length === 0) {
 				delete data.hotdesk.endpoint_ids;
+			}
+
+			if (data.hasOwnProperty('call_failover') && data.hasOwnProperty('call_forward') && data.call_forward.number) {
+				data.call_failover.number = data.call_forward.number;
 			}
 
 			if (data.hasOwnProperty('call_forward') && data.call_forward.number === '') {
