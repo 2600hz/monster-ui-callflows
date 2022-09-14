@@ -12,6 +12,7 @@ define(function(require) {
 		'faxbox',
 		'featurecodes',
 		'groups',
+		'jsoneditor',
 		'media',
 		'menu',
 		'misc',
