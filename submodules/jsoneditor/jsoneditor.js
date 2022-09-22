@@ -154,7 +154,6 @@ define(function(require) {
 				callflowSchema = self.appFlags.callflowsListSchema[selectedSchema];
 
 			if (callflowSchema) {
-				console.log('already stored');
 				jsoneditor.setSchema(callflowSchema.schema, callflowSchema.subSchemas);
 			} else {
 				self.jsonEditorToggleSaveButton($template, false);
@@ -219,7 +218,6 @@ define(function(require) {
 		 * @param args.success - function to use as the CallApi success property
 		 */
 		jsonEditorGetSchema: function(args) {
-			console.log('getting schema');
 			var self = this,
 				data = args.data;
 
