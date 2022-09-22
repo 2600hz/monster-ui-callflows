@@ -10,8 +10,7 @@ define(function(require) {
 
 		appFlags: {
 			unsupportedCallflowsList: {},
-			callflowsListSchema: {},
-			callflowsListSubSchema: {}
+			callflowsListSchema: {}
 		},
 
 		jsonEditorDefineAction: function(args) {
@@ -152,11 +151,11 @@ define(function(require) {
 			var self = this,
 				$template = template,
 				selectedSchema = $template.find('#name').val(),
-				callflowSchema = self.appFlags.callflowsListSchema[selectedSchema],
-				callflowSubSchema = self.appFlags.callflowsListSubSchema[selectedSchema];
+				callflowSchema = self.appFlags.callflowsListSchema[selectedSchema];
 
 			if (callflowSchema) {
-				jsoneditor.setSchema(callflowSchema, callflowSubSchema);
+				console.log('already stored');
+				jsoneditor.setSchema(callflowSchema.schema, callflowSchema.subSchemas);
 			} else {
 				self.jsonEditorToggleSaveButton($template, false);
 
@@ -172,8 +171,6 @@ define(function(require) {
 						var refList = self.jsonEditorValidateSubSchema(data);
 
 						self.jsonEditorSetSchema(refList, data, jsoneditor, selectedSchema);
-
-						self.jsonEditorSaveSchemaLocally(data, selectedSchema);
 
 						self.jsonEditorToggleSaveButton($template, true);
 
@@ -222,6 +219,7 @@ define(function(require) {
 		 * @param args.success - function to use as the CallApi success property
 		 */
 		jsonEditorGetSchema: function(args) {
+			console.log('getting schema');
 			var self = this,
 				data = args.data;
 
@@ -253,21 +251,6 @@ define(function(require) {
 		},
 
 		/**
-		 * save the schema in local storage
-		 * @param  {object} data - JSON schema
-		 * @param  {object} selectedSchema - selected JSON SCHEMA option
-		 * @param  {boolean} isSubSchema - flag if schema is sub schema
-		 */
-		jsonEditorSaveSchemaLocally: function(data, selectedSchema, isSubSchema) {
-			var self = this;
-			if (isSubSchema) {
-				self.appFlags.callflowsListSubSchema[selectedSchema] = data;
-			} else {
-				self.appFlags.callflowsListSchema[selectedSchema] = data;
-			}
-		},
-
-		/**
 		 * validate if the JSON schema should be set with sub schemas or not
 		 * @param  {string[]} refList - list of references
 		 * @param  {object} data - JSON schema
@@ -280,6 +263,7 @@ define(function(require) {
 				self.jsonEditorGetSubSchema(refList, data, jsoneditor, selectedSchema);
 			} else {
 				jsoneditor.setSchema(data);
+				self.appFlags.callflowsListSchema[selectedSchema] = { schema: data, subSchemas: {} };
 			}
 		},
 
@@ -311,7 +295,7 @@ define(function(require) {
 				})
 				.value()
 				, function(err, results) {
-					self.jsonEditorSaveSchemaLocally(results, selectedSchema, true);
+					self.appFlags.callflowsListSchema[selectedSchema] = { schema: parentSchema, subSchemas: results };
 					jsoneditor.setSchema(parentSchema, results);
 				});
 		}
