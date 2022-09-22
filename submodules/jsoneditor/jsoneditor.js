@@ -195,7 +195,7 @@ define(function(require) {
 			if (_.has(schema, 'properties.config.$ref')) {
 				return [schema.properties.config['$ref]']];
 			} else if (_.has(schema, 'properties.macros.items.oneOf')) {
-				return schema.properties.macros.items.oneOf.map(item => item.$ref);
+				return _.map(schema.properties.macros.items.oneOf, '$ref');
 			} else {
 				return false;
 			}
