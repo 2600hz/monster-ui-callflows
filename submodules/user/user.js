@@ -289,6 +289,9 @@ define(function(require) {
 						call_forward: {
 							substitute: true
 						},
+						call_failover: {
+							enabled: false
+						},
 						call_restriction: {
 							closed_groups: { action: 'inherit' }
 						},
@@ -1212,8 +1215,18 @@ define(function(require) {
 				delete data.hotdesk.endpoint_ids;
 			}
 
+			if (data.hasOwnProperty('call_failover') && data.hasOwnProperty('call_forward')) {
+				data.call_failover = _.merge({}, data.call_failover, {
+					number: data.call_forward.number,
+					require_keypress: data.call_forward.require_keypress,
+					keep_caller_id: data.call_forward.keep_caller_id,
+					direct_calls_only: data.call_forward.direct_calls_only
+				});
+			}
+
 			if (data.hasOwnProperty('call_forward') && data.call_forward.number === '') {
 				delete data.call_forward.number;
+				delete data.call_failover.number;
 			}
 
 			if (data.hasOwnProperty('presence_id') && data.presence_id === '') {

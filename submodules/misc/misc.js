@@ -744,7 +744,12 @@ define(function(require) {
 							popup;
 
 						$('#add', popup_html).click(function() {
-							node.setMetadata('url', $('#url', popup_html).val());
+							var callRecordUrl = $('#url', popup_html).val();
+							if (callRecordUrl.trim() !== '') {
+								node.setMetadata('url', callRecordUrl);
+							} else {
+								node.deleteMetadata('url');
+							}
 							node.setMetadata('format', $('#format', popup_html).val());
 							node.setMetadata('time_limit', $('#time_limit', popup_html).val());
 
