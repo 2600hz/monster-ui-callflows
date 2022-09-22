@@ -149,6 +149,8 @@ define(function(require) {
 							},
 							audio: {
 								codecs: {
+									'AMR-WB': 'AMR Wideband',
+									'AMR': 'AMR Narrowband',
 									'OPUS': 'OPUS',
 									'CELT@32000h': 'Siren @ 32Khz',
 									'G7221@32000h': 'G722.1 @ 32khz',
