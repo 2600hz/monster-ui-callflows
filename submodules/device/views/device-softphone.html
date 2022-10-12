@@ -272,37 +272,11 @@
 						</div>
 					</div>
 
-					{{#each field_data.media.audio.codecs}}
-						<div>
-							<div class="input">
-								<ul class="inputs-list">
-									<li>
-										<label>
-											<input type="checkbox" id="media_audio_codecs" name="media.audio.codecs[]"{{#ifInArray @key ../data.media.audio.codecs}} checked="checked"{{/ifInArray}} rel="popover" data-content="" value="{{ @key }}"/>
-											<span>{{ this }}</span>
-										</label>
-									</li>
-								</ul>
-							</div>
-						</div>
-					{{/each}}
+					<div class="callflows-codecs-ui" id="media_audio_codecs"></div>
 				</div>
 
 				<div id="video_settings">
-					{{#each field_data.media.video.codecs}}
-						<div class="clearfix">
-							<div class="input">
-								<ul class="inputs-list">
-									<li>
-										<label>
-											<input type="checkbox" id="media_video_codecs" name="media.video.codecs[]"{{#ifInArray @key ../data.media.video.codecs}} checked="checked"{{/ifInArray}} rel="popover" data-content="" value="{{ @key }}"/>
-											<span>{{ this }}</span>
-										</label>
-									</li>
-								</ul>
-							</div>
-						</div>
-					{{/each}}
+					<div class="clearfix" id="media_video_codecs"></div>
 				</div>
 
 				<div id="options">

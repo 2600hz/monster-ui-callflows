@@ -105,3 +105,6 @@
 	margin-bottom: 20px;
 }
 
+.callflows-port .callflows-codecs-ui {
+	max-width: 900px;
+}

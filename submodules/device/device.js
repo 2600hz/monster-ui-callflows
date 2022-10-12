@@ -541,6 +541,14 @@ define(function(require) {
 					submodule: 'device'
 				}));
 
+				if (device_html.find('#media_audio_codecs')) {
+					var audioSelector = monster.ui.codecSelector('audio', device_html.find('#media_audio_codecs'), data.data.media.audio.codecs);
+				};
+
+				if (device_html.find('#media_video_codecs')) {
+					var videoSelector = monster.ui.codecSelector('video', device_html.find('#media_video_codecs'), data.data.media.video.codecs);
+				};
+
 				if (device_html.find('#caller_id').length && hasExternalCallerId) {
 					_.forEach(cidSelectors, function(selector) {
 						var $target = device_html.find('.caller-id-' + selector + '-target');
@@ -613,7 +621,11 @@ define(function(require) {
 			self.deviceBindEvents({
 				data: data,
 				template: device_html,
-				callbacks: callbacks
+				callbacks: callbacks,
+				selectors: {
+					audio: audioSelector,
+					video: videoSelector
+				}
 			});
 
 			(target)
@@ -629,14 +641,19 @@ define(function(require) {
 		 * @param  {Object} args.data
 		 * @param  {Object} args.template
 		 * @param  {Object} args.callbacks
+		 * @param  {Object} args.selectors
 		 * @param  {Function} args.callbacks.save_success
 		 * @param  {Function} args.callbacks.delete_success
+		 * @param  {Object} args.selectors.audio
+		 * @param  {Object} args.selectors.video
 		 */
 		deviceBindEvents: function(args) {
 			var self = this,
 				data = args.data,
 				callbacks = args.callbacks,
-				device_html = args.template;
+				device_html = args.template,
+				audioSelector = args.selectors.audio,
+				videoSelector = args.selectors.video;
 
 			if (typeof data.data === 'object' && data.data.device_type) {
 				var deviceForm = device_html.find('#device-form');
@@ -683,12 +700,33 @@ define(function(require) {
 							if (!$this.hasClass('disabled')) {
 								$this.addClass('disabled');
 								if (monster.ui.valid(deviceForm)) {
-									var form_data = monster.ui.getFormData('device-form');
+									var form_data = monster.ui.getFormData('device-form'),
+										hasCodecs = $.inArray(form_data.device_type, ['sip_device', 'softphone', 'mobile']) > -1;
 
 									if (form_data.hasOwnProperty('music_on_hold') && form_data.music_on_hold.media_id === 'shoutcast') {
 										form_data.music_on_hold.media_id = device_html.find('.shoutcast-url-input').val();
 									}
 
+									if (hasCodecs) {
+										form_data.media = $.extend(true, {
+											audio: {
+												codecs: []
+											},
+											video: {
+												codecs: []
+											}
+										}, form_data.media);
+									}
+
+									if (hasCodecs) {
+										if (audioSelector) {
+											form_data.media.audio.codecs = audioSelector.getSelectedItems();
+										}
+
+										if (videoSelector) {
+											form_data.media.video.codecs = videoSelector.getSelectedItems();
+										}
+									}
 									self.deviceCleanFormData(form_data);
 
 									if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
@@ -1107,7 +1145,7 @@ define(function(require) {
 
 			if (form_data.device_type === 'teammate') {
 				form_data.caller_id_options = {
-					outbound_privacy: "none"
+					outbound_privacy: 'none'
 				};
 				form_data.ignore_completed_elsewhere = false;
 				form_data.media = {
