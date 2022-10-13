@@ -11,6 +11,7 @@ define(function(require) {
 		appFlags: {
 			unsupportedCallflowsList: {},
 			callflowsListSchema: {}
+			/* cachedSchemas: {} */
 		},
 
 		jsonEditorDefineAction: function(args) {
@@ -151,10 +152,12 @@ define(function(require) {
 			var self = this,
 				$template = template,
 				selectedSchema = $template.find('#name').val(),
-				callflowSchema = self.appFlags.callflowsListSchema[selectedSchema];
+				schemaId = 'callflows.' + selectedSchema,
+				callflowSchema = self.appFlags.callflowsListSchema[schemaId];
 
 			if (callflowSchema) {
-				jsoneditor.setSchema(callflowSchema.schema, callflowSchema.subSchemas);
+				var subSchemas = _.pick(self.appFlags.callflowsListSchema, self.jsonEditorValidateSubSchema(callflowSchema));
+				jsoneditor.setSchema(callflowSchema, subSchemas);
 			} else {
 				self.jsonEditorToggleSaveButton($template, false);
 
@@ -164,12 +167,12 @@ define(function(require) {
 
 				self.jsonEditorGetSchema({
 					data: {
-						schemaId: 'callflows.' + selectedSchema
+						schemaId: schemaId
 					},
 					success: function(data) {
-						var refList = self.jsonEditorValidateSubSchema(data);
+						var refList = self.jsonEditorGetRefList(data);
 
-						self.jsonEditorSetSchema(refList, data, jsoneditor, selectedSchema);
+						self.jsonEditorSetSchema(refList, data, jsoneditor);
 
 						self.jsonEditorToggleSaveButton($template, true);
 
@@ -184,6 +187,30 @@ define(function(require) {
 		},
 
 		/**
+		 * wrapper function to return a list of schema refs that has not been fetched yet
+		 * @param  {object} schema
+		 * @returns filtered array of unfetched refs
+		 */
+		jsonEditorGetRefList: function(schema) {
+			var self = this;
+			var refList = self.jsonEditorValidateSubSchema(schema);
+			return self.jsonEditorFilterCachedSubSchemaRef(refList);
+		},
+
+		/**
+		 * filter the schemas that have not been already fetched to save API calls
+		 * @param  {array} refs list of subschemas refs to fetch
+		 * @returns {array} list of filtered ref that have not been already fetched
+		 */
+		jsonEditorFilterCachedSubSchemaRef: function(refs) {
+			var self = this;
+			return _.filter(refs,
+				function(ref) {
+					return !self.appFlags.callflowsListSchema[ref];
+				});
+		},
+
+		/**
 		 * Verify if json schema has references
 		 * @param  {object} schema
 		 */
@@ -193,7 +220,7 @@ define(function(require) {
 			} else if (_.has(schema, 'properties.macros.items.oneOf')) {
 				return _.map(schema.properties.macros.items.oneOf, '$ref');
 			} else {
-				return false;
+				return [];
 			}
 		},
 
@@ -253,15 +280,18 @@ define(function(require) {
 		 * @param  {string[]} refList - list of references
 		 * @param  {object} data - JSON schema
 		 * @param  {object} jsoneditor - JSON editor instance
-		 * @param  {string} selectedSchema - selected JSON SCHEMA option
 		 */
-		jsonEditorSetSchema: function(refList, data, jsoneditor, selectedSchema) {
+		jsonEditorSetSchema: function(refList, data, jsoneditor) {
 			var self = this;
 			if (refList) {
-				self.jsonEditorGetSubSchema(refList, data, jsoneditor, selectedSchema);
+				self.jsonEditorGetSubSchema(
+					refList,
+					data,
+					jsoneditor,
+					_.pick(self.appFlags.callflowsListSchema, refList));
 			} else {
 				jsoneditor.setSchema(data);
-				self.appFlags.callflowsListSchema[selectedSchema] = { schema: data, subSchemas: {} };
+				self.appFlags.callflowsListSchema = _.merge(self.appFlags.callflowsListSchema, { [data.id]: data });
 			}
 		},
 
@@ -270,9 +300,9 @@ define(function(require) {
 		 * @param  {string[]} refList - list of subschemas to fetch
 		 * @param  {object} parentSchema - schema to which subschemas are added
 		 * @param  {object} jsoneditor - jsoneditor instance
-		 * @param  {string} selectedSchema - selected JSON SCHEMA option
+		 * @param  {object} cachedSchemas - schemas already fetched
 		 */
-		jsonEditorGetSubSchema: function(refList, parentSchema, jsoneditor, selectedSchema) {
+		jsonEditorGetSubSchema: function(refList, parentSchema, jsoneditor, cachedSchemas) {
 			var self = this;
 
 			monster.parallel(
@@ -293,8 +323,8 @@ define(function(require) {
 				})
 				.value()
 				, function(err, results) {
-					self.appFlags.callflowsListSchema[selectedSchema] = { schema: parentSchema, subSchemas: results };
-					jsoneditor.setSchema(parentSchema, results);
+					self.appFlags.callflowsListSchema = _.merge(self.appFlags.callflowsListSchema, { [parentSchema.id]: parentSchema }, results);
+					jsoneditor.setSchema(parentSchema, _.merge(cachedSchemas, results));
 				});
 		}
 	};
