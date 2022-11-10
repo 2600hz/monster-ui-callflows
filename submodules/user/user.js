@@ -449,7 +449,7 @@ define(function(require) {
 						callback(null, defaults);
 					}
 				}
-			}, monster.util.getCapability('caller_id.external_numbers').isEnable && {
+			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 				cidNumbers: function(next) {
 					self.callApi({
 						resource: 'externalNumbers.list',
