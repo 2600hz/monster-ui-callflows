@@ -161,18 +161,17 @@ define(function(require) {
 					}
 				};
 
-			if (typeof data === 'object' && data.id) {
-				self.temporalRuleGet(data.id, function(_data, status) {
-					var oldFormatData = { data: _data };
+			if (_.isPlainObject(data) && data.id) {
+				self.temporalRuleGet(data.id, function(_data) {
+					var oldFormatData = { data: _data },
+						isAllDay = _.get(_data, 'time_window_start', 0) === 0 && _.get(_data, 'time_window_stop', 86400) === 86400;
 
 					self.timeofdayMigrateData(oldFormatData);
 					self.timeofdayFormatData(oldFormatData);
 
 					var renderData = $.extend(true, defaults, oldFormatData);
 
-					if (renderData.data.time_window_start === 0 && renderData.data.time_window_stop === 86400) {
-						renderData.field_data.isAllDay = true;
-					}
+					renderData.field_data.isAllDay = isAllDay;
 
 					self.timeofdayRender(renderData, target, callbacks);
 
@@ -222,6 +221,7 @@ define(function(require) {
 			self.winkstartTabs(timeofday_html);
 
 			monster.ui.datepicker(timeofday_html.find('#start_date'));
+			monster.ui.datepicker(timeofday_html.find('#end_date'));
 			monster.ui.timepicker(timeofday_html.find('.timepicker'), {
 				step: 5
 			});
