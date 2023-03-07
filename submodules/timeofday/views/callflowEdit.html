@@ -106,6 +106,15 @@
 						</div>
 					</div>
 
+				{{#if data.end_date}}
+					<div class="clearfix">
+						<label for="day">{{ i18n.callflows.timeofday.end_date }}</label>
+						<div class="input">
+							<input class="span4" id="end_date" name="end_date" type="text" placeholder="" value="{{ toFriendlyDate data.end_date "date"}}" rel="popover" data-content="{{ i18n.callflows.timeofday.end_date_data_content }}"{{#unless data.showSave}} disabled{{/unless}} />
+						</div>
+					</div>
+				{{/if}}
+
 					<div class="clearfix time-wrapper-field">
 						<label for="time">{{ i18n.callflows.timeofday.time }}</label>
 						<div class="input time-wrapper{{#if field_data.isAllDay}} hidden{{/if}}">

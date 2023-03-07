@@ -578,6 +578,8 @@
 			"select_which_days": "Select which days to apply this rule",
 			"start_date": "Start Date",
 			"start_date_data_content": "Select the starting date of this rule",
+			"end_date": "End Date",
+			"end_date_data_content": "Select the ending date of this rule",
 			"enabled": "Enabled",
 			"enabled_data_content": "Select when this rule should be enabled",
 			"enabled_based_on_time": "Based on time",
