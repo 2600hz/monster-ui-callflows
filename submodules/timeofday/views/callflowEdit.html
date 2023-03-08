@@ -99,21 +99,32 @@
 						</div>
 					</div>
 
+				{{#compare extra.holidayType "!==" "single"}}
 					<div class="clearfix">
 						<label for="day">{{ i18n.callflows.timeofday.start_date }}</label>
 						<div class="input">
 							<input class="span4" id="start_date" name="start_date" type="text" placeholder="" value="{{ toFriendlyDate data.start_date "date"}}" rel="popover" data-content="{{ i18n.callflows.timeofday.start_date_data_content }}"{{#unless data.showSave}} disabled{{/unless}} />
 						</div>
 					</div>
+				{{/compare}}
 
-				{{#if data.end_date}}
+			{{#if data.end_date}}
+				{{#compare extra.holidayType "===" "single"}}
+					<div class="clearfix">
+						<label for="day">{{ i18n.callflows.timeofday.date }}</label>
+						<div class="input">
+							<input class="span4" id="end_date" name="end_date" type="text" placeholder="" value="{{ toFriendlyDate data.end_date "date"}}" rel="popover" data-content="{{ i18n.callflows.timeofday.date_data_content }}"{{#unless data.showSave}} disabled{{/unless}} />
+						</div>
+					</div>
+				{{else}}
 					<div class="clearfix">
 						<label for="day">{{ i18n.callflows.timeofday.end_date }}</label>
 						<div class="input">
 							<input class="span4" id="end_date" name="end_date" type="text" placeholder="" value="{{ toFriendlyDate data.end_date "date"}}" rel="popover" data-content="{{ i18n.callflows.timeofday.end_date_data_content }}"{{#unless data.showSave}} disabled{{/unless}} />
 						</div>
 					</div>
-				{{/if}}
+				{{/compare}}
+			{{/if}}
 
 					<div class="clearfix time-wrapper-field">
 						<label for="time">{{ i18n.callflows.timeofday.time }}</label>
