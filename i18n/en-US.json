@@ -576,6 +576,8 @@
 			"weeks": "week(s)",
 			"on": "On:",
 			"select_which_days": "Select which days to apply this rule",
+			"date": "Date",
+			"date_data_content": "Select the date of this rule",
 			"start_date": "Start Date",
 			"start_date_data_content": "Select the starting date of this rule",
 			"end_date": "End Date",
