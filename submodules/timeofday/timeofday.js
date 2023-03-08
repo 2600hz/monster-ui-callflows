@@ -172,6 +172,16 @@ define(function(require) {
 					var renderData = $.extend(true, defaults, oldFormatData);
 
 					renderData.field_data.isAllDay = isAllDay;
+					renderData.extra.holidayType = renderData.data.showSave || _data.type !== 'main_holidays'
+						? null
+						: _.has(_data, 'ordinal')
+							? 'advanced'
+							: _.has(_data, 'viewData') || _.chain(_data).get('days', []).size().value() > 1
+								? 'range'
+								: 'single';
+					renderData.data.cycle = renderData.extra.holidayType === 'single'
+						? 'date'
+						: renderData.data.cycle;
 
 					self.timeofdayRender(renderData, target, callbacks);
 
@@ -623,7 +633,7 @@ define(function(require) {
 							submodule: 'timeofday'
 						}));
 
-						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', { inherit: self.i18n.active().defaultTimezone });
 
 						$('#add', popup_html).click(function() {
 							var timezone = $('#timezone_selector', popup_html).val();
