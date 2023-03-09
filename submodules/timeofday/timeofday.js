@@ -157,7 +157,9 @@ define(function(require) {
 							{ id: 12, value: 'December' }
 						],
 
-						isAllDay: false
+						isAllDay: false,
+
+						hideCycle: false
 					}
 				};
 
@@ -182,6 +184,7 @@ define(function(require) {
 					renderData.data.cycle = renderData.extra.holidayType === 'single'
 						? 'date'
 						: renderData.data.cycle;
+					renderData.field_data.hideCycle = _.includes(['range', 'advanced'], renderData.extra.holidayType) && !_.isNil(renderData.data.end_date);
 
 					self.timeofdayRender(renderData, target, callbacks);
 
