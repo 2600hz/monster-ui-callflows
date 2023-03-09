@@ -499,6 +499,8 @@
 			"prompt_record_pin_data_content": "PIN to enter in order to allow users to record their own greetings",
 			"allow_caller_to_dial_extensions": "Allow caller to dial extensions",
 			"allow_caller_to_dial_extensions_data_content": "Check to allow the user to dial extensions from this menu",
+			"continue_to_default_action": "Continue to default action",
+			"continue_to_default_action_popover": "If true, when caller dials an extension, call will be branched, once that branch finishes if menu has a default action set, that action will be executed",
 			"greeting_message": "Greeting Message",
 			"greeting_message_data_content": "Select the Greeting message that you want to use for this menu. If you select - Not set -, then no media file will be played.",
 			"edit": "Edit",
