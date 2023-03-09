@@ -26,6 +26,7 @@
 						</div>
 					</div>
 
+				{{#unless field_data.hideCycle}}
 					<div class="clearfix" id="repeats">
 						<label for="cycle">{{ i18n.callflows.timeofday.repeats }}</label>
 						<div class="input">
@@ -38,6 +39,7 @@
 							</select>
 						</div>
 					</div>
+				{{/unless}}
 
 					<div class="clearfix" id="every">
 						<label>{{ i18n.callflows.timeofday.every }}</label>
