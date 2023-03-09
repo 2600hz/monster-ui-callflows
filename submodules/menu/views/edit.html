@@ -55,6 +55,25 @@
 					</div>
 
 					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label>
+										<span rel="popover" data-content="{{ i18n.callflows.menu.continue_to_default_action_popover }}">
+											{{#if data.branch_extension}}
+												<input type="checkbox" id="branch_extension" name="branch_extension" checked="checked" />
+											{{else}}
+												<input type="checkbox" id="branch_extension" name="branch_extension" />
+											{{/if}}
+											<span>{{ i18n.callflows.menu.continue_to_default_action }}</span>
+										</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
 						<label for="media_greeting">{{ i18n.callflows.menu.greeting_message }}</label>
 						<div class="input">
 							<span rel="popover" data-content="{{ i18n.callflows.menu.greeting_message_data_content }}">
