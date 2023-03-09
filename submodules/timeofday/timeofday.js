@@ -181,10 +181,7 @@ define(function(require) {
 							: _.has(_data, 'viewData') || _.chain(_data).get('days', []).size().value() > 1
 								? 'range'
 								: 'single';
-					renderData.data.cycle = renderData.extra.holidayType === 'single'
-						? 'date'
-						: renderData.data.cycle;
-					renderData.field_data.hideCycle = _.includes(['range', 'advanced'], renderData.extra.holidayType) && !_.isNil(renderData.data.end_date);
+					renderData.field_data.hideCycle = !_.isNull(renderData.extra.holidayType) && !_.isNil(renderData.data.end_date);
 
 					self.timeofdayRender(renderData, target, callbacks);
 
