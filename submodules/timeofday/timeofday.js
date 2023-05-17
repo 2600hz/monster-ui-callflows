@@ -157,22 +157,31 @@ define(function(require) {
 							{ id: 12, value: 'December' }
 						],
 
-						isAllDay: false
+						isAllDay: false,
+
+						hideCycle: false
 					}
 				};
 
-			if (typeof data === 'object' && data.id) {
-				self.temporalRuleGet(data.id, function(_data, status) {
-					var oldFormatData = { data: _data };
+			if (_.isPlainObject(data) && data.id) {
+				self.temporalRuleGet(data.id, function(_data) {
+					var oldFormatData = { data: _data },
+						isAllDay = _.get(_data, 'time_window_start', 0) === 0 && _.get(_data, 'time_window_stop', 86400) === 86400;
 
 					self.timeofdayMigrateData(oldFormatData);
 					self.timeofdayFormatData(oldFormatData);
 
 					var renderData = $.extend(true, defaults, oldFormatData);
 
-					if (renderData.data.time_window_start === 0 && renderData.data.time_window_stop === 86400) {
-						renderData.field_data.isAllDay = true;
-					}
+					renderData.field_data.isAllDay = isAllDay;
+					renderData.extra.holidayType = renderData.data.showSave || _data.type !== 'main_holidays'
+						? null
+						: _.has(_data, 'ordinal')
+							? 'advanced'
+							: _.has(_data, 'viewData') || _.chain(_data).get('days', []).size().value() > 1
+								? 'range'
+								: 'single';
+					renderData.field_data.hideCycle = !_.isNull(renderData.extra.holidayType) && !_.isNil(renderData.data.end_date);
 
 					self.timeofdayRender(renderData, target, callbacks);
 
@@ -222,6 +231,7 @@ define(function(require) {
 			self.winkstartTabs(timeofday_html);
 
 			monster.ui.datepicker(timeofday_html.find('#start_date'));
+			monster.ui.datepicker(timeofday_html.find('#end_date'));
 			monster.ui.timepicker(timeofday_html.find('.timepicker'), {
 				step: 5
 			});
@@ -417,7 +427,7 @@ define(function(require) {
 			if (form_data.start_date === '') {
 				delete form_data.start_date;
 			} else {
-				form_data.start_date = monster.util.dateToEndOfGregorianDay(form_data.start_date, 'UTC');
+				form_data.start_date = monster.util.dateToBeginningOfGregorianDay(form_data.start_date, monster.util.getCurrentTimeZone());
 			}
 
 			form_data.time_window_start = parseInt(monster.util.timeToSeconds(timeStart));
@@ -621,7 +631,7 @@ define(function(require) {
 							submodule: 'timeofday'
 						}));
 
-						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+						timezone.populateDropdown($('#timezone_selector', popup_html), node.getMetadata('timezone') || 'inherit', { inherit: self.i18n.active().defaultTimezone });
 
 						$('#add', popup_html).click(function() {
 							var timezone = $('#timezone_selector', popup_html).val();
