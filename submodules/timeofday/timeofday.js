@@ -350,8 +350,6 @@ define(function(require) {
 							message: self.i18n.active().callflows.timeofday.toastr.warning.missingDay
 						});
 					} else if (monster.ui.valid(timeofdayForm)) {
-						$this.addClass('disabled');
-
 						var form_data = monster.ui.getFormData('timeofday-form');
 
 						form_data.wdays = [];
