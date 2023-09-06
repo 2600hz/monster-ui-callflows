@@ -1569,7 +1569,8 @@ define(function(require) {
 							var popup_html = $(self.getTemplate({
 									name: 'addNumber',
 									data: {
-										phoneNumbers: parsedNumbers
+										phoneNumbers: parsedNumbers,
+										hideBuyNumbers: _.get(monster, 'config.whitelabel.hideBuyNumbers', false)
 									}
 								})),
 								popup = monster.ui.dialog(popup_html, {
