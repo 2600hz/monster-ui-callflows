@@ -12,6 +12,7 @@
 				</select>
 
 				<ul class="nav pull-right number-selection-sidelink">
+					{{#unless hideBuyNumbers}}
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle buy-dropdown monster-link" data-toggle="dropdown" data-target="#">
 							<i class="fa fa-shopping-cart monster-green fa-lg"></i>
@@ -23,6 +24,7 @@
 							<!-- <li><a class="buy-link" data-type="vanity" href="#">{{ i18n.callflows.buyVanity }}</a></li> -->
 						</ul>
 					</li>
+					{{/unless}}
 				</ul>
 				
 			</div>
