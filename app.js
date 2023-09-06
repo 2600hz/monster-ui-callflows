@@ -1570,9 +1570,7 @@ define(function(require) {
 									name: 'addNumber',
 									data: {
 										phoneNumbers: parsedNumbers,
-										hideBuyNumbers: monster.config.whitelabel.hasOwnProperty('hideBuyNumbers')
-											? monster.config.whitelabel.hideBuyNumbers
-											: false
+										hideBuyNumbers: _.get(monster, 'config.whitelabel.hideBuyNumbers', false)
 									}
 								})),
 								popup = monster.ui.dialog(popup_html, {
