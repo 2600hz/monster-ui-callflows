@@ -632,6 +632,12 @@ define(function(require) {
 					faxboxId: faxboxId
 				},
 				success: function(data) {
+					var custom_smtp_address = _.get(data, 'metadata.custom_smtp_address');
+
+					if (custom_smtp_address) {
+						data.data.custom_smtp_address = custom_smtp_address;
+					}
+
 					callback && callback(data.data);
 				}
 			});
