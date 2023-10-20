@@ -432,6 +432,7 @@ define(function(require) {
 					$this.addClass('disabled');
 
 					if (monster.ui.valid(form_html)) {
+						delete data.faxbox.custom_smtp_address;
 						self.faxboxSave(form_data, data.faxbox, function(data) {
 							$this.removeClass('disabled');
 							callbacks && callbacks.hasOwnProperty('save_success') && callbacks.save_success(data);
