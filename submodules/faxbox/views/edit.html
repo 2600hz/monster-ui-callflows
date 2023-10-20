@@ -123,11 +123,11 @@
 					</div>
 				</div>
 
-			{{#if faxbox._read_only.custom_smtp_address}}
+			{{#if faxbox.custom_smtp_address}}
 				<div class="clearfix">
 					<label for="custom_smtp_address">{{ i18n.callflows.faxbox.smtp_email_address }}</label>
 					<div class="input">
-						<span class="text">{{faxbox._read_only.custom_smtp_address}}</span>
+						<span class="text">{{faxbox.custom_smtp_address}}</span>
 					</div>
 				</div>
 			{{/if}}
