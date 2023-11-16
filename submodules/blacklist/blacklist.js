@@ -84,7 +84,7 @@ define(function(require) {
 			}
 		},
 
-/*		blacklistBindEvents: function(data, template, callbacks) {
+		/*blacklistBindEvents: function(data, template, callbacks) {
 			var self = this,
 				addNumber = function(e) {
 					var number = template.find('#number_value').val();

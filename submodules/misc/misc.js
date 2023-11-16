@@ -1625,6 +1625,7 @@ define(function(require) {
 				}
 			});
 		}
+
 	};
 
 	return app;
