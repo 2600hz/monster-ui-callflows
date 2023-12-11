@@ -3,30 +3,6 @@ define(function(require) {
 		_ = require('lodash'),
 		monster = require('monster');
 
-	var appSubmodules = [
-		'blacklist',
-		'branchvariable',
-		'conference',
-		'device',
-		'directory',
-		'faxbox',
-		'featurecodes',
-		'groups',
-		'media',
-		'menu',
-		'misc',
-		'qubicle',
-		'resource',
-		'temporalset',
-		'timeofday',
-		'user',
-		'vmbox'
-	];
-
-	require(_.map(appSubmodules, function(name) {
-		return './submodules/' + name + '/' + name;
-	}));
-
 	var app = {
 		name: 'callflows',
 
@@ -43,7 +19,25 @@ define(function(require) {
 		// Define the events available for other apps
 		subscribe: {},
 
-		subModules: appSubmodules,
+		subModules: [
+			'blacklist',
+			'branchvariable',
+			'conference',
+			'device',
+			'directory',
+			'faxbox',
+			'featurecodes',
+			'groups',
+			'media',
+			'menu',
+			'misc',
+			'qubicle',
+			'resource',
+			'temporalset',
+			'timeofday',
+			'user',
+			'vmbox'
+		],
 
 		appFlags: {
 			flow: {},
