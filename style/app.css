@@ -675,9 +675,11 @@
 #callflow_container .wrapper_callflow_buttons,
 .callflow-preview .wrapper_callflow_buttons {
 	display: block;
-	width: 322px;
+	width: 485px;
+	/* width: 322px; */
 	margin: auto;
 	margin-bottom: 5px;
+	text-align: center;
 }
 
 #callflow_container .wrapper_callflow_buttons .monster-button,
@@ -1713,4 +1715,9 @@
 
 .media-edit-callflow-popup #edit_link.active {
 	display: block;
+}
+
+
+.monster-button-duplicate {
+	margin-left: 10px !important;
 }
