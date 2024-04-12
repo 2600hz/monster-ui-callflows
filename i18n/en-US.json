@@ -1220,6 +1220,8 @@
 		"advanced_cat": "Advanced",
 		"call_recording_cat": "Call Recording",
 		"caller_id_cat": "Caller-ID",
+		"duplicate_callflow": "Copy callflow",
+		"duplicate_callflow_info": "The Callflow has been copied but not saved. Please assign a new number to the Callflow and update the name before saving.",
 		"delete_callflow": "Delete callflow",
 		"save_changes": "Save changes",
 		"invalid_number": "Invalid number!",

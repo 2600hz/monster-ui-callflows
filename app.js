@@ -88,6 +88,7 @@ define(function(require) {
 		},
 
 		renderCallflows: function(container) {
+
 			var self = this,
 				callflowsTemplate = $(self.getTemplate({
 					name: 'callflow-manager',
@@ -962,6 +963,7 @@ define(function(require) {
 			$('.buttons').empty();
 
 			$('.save', buttons).click(function() {
+				console.log('Save Callflow');
 				if (self.flow.numbers && self.flow.numbers.length > 0) {
 					self.save();
 				} else {
@@ -970,6 +972,7 @@ define(function(require) {
 			});
 
 			$('.delete', buttons).click(function() {
+				console.log('Delete Callflow');
 				if (self.flow.id) {
 					monster.ui.confirm(self.i18n.active().oldCallflows.are_you_sure, function() {
 						self.callApi({
@@ -995,6 +998,22 @@ define(function(require) {
 					monster.ui.alert(self.i18n.active().oldCallflows.this_callflow_has_not_been_created);
 				}
 			});
+
+			// copy callflow
+			$('.duplicate', buttons).click(function() {
+				console.log('Copy Callflow');
+                delete(self.dataCallflow.id);
+                self.flow.numbers = [];
+				self.flow.name = self.flow.name + ' (Copy)';
+                self.flow.id = undefined;
+                self.repaintFlow();
+				monster.ui.alert(self.i18n.active().oldCallflows.duplicate_callflow_info);
+				/* $('.delete', '#ws_callflow').hide(); */
+				$('#pending_change', '#ws_callflow').show();
+				$('.duplicate', '#ws_callflow').hide(); // copy callflow
+				$('.save', '#ws_callflow').addClass('pulse-box');
+                
+            });
 
 			$('.buttons').append(buttons);
 		},
@@ -1252,9 +1271,11 @@ define(function(require) {
 			var self = this;
 			if (pending_change) {
 				$('#pending_change', '#ws_callflow').show();
+				$('.duplicate', '#ws_callflow').hide(); // copy callflow
 				$('.save', '#ws_callflow').addClass('pulse-box');
 			} else {
 				$('#pending_change', '#ws_callflow').hide();
+				$('.duplicate', '#ws_callflow').show(); // copy callflow
 				$('.save', '#ws_callflow').removeClass('pulse-box');
 			}
 		},
