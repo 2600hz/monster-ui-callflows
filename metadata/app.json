@@ -1,5 +1,5 @@
 {
-	"name": "callflows",
+	"name": "dt-callflows",
 	"i18n": {
 		"de-DE": {
 			"label": "Callflows",
@@ -14,8 +14,8 @@
 		},
 		"en-US": {
 			"label": "Callflows",
-			"description": "The Callflows allows you manage Callflows as well as various VOIP entities.",
-			"extended_description": "The Callflows app features a drag and drop interface which allows users to select from over 50 items in our “call handling toolbox” to chain together. These chains, known as callflows, allow you to manipulate the flow a call takes as a caller traverses various features, menus and call routing decisions in the system. Use the Callflows app editor to configure every step a caller can take when calling a phone number or extension. Route calls to menus, ring groups, voicemails, conference bridges, call queues, call recordings and more.",
+			"description": "Callflows has a user-friendly, drag and drop interface for configuring every step an incoming call will take.",
+			"extended_description": "Drawing from the over 50 actions in our call handling toolbox, you can easily design complex callflows to arrange the path a call takes as it traverses the various features, menus, and call routing settings in the system.",
 			"features": [
 				"Drag and drop management",
 				"50+ call handling actions such as: Time of Day Routing, Device/User Routing, Menus/IVRs, Call Pickup, BLF/Presence Manipulation, Outbound Call Routing...",
@@ -27,8 +27,8 @@
 	"tags": [
 		"admin"
 	],
-	"icon": "Callflows_app.png",
-	"api_url": "http://10.26.0.41:8000/v2",
+	"icon": "DT-Callflows_app.png",
+	"api_url": "https://127.0.0.1:8443/v2",
 	"author": "2600Hz",
 	"version": "1.0",
 	"license": "-",

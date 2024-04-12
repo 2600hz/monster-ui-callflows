@@ -27,7 +27,7 @@ define(function(require) {
 	}));
 
 	var app = {
-		name: 'callflows',
+		name: 'dt-callflows',
 
 		css: [ 'app', 'icons' ],
 
