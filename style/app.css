@@ -474,10 +474,11 @@
 	float: left;
 }
 
-#callflow-content .ui-draggable-dragging {
+.callflow-content .ui-draggable-dragging {
 	cursor: -moz-grabbing !important;
 	cursor: -webkit-grabbing !important;
 	cursor: grabbing !important;
+	z-index: 999 !important;
 }
 
 #ws_callflow .root .top_bar .edit_icon,
