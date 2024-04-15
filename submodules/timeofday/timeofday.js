@@ -343,9 +343,15 @@ define(function(require) {
 
 						form_data.interval = $('#cycle', timeofday_html).val() === 'monthly' ? $('#interval_month', timeofday_html).val() : $('#interval_week', timeofday_html).val();
 						form_data.start_date = timeofday_html.find('#start_date').datepicker('getDate');
+
+						$(form_data.end_date !== '', timeofday_html).each(function() {
+							form_data.end_date = timeofday_html.find('#end_date').datepicker('getDate');
+						});
+
 						form_data = self.timeofdayCleanFormData(form_data);
 
 						self.timeofdaySave(form_data, data, callbacks.save_success);
+
 					} else {
 						$this.removeClass('disabled');
 						monster.ui.alert('error', self.i18n.active().callflows.timeofday.there_were_errors_on_the_form);
@@ -366,6 +372,26 @@ define(function(require) {
 
 				$('input.timepicker', timeofday_html).val('');
 				$('.time-wrapper', timeofday_html).toggleClass('hidden', $this.is(':checked'));
+			});
+
+			// if start date is null prefill with todays date
+			$('#start_date', timeofday_html).each(function() {
+				if (!$(this).val()) {
+					$(this).val(monster.util.toFriendlyDate(new Date(), 'date'));
+				}
+			});
+
+			// end date must be greater than start date
+			$('#end_date', timeofday_html).change(function() {
+			
+				startDate = timeofday_html.find('#start_date').datepicker('getDate');
+				endDate = timeofday_html.find('#end_date').datepicker('getDate');
+
+				if (endDate <= startDate) {
+					$('#end_date', timeofday_html).val('');
+					monster.ui.alert('warning', self.i18n.active().callflows.timeofday.end_date_less_than_start_date);
+				}
+
 			});
 
 			_after_render = callbacks.after_render;
@@ -412,6 +438,10 @@ define(function(require) {
 				form_data.start_date = monster.util.dateToGregorian(form_data.start_date);
 			}
 
+			if (form_data.end_date !== '') {
+				form_data.end_date = monster.util.dateToBeginningOfGregorianDay(form_data.end_date, monster.util.getCurrentTimeZone());
+			}
+
 			form_data.time_window_start = parseInt(monster.util.timeToSeconds(timeStart));
 			form_data.time_window_stop = parseInt(monster.util.timeToSeconds(timeEnd));
 
@@ -437,6 +467,10 @@ define(function(require) {
 			delete form_data.time;
 			delete form_data.weekday;
 
+			if (form_data.end_date === '') {
+				delete form_data.end_date;
+			}
+		
 			if (form_data.enabled === 'true') {
 				form_data.enabled = true;
 			} else if (form_data.enabled === 'false') {
