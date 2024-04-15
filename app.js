@@ -819,6 +819,7 @@ define(function(require) {
 					}
 				}, !self.appFlags.showAllCallflows && {
 					filters: {
+						paginate: false,
 						filter_not_numbers: 'no_match',
 						'filter_not_ui_metadata.origin': [
 							'voip',
@@ -828,7 +829,7 @@ define(function(require) {
 						]
 					}
 				}, searchValue && {
-					value: searchValue
+					value: searchValue 
 				});
 
 			self.callApi({
@@ -963,7 +964,7 @@ define(function(require) {
 			$('.buttons').empty();
 
 			$('.save', buttons).click(function() {
-				console.log('Save Callflow');
+
 				if (self.flow.numbers && self.flow.numbers.length > 0) {
 					self.save();
 				} else {
@@ -972,7 +973,7 @@ define(function(require) {
 			});
 
 			$('.delete', buttons).click(function() {
-				console.log('Delete Callflow');
+
 				if (self.flow.id) {
 					monster.ui.confirm(self.i18n.active().oldCallflows.are_you_sure, function() {
 						self.callApi({
@@ -1012,9 +1013,8 @@ define(function(require) {
                 self.repaintFlow();
 
 				monster.ui.alert(self.i18n.active().oldCallflows.duplicate_callflow_info);
-				/* $('.delete', '#ws_callflow').hide(); */
 				$('#pending_change', '#ws_callflow').show();
-				$('.duplicate', '#ws_callflow').hide(); // copy callflow
+				$('.duplicate', '#ws_callflow').addClass('disabled'); // copy callflow
 				$('.save', '#ws_callflow').addClass('pulse-box');
                 
             });
@@ -1079,7 +1079,7 @@ define(function(require) {
 			self.flow.root.key = 'flow';
 			self.flow.numbers = [];
 			self.flow.caption_map = {};
-			self.formatFlow();
+			self.formatFlow();	
 		},
 
 		formatFlow: function() {
@@ -1152,23 +1152,28 @@ define(function(require) {
 					});
 				};
 
-				this.addChild = function(branch) {
+				this.addChild = function(branch, position) {
 					if (!(branch.actionName in this.potentialChildren())) {
 						return false;
 					}
-
+				
 					if (branch.contains(this)) {
 						return false;
 					}
-
+				
 					if (branch.parent) {
 						branch.parent.removeChild(branch);
 					}
-
+				
 					branch.parent = this;
-
-					this.children.push(branch);
-
+				
+					// Insert the new branch at the specified position or at the end if position is not provided
+					if (typeof position === 'number' && position >= 0 && position < this.children.length) {
+						this.children.splice(position, 0, branch);
+					} else {
+						this.children.push(branch);
+					}
+				
 					return true;
 				};
 
@@ -1275,11 +1280,11 @@ define(function(require) {
 			var self = this;
 			if (pending_change) {
 				$('#pending_change', '#ws_callflow').show();
-				$('.duplicate', '#ws_callflow').hide(); // copy callflow
+				$('.duplicate', '#ws_callflow').addClass('disabled'); // copy callflow
 				$('.save', '#ws_callflow').addClass('pulse-box');
 			} else {
 				$('#pending_change', '#ws_callflow').hide();
-				$('.duplicate', '#ws_callflow').show(); // copy callflow
+				$('.duplicate', '#ws_callflow').removeClass('disabled'); // copy callflow
 				$('.save', '#ws_callflow').removeClass('pulse-box');
 			}
 		},
@@ -1666,7 +1671,7 @@ define(function(require) {
 					}));
 				}
 
-				//make names of callflow nodes clickable
+				// make names of callflow nodes clickable
 				$('.details a', node_html).click(function(event) {
 					event.stopPropagation();
 					var previewCallflowId = self.flow.nodes[$(node_html).find('.delete').attr('id')].data.data.id,
@@ -1695,54 +1700,178 @@ define(function(require) {
 
 				$(this).droppable({
 					drop: function(event, ui) {
-						var target = self.flow.nodes[$(this).attr('id')],
+						var targetId = $(this).attr('id'),
+							target = self.flow.nodes[targetId],
 							action,
-							branch;
-
-						if (ui.draggable.hasClass('action')) {
-							action = ui.draggable.attr('name');
-
-							branch = self.branch(action);
-							branch.caption = self.actions[action].caption(branch, self.flow.caption_map);
-
-							if (target.addChild(branch)) {
-								if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
-									branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
-
-									self.actions[branch.parent.actionName].key_edit(branch, function() {
-										self.actions[action].edit(branch, function() {
-											self.repaintFlow();
-										});
-									});
-								} else {
-									self.actions[action].edit(branch, function() {
-										self.repaintFlow();
-									});
-								}
-
-								//This is just in case something goes wrong with the dialog
-								self.repaintFlow();
+							branch,
+							validActionNames = [
+								'menu[id=*]', 
+								'branch_variable[]', 
+								'temporal_route[]'
+							];
+						
+						/* // commented out as don't believe latter section not required
+						function addChildBelow(parent, node, position) {
+							if (parent) {
+								// add the node below the target at the specified position
+								parent.addChild(node, position);
+							} else {
+								// if the target has no parent, add the node as a sibling
+								self.flow.nodes[node.id] = node;
+								self.flow.root = node;
 							}
 						}
+						*/
+						
+						function addChildBelow(parent, node, position) {
+							// add the node below the target at the specified position
+							parent.addChild(node, position);
+							
+						}
+						
+						// action is a new item being added to the callflow
+						if (ui.draggable.hasClass('action')) {
+							action = ui.draggable.attr('name');
+							branch = self.branch(action);
+							branch.caption = self.actions[action].caption(branch, self.flow.caption_map);
+				
+							// handle callflow actions that support parallel children
+							if (validActionNames.includes(target.actionName)) {
+							
+								addChildBelow(target, branch);
 
-						if (ui.draggable.hasClass('node')) {
-							var branch = self.flow.nodes[ui.draggable.attr('id')];
+							} else {
 
-							if (target.addChild(branch)) {
-								// If we move a node, destroy its key
-								branch.key = '_';
+								// check if callflow actions that support parallel children
+								if (validActionNames.includes(action)) {
+									
+									// store the children of the target temporarily
+									var originalChildren = target.children.slice();
 
-								if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
-									branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
+									// handle new callflow with no children
+									if (originalChildren.length == 0) {
+							
+										addChildBelow(target, branch);
+
+									}
+
+									else {
+
+										var parentKey = '_';
+										var parentKeyCaption = 'Default action'
+
+										// update child branch key value
+										originalChildren[0].key = parentKey;
+										originalChildren[0].key_caption = parentKeyCaption;
+						
+										// remove the children from the target
+										target.children = [];
+						
+										// add the new branch below the target
+										addChildBelow(target, branch, originalChildren.length + 1);
+						
+										// re-add the original children as children of the new branch
+										originalChildren.forEach(function(child) {
+											branch.addChild(child);
+										});
+
+									}
+									
 								}
 
-								ui.draggable.remove();
-								self.repaintFlow();
+								else {
+
+									// store the children of the target temporarily
+									var originalChildren = target.children.slice();
+					
+									// remove the children from the target
+									target.children = [];
+					
+									// add the new branch below the target
+									addChildBelow(target, branch, originalChildren.length + 1);
+					
+									// re-add the original children as children of the new branch
+									originalChildren.forEach(function(child) {
+										branch.addChild(child);
+									});
+
+								}
+								
 							}
+				
+							if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
+								branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
+				
+								self.actions[branch.parent.actionName].key_edit(branch, function() {
+									self.actions[action].edit(branch, function() {
+										// repaint the flow after all operations are completed
+										self.repaintFlow();
+									});
+								});
+							} else {
+								self.actions[action].edit(branch, function() {
+									// repaint the flow after all operations are completed
+									self.repaintFlow();
+								});
+							}
+						}
+				
+						// node is an action already on the callflow
+						if (ui.draggable.hasClass('node')) {
+							
+							// handle callflow actions that support parallel children
+							if (validActionNames.includes(target.actionName)) {
+							
+								var branch = self.flow.nodes[ui.draggable.attr('id')];
+
+								if (target.addChild(branch)) {
+
+									// if we move a node, destroy its key
+									
+									branch.key = '_';
+	
+									if (branch.parent && ('key_caption' in self.actions[branch.parent.actionName])) {
+
+										branch.key_caption = self.actions[branch.parent.actionName].key_caption(branch, self.flow.caption_map);
+									
+									}
+									
+									ui.draggable.remove();
+									self.repaintFlow();
+
+								}					
+
+							} else {
+
+								var draggedNodeId = ui.draggable.attr('id');
+								var draggedNode = self.flow.nodes[draggedNodeId];
+					
+								// Store the children of the target temporarily
+								var originalChildren = target.children.slice();
+					
+								// Remove the children from the target
+								target.children = [];
+					
+								// Add the dragged node below the target
+								addChildBelow(target, draggedNode);
+					
+								// Re-add the original children as children of the dragged node
+								originalChildren.forEach(function(child) {
+									draggedNode.addChild(child);
+								});
+					
+								if (draggedNode.parent && ('key_caption' in self.actions[draggedNode.parent.actionName])) {
+									draggedNode.key_caption = self.actions[draggedNode.parent.actionName].key_caption(draggedNode, self.flow.caption_map);
+								}
+					
+								// Repaint the flow after all operations are completed
+								self.repaintFlow();
+
+							}	
 						}
 					}
 				});
-
+				
 				// dragging the whole branch
 				if ($(this).attr('name') !== 'root') {
 					$(this).draggable({
@@ -1769,19 +1898,76 @@ define(function(require) {
 						}
 					});
 				}
-			});
+			});		
 
+			// delete a callflow action
 			$('.node-options .delete', layout).click(function() {
-				var node = self.flow.nodes[$(this).attr('id')];
 
-				if (node.parent) {
-					node.parent.removeChild(node);
+				var validActionNames = [
+					'menu[id=*]', 
+					'branch_variable[]', 
+					'temporal_route[]'
+				];
+				var nodeId = $(this).attr('id');
+				var node = self.flow.nodes[nodeId];
 
-					self.repaintFlow();
+				// handle callflow actions that support parallel children
+				if (validActionNames.includes(node.actionName)) {
+
+					monster.ui.confirm(self.i18n.active().oldCallflows.delete_callflow_action_confirm + '<br>' + self.i18n.active().oldCallflows.delete_callflow_action_note_1, function() { 
+
+						if (node.parent) {
+							node.parent.removeChild(node);
+
+							self.repaintFlow();
+
+						}
+					
+					});
+
 				}
-			});
+
+				else {
+
+					if (node.parent) {
+
+						monster.ui.confirm(self.i18n.active().oldCallflows.delete_callflow_action_confirm + '<br>' + self.i18n.active().oldCallflows.delete_callflow_action_note_2, function() {
+							var parentNode = node.parent;
+							var parentKey = node.key;
+							var parentKeyCaption = node.key_caption;
+												
+							// store the index of the node in its parent's children array
+							var nodeIndex = parentNode.children.indexOf(node);
+					
+							// remove the node from its parent
+							parentNode.removeChild(node);
+					
+							// move the children of the deleted node to the position of the deleted node
+							for (var i = node.children.length - 1; i >= 0; i--) {
+								var childNode = node.children[i];
+								parentNode.children.splice(nodeIndex, 0, node.children[i]);
+
+								// set the parent properties of the child node
+								childNode.parent = parentNode;
+								childNode.key = parentKey;
+								childNode.key_caption = parentKeyCaption;
+
+							}
+					
+							// repaint the flow after all operations are completed
+							self.repaintFlow();
+
+						});
+
+					}
+
+				}
+
+
+			});		
 
 			return layout;
+
 		},
 
 		renderBranch: function(branch) {
@@ -1864,7 +2050,7 @@ define(function(require) {
 				data: dataTemplate
 			}));
 
-			// Set the basic drawer to open
+			// set the basic drawer to open
 			$('#Basic', tools).removeClass('inactive').addClass('active');
 
 			$('.category .open', tools).click(function() {
@@ -1957,30 +2143,76 @@ define(function(require) {
 		},
 
 		enableDestinations: function(el) {
-			var self = this;
+			
+			var terminatingActionNames = [
+				'group_pickup[]',
+				'receive_fax[]',
+				'pivot[]',
+				'disa[]',
+				'response[]',
+				'offnet[]',
+				'resources[]'
+			],
+				self = this;
 
 			$('.node').each(function() {
-				var activate = true,
-					target = self.flow.nodes[$(this).attr('id')];
 
-				if (el.attr('name') in target.potentialChildren()) {
-					if (el.hasClass('node') && self.flow.nodes[el.attr('id')].contains(target)) {
+				var actionName = el.attr('name')
+				
+				// prevent inserting callflow action where selected action is a terminating action
+				if (terminatingActionNames.includes(actionName)) {
+
+					var activate = true,
+						target = self.flow.nodes[$(this).attr('id')];
+
+					if (el.attr('name') in target.potentialChildren()) {
+						if (el.hasClass('node') && self.flow.nodes[el.attr('id')].contains(target)) {
+							activate = false;
+						}
+					} else {
 						activate = false;
 					}
-				} else {
-					activate = false;
+
+					if (activate) {
+						$(this).addClass('active');
+					} else {
+						$(this).addClass('inactive');
+						$(this).droppable('disable');
+					}
+				
 				}
 
-				if (activate) {
-					$(this).addClass('active');
-				} else {
-					$(this).addClass('inactive');
-					$(this).droppable('disable');
+				else {
+
+					var activate = true,
+						target = self.flow.nodes[$(this).attr('id')];
+
+					// prevent adding callflow action after a terminating action
+					if (terminatingActionNames.includes(target.actionName)) {
+						if (el.attr('name') in target.potentialChildren()) {
+							if (el.hasClass('node') && self.flow.nodes[el.attr('id')].contains(target)) {
+								activate = false;
+							}
+						} else {
+							activate = false;
+						}
+
+						if (activate) {
+							$(this).addClass('active');
+						} else {
+							$(this).addClass('inactive');
+							$(this).droppable('disable');
+						}
+					}
+
 				}
+			
 			});
+			
 		},
 
 		disableDestinations: function() {
+			
 			$('.node').each(function() {
 				$(this).removeClass('active');
 				$(this).removeClass('inactive');
@@ -1988,8 +2220,9 @@ define(function(require) {
 			});
 
 			$('.tool').removeClass('active');
-		},
 
+		},
+		
 		save: function() {
 			var self = this;
 

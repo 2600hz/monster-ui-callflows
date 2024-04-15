@@ -206,6 +206,7 @@
 #ws_callflow .tools .inactive .open,
 .callflow-preview .tools .inactive .open{
 	background-image: url(static/images/arrow_inactive.png);
+	cursor: pointer;
 }
 
 #ws_callflow .tools .tool,
@@ -544,6 +545,7 @@
 #ws_callflow #ws_cf_flow,
 .callflow-preview #ws_cf_flow {
 	width: 100%;
+	min-height: 500px;
 	overflow-x: auto;
 	padding-top: 10px;
 	text-align: center;
@@ -621,6 +623,7 @@
 #ws_callflow .tools .search-box,
 .callflow-preview .tools .search-box {
 	background: #444;
+	position: relative;
 }
 
 #ws_callflow .tools .search-box input,
@@ -1720,4 +1723,10 @@
 
 .monster-button-duplicate {
 	margin-left: 10px !important;
+}
+
+#callflow_container .wrapper_callflow_buttons .disabled,
+.callflow-preview .wrapper_callflow_buttons .disabled {
+	pointer-events: none;
+	opacity: 0.6;
 }

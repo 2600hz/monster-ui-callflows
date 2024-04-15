@@ -1326,3 +1326,13 @@
     background-position: -992px -448px;
 }
 
+.icon:not(.medium) {
+	margin-top: -10px;
+	padding-top: 10px;
+	background-origin: content-box;
+}
+
+.icon.medium {
+	margin-top: -2px;
+	padding-top: 2px;
+}
