@@ -792,9 +792,9 @@ define(function(require) {
 					module: 'pivot',
 					tip: self.i18n.active().oldCallflows.pivot_tip,
 					data: {
-						method: 'get',
+						method: 'POST',
 						req_timeout: '5',
-						req_format: 'twiml',
+						req_format: 'kazoo',
 						voice_url: ''
 					},
 					rules: [
@@ -815,10 +815,10 @@ define(function(require) {
 							name: 'pivot',
 							data: {
 								data_pivot: {
-									'method': node.getMetadata('method') || 'get',
+									'method': node.getMetadata('method') || 'post',
 									'voice_url': node.getMetadata('voice_url') || '',
 									'req_timeout': node.getMetadata('req_timeout') || '5',
-									'req_format': node.getMetadata('req_format') || 'twiml'
+									'req_format': node.getMetadata('req_format') || 'kazoo'
 								}
 							},
 							submodule: 'misc'
@@ -828,6 +828,7 @@ define(function(require) {
 							node.setMetadata('voice_url', $('#pivot_voiceurl_input', popup_html).val());
 							node.setMetadata('method', $('#pivot_method_input', popup_html).val());
 							node.setMetadata('req_format', $('#pivot_format_input', popup_html).val());
+							node.setMetadata('req_timeout', $('#pivot_timeout_input', popup_html).val());
 
 							popup.dialog('close');
 						});
@@ -841,6 +842,21 @@ define(function(require) {
 								}
 							}
 						});
+
+						// alert for invalid request timeout value
+						$('#pivot_timeout_input', popup_html).change(function() {
+						
+							requestTimeout = $('#pivot_timeout_input', popup_html).val();
+
+							if (requestTimeout < 5 || requestTimeout > 20) {
+								$('#pivot_timeout_input', popup_html).val(5);
+								monster.ui.alert('warning', self.i18n.active().oldCallflows.pivot_timeout_invalid);
+								console.log('invalid timeout')
+							}
+						
+						});
+
+
 					}
 				},
 				'disa[]': {

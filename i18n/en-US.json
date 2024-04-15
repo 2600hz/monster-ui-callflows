@@ -1312,6 +1312,8 @@
 		"add_a_user": "Add a user",
 		"select_user_title": "Select User",
 		"t_38_checkbox": "Enable T.38?",
+		"pivot_timeout": "Request Timeout (s)",
+		"pivot_timeout_invalid": "Invalid Request Timeout value.<br>The Request Timeout value must be between 5 and 20 seconds.",
 		"voice_url": "Voice URL",
 		"method": "Method",
 		"format": "Format",

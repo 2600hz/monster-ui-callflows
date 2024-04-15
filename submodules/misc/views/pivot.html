@@ -9,7 +9,7 @@
 
 			<div class="popup_field">
 				<label for="pivot_method_input">{{ i18n.oldCallflows.method }}: </label>
-				<select id="pivot_method_input" style="width: 100px; height: 28px;">
+				<select id="pivot_method_input">
 					{{#compare data_pivot.method "===" "POST"}}
 						<option value="POST" selected="selected">POST</option>
 						<option value="GET">GET</option>
@@ -22,7 +22,7 @@
 
 			<div class="popup_field">
 				<label for="pivot_format_input">{{ i18n.oldCallflows.format }}: </label>
-				<select id="pivot_format_input" style="width: 100px; height: 28px;">
+				<select id="pivot_format_input">
 					{{#compare data_pivot.req_format "===" "twiml"}}
 						<option value="twiml" selected="selected">twiml</option>
 						<option value="kazoo">Kazoo</option>
@@ -31,6 +31,11 @@
 						<option value="kazoo" selected="selected">Kazoo</option>
 					{{/compare}}
 				</select>
+			</div>
+
+			<div class="popup_field">
+				<label for="pivot_timeout_input">{{ i18n.oldCallflows.pivot_timeout }}: </label>
+				<input type="number" min="5" step="1" max="20" id="pivot_timeout_input" class="medium" value="{{data_pivot.req_timeout}}"/>
 			</div>
 		</div>
 	</form>
