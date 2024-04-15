@@ -214,8 +214,8 @@
 	background: #777777;
 	float: left;
 	width: 82px;
-	padding-left: 1px;
-	padding-top: 1px;
+	padding-left: 3px;
+	padding-top: 3px;
 	cursor: -moz-grab;
 	cursor: -webkit-grab;
 	cursor: grab;
@@ -290,7 +290,7 @@
 #ws_callflow .children > .child > .span_arrow,
 .callflow-preview .children > .child > .span_arrow {
 	display: inline-block;
-	width: 145px;
+	width: 100%;
 	background-repeat: no-repeat;
 	background-position: center center;
 	margin: 2px 0px 2px;
@@ -576,6 +576,7 @@
 .callflow-preview .branch {
 	display: block;
 	text-align: center;
+	padding: 2px;
 }
 
 #ws_callflow .node.active,
@@ -616,8 +617,8 @@
 .callflow-preview .tools #ws_cf_tools {
 	padding-right: 10px;
 	padding-top: 10px;
-	padding-bottom:30px;
-	width: 168px;
+	padding-bottom: 30px;
+	width: 175px;
 }
 
 #ws_callflow .tools .search-box,
@@ -628,12 +629,12 @@
 
 #ws_callflow .tools .search-box input,
 .callflow-preview .tools .search-box input {
-	width: 120px;
+	width: 125px;
 	height: 15px;
 	border-radius: 20px;
 	margin-top: 3px;
 	margin-bottom: 3px;
-	margin-left: 3px;
+	margin-left: 4px;
 }
 
 #ws_callflow .tool,
@@ -678,8 +679,7 @@
 #callflow_container .wrapper_callflow_buttons,
 .callflow-preview .wrapper_callflow_buttons {
 	display: block;
-	width: 485px;
-	/* width: 322px; */
+	width: 485px !important;
 	margin: auto;
 	margin-bottom: 5px;
 	text-align: center;
