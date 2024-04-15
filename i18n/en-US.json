@@ -1220,8 +1220,6 @@
 		"advanced_cat": "Advanced",
 		"call_recording_cat": "Call Recording",
 		"caller_id_cat": "Caller-ID",
-		"duplicate_callflow": "Copy callflow",
-		"duplicate_callflow_info": "The Callflow has been copied but not saved. Please assign a new number to the Callflow and update the name before saving.",
 		"delete_callflow": "Delete callflow",
 		"save_changes": "Save changes",
 		"invalid_number": "Invalid number!",
@@ -1371,7 +1369,13 @@
 				"current": "Current",
 				"original": "Original"
 			}
-		}
+		},
+		"duplicate_callflow": "Copy callflow",
+		"duplicate_callflow_info": "The Callflow has been copied but not saved. Please assign a new number to the Callflow and update the name before saving.",
+		"delete_callflow_action_confirm": "Are you sure you want to delete this callflow action?",
+		"delete_callflow_action_note_1": "This callflow action supports multiple child branches,<br> therefor all child items will be deleted.",
+		"delete_callflow_action_note_2": "Any child items will be moved up into the place of the deleted callflow action."
+
 	},
 	"__comment": "UI-1260: created common control for carrier selection",
 	"__version": "v3.20_s2",
