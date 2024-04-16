@@ -559,7 +559,7 @@
 			"select_which_days": "Select which days to apply this rule",
 			"start_date": "Start Date",
 			"start_date_data_content": "Select the starting date of this rule",
-			"end_date": "End Date (inclusive)",
+			"end_date": "End Date",
 			"end_date_data_content": "Select the ending date of this rule",
 			"end_date_less_than_start_date": "The end date must be greater than the start date.",
 			"enabled": "Enabled",
