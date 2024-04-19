@@ -28,6 +28,7 @@ define(function(require) {
 							maxSize: '0'
 						}
 					],
+					isTerminating: 'true',
 					isUsable: 'true',
 					weight: 140,
 					caption: function(node) {
@@ -52,6 +53,7 @@ define(function(require) {
 							maxSize: '0'
 						}
 					],
+					isTerminating: 'true',
 					isUsable: 'true',
 					weight: 150,
 					caption: function(node) {
