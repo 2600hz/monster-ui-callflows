@@ -478,6 +478,7 @@ define(function(require) {
 								maxSize: '1'
 							}
 						],
+						isTerminating: 'true',
 						isUsable: 'true',
 						weight: 50,
 						caption: function(node, caption_map) {
@@ -593,6 +594,7 @@ define(function(require) {
 							maxSize: '1'
 						}
 					],
+					isTerminating: 'true',
 					isUsable: 'true',
 					weight: 120,
 					caption: function(node) {
