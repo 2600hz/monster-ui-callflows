@@ -1129,6 +1129,32 @@ define(function(require) {
 					return list;
 				};
 
+				this.allowedChildren = function() {
+					
+					var children;
+
+					for (var i in action.rules) {
+						var rule = action.rules[i];
+
+						if (rule.type === 'allowedChildren') {
+							var children = rule.action;
+						}
+					}
+
+					return children;
+				};
+
+				this.terminatingAction = function() {
+				
+					var actionName = Object(action).key;
+					var isTerminating = action.isTerminating;
+
+					return {
+						actionName: actionName,
+						isTerminating: isTerminating
+					}
+				};
+
 				this.contains = function(branch) {
 					var toCheck = branch;
 
@@ -2144,23 +2170,16 @@ define(function(require) {
 
 		enableDestinations: function(el) {
 			
-			var terminatingActionNames = [
-				'group_pickup[]',
-				'receive_fax[]',
-				'pivot[]',
-				'disa[]',
-				'response[]',
-				'offnet[]',
-				'resources[]'
-			],
-				self = this;
+			self = this;
 
 			$('.node').each(function() {
 
-				var actionName = el.attr('name')
-				
+				var actionName = el.attr('name'),
+					action = self.actions[actionName],
+					target = self.flow.nodes[$(this).attr('id')];
+			
 				// prevent inserting callflow action where selected action is a terminating action
-				if (terminatingActionNames.includes(actionName)) {
+				if (action.isTerminating == 'true' && target.terminatingAction().isTerminating != 'true') {
 
 					var activate = true,
 						target = self.flow.nodes[$(this).attr('id')];
@@ -2187,9 +2206,12 @@ define(function(require) {
 					var activate = true,
 						target = self.flow.nodes[$(this).attr('id')];
 
-					// prevent adding callflow action after a terminating action
-					if (terminatingActionNames.includes(target.actionName)) {
-						if (el.attr('name') in target.potentialChildren()) {
+					// prevent adding child actions to a terminating action
+					if (target.terminatingAction().isTerminating == 'true') {
+
+						// added support for new rule type of allowedChildren - allows adding callflow as child action of pivot as an example
+						if (el.attr('name') in target.potentialChildren() && Array.isArray(target.allowedChildren()) && target.allowedChildren().includes(el.attr('name'))) {
+
 							if (el.hasClass('node') && self.flow.nodes[el.attr('id')].contains(target)) {
 								activate = false;
 							}
@@ -2202,7 +2224,8 @@ define(function(require) {
 						} else {
 							$(this).addClass('inactive');
 							$(this).droppable('disable');
-						}
+						}	
+
 					}
 
 				}
