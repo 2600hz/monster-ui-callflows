@@ -8,13 +8,22 @@
 			<div class="tab-bar">
 				<ul class="nav nav-tabs account-settings-tabs">
 					<li class="tab-overview active"><a href="#account_settings_caller_id">Caller-ID</a></li>
-					<li class="tab-overview"><a href="#account_settings_blacklist">Blacklist</a></li>
+					{{#unless miscSettings.hideBlacklist}}
+						<li class="tab-overview"><a href="#account_settings_blacklist">Blocklist</a></li>
+					{{/unless}}
 					<li class="tab-overview"><a href="#account_settings_misc">Misc</a></li>
+					<!-- placeholder for call restrictions 
+					-->
+					{{#unless miscSettings.hideCallRestictions}}
+						<li class="tab-overview"><a href="#account_settings_misc">Call Restictions</a></li>
+					{{/unless}}
 				</ul>
 			</div>
 
 			<div class="tab-content">
 				<div class="tab-pane active" id="account_settings_caller_id">
+					<!-- internal / on-net caller id -->
+					{{#unless miscSettings.hideOnNetCallerId}}
 					<div class="settings-section">
 						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleInbound }}</div>
 						<div class="section-content">
@@ -32,75 +41,143 @@
 							</div>
 						</div>
 					</div>
+					{{/unless}}
 
+					<!-- external / off-net caller id -->
 					<div class="settings-section">
 						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleOutbound }}</div>
 						<div class="section-content">
 							<div class="control-group">
 								<label class="control-label" for="caller_id_external_name">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-								<div class="controls">
-									<input type="text" id="caller_id_external_name" name="caller_id.external.name" value="{{account.caller_id.external.name}}"/>
-								</div>
+								{{#unless miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input type="text" id="caller_id_external_name" name="caller_id.external.name" value="{{account.caller_id.external.name}}"/>
+									</div>
+								{{/unless}}
+								{{#if miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input disabled type="text" id="caller_id_external_name" name="caller_id.external.name" value="{{account.caller_id.external.name}}"/>
+									</div>
+								{{/if}}
+
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_external_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-external-target caller-id-external-number"></div>
+							{{else}}
 								<div class="controls">
 									<select id="caller_id_external_number" name="caller_id.external.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.external.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{#select account.caller_id.external.number}}
+										<option value="">
+											{{ i18n.callflows.accountSettings.callerId.defaultNumber }}
+										</option>
+									{{#each numberList as |number|}}
+										<option value="{{number}}">
+											{{formatPhoneNumber number}}
+										</option>
 									{{/each}}
+									{{/select}}
 									</select>
 								</div>
+							{{/if}}
 							</div>
 						</div>
 					</div>
 
+					<!-- emergency caller id -->
 					<div class="settings-section">
 						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleEmergency }}</div>
 						<div class="section-content">
 							<div class="control-group">
 								<label class="control-label" for="caller_id_emergency_name">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-								<div class="controls">
-									<input type="text" id="caller_id_emergency_name" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
-								</div>
+								{{#unless miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input type="text" id="caller_id_emergency_name" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
+									</div>
+								{{/unless}}
+								{{#if miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input disabled type="text" id="caller_id_emergency_name" name="caller_id.emergency.name" value="{{account.caller_id.emergency.name}}"/>
+									</div>
+								{{/if}}
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_emergency_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-emergency-target caller-id-emergency-number"></div>
+							{{else}}
 								<div class="controls">
 									<select id="caller_id_emergency_number" name="caller_id.emergency.number" class="cid-number-select">
-										<option value="">{{ i18n.callflows.accountSettings.callerId.defaultNumber }}</option>
-									{{#each numberList}}
-										<option value="{{@key}}" {{#compare ../account.caller_id.emergency.number '===' @key}}selected{{/compare}}>{{formatPhoneNumber @key}}</option>
+									{{#select account.caller_id.emergency.number}}
+										<option value="">
+											{{ i18n.callflows.accountSettings.callerId.defaultNumber }}
+										</option>
+									{{#each numberList as |number|}}
+										<option value="{{number}}">
+											{{formatPhoneNumber number}}
+										</option>
 									{{/each}}
+									{{/select}}
 									</select>
 								</div>
+							{{/if}}
 							</div>
 						</div>
 					</div>
 
+				<!-- p asserted id -->
 				{{#if showPAssertedIdentity}}
 					<div class="settings-section">
 						<div class="section-title">{{ i18n.callflows.accountSettings.callerId.titleAsserted }}</div>
 						<div class="section-content">
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_name">{{ i18n.callflows.accountSettings.callerId.nameLabel }}</label>
-								<div class="controls">
-									<input type="text" id="caller_id_asserted_name" name="caller_id.asserted.name" value="{{account.caller_id.asserted.name}}"/>
-								</div>
+								{{#unless miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input type="text" id="caller_id_asserted_name" name="caller_id.asserted.name" value="{{account.caller_id.asserted.name}}"/>
+									</div>
+								{{/unless}}
+								{{#if miscSettings.readOnlyCallerIdName}}
+									<div class="controls">
+										<input disabled type="text" id="caller_id_asserted_name" name="caller_id.asserted.name" value="{{account.caller_id.asserted.name}}"/>
+									</div>
+								{{/if}}	
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="caller_id_asserted_number">{{ i18n.callflows.accountSettings.callerId.numberLabel }}</label>
+							{{#if hasExternalCallerId}}
+								<div class="controls caller-id-asserted-target caller-id-asserted-number"></div>
+							{{else}}
 								<div class="controls">
-									<input type="text" class="phone-number" id="caller_id_asserted_number" name="caller_id.asserted.number" value="{{account.caller_id.asserted.number}}"/>
+									{{#unless miscSettings.assertedIdNumberDropdown}}
+										<input type="text" class="phone-number" id="caller_id_asserted_number" name="caller_id.asserted.number" value="{{account.caller_id.asserted.number}}"/>
+									{{/unless}}
+									{{#if miscSettings.assertedIdNumberDropdown}}
+										<select id="caller_id_asserted_number" name="caller_id.asserted.number" class="cid-number-select">
+											{{#select account.caller_id.asserted.number}}
+												<option value="">
+													{{ i18n.callflows.accountSettings.callerId.defaultNumber }}
+												</option>
+											{{#each numberList as |number|}}
+												<option value="{{number}}">
+													{{formatPhoneNumber number}}
+												</option>
+											{{/each}}
+											{{/select}}
+										</select>
+									{{/if}}
 								</div>
+							{{/if}}
 							</div>
-							<div class="control-group">
-								<label class="control-label" for="caller_id_asserted_realm">{{ i18n.callflows.accountSettings.callerId.realmLabel }}</label>
-								<div class="controls">
-									<input type="text" id="caller_id_asserted_realm" name="caller_id.asserted.realm" value="{{account.caller_id.asserted.realm}}"/>
+							{{#unless miscSettings.hideAssertedIdRealm}}
+								<div class="control-group">
+									<label class="control-label" for="caller_id_asserted_realm">{{ i18n.callflows.accountSettings.callerId.realmLabel }}</label>
+									<div class="controls">
+										<input type="text" id="caller_id_asserted_realm" name="caller_id.asserted.realm" value="{{account.caller_id.asserted.realm}}"/>
+									</div>
 								</div>
-							</div>
+							{{/unless}}
 						</div>
 					</div>
 				{{/if}}
@@ -170,6 +247,7 @@
 						</div>
 					</div>
 
+					{{#unless miscSettings.hidePreflow}}
 					<div class="settings-section">
 						<div class="section-title">{{ i18n.callflows.accountSettings.preflow.title }}</div>
 						<div class="section-content">
@@ -188,6 +266,9 @@
 							</div>
 						</div>
 					</div>
+					{{/unless}}
+
+					{{#unless miscSettings.hideOutboundFlags}}
 					<div class="settings-section">
 						<div class="section-title">
 							{{ i18n.callflows.accountSettings.outboundFlags.title }}
@@ -213,6 +294,7 @@
 							</div>
 						</div>
 					</div>
+					{{/unless}}
 				</div>
 			</div>
 

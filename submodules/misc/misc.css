@@ -238,3 +238,23 @@
 		float: none;
 	}
 }
+
+/* tts callflow action reformatting */
+.dialog_popup.set-tts-input .form_content .popup_field textarea {
+    min-height: 150px ; 
+	min-width: 500px;
+}
+
+/* tts callflow action reformatting */
+.dialog_popup.set-tts-input .form_content .popup_field.tts-input {
+	display: flex;
+	align-items: left;
+	
+}
+
+/* tts callflow action reformatting */
+.dialog_popup.set-tts-input .form_content .popup_field.tts-input .select_wrapper {
+	flex: 3; 
+	text-align: left;
+}
+

@@ -2,7 +2,9 @@ define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
 		monster = require('monster'),
-		timezone = require('monster-timezone');
+		timezone = require('monster-timezone'),
+		hideAdd = false,
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -150,7 +152,11 @@ define(function(require) {
 				formattedData = self.vmboxFormatData(data),
 				vmbox_html = $(self.getTemplate({
 					name: 'edit',
-					data: formattedData,
+					data: {
+						...formattedData,
+						hideAdd: hideAdd,
+						miscSettings: miscSettings
+					},
 					submodule: 'vmbox'
 				})),
 				vmboxForm = vmbox_html.find('#vmbox-form');
@@ -462,7 +468,12 @@ define(function(require) {
 
 		vmboxDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions,
+				callflow_nodes = args.actions;
+
+			// set variables for use elsewhere
+			hideAdd = args.hideAdd;
+			miscSettings = args.miscSettings,
+				
 				getVoicemailNode = function(hasCategory) {
 					var action = {
 						name: self.i18n.active().callflows.vmbox.voicemail,

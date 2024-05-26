@@ -5,10 +5,12 @@
 		{{else}}
 			<h1>{{ i18n.callflows.media.create_media }}</h1>
 		{{/if}}
-		<div class="buttons-right pasted view-buttons">
-			<button class="btn black basic activate">{{ i18n.callflows.media.basic }}</button>
-			<button class="btn black advanced">{{ i18n.callflows.media.advanced }}</button>
-		</div>
+		{{#unless miscSettings.hideBasicAdvancedButton}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.media.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.media.advanced }}</button>
+			</div>
+		{{/unless}}
 	</div>
 	<div>
 		<ul class="tabs">
@@ -88,13 +90,24 @@
 						</div>
 					</div>
 
+					{{#if miscSettings.ttsSetLanguages}}
 					<div class="clearfix tts">
-						<label for="tts_voice">{{ i18n.callflows.media.select }}</label>
+						<label for="tts_language">{{ i18n.callflows.media.tts_language }}</label>
+						<div class="input">
+							<select class="medium" name="tts.language" id="tts_language">
+								{{#if data.tts}}
+									
+								{{/if}}
+							</select>
+						</div>
+					</div>
+					{{/if}}
+					
+					<div class="clearfix tts">
+						<label for="tts_voice">{{ i18n.callflows.media.tts_voice }}</label>
 						<div class="input">
 							<select class="medium" name="tts.voice" id="tts_voice">
-								{{#if data.tts}}
-									<option selected="selected">{{data.tts.voice}}</option>
-								{{/if}}
+								{{#unless miscSettings.ttsSetLanguages}}
 									<option>female/en-US</option>
 									<option>male/en-US</option>
 									<option>female/en-CA</option>
@@ -138,6 +151,12 @@
 									<option>female/cs-CZ</option>
 									<option>female/tr-TR</option>
 									<option>male/tr-TR</option>
+								{{/unless}}
+								{{#if miscSettings.ttsSetLanguages}}
+									{{#if data.tts}}
+										<option selected="selected">{{data.tts.voice}}</option>
+									{{/if}}
+								{{/if}}
 							</select>
 						</div>
 					</div>

@@ -5,10 +5,12 @@
 		{{else}}
 			<h1>{{ i18n.callflows.vmbox.create_voicemail_box }}</h1>
 		{{/if}}
-		<div class="buttons-right pasted view-buttons">
-			<button class="btn black basic activate">{{ i18n.callflows.vmbox.basic }}</button>
-			<button class="btn black advanced">{{ i18n.callflows.vmbox.advanced }}</button>
-		</div>
+		{{#unless miscSettings.hideBasicAdvancedButton}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.vmbox.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.vmbox.advanced }}</button>
+			</div>
+		{{/unless}}
 	</div>
 	<div>
 		<ul class="tabs">
@@ -45,10 +47,12 @@
 										{{/compare}}
 									{{/each}}
 								</select>
+								{{#unless hideAdd.user}}
 								<div class="edit_create">
 									<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.vmbox.edit }}</a>
 									<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.vmbox.create }}</a>
 								</div>
+								{{/unless}}
 							</span>
 						</div>
 					</div>

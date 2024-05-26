@@ -1,45 +1,62 @@
 <div>
 	<div>
 		<div class="media_tabs">
+			{{#unless hideDeviceTypes.sip_device}}
 			<span class="buttons" device_type="sip_device">
 				<span class="icon white phone"/>
 				<span class="label_device">{{ i18n.callflows.device.voip_phone }}</span>
 			</span>
+			{{/unless}}
 
+			{{#unless hideDeviceTypes.cellphone}}
 			<span class="buttons" device_type="cellphone">
 				<span class="icon white active_phone"/>
 				<span class="label_device">{{ i18n.callflows.device.cell_phone }}</span>
 			</span>
+			{{/unless}}
 
+			{{#unless hideDeviceTypes.smartphone}}
 			<span class="buttons" device_type="smartphone">
 				<span class="icon white active_phone"/>
 				<span class="label_device">{{ i18n.callflows.device.smart_phone }}</span>
 			</span>
+			{{/unless}}
+		
+			{{#unless hideDeviceTypes.landline}}
 
 			<span class="buttons" device_type="landline">
 				<span class="icon white active_phone"/>
 				<span class="label_device">{{ i18n.callflows.device.landline }}</span>
 			</span>
+			{{/unless}}
 			
+			{{#unless hideDeviceTypes.softphone}}
 			<span class="buttons" device_type="softphone">
 				<span class="icon white menu1"/>
 				<span class="label_device">{{ i18n.callflows.device.soft_phone }}</span>
 			</span>
+			{{/unless}}
 
+			{{#unless hideDeviceTypes.fax}}
 			<span class="buttons" device_type="fax">
 				<span class="icon white phone"/>
 				<span class="label_device">{{ i18n.callflows.device.fax }}</span>
 			</span>
+			{{/unless}}
 
+			{{#unless hideDeviceTypes.ata}}
 			<span class="buttons" device_type="ata">
 				<span class="icon white phone"/>
 				<span class="label_device">{{ i18n.callflows.device.ata }}</span>
 			</span>
+			{{/unless}}
 
-			 <span class="buttons" device_type="sip_uri">
+			{{#unless hideDeviceTypes.sip_uri}}
+			<span class="buttons" device_type="sip_uri">
 				<span class="icon white phone"/>
 				<span class="label_device">{{ i18n.callflows.device.sip_uri }}</span>
 			</span>
+			{{/unless}}
 		</div>
 	</div>
 	

@@ -1548,6 +1548,7 @@
 	border-radius: 2px;
 	vertical-align: top;
 }
+
 #callflow_container .entity-manager .entity-element.callflow-element {
 	width: 260px;
 	height: 260px;
@@ -1555,6 +1556,7 @@
 	font-size: 50px;
 	font-weight: 300;
 }
+
 #callflow_container .entity-manager .entity-element:hover {
 	background-color: #f0f0f9;
 }
@@ -1731,3 +1733,37 @@
 	pointer-events: none;
 	opacity: 0.6;
 }
+
+.input-readonly {
+    opacity: 0.95;
+	pointer-events: none;
+    cursor: default;
+}
+
+.no-stop-cursor {
+	opacity: 0.95;
+	pointer-events: none;
+    cursor: default;
+}
+
+.label-wide label,
+.label-wide input {
+	padding-right: 20px !important;
+    width: 175px !important;
+}
+
+.uneditable-input {
+	pointer-events: none;
+    cursor: default;
+}
+
+/* increase size of dropdown input fields */
+/*
+.input .medium,
+.caller-id-asserted-target,
+.chosen-container,
+.chosen-container-single,
+.chosen-container .chosen-drop {
+    width: 323px !important;
+}
+*/

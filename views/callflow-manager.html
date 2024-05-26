@@ -31,8 +31,11 @@
 			{{/if}}
 		</div>
 		<div class="callflow-view clearfix">
-			<div class="real-content"> 
-				<div class="callflow-help"/>
+			<div class="real-content">
+
+				{{#unless miscSettings.hideCallflowHelp}}
+					<div class="callflow-help"/>
+				{{/unless}}
 
 				<div id="ws_callflow" class="clearfix">
 					<div class="tools">

@@ -2,7 +2,10 @@ define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
 		monster = require('monster'),
-		timezone = require('monster-timezone');
+		timezone = require('monster-timezone'),
+		hideAdd = false,
+		hideClassifiers = {},
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -17,9 +20,20 @@ define(function(require) {
 
 		userDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// set variables for use elsewhere
+			hideAdd = args.hideAdd;
+			hideClassifiers = args.hideClassifiers,
+			miscSettings = args.miscSettings;
+
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			}
+
+			var actions = {
 				'user[id=*]': {
 					name: self.i18n.active().callflows.user.user,
 					icon: 'user',
@@ -36,6 +50,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: true,
 					weight: 40,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -58,6 +73,8 @@ define(function(require) {
 							popup_html = $(self.getTemplate({
 								name: 'callflowEdit',
 								data: {
+									hideFromCallflowAction: args.hideFromCallflowAction,
+									hideAdd: args.hideAdd,
 									can_call_self: node.getMetadata('can_call_self') || false,
 									parameter: {
 										name: 'timeout (s)',
@@ -146,6 +163,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('hotdesk[action=login]'),
 					weight: 10,
 					caption: function(node) {
 						return '';
@@ -172,6 +190,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('hotdesk[action=logout]'),
 					weight: 20,
 					caption: function(node) {
 						return '';
@@ -198,6 +217,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('hotdesk[action=toggle]'),
 					weight: 30,
 					caption: function(node) {
 						return '';
@@ -208,7 +228,10 @@ define(function(require) {
 						}
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		userPopupEdit: function(args) {
@@ -333,16 +356,45 @@ define(function(require) {
 							}
 						},
 						success: function(_data_classifiers, status) {
+							
+							/*
 							if ('data' in _data_classifiers) {
 								$.each(_data_classifiers.data, function(k, v) {
 									defaults.field_data.call_restriction[k] = {
 										friendly_name: v.friendly_name
 									};
 
+									console.log('classifier: '+ [k]);
+
 									defaults.data.call_restriction[k] = { action: 'inherit' };
 								});
 							}
+							*/
+
+							if ('data' in _data_classifiers && typeof hideClassifiers === 'object') {
+								$.each(_data_classifiers.data, function(k, v) {
+									
+									// check if k exists in hideClassifiers and its value is true
+									if (hideClassifiers.hasOwnProperty(k) && hideClassifiers[k] === true) {
+										// if k is in hideClassifiers and its value is true, skip processing
+										return; 
+									}
+							
+									// if k is not in hideClassifiers or its value is not true, perform actions
+									defaults.field_data.call_restriction[k] = {
+										friendly_name: v.friendly_name
+									};
+							
+									defaults.data.call_restriction[k] = { action: 'inherit' };
+								});
+							} 
+							
+							else {
+								
+							}
+
 							callback(null, _data_classifiers);
+
 						}
 					});
 				},
@@ -462,11 +514,16 @@ define(function(require) {
 			});
 		},
 
+		/*
 		userRender: function(data, target, callbacks) {
 			var self = this,
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
+						hideAdd: hideAdd,
+						hideClassifiers: hideClassifiers,
+						miscSettings: miscSettings,
+						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
@@ -477,6 +534,97 @@ define(function(require) {
 				user_form = user_html.find('#user-form'),
 				hotdesk_pin = $('.hotdesk_pin', user_html),
 				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-external-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-external-number select[name="caller_id.external.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_external', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-emergency-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-emergency-number select[name="caller_id.emergency.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_emergency', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-asserted-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-asserted-number select[name="caller_id.asserted.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_asserted', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (hasExternalCallerId) {
+				_.forEach(tabsWithCidSelectors, function(tab) {
+					_.forEach(cidSelectorsPerTab[tab], function(selector) {
+						var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
+
+						monster.ui.cidNumberSelector($target, _.merge({
+
+							
+							onAdded: function(numberMetadata) {
+								user_html.find('select[name^="caller_id."]').each(function() {
+									var $select = $(this),
+										hasNumber = $select.find('option[value="' + numberMetadata.number + '"]') > 0;
+
+									if (hasNumber) {
+										return;
+									}
+									$select
+										.append($('<option>', {
+											value: numberMetadata.number,
+											text: monster.util.formatPhoneNumber(numberMetadata.number)
+										}))
+										.trigger('chosen:updated');
+								});
+
+								if (!_.includes(selectorsWithReflectedValue, selector)) {
+									return;
+								}
+								var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
+									reflectedSelect = '#' + reflectedTab + ' .caller-id-' + selector + '-target select';
+
+								user_html
+									.find(reflectedSelect)
+									.val(numberMetadata.number)
+									.trigger('chosen:updated');
+							},
+							selectName: 'caller_id.' + selector + '.number',
+							selected: _.get(data.data, ['caller_id', selector, 'number']),
+							allowAdd: allowAddingExternalCallerId
+						}, _.pick(data.extra, [
+							'cidNumbers',
+							'phoneNumbers'
+						])));
+					});
+				});
+
+				
+				_.forEach(selectorsWithReflectedValue, function(type) {
+					user_html.find('#basic .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#caller_id .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+					user_html.find('#caller_id .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#basic .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+				});
+				
+			}
 
 			self.userRenderDeviceList(data, user_html);
 
@@ -594,6 +742,261 @@ define(function(require) {
 				.empty()
 				.append(user_html);
 		},
+		*/
+
+		userRender: function(data, target, callbacks) {
+			var self = this,
+				cidSelectorsPerTab = {
+					basic: [
+						'external'
+					],
+					caller_id: [
+						'external',
+						'emergency',
+						'asserted'
+					]
+				},
+				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
+				selectorsWithReflectedValue = _.spread(_.intersection)(_.map(cidSelectorsPerTab)),
+				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				allowAddingExternalCallerId;
+
+				if (miscSettings.preventAddingExternalCallerId == true || false) {
+					allowAddingExternalCallerId = false
+				}
+				else {
+					allowAddingExternalCallerId = true
+				}
+				
+				user_html = $(self.getTemplate({
+					name: 'edit',
+					data: _.merge({
+						hideAdd: hideAdd,
+						hideClassifiers: hideClassifiers,
+						miscSettings: miscSettings,
+						hasExternalCallerId: hasExternalCallerId,
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
+						data: {
+							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
+						}
+					}, _.pick(data.extra, [
+						'phoneNumbers'
+					]), data),
+					submodule: 'user'
+				})),
+				user_form = user_html.find('#user-form'),
+				hotdesk_pin = $('.hotdesk_pin', user_html),
+				hotdesk_pin_require = $('#hotdesk_require_pin', user_html);
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-external-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-external-number select[name="caller_id.external.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_external', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-emergency-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-emergency-number select[name="caller_id.emergency.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_emergency', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (miscSettings.readOnlyCallerIdName == true || false) {
+				user_html.find('.caller-id-asserted-number').on('change', function(event) {
+					phoneNumber = $('.caller-id-asserted-number select[name="caller_id.asserted.number"]').val();
+					formattedNumber = phoneNumber.replace(/^\+44/, '0');
+					$('#advanced_caller_id_name_asserted', user_html).val(formattedNumber);	
+				});
+			}
+
+			if (hasExternalCallerId) {
+				_.forEach(tabsWithCidSelectors, function(tab) {
+					_.forEach(cidSelectorsPerTab[tab], function(selector) {
+						var $target = user_html.find('#' + tab + ' .caller-id-' + selector + '-target');
+
+						monster.ui.cidNumberSelector($target, _.merge({
+
+							
+							onAdded: function(numberMetadata) {
+								user_html.find('select[name^="caller_id."]').each(function() {
+									var $select = $(this),
+										hasNumber = $select.find('option[value="' + numberMetadata.number + '"]') > 0;
+
+									if (hasNumber) {
+										return;
+									}
+									$select
+										.append($('<option>', {
+											value: numberMetadata.number,
+											text: monster.util.formatPhoneNumber(numberMetadata.number)
+										}))
+										.trigger('chosen:updated');
+								});
+
+								if (!_.includes(selectorsWithReflectedValue, selector)) {
+									return;
+								}
+								var reflectedTab = tab === 'basic' ? 'caller_id' : 'basic',
+									reflectedSelect = '#' + reflectedTab + ' .caller-id-' + selector + '-target select';
+
+								user_html
+									.find(reflectedSelect)
+									.val(numberMetadata.number)
+									.trigger('chosen:updated');
+							},
+							selectName: 'caller_id.' + selector + '.number',
+							selected: _.get(data.data, ['caller_id', selector, 'number']),
+							allowAdd: allowAddingExternalCallerId
+						}, _.pick(data.extra, [
+							'cidNumbers',
+							'phoneNumbers'
+						])));
+					});
+				});
+
+				
+				_.forEach(selectorsWithReflectedValue, function(type) {
+					user_html.find('#basic .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#caller_id .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+					user_html.find('#caller_id .caller-id-' + type + '-target select').on('change', function(event) {
+						event.preventDefault();
+
+						user_html
+							.find('#basic .caller-id-' + type + '-target select')
+							.val($(this).val())
+							.trigger('chosen:updated');
+					});
+				});
+				
+			}
+
+			self.userRenderDeviceList(data, user_html);
+
+			monster.ui.validate(user_form, {
+				rules: {
+					'extra.shoutcastUrl': {
+						protocol: true
+					},
+					username: {
+						required: true,
+						minlength: 3,
+						regex: /^[0-9a-zA-Z+@._-]*$/
+					},
+					first_name: {
+						required: true,
+						minlength: 1,
+						maxlength: 256,
+						regex: /^[0-9a-zA-Z\s\-']+$/
+					},
+					last_name: {
+						required: true,
+						minlength: 1,
+						maxlength: 256,
+						regex: /^[0-9a-zA-Z\s\-']+$/
+					},
+
+					email: {
+						required: true,
+						email: true
+					},
+					pwd_mngt_pwd1: {
+						required: true,
+						minlength: 3
+					},
+					pwd_mngt_pwd2: {
+						required: true,
+						minlength: 3,
+						equalTo: '#pwd_mngt_pwd1'
+					},
+					'hotdesk.pin': { regex: /^[0-9]*$/ },
+					'hotdesk.id': { regex: /^[0-9+#*]*$/ },
+					call_forward_number: { regex: /^[+]?[0-9]*$/ },
+					'caller_id.internal.name': { maxlength: 30 },
+					'caller_id.external.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.emergency.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
+					'caller_id.internal.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
+					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
+					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
+					'caller_id.asserted.number': { phoneNumber: true },
+					'caller_id.asserted.realm': { realm: true }
+				},
+				messages: {
+					username: { regex: self.i18n.active().callflows.user.validation.username },
+					first_name: { regex: self.i18n.active().callflows.user.validation.name },
+					last_name: { regex: self.i18n.active().callflows.user.validation.name },
+					'hotdesk.pin': { regex: self.i18n.active().callflows.user.validation.hotdesk.pin },
+					'hotdesk.id': { regex: self.i18n.active().callflows.user.validation.hotdesk.id },
+					'caller_id.internal.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.external.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.emergency.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.asserted.name': { regex: self.i18n.active().callflows.user.validation.caller_id.name },
+					'caller_id.internal.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.external.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.emergency.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.asserted.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
+					'caller_id.asserted.realm': { regex: self.i18n.active().callflows.user.validation.caller_id.realm }
+				}
+			});
+
+			timezone.populateDropdown(
+				$('#timezone', user_html),
+				_.get(data.data, 'timezone', 'inherit'),
+				{
+					inherit: self.i18n.active().defaultTimezone
+				}
+			);
+
+			user_html.find('input[data-mask]').each(function() {
+				var $this = $(this);
+				monster.ui.mask($this, $this.data('mask'));
+			});
+
+			if (data.data.id === monster.apps.auth.userId) {
+				$('.user-delete', user_html).hide();
+			}
+
+			$('*[rel=popover]:not([type="text"])', user_html).popover({
+				trigger: 'hover'
+			});
+
+			$('*[rel=popover][type="text"]', user_html).popover({
+				trigger: 'focus'
+			});
+
+			self.winkstartTabs(user_html);
+			self.winkstartLinkForm(user_html);
+
+			hotdesk_pin_require.is(':checked') ? hotdesk_pin.show() : hotdesk_pin.hide();
+
+			if (!$('#music_on_hold_media_id', user_html).val()) {
+				$('#edit_link_media', user_html).hide();
+			}
+
+			self.userBindEvents({
+				template: user_html,
+				userForm: user_form,
+				hotdeskPin: hotdesk_pin,
+				hotdeskPinRequire: hotdesk_pin_require,
+				data: data,
+				callbacks: callbacks
+			});
+
+			target
+				.empty()
+				.append(user_html);
+		},
+
+
 
 		/**
 		 * Bind events for the user edit template
@@ -899,7 +1302,10 @@ define(function(require) {
 							$('.rows', parent)
 								.append($(self.getTemplate({
 									name: 'deviceRow',
-									data: v,
+									data: {
+										...v,
+										miscSettings: miscSettings
+									},
 									submodule: 'user'
 								})));
 						});
@@ -1009,7 +1415,14 @@ define(function(require) {
 			form_data.caller_id.external.number = form_data.caller_id.external.number.replace(/\s|\(|\)|-|\./g, '');
 			form_data.caller_id.emergency.number = form_data.caller_id.emergency.number.replace(/\s|\(|\)|-|\./g, '');
 
-			form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
+			//form_data.call_restriction.closed_groups = { action: form_data.extra.closed_groups ? 'deny' : 'inherit' };
+			
+			if (!miscSettings.hideClosedGroups) {
+				var selectedOptionValue = $('select[name="call_restriction.closed_groups.action"]').val();
+				form_data.call_restriction.closed_groups = {
+					action: selectedOptionValue === 'deny' ? 'deny' : 'inherit'
+				};
+			}
 
 			if (!_.chain(form_data.caller_id).get('asserted.number', '').isEmpty().value()) {
 				form_data.caller_id.asserted.number = monster.util.getFormatPhoneNumber(form_data.caller_id.asserted.number).e164Number;
@@ -1111,6 +1524,16 @@ define(function(require) {
 
 			if (!_.has(data, 'password') && !_.has(data, 'id')) {
 				data.password = monster.util.randomString(8, 'safe');
+			}
+
+			// add support for setting dnd on user doc
+			data.do_not_disturb = {
+				enabled: data.do_not_disturb.enabled
+			}
+
+			// add support for setting caller id privacy on user doc
+			if (data.caller_id_options.outbound_privacy === 'default') {
+				delete data.caller_id_options;
 			}
 
 			return data;

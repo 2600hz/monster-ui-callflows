@@ -12,9 +12,15 @@ define(function(require) {
 
 		qubicleDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'qubicle[id=*]': {
 					name: self.i18n.active().callflows.qubicle.qubicle,
 					icon: 'support',
@@ -30,7 +36,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
-					isListed: false,
+					isListed: determineIsListed('qubicle[id=*]'),
 					weight: 30,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -74,7 +80,10 @@ define(function(require) {
 						});
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		qubicleList: function(callback) {

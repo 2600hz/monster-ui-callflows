@@ -1,7 +1,9 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster');
+		monster = require('monster'),
+		hideAdd = false,
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -14,9 +16,19 @@ define(function(require) {
 
 		conferenceDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// set hideAdd variable for use elsewhere
+			hideAdd = args.hideAdd
+			miscSettings = args.miscSettings;
+
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			}
+			
+			var actions = {
 				'conference[id=*]': {
 					name: self.i18n.active().callflows.conference.conference,
 					icon: 'conference',
@@ -33,6 +45,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('conference[id=*]'),
 					weight: 30,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -49,6 +62,8 @@ define(function(require) {
 							var popup_html = $(self.getTemplate({
 									name: 'callflowEdit',
 									data: {
+										hideFromCallflowAction: args.hideFromCallflowAction,
+										hideAdd: args.hideAdd,
 										items: _.sortBy(data, 'name'),
 										selected: node.getMetadata('id') || ''
 									},
@@ -122,6 +137,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('conference[]'),
 					weight: 110,
 					caption: function(node) {
 						return '';
@@ -132,7 +148,11 @@ define(function(require) {
 						}
 					}
 				}
-			});
+			
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		conferencePopupEdit: function(data, callback, data_defaults) {
@@ -260,7 +280,11 @@ define(function(require) {
 			var self = this,
 				conference_html = $(self.getTemplate({
 					name: 'edit',
-					data: data,
+					data: {
+						...data,
+						hideAdd: hideAdd,
+						miscSettings: miscSettings
+					},
 					submodule: 'conference'
 				})),
 				conference_form = conference_html.find('#conference_form');

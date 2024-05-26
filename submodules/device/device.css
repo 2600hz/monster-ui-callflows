@@ -101,3 +101,37 @@
 	margin-bottom: 20px;
 }
 
+.callflows-port .callflows-codecs-ui {
+	max-width: 900px;
+}
+
+/* callflows - devices - fix width of video codec in line with audio codec */
+.core-content #callflow_container .callflows-port .pill-content #media_video_codecs {
+    max-width: 900px;
+}
+
+/* callflows - callflow device pop up - codec drag and drop fix */
+.core-content .inline_popup #device-form .items-selector .box-selector:first-child {
+    margin-right: 0px ;
+}
+
+/* callflows - callflow device pop up - codec drag and drop fix */
+.core-content .inline_popup #device-form .items-selector .box-selector {
+    width: 50%;
+    max-width: auto;
+}
+
+/* callflows - callflow device pop up - codec drag and drop fix */
+.core-content .inline_popup #device-form .items-selector .box-selector .box-title {
+    width: 70%;
+}
+
+/* callflows - callflow device pop up - codec drag and drop fix */
+.core-content .inline_popup #device-form .items-selector .box-selector .search-wrapper input {
+    width: 85%;
+}
+
+/* callflows - callflow device pop up - codec drag and drop fix */
+.core-content .inline_popup #device-form .items-selector .box-selector .box-content {
+   width: 70%;
+}

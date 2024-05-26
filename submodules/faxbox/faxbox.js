@@ -2,7 +2,9 @@ define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
 		monster = require('monster'),
-		timezone = require('monster-timezone');
+		timezone = require('monster-timezone'),
+		hideAdd = false,
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -14,9 +16,19 @@ define(function(require) {
 
 		faxboxDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// set variables for use elsewhere
+			hideAdd = args.hideAdd,
+			miscSettings = args.miscSettings;
+
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'faxbox[id=*]': {
 					name: self.i18n.active().callflows.faxbox.faxboxes_label,
 					icon: 'printer2',
@@ -32,6 +44,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('faxbox[id=*]'),
 					weight: 130,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -113,7 +126,10 @@ define(function(require) {
 					},
 					editEntity: 'callflows.faxbox.edit'
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		faxboxPopupEdit: function(args) {
@@ -272,6 +288,8 @@ define(function(require) {
 				faxbox_html = $(self.getTemplate({
 					name: 'edit',
 					data: {
+						hideAdd: hideAdd,
+						miscSettings: miscSettings,
 						faxbox: self.faxboxNormalizedData(data.faxbox),
 						users: data.user_list,
 						phone_numbers: data.phone_numbers

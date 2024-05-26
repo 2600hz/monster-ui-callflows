@@ -1,7 +1,8 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster');
+		monster = require('monster'),
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -130,7 +131,10 @@ define(function(require) {
 			var self = this,
 				menu_html = $(self.getTemplate({
 					name: 'edit',
-					data: data,
+					data: {
+						...data,
+						miscSettings: miscSettings
+					},
 					submodule: 'menu'
 				})),
 				menuForm = menu_html.find('#menu-form');
@@ -335,6 +339,9 @@ define(function(require) {
 		menuDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions;
+
+			// set variables for use elsewhere
+			miscSettings = args.miscSettings;
 
 			$.extend(callflow_nodes, {
 				'menu[id=*]': {

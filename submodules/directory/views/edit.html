@@ -6,10 +6,12 @@
 			{{else}}
 				<h1>{{ i18n.callflows.directory.create_directory }}</h1>
 			{{/if}}
-			<div class="buttons-right pasted view-buttons">
-				<button class="btn black basic activate">{{ i18n.callflows.directory.basic }}</button>
-				<button class="btn black advanced">{{ i18n.callflows.directory.advanced }}</button>
-			</div>
+			{{#unless miscSettings.hideBasicAdvancedButton}}
+				<div class="buttons-right pasted view-buttons">
+					<button class="btn black basic activate">{{ i18n.callflows.directory.basic }}</button>
+					<button class="btn black advanced">{{ i18n.callflows.directory.advanced }}</button>
+				</div>
+			{{/unless}}
 		</div>
 	</div>
 	<div>

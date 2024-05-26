@@ -312,9 +312,15 @@ define(function(require) {
 
 		groupsDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'ring_group[]': {
 					name: self.i18n.active().oldCallflows.ring_group,
 					icon: 'ring_group',
@@ -331,6 +337,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('ring_group[]'),
 					weight: 20,
 					caption: function(node) {
 						return node.getMetadata('name') || '';
@@ -374,6 +381,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('page_group[]'),
 					weight: 30,
 					caption: function(node) {
 						return node.getMetadata('name') || '';
@@ -546,6 +554,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('ring_group_toggle[action=login]'),
 					weight: 1,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('callflow_id'),
@@ -629,6 +638,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('ring_group_toggle[action=logout]'),
 					weight: 2,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('callflow_id'),
@@ -694,7 +704,10 @@ define(function(require) {
 						});
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		groupsGetEndpoints: function(callback) {

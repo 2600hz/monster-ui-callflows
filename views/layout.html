@@ -1,23 +1,34 @@
 <div id="callflow_container">
+	<!-- add here -->
 	<div class="entity-manager callflow-app-section">
 		<div class="grid-header">{{ i18n.entityManager.header }}</div>
 		<div class="entity-element callflow-element">
 			<div>{{ i18n.entityManager.callflowsTitle }}</div>
 		</div>
-		<div class="entity-element account-element">
-			<div>{{ i18n.entityManager.accountTitle }}</div>
-		</div>
-		<div class="entity-element feature-code-element">
-			<div>{{ i18n.entityManager.featureCodeTitle }}</div>
-		</div>
-	{{#each actions}}
-		<div class="entity-element" data-type="{{module}}">
-			<div>
-				{{name}}
+	
+		{{#unless hideFromMenuAccountSettings}}
+			<div class="entity-element account-element">
+				<div>{{ i18n.entityManager.accountTitle }}</div>
 			</div>
-		</div>
+		{{/unless}}
+		
+		{{#unless hideFromMenuFeatureCodes}}
+			<div class="entity-element feature-code-element">
+				<div>{{ i18n.entityManager.featureCodeTitle }}</div>
+			</div>
+		{{/unless}}
+		
+	{{#each actions}}
+		{{#unless hideFromMenu}}
+			<div class="entity-element {{module}}-element" data-type="{{module}}">
+				<div>
+					{{name}}
+				</div>
+			</div>
+		{{/unless}}
 	{{/each}}
 	</div>
+
 	<div class="entity-edition callflow-app-section">
 		<div class="left-bar-container">
 			<div class="search-box">

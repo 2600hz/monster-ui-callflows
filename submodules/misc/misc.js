@@ -1,7 +1,9 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster');
+		monster = require('monster'),
+		miscSettings = {},
+		ttsLanguages = {};
 
 	var app = {
 		requests: {},
@@ -53,9 +55,19 @@ define(function(require) {
 
 		miscDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// set variables for use elsewhere
+			miscSettings = args.miscSettings,
+			ttsLanguages = args.ttsLanguages;
+
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'root': {
 					name: 'Root',
 					rules: [
@@ -83,6 +95,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: true,
 					weight: 20,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -166,6 +179,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('do_not_disturb[action=activate]'),
 					weight: 1,
 					caption: function(node) {
 						return '';
@@ -192,6 +206,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('do_not_disturb[action=deactivate]'),
 					weight: 2,
 					caption: function(node) {
 						return '';
@@ -218,6 +233,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('do_not_disturb[action=toggle]'),
 					weight: 3,
 					caption: function(node) {
 						return '';
@@ -244,6 +260,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('call_forward[action=activate]'),
 					weight: 10,
 					caption: function(node) {
 						return '';
@@ -270,6 +287,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('call_forward[action=deactivate]'),
 					weight: 20,
 					caption: function(node) {
 						return '';
@@ -296,6 +314,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('call_forward[action=update]'),
 					weight: 30,
 					caption: function(node) {
 						return '';
@@ -313,6 +332,7 @@ define(function(require) {
 					module: 'dynamic_cid',
 					tip: self.i18n.active().oldCallflows.dynamic_cid_tip,
 					isUsable: 'true',
+					isListed: determineIsListed('dynamic_cid[]'),
 					weight: 10,
 					caption: function(node) {
 						return '';
@@ -342,6 +362,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('prepend_cid[action=prepend]'),
 					weight: 20,
 					caption: function(node) {
 						return (node.getMetadata('caller_id_name_prefix') || '') + ' ' + (node.getMetadata('caller_id_number_prefix') || '');
@@ -407,6 +428,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('prepend_cid[action=reset]'),
 					weight: 30,
 					caption: function(node) {
 						return '';
@@ -433,6 +455,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('set_alert_info[]'),
 					weight: 20,
 
 					caption: function(node) {
@@ -484,6 +507,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('manual_presence[]'),
 					weight: 40,
 					caption: function(node) {
 						return node.getMetadata('presence_id') || '';
@@ -536,6 +560,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('language[]'),
 					weight: 50,
 					caption: function(node) {
 						return node.getMetadata('language') || '';
@@ -587,6 +612,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('group_pickup[]'),
 					weight: 60,
 					caption: function(node) {
 						return node.getMetadata('name') || '';
@@ -649,6 +675,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('receive_fax[]'),
 					weight: 70,
 					caption: function(node) {
 						return '';
@@ -728,6 +755,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('record_call[action=start]'),
 					weight: 10,
 					caption: function(node) {
 						return '';
@@ -781,6 +809,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('record_call[action=stop]'),
 					weight: 20,
 					caption: function(node) {
 						return '';
@@ -814,6 +843,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('pivot[]'),
 					weight: 80,
 					caption: function(node) {
 						return '';
@@ -887,6 +917,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('disa[]'),
 					weight: 90,
 					caption: function(node) {
 						return '';
@@ -966,6 +997,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('collect_dtmf[]'),
 					weight: 90,
 					caption: function(node) {
 						return '';
@@ -1034,6 +1066,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('sleep[]'),
 					weight: 47,
 					caption: function(node) {
 						return '';
@@ -1093,6 +1126,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('tts[]'),
 					weight: 45,
 					caption: function(node) {
 						return '';
@@ -1103,6 +1137,7 @@ define(function(require) {
 						popup_html = $(self.getTemplate({
 							name: 'tts',
 							data: {
+								miscSettings: miscSettings,
 								data_tts: {
 									'text': node.getMetadata('text'),
 									'language': node.getMetadata('language'),
@@ -1114,6 +1149,60 @@ define(function(require) {
 
 						monster.ui.tooltips(popup_html);
 
+						// set tts languages based on dt-callflows whitelabel configuration
+						if(miscSettings.ttsSetLanguages == true || false) {
+
+							var languages = {};
+							var voices = {};
+
+							// split the ttsVoices into languages and voices
+							ttsLanguages.forEach(function(voice) {
+								var parts = voice.split('/'),
+									lang = parts[1];
+
+								if (!languages[lang]) {
+									languages[lang] = lang;
+								}
+
+								if (!voices[lang]) {
+									voices[lang] = [];
+								}
+								voices[lang].push(voice);
+
+							});
+
+							// populate the language dropdown
+							var languageSelect = $('#tts_language_input', popup_html);
+							for (var lang in languages) {
+								languageSelect.append(new Option(lang, lang));
+							}
+
+							// populate the voice dropdown based on the selected language
+							var voiceSelect = $('#tts_voice_input', popup_html);
+							languageSelect.change(function() {
+								var selectedLanguage = $(this).val();
+								voiceSelect.empty();
+								if (voices[selectedLanguage]) {
+									voices[selectedLanguage].forEach(function(voice) {
+										var gender = voice.split('/')[0]; // extract gender from the voice string
+										voiceSelect.append(new Option(gender, gender)); // add the gender to the dropdown
+									});
+								}
+							});
+
+							// set the voice dropdown based on the selected language on form load
+							languageSelect.trigger('change');
+
+							// set the initial values if data exists
+							if (node.getMetadata('language')) {
+								languageSelect.val(node.getMetadata('language')).change();
+							}
+							if (node.getMetadata('voice')) {
+								voiceSelect.val(node.getMetadata('voice'));
+							}
+
+						}
+						
 						$('#add', popup_html).click(function() {
 							var setData = function(field, value) {
 								if (value !== 'default') {
@@ -1123,9 +1212,12 @@ define(function(require) {
 								}
 							};
 
+							
 							setData('text', $('#tts_text_input', popup_html).val());
 							setData('language', $('#tts_language_input', popup_html).val());
 							setData('voice', $('#tts_voice_input', popup_html).val());
+							
+
 
 							popup.dialog('close');
 						});
@@ -1159,6 +1251,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('response[]'),
 					weight: 100,
 					caption: function(node) {
 						return self.i18n.active().oldCallflows.sip_code_caption + node.getMetadata('code');
@@ -1256,6 +1349,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('missed_call_alert[]'),
 					weight: 31,
 					caption: function() {
 						return '';
@@ -1275,6 +1369,7 @@ define(function(require) {
 					},
 					rules: [],
 					isUsable: 'true',
+					isListed: determineIsListed('set_variables[]'),
 					weight: 31,
 					caption: function(node) {
 						return '';
@@ -1292,6 +1387,7 @@ define(function(require) {
 					data: {},
 					rules: [],
 					isUsable: 'true',
+					isListed: determineIsListed('webhook[]'),
 					weight: 170,
 					caption: function() {
 						return '';
@@ -1300,7 +1396,10 @@ define(function(require) {
 						self.miscRenderEditWebhook(node, callback);
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		/* Render edit dialogs */

@@ -17,6 +17,7 @@
 		<form id="device-form" action="" method="post">
 			<div class="pill-content">
 				<div class="active basic_view" id="basic">
+					<h3>{{ i18n.callflows.device.basic_settings }}</h3>
 					<div class="clearfix">
 						<label for="name">{{ i18n.callflows.device.device_nickname }}</label>
 						<div class="input">
@@ -207,10 +208,12 @@
 										{{/each}}
 									{{/select}}
 								</select>
+								{{#unless hideAdd.user}}
 								<div class="edit_create">
 									<a id="edit_link_media" class="inline_action_media" data-action="edit" href="#">{{ i18n.callflows.device.edit }}</a>
 									<a class="inline_action_media" data-action="create" href="#">{{ i18n.callflows.device.create }}</a>
 								</div>
+								{{/unless}}
 							</span>
 						</div>
 					</div>

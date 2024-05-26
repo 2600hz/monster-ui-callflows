@@ -12,9 +12,15 @@ define(function(require) {
 
 		resourceDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'offnet[]': {
 					name: self.i18n.active().callflows.resource.global_carrier,
 					icon: 'offnet',
@@ -30,6 +36,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('offnet[]'),
 					weight: 140,
 					caption: function(node) {
 						return '';
@@ -55,6 +62,7 @@ define(function(require) {
 					],
 					isTerminating: 'true',
 					isUsable: 'true',
+					isListed: determineIsListed('resources[]'),
 					weight: 150,
 					caption: function(node) {
 						return '';
@@ -92,7 +100,10 @@ define(function(require) {
 						});
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		}
 	};
 

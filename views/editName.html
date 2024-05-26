@@ -6,6 +6,7 @@
 				<input type="text" id="callflow_name" class="input-medium" value="{{ name }}"/>
 			</div>
 
+			{{#unless miscSettings.hideCallflowHideFromContactList}}
 			<div class="popup_field">
 				 <label>
 					 <span rel="popover" data-content="{{ i18n.oldCallflows.by_checking_this_box }}">
@@ -18,7 +19,9 @@
 					 </span>
 				</label>
 			</div>
+			{{/unless}}
 
+			{{#unless miscSettings.hideCallflowListInMainNumber}}
 			<div class="popup_field">
 				<label>
 					<span>
@@ -27,6 +30,7 @@
 					</span>
 				</label>
 			</div>
+			{{/unless}}
 
 			<div class="fancy_help_text">{{ i18n.oldCallflows.giving_a_name_to_a_callflow }}</div>
 		</div>

@@ -1,7 +1,9 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster');
+		monster = require('monster'),
+		miscSettings = {},
+		ttsLanguages = {};
 
 	var app = {
 		requests: {},
@@ -17,6 +19,8 @@ define(function(require) {
 				media_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
+						miscSettings: miscSettings,
+						ttsLanguages: ttsLanguages,
 						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure
 					}, data),
 					submodule: 'media'
@@ -94,6 +98,92 @@ define(function(require) {
 				changeType($(this));
 			});
 
+
+			/*
+			// set tts languages based on dt-callflows whitelabel configuration
+			if(miscSettings.ttsSetLanguages == true || false) {
+
+				var ttsVoiceSelect = $('#tts_voice', media_html);
+				ttsLanguages.forEach(function(voice) {
+					ttsVoiceSelect.append(new Option(voice, voice));
+				});
+
+				// if data.tts exists, set the selected option
+				if (data.tts && data.tts.voice) {
+					ttsVoiceSelect.val(data.tts.voice);
+				}
+
+			}
+			*/
+
+			// set tts languages based on dt-callflows whitelabel configuration
+			if (miscSettings.ttsSetLanguages == true || false) {
+				var languages = {};
+				var voices = {};
+
+				// split the ttsVoices into languages and voices
+				ttsLanguages.forEach(function(voice) {
+					var parts = voice.split('/');
+					var lang = parts[1];
+
+					if (!languages[lang]) {
+						languages[lang] = lang;
+					}
+
+					if (!voices[lang]) {
+						voices[lang] = [];
+					}
+					voices[lang].push(voice);
+				});
+
+				// populate the language dropdown
+				var languageSelect = $('#tts_language', media_html);
+				for (var lang in languages) {
+					languageSelect.append(new Option(lang, lang));
+				}
+
+				// populate the voice dropdown based on the selected language
+				var voiceSelect = $('#tts_voice', media_html);
+				languageSelect.change(function() {
+					var selectedLanguage = $(this).val();
+					voiceSelect.empty();
+					if (voices[selectedLanguage]) {
+						voices[selectedLanguage].forEach(function(voice) {
+							var gender = voice.split('/')[0]; // extract gender from the voice string
+							voiceSelect.append(new Option(gender, gender)); // add the gender to the dropdown
+						});
+					}
+				});
+
+				// set the voice dropdown based on the selected language on form load
+				languageSelect.trigger('change');
+
+				// set the initial values if data exists
+				if (data.data.tts && data.data.tts.voice) {
+
+					var parts = data.data.tts.voice.split('/'),
+						voice = parts[0], // extract the voice part
+						language = parts[1], // extract the language part
+						ttsVoiceSelect = $('#tts_voice', media_html),
+						ttsLanguageSelect = $('#tts_language', media_html);
+
+					// set the values in their respective dropdowns
+					ttsVoiceSelect.val(voice);
+					ttsLanguageSelect.val(language);
+
+				}
+	
+			}
+
+			else {
+
+				if (data.data.tts && data.data.tts.voice) {
+					var ttsVoiceSelect = $('#tts_voice', media_html);
+					ttsVoiceSelect.val(data.data.tts.voice);
+				}
+
+			}
+
 			$('.media-save', media_html).click(function(ev) {
 				ev.preventDefault();
 				var $this = $(this);
@@ -144,7 +234,7 @@ define(function(require) {
 							} else {
 								if (typeof callbacks.save_success === 'function') {
 									callbacks.save_success(_data, status);
-								}
+								}		
 							}
 						});
 					} else {
@@ -175,7 +265,16 @@ define(function(require) {
 			}
 
 			if (form_data.media_source === 'tts') {
+				
 				form_data.description = 'tts file';
+
+				if(miscSettings.ttsSetLanguages == true || false) {
+					if (form_data.tts && form_data.tts.voice && form_data.tts.language) {
+						form_data.tts.voice = form_data.tts.voice + '/' + form_data.tts.language;
+						delete form_data.tts.language;
+					}
+				}
+
 			} else {
 				delete form_data.tts;
 			}
@@ -313,6 +412,10 @@ define(function(require) {
 		mediaDefineActions: function(args) {
 			var self = this,
 				callflow_nodes = args.actions;
+
+			// set variables for use elsewhere
+			miscSettings = args.miscSettings,
+			ttsLanguages = args.ttsLanguages;
 
 			$.extend(callflow_nodes, {
 				'play[id=*]': {

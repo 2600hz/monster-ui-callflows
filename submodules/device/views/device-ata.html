@@ -6,23 +6,28 @@
 			{{else}}
 				<h1>{{ i18n.callflows.device.add_a_ata }}</h1>
 			{{/if}}
-			<div class="buttons-right pasted view-buttons">
-				<button class="btn black basic activate">{{ i18n.callflows.device.basic }}</button>
-				<button class="btn black advanced">{{ i18n.callflows.device.advanced }}</button>
-			</div>
+			{{#unless miscSettings.hideBasicAdvancedButton}}
+				<div class="buttons-right pasted view-buttons">
+					<button class="btn black basic activate">{{ i18n.callflows.device.basic }}</button>
+					<button class="btn black advanced">{{ i18n.callflows.device.advanced }}</button>
+				</div>
+			{{/unless}}
 		</div>
 	</div>
 	<div>
 		<ul class="tabs" data-tabs="tabs">
 			<li class="active"><a href="#basic">{{ i18n.callflows.device.basic }}</a></li>
 			<li><a href="#caller_id">{{ i18n.callflows.device.caller_id }}</a></li>
-			<li><a href="#sip_settings">{{ i18n.callflows.device.sip_settings }}</a></li>
+			{{#unless miscSettings.hideDeviceSipSettings}}
+				<li><a href="#sip_settings">{{ i18n.callflows.device.sip }}</a></li>
+			{{/unless}}
 			<li><a href="#options">{{ i18n.callflows.device.options }}</a></li>
 			<li><a href="#restrictions">{{ i18n.callflows.device.restrictions }}</a></li>
 		</ul>
 		<form id="device-form" action="" method="post">
 			<div class="pill-content">
 				<div class="active basic_view" id="basic">
+					<h3>{{ i18n.callflows.device.basic_settings }}</h3>
 					<div class="clearfix">
 						<label for="name">{{ i18n.callflows.device.device_nickname }}</label>
 						<div class="input">
@@ -42,10 +47,12 @@
 											{{/each}}
 										{{/select}}
 									</select>
+									{{#unless hideAdd.user}}
 									<div class="edit_create">
 										<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.device.edit }}</a>
 										<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.device.create }}</a>
 									</div>
+									{{/unless}}
 								</span>
 							</div>
 						</div>
@@ -223,29 +230,33 @@
 						</div>
 					</div>
 
-					<div class="clearfix">
-						<label for="outbound_flags">{{ i18n.callflows.device.outbound_flags }}</label>
-						<div class="input">
-							<input class="span4" id="outbound_flags" name="outbound_flags" type="text" placeholder="{{ i18n.callflows.device.outbound_flags }}" value="{{ data.outbound_flags }}" rel="popover" data-content="{{ i18n.callflows.device.outbound_flags_data_content }}"/>
+					{{#unless miscSettings.hideDeviceOutboundFlags}}
+						<div class="clearfix">
+							<label for="outbound_flags">{{ i18n.callflows.device.outbound_flags }}</label>
+							<div class="input">
+								<input class="span4" id="outbound_flags" name="outbound_flags" type="text" placeholder="{{ i18n.callflows.device.outbound_flags }}" value="{{ data.outbound_flags }}" rel="popover" data-content="{{ i18n.callflows.device.outbound_flags_data_content }}"/>
+							</div>
 						</div>
-					</div>
+					{{/unless}}
 				</div>
 
 				<div id="options">
-					<div class="clearfix">
-						<div class="input">
-							<ul class="inputs-list">
-								<li>
-									<label>
-										<span rel="popover" data-content="{{ i18n.callflows.device.hide_from_contact_list_data_content }}">
-											<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude"{{#if data.contact_list.exclude}} checked="checked"{{/if}} />
-											<span>{{ i18n.callflows.device.hide_from_contact_list }}</span>
-										</span>
-									</label>
-								</li>
-							</ul>
+					{{#unless miscSettings.hideDeviceHideFromContactList}}
+						<div class="clearfix">
+							<div class="input">
+								<ul class="inputs-list">
+									<li>
+										<label>
+											<span rel="popover" data-content="{{ i18n.callflows.device.hide_from_contact_list_data_content }}">
+												<input id="contact_list_exclude" type="checkbox" name="contact_list.exclude"{{#if data.contact_list.exclude}} checked="checked"{{/if}} />
+												<span>{{ i18n.callflows.device.hide_from_contact_list }}</span>
+											</span>
+										</label>
+									</li>
+								</ul>
+							</div>
 						</div>
-					</div>
+					{{/unless}}
 
 					<div class="clearfix">
 						<div class="input">
@@ -264,13 +275,14 @@
 				</div>
 
 				<div id="restrictions">
+					<!--
 					<div class="clearfix">
 						<div class="input">
 							<ul class="inputs-list">
 								<li>
 									<label>
 										<span rel="popover" data-content="{{ i18n.callflows.device.closed_groups_data_content }}">
-											<input type="checkbox" name="extra.closed_groups"{{#compare data.call_restriction.closed_groups.action "===" "deny"}} checked="checked"{{/compare}}/>
+												<input type="checkbox" name="extra.closed_groups"{{#compare data.call_restriction.closed_groups.action "===" "deny"}} checked="checked"{{/compare}}/>
 											<span>{{ i18n.callflows.device.closed_groups }}</span>
 										</span>
 									</label>
@@ -278,14 +290,28 @@
 							</ul>
 						</div>
 					</div>
+					-->
+
+					{{#unless miscSettings.hideClosedGroups}}
+						<div class="clearfix label-wide">
+							<label>{{ i18n.callflows.device.closed_groups }}</label>
+							<div class="input">
+								<select name="call_restriction.closed_groups.action" class="medium" rel="popover">
+								
+								<option value="deny"{{#compare data.call_restriction.closed_groups.action '===' 'deny'}} selected{{/compare}}>{{ i18n.callflows.device.closed_groups_deny }}</option>
+								<option value="inherit"{{#compare data.call_restriction.closed_groups.action '!==' 'deny'}} selected{{/compare}}>{{ i18n.callflows.device.closed_groups_inherit }}</option>
+								</select>
+							</div>
+						</div>
+					{{/unless}}
+					
 
 					{{#each field_data.call_restriction}}
-					<div class="clearfix">
+					<div class="clearfix label-wide">
 						<label>{{ this.friendly_name }}</label>
 						<div class="input">
 							<select name="call_restriction.{{ @key }}.action" class="medium" rel="popover">
 								{{#select this.value }}
-									<option value="allow">{{ @root.i18n.callflows.device.allow }}</option>
 									<option value="deny">{{ @root.i18n.callflows.device.deny }}</option>
 									<option value="inherit">{{ @root.i18n.callflows.device.inherit }}</option>
 								{{/select}}

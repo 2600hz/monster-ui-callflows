@@ -502,9 +502,15 @@ define(function(require) {
 
 		timeofdayDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'temporal_route[]': {
 					name: self.i18n.active().callflows.timeofday.time_of_day,
 					icon: 'temporal_route',
@@ -518,6 +524,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('temporal_route[]'),
 					weight: 10,
 					key_caption: function(child_node, caption_map) {
 						var key = child_node.key,
@@ -655,6 +662,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('temporal_route[action=disable]'),
 					weight: 20,
 					caption: function(node) {
 						return '';
@@ -752,6 +760,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('temporal_route[action=enable]'),
 					weight: 30,
 					caption: function(node) {
 						return '';
@@ -849,6 +858,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('temporal_route[action=reset]'),
 					weight: 40,
 					caption: function(node) {
 						return '';
@@ -930,7 +940,10 @@ define(function(require) {
 						});
 					}
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		temporalRuleAndSetList: function(callback) {

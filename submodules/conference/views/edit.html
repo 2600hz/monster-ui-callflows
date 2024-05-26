@@ -1,17 +1,21 @@
 <div>
 	<div class="whapp-header clearfix">
 		<h1>{{#if data.id}}{{ i18n.callflows.conference.edit_conference }}{{else}}{{ i18n.callflows.conference.create_conference }}{{/if}}</h1>
-		<div class="buttons-right pasted view-buttons">
-			<button class="btn black basic activate">{{ i18n.callflows.conference.basic }}</button>
-			<button class="btn black advanced">{{ i18n.callflows.conference.advanced }}</button>
-		</div>
+		{{#unless miscSettings.hideBasicAdvancedButton}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.conference.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.conference.advanced }}</button>
+			</div>
+		{{/unless}}
 	</div>
 
 	<div>
 		<ul class="tabs" data-tabs="tabs">
 			<li class="active"><a href="#basic">{{ i18n.callflows.conference.basic }}</a></li>
 			<li><a href="#options"><span class="icon wrench_screw"></span>{{ i18n.callflows.conference.options }}</a></li>
-			<li><a href="#conference_server"><span class="icon conference"></span>{{ i18n.callflows.conference.conference_server }}</a></li>
+			{{#unless miscSettings.hideConferenceNumbers}}
+				<li><a href="#conference_server"><span class="icon conference"></span>{{ i18n.callflows.conference.conference_server }}</a></li>
+			{{/unless}}
 		</ul>
 
 		<form id="conference_form" action="" method="post" >
@@ -35,10 +39,12 @@
 									{{/each}}
 								{{/select}}
 								</select>
-								<div class="edit_create">
-									<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.conference.edit }}</a>
-									<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.conference.create }}</a>
-								</div>
+								{{#unless hideAdd.user}}
+									<div class="edit_create">
+										<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.conference.edit }}</a>
+										<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.conference.create }}</a>
+									</div>
+								{{/unless}}
 							</span>
 						</div>
 					</div>
@@ -112,6 +118,7 @@
 						</div>
 					</div>
 
+					{{#unless miscSettings.hideConferenceEnableVideo}}
 					<div class="clearfix">
 						<div class="input">
 							<ul class="inputs-list">
@@ -124,6 +131,7 @@
 							</ul>
 						</div>
 					</div>
+					{{/unless}}
 				</div>
 
 				<div id="conference_server">
@@ -139,7 +147,9 @@
 
 		<div class="buttons-right">
 			{{#if data.id}}
-				<button class="monster-button monster-button-danger conference-delete">{{ i18n.callflows.conference.delete }}</button>
+				{{#unless hideAdd.conference}}
+					<button class="monster-button monster-button-danger conference-delete">{{ i18n.callflows.conference.delete }}</button>
+				{{/unless}}
 			{{/if}}
 			<button class="monster-button monster-button-success conference-save">{{ i18n.callflows.conference.save }}</button>
 		</div>

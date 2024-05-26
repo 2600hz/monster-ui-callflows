@@ -5,10 +5,12 @@
 		{{else}}
 			<h1>{{ i18n.callflows.faxbox.create_faxbox }}</h1>
 		{{/if}}
-		<div class="buttons-right pasted view-buttons">
-			<button class="btn black basic activate">{{ i18n.callflows.faxbox.basic }}</button>
-			<button class="btn black advanced">{{ i18n.callflows.faxbox.advanced }}</button>
-		</div>
+		{{#unless miscSettings.hideBasicAdvancedButton}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.faxbox.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.faxbox.advanced }}</button>
+			</div>
+		{{/unless}}
 	</div>
 </div>
 <div>
@@ -42,10 +44,12 @@
 								{{/each}}
 							{{/select}}
 							</select>
-							<div class="edit_create">
-								<a id="edit_link"  class="inline-action" data-action="edit" href="#">{{ i18n.callflows.faxbox.edit_user }}</a>
-								<a class="inline-action" data-action="create" href="#">{{ i18n.callflows.faxbox.create_user }}</a>
-							</div>
+							{{#unless hideAdd.user}}
+								<div class="edit_create">
+									<a id="edit_link"  class="inline-action" data-action="edit" href="#">{{ i18n.callflows.faxbox.edit_user }}</a>
+									<a class="inline-action" data-action="create" href="#">{{ i18n.callflows.faxbox.create_user }}</a>
+								</div>
+							{{/unless}}
 						</span>
 					</div>
 				</div>

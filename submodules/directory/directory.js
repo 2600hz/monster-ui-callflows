@@ -1,7 +1,8 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster');
+		monster = require('monster'),
+		miscSettings = {};
 
 	var app = {
 		requests: {},
@@ -15,7 +16,10 @@ define(function(require) {
 			var self = this,
 				directory_html = $(self.getTemplate({
 					name: 'edit',
-					data: data,
+					data: {
+						...data,
+						miscSettings: miscSettings
+					},
 					submodule: 'directory'
 				})),
 				directoryForm = directory_html.find('#directory-form');
@@ -454,9 +458,18 @@ define(function(require) {
 
 		directoryDefineActions: function(args) {
 			var self = this,
-				callflow_nodes = args.actions;
+				callflow_nodes = args.actions,
+				hideCallflowAction = args.hideCallflowAction;
 
-			$.extend(callflow_nodes, {
+			// set variables for use elsewhere
+			miscSettings = args.miscSettings;
+			
+			// function to determine if an action should be listed
+			var determineIsListed = function(key) {
+				return !(hideCallflowAction.hasOwnProperty(key) && hideCallflowAction[key] === true);
+			};
+
+			var actions = {
 				'directory[id=*]': {
 					name: self.i18n.active().callflows.directory.directory,
 					icon: 'book',
@@ -473,6 +486,7 @@ define(function(require) {
 						}
 					],
 					isUsable: 'true',
+					isListed: determineIsListed('directory[id=*]'),
 					weight: 160,
 					caption: function(node, caption_map) {
 						var id = node.getMetadata('id'),
@@ -554,7 +568,10 @@ define(function(require) {
 					},
 					editEntity: 'callflows.directory.edit'
 				}
-			});
+			}
+
+			$.extend(callflow_nodes, actions);
+
 		},
 
 		directoryList: function(callback) {

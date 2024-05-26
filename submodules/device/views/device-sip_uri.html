@@ -6,20 +6,25 @@
 			{{else}}
 				<h1>{{ i18n.callflows.device.add_a_sip_uri }}</h1>
 			{{/if}}
-			<div class="buttons-right pasted view-buttons">
-				<button class="btn black basic activate">{{ i18n.callflows.device.basic }}</button>
-				<button class="btn black advanced">{{ i18n.callflows.device.advanced }}</button>
-			</div>
+			{{#unless miscSettings.hideBasicAdvancedButton}}
+				<div class="buttons-right pasted view-buttons">
+					<button class="btn black basic activate">{{ i18n.callflows.device.basic }}</button>
+					<button class="btn black advanced">{{ i18n.callflows.device.advanced }}</button>
+				</div>
+			{{/unless}}
 		</div>
 	</div>
 	<div>
 		<ul class="tabs" data-tabs="tabs">
 			<li class="active"><a href="#basic">{{ i18n.callflows.device.basic }}</a></li>
-			<li><a href="#options">{{ i18n.callflows.device.options }}</a></li>
+			{{#unless miscSettings.hideDeviceHideFromContactList}}
+				<li><a href="#options">{{ i18n.callflows.device.options }}</a></li>
+			{{/unless}}
 		</ul>
 		<form id="device-form" action="" method="post">
 			<div class="pill-content">
 				<div class="active basic_view" id="basic">
+					<h3>{{ i18n.callflows.device.basic_settings }}</h3>
 					<div class="clearfix">
 						<label for="name">{{ i18n.callflows.device.name }}</label>
 						<div class="input">
@@ -39,10 +44,12 @@
 											{{/each}}
 										{{/select}}
 									</select>
+									{{#unless hideAdd.user}}
 									<div class="edit_create">
 										<a id="edit_link"  class="inline_action" data-action="edit" href="#">{{ i18n.callflows.device.edit }}</a>
 										<a class="inline_action" data-action="create" href="#">{{ i18n.callflows.device.create }}</a>
 									</div>
+									{{/unless}}
 								</span>
 							</div>
 						</div>

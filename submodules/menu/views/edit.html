@@ -5,10 +5,12 @@
 		{{else}}
 			<h1>{{ i18n.callflows.menu.create_menu }}</h1>
 		{{/if}}
-		<div class="buttons-right pasted view-buttons">
-			<button class="btn black basic activate">{{ i18n.callflows.menu.basic }}</button>
-			<button class="btn black advanced">{{ i18n.callflows.menu.advanced }}</button>
-		</div>
+		{{#unless miscSettings.hideBasicAdvancedButton}}
+			<div class="buttons-right pasted view-buttons">
+				<button class="btn black basic activate">{{ i18n.callflows.menu.basic }}</button>
+				<button class="btn black advanced">{{ i18n.callflows.menu.advanced }}</button>
+			</div>
+		{{/unless}}
 	</div>
 
 	<div>
