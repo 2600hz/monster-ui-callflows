@@ -206,6 +206,7 @@
 #ws_callflow .tools .inactive .open,
 .callflow-preview .tools .inactive .open{
 	background-image: url(static/images/arrow_inactive.png);
+	cursor: pointer;
 }
 
 #ws_callflow .tools .tool,
@@ -289,7 +290,7 @@
 #ws_callflow .children > .child > .span_arrow,
 .callflow-preview .children > .child > .span_arrow {
 	display: inline-block;
-	width: 145px;
+	width: 100%;
 	background-repeat: no-repeat;
 	background-position: center center;
 	margin: 2px 0px 2px;
@@ -621,6 +622,7 @@
 #ws_callflow .tools .search-box,
 .callflow-preview .tools .search-box {
 	background: #444;
+	position: relative;
 }
 
 #ws_callflow .tools .search-box input,
