@@ -352,7 +352,7 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/\s+/g, '').split(',');
+					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/);
 
 					return list.filter(function(email) { return validateEmail(email); });
 				};
