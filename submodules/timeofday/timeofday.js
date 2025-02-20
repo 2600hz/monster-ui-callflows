@@ -639,6 +639,10 @@ define(function(require) {
 								node.setMetadata('timezone', timezone);
 							}
 
+							if (timezone === 'inherit') {
+								node.deleteMetadata('timezone');
+							}
+
 							node.caption = $('#timezone_selector option:selected', popup_html).text();
 
 							popup.dialog('close');
