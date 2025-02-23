@@ -15,9 +15,15 @@
 
 	<div class="callflow-content listing-mode">
 		<div class="entity-header">
-			<div class="entity-title">{{ i18n.entityManager.callflowsTitle }}</div>
-			
+			<nav class="breadcrumbs">
+				<span class="hide-separator">
+					<a class="hide-callflow entity-title">{{ i18n.entityManager.callflowsTitle }}</a>
+				</span>
+				<span class="current"></span>
+			</nav>
+
 			<button type="button" class="back-button monster-button-secondary">{{ i18n.entityManager.backButton }}</button>
+			<div class="buttons"></div>
 			{{#if canToggleCallflows}}
 				<div class="superadmin-mode">
 					<span class="switch-title">
@@ -48,7 +54,6 @@
 						<div class="callflow">
 							<div>
 								<span class="flow">
-									<div class="buttons"></div>
 									<div id="ws_cf_flow"></div>
 								</span>
 							</div>
