@@ -219,13 +219,13 @@
 .callflows-port#webhook_popup {
 	max-width: 450px;
 
-	.custom-data {
-		label[for="custom_data"] {
+	.custom-table {
+		label[for="custom_data"], label[for="custom_http_headers"] {
 			display: block;
 			text-align: center;
 			width: 100%;
 		}
-		.custom-data-container {
+		.custom-table-container {
 			clear: both;
 
 			.data-key {

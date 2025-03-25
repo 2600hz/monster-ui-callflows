@@ -1210,7 +1210,44 @@
 		"__version": "v4.1",
 		"searchDatabase": "Datenbank durchsuchen",
 		"buyNumbers": "Nummern kaufen",
-		"buyVanity": "Vanity"
+		"buyVanity": "Vanity",
+		"webhook": {
+			"help": "This feature allows you to trigger a webhook call at any level of the callflow, to get \"real time\" info on how the callflow is behaving.",
+			"popupTitle": "Trigger Webhook",
+			"title": "Webhook",
+			"tip": "Trigger a webhook at any level in a callflow to get \"real time\" info on how the callflow is behaving.",
+			"uri": {
+				"label": "URL",
+				"help": "The HTTP URI to send the request",
+				"errorMessages": {
+					"url": "Invalid URL"
+				}
+			},
+			"httpVerb": {
+				"label": "Request Type",
+				"help": "HTTP method to use when sending the request"
+			},
+			"format": {
+				"label": "Body Format",
+				"help": "Format to use when sending the webhook ",
+				"options": {
+					"formData": "FORM-DATA",
+					"json": "JSON"
+				}
+			},
+			"retries": {
+				"label": "Re-try attempts",
+				"help": "How many times to retry the request if the host isn't available"
+			},
+			"customData": {
+				"label": "Custom data (optional)",
+				"help": "These properties will be added to the event and will overwrite existing values"
+			},
+			"customHttpHeaders": {
+				"label": "Custom HTTP headers (optional)",
+				"help": "These HTTP headers will be added to the event"
+			}
+		}
 	},
 	"entityManager": {
 		"featureCodeTitle": "Funktionscodes",
