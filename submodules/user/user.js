@@ -1188,9 +1188,8 @@ define(function(require) {
 					},
 					passwordLength = _.get(monster, 'config.userPassword.minLength', 12),
 					requirements = monster.config.userPassword.requirements,
-					requiredLength = 0;
+					requiredLength = 0,
 					password = '';
-
 
 				_.forEach(requirements, function(value, key) {
 					var list = key.replace('numOf', '').toLowerCase(),
