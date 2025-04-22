@@ -1186,7 +1186,7 @@ define(function(require) {
 						numbers: '1234567890',
 						specialcharacters: '!@#$%^&*()_+~|}{:;,.-'
 					},
-					passwordLength = monster.config.userPassword.minLength,
+					passwordLength = _.get(monster, 'config.userPassword.minLength', 12),
 					requirements = monster.config.userPassword.requirements,
 					getPasswordPortion = function(list, length) {
 						return _.shuffle(list)
@@ -1201,10 +1201,14 @@ define(function(require) {
 					var list = key.replace('numOf', '').toLowerCase(),
 						val = value > 0 ? value : 0;
 
-					requiredLength += value;
-					password += getPasswordPortion(setRequirements[list], val);
+					if (_.isUndefined(setRequirements[list])) {
+						password += '';
+					} else {
+						requiredLength += value;
+						password += getPasswordPortion(setRequirements[list], val);
+					}
 				});
-				password += getPasswordPortion(setRequirements['lowercase'], passwordLength - requiredLength);
+				password += monster.util.randomString(passwordLength - requiredLength, 'safe');
 
 				return _.shuffle(password).join('');
 			} else {
