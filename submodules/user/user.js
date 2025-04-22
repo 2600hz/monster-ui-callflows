@@ -1188,12 +1188,7 @@ define(function(require) {
 					},
 					passwordLength = _.get(monster, 'config.userPassword.minLength', 12),
 					requirements = monster.config.userPassword.requirements,
-					getPasswordPortion = function(list, length) {
-						return _.shuffle(list)
-							.join('')
-							.slice(0, length);
-					},
-					requiredLength = 0
+					requiredLength = 0;
 					password = '';
 
 
@@ -1205,7 +1200,7 @@ define(function(require) {
 						password += '';
 					} else {
 						requiredLength += value;
-						password += getPasswordPortion(setRequirements[list], val);
+						password += monster.util.randomString(val, setRequirements[list]);
 					}
 				});
 				password += monster.util.randomString(passwordLength - requiredLength, 'safe');
