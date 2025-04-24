@@ -1474,7 +1474,7 @@ define(function(require) {
 							http_verb: node.getMetadata('http_verb', 'get'),
 							retries: node.getMetadata('retries', 1),
 							custom_data: node.getMetadata('custom_data', {}),
-							custom_http_headers: node.getMetadata('custom_http_headers', {})
+							custom_request_headers: node.getMetadata('custom_request_headers', {})
 						},
 						$template = $(self.getTemplate({
 							name: 'webhook-callflowEdit',
@@ -1489,8 +1489,8 @@ define(function(require) {
 					});
 
 					monster.ui.keyValueEditor($template.find('.custom-http-headers-container'), {
-						data: data.custom_http_headers,
-						inputName: 'custom_http_headers'
+						data: data.custom_request_headers,
+						inputName: 'custom_request_headers'
 					});
 
 					monster.ui.tooltips($template);
@@ -1528,7 +1528,7 @@ define(function(require) {
 						var formData = monster.ui.getFormData('webhook_form');
 
 						_.each(formData, function(value, key) {
-							if (_.includes(['custom_data', 'custom_http_headers'], key)) {
+							if (_.includes(['custom_data', 'custom_request_headers'], key)) {
 								value = _
 									.chain(value)
 									.keyBy('key')
