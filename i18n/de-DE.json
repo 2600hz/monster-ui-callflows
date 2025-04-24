@@ -1243,9 +1243,9 @@
 				"label": "Custom data (optional)",
 				"help": "These properties will be added to the event and will overwrite existing values"
 			},
-			"customHttpHeaders": {
-				"label": "Custom HTTP headers (optional)",
-				"help": "These HTTP headers will be added to the event"
+			"customRequestHeaders": {
+				"label": "Custom request headers (optional)",
+				"help": "These request headers will be added to the event"
 			}
 		}
 	},
