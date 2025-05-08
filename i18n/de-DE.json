@@ -821,7 +821,8 @@
 			"language": {
 				"fr": "Französisch",
 				"en": "Englisch",
-				"label": "Sprache"
+				"label": "Sprache",
+				"nl-BE": "Dutch (Belgium)"
 			},
 			"tip": "TTS erlaubt Ihnen die Eingabe eines Textes",
 			"title": "Text-zu-Sprache",
