@@ -1033,7 +1033,8 @@
 			"language": {
 				"label": "Language",
 				"en": "English",
-				"fr": "French"
+				"fr": "French",
+				"nl-BE": "Dutch (Belgium)"
 			},
 			"text": {
 				"label": "Text"
