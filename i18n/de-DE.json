@@ -263,6 +263,11 @@
 			"edit_user_options": "Benutzeroptionen bearbeiten",
 			"add_user": "Fügen Sie einen Benutzer hinzu",
 			"caller_id_number_data_content": "Wenn die Anrufer-ID-Nummer des Gerätes und die des Benutzers nicht festgelegt sind, legen Sie die Anrufer-ID-Nummer dieses Benutzers für hausinterne Anrufe fest.",
+			"e911": {
+				"extended_address": "Extended Address",
+                                "extended_address_placeholder": "Room 123",
+                                "extended_address_data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 32 chars)."
+			},
 			"keep_caller_id_data_content": "Wenn aktiviert, wird die Caller-ID des Anrufers verwendet.",
 			"email": "E-Mail",
 			"add_user_label": "Benutzer hinzufügen",

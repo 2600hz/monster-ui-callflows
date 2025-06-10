@@ -700,6 +700,11 @@
 			"caller_id_name_data_content": "Define the Caller ID Name of this User for In-House Calls (max. 30 chars). If the Caller ID Name of the device and of the user is not set, this Caller ID Name will be used.",
 			"caller_id_number": "Caller ID Number",
 			"caller_id_number_data_content": "Define the Caller ID Number of this User for In-House Calls. If the Caller ID Number of the device and of the user is not set, this Caller ID Number will be used.",
+			"e911": {
+				"extended_address": "Extended Address",
+				"extended_address_placeholder": "Room 123",
+				"extended_address_data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 32 chars)."
+			},
 			"outbound_calls": "Outbound Calls",
 			"caller_id_name_data_content2": "Define the Caller ID Name of this User for Outbound Calls (max. 30 chars). If the Caller ID Name of the device and of the user is not set, this Caller ID Name will be used.",
 			"caller_id_number_data_content2": "Define the Caller ID Number of this User for Outbound Calls. If the Caller ID Number of the device and of the user is not set, this Caller ID Number will be used.",
