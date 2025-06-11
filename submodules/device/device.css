@@ -101,6 +101,16 @@
 	display: block;
 }
 
+.callflows-port #device-form .caller-id-emergency-target {
+	margin-bottom: 10px;
+}
+
+.callflows-port #device-form {
+	.chosen-container, .chosen-drop, #owner_id {
+		width: 224px !important;
+	}
+}
+
 .callflows-port .pill-content{
 	margin-bottom: 20px;
 }
