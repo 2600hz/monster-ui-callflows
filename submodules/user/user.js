@@ -648,7 +648,10 @@ define(function(require) {
 					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.asserted.number': { phoneNumber: true },
-					'caller_id.asserted.realm': { realm: true }
+					'caller_id.asserted.realm': { realm: true },
+					'e911.street_address_extended': {
+						maxlength: 32
+					}
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
