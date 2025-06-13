@@ -359,12 +359,12 @@ define(function(require) {
 						},
 						success: function(_data_classifiers, status) {
 							if ('data' in _data_classifiers) {
-								$.each(_data_classifiers.data, function(k, v) {
-									defaults.field_data.call_restriction[k] = {
-										friendly_name: v.friendly_name
+								_.each(_data_classifiers.data, function(classifier) {
+									defaults.field_data.call_restriction[classifier.name] = {
+										friendly_name: classifier.friendly_name
 									};
 
-									defaults.data.call_restriction[k] = { action: 'inherit' };
+									defaults.data.call_restriction[classifier.name] = { action: 'inherit' };
 								});
 							}
 							callback(null, _data_classifiers);
