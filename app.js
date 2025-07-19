@@ -1069,24 +1069,25 @@ define(function(require) {
 		},
 
 		// Callflow JS code
-		buildFlow: function(json, parent, id, key) {
+		buildFlow: function(json, parent, id, key, caption_map) {
 			var self = this,
-				branch = self.branch(self.construct_action(json));
+				branch = self.branch(self.construct_action(json)),
+				_caption_map = caption_map || self.flow.caption_map || {}; // Normal render stores the caption_map in self.flow instead of passing it in.
 
 			branch.data.data = _.get(json, 'data', {});
 			branch.id = ++id;
 			branch.key = key;
 			branch.disabled = _.get(json, 'data.skip_module');
 
-			branch.caption = self.actions.hasOwnProperty(branch.actionName) ? self.actions[branch.actionName].caption(branch, self.flow.caption_map) : '';
+			branch.caption = self.actions.hasOwnProperty(branch.actionName) ? self.actions[branch.actionName].caption(branch, _caption_map) : '';
 
 			if (self.actions.hasOwnProperty(parent.actionName) && self.actions[parent.actionName].hasOwnProperty('key_caption')) {
-				branch.key_caption = self.actions[parent.actionName].key_caption(branch, self.flow.caption_map);
+				branch.key_caption = self.actions[parent.actionName].key_caption(branch, _caption_map);
 			}
 
 			if (json.hasOwnProperty('children')) {
 				$.each(json.children, function(key, child) {
-					branch = self.buildFlow(child, branch, id, key);
+					branch = self.buildFlow(child, branch, id, key, _caption_map);
 				});
 			}
 
@@ -1414,9 +1415,10 @@ define(function(require) {
 					flow.caption_map = callflow.metadata;
 
 					if (callflow.flow.module !== undefined) {
-						flow.root = self.buildFlow(callflow.flow, flow.root, 0, '_');
+						flow.root = self.buildFlow(callflow.flow, flow.root, 0, '_', flow.caption_map);
 					}
 
+					flow.root.index(0); // Re-index nodes to handle branched flows
 					flow.nodes = flow.root.nodes();
 					flow.numbers = callflow.numbers || [];
 
@@ -1464,6 +1466,11 @@ define(function(require) {
 							}));
 						}
 						$(this).append(node_html);
+
+						// Remove click handler bound to key-captions in renderBranch()
+						// because we don't want to be able to edit anything here
+						$('.div_option', layout).off('click');
+
 					});
 				}
 			});
