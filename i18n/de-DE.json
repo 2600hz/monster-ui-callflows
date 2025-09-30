@@ -444,7 +444,7 @@
 				"extended_address": "Extended Address",
 				"extended_address_placeholder": "Room 123",
 				"extended_address_data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 32 chars)."
-			},			
+			},
 			"seconds": "Sekunden",
 			"__comment": "UI-2135: Eine leere Option für SIP-Gerätemarken hinzufügen",
 			"peer_to_peer_audio_data_content": "Wählen Sie aus",
@@ -1097,7 +1097,17 @@
 			"pin_number_data_content": "Geben Sie die PIN-Nummer für diesen Anrufbeantworter ein (mindestens 4 Stellen)",
 			"extension": "Medien-Nebenstelle",
 			"require_pin": "PIN erforderlich",
-			"__version": 4
+			"__version": 4,
+			"share": {
+				"label": "Share Voicemail Box",
+				"help": "Share the Voicemail Box among multiple users or groups. Voicemail boxes can be shared whether they are assigned to specific users or not assigned."
+			},
+			"sharedMembersSelector": {
+				"title": "Shared Voicemail Box Members",
+				"available": "Available Users",
+				"selected": "Selected Members",
+				"okButton": "Confirm members"
+			}
 		},
 		"ringGroupToggle": {
 			"logoutDialogTitle": "Anmelden bei Callflow mit einer darin befindlichen Anrufgruppe",

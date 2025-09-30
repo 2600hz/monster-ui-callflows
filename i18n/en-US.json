@@ -190,7 +190,7 @@
 				"extended_address": "Extended Address",
 				"extended_address_placeholder": "Room 123",
 				"extended_address_data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 32 chars)."
-			},			
+			},
 			"emergency": "Emergency",
 			"caller_id_name_data_content3": "Define the Caller ID Name of this Device for Emergency Calls (max. 30 chars).",
 			"caller_id_number_data_content3": "Define the Caller ID Number of this Device for Emergency Calls.",
@@ -901,6 +901,16 @@
 			"emailAsAttachment": {
 				"label": "Attach messages to e-mail",
 				"help": "E-mail not having the message as an attachment"
+			},
+			"share": {
+				"label": "Share Voicemail Box",
+				"help": "Share the Voicemail Box among multiple users or groups. Voicemail boxes can be shared whether they are assigned to specific users or not assigned."
+			},
+			"sharedMembersSelector": {
+				"title": "Shared Voicemail Box Members",
+				"available": "Available Users",
+				"selected": "Selected Members",
+				"okButton": "Confirm members"
 			}
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
