@@ -9,6 +9,8 @@
 @import url('../submodules/groups/groups.css');
 @import url('../submodules/featurecodes/featurecodes.css');
 @import url('../submodules/temporalset/temporalset.css');
+@import "../submodules/vmbox/vmbox";
+
 /* style.css */
 #ws_callflow > .callflow {
 	float: left;
@@ -1321,6 +1323,15 @@
 	text-align: left;
 	white-space: normal;
 	width: auto;
+}
+
+.callflows-port form .inputs-list label.input-label-left {
+	float: left;
+}
+
+.callflows-port form .inputs-list .input-label-edit {
+	line-height: 18px;
+	margin-left: 1rem;
 }
 
 .callflows-port form .inputs-list input[type="radio"],

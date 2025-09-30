@@ -362,6 +362,34 @@
 					{{/if}}
 
 					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<label class="input-label-left">
+										<span rel="popover" data-content="{{ i18n.callflows.vmbox.share.help }}">
+											<input type="checkbox" id="share" name="extra.share" {{#if data.extra.share}}checked="checked" {{/if}}/>
+											<span>{{ i18n.callflows.vmbox.share.label }}</span>
+										</span>
+									</label>
+									<a class="edit-members input-label-edit{{#unless data.extra.share}} hidden{{/unless}}" href="javascript:void(0);">
+										{{ i18n.callflows.vmbox.edit }}
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="input">
+							<ul class="inputs-list">
+								<li>
+									<div class="vmbox-members"></div>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix">
 						<label for="timezone">{{ i18n.callflows.vmbox.recipients }}</label>
 						<div class="input">
 							<textarea id="recipients_list">

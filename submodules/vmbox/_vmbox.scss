@@ -1,0 +1,15 @@
+@import "../../../../css/partials/base";
+
+#vmbox-form .vmbox-members {
+	margin-bottom: 1.5rem;
+
+	ul.vmbox-member-list {
+		padding-left: 1.25rem;
+
+		li {
+			margin-bottom: 0.25rem;
+			color: $foreground-primary-color;
+		}
+	}
+}
+
