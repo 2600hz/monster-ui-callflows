@@ -145,17 +145,186 @@ define(function(require) {
 			return data;
 		},
 
-		vmboxRender: function(data, target, callbacks) {
+		/**
+		 * Renders the voicemail box edit page.
+		 * @param  {Object}   data      Vmbox data.
+		 * @param  {jQuery}   $target   Container element for the edit template.
+		 * @param  {Object}   callbacks Edit callbacks.
+		 * @param  {Function} callbacks.save_success   Callback to be invoked when the vmbox data has been successfully saved.
+		 * @param  {Function} callbacks.delete_success Callback to be invoked when the vmbox has been successfully deleted.
+		 */
+		vmboxRender: function(data, $target, callbacks) {
 			var self = this,
 				formattedData = self.vmboxFormatData(data),
-				vmbox_html = $(self.getTemplate({
+				$template = $(self.getTemplate({
 					name: 'edit',
 					data: formattedData,
 					submodule: 'vmbox'
-				})),
-				vmboxForm = vmbox_html.find('#vmbox-form');
+				}));
 
-			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone || 'inherit', {inherit: self.i18n.active().defaultTimezone});
+			self.vmboxRenderMembers({
+				template: $template,
+				members: formattedData.data.members,
+				loadNames: true
+			});
+
+			self.vmboxBindEvents({
+				template: $template,
+				data: formattedData,
+				callbacks: callbacks
+			});
+
+			$target
+				.empty()
+				.append($template);
+		},
+
+		/**
+		 * Renders the list of vmbox members.
+		 * @param  {Object}   args
+		 * @param  {jQuery}   args.template         Vmbox edit template.
+		 * @param  {Object[]} args.members          Vmbox member list.
+		 * @param  {String}   args.members[].id     Member's user ID.
+		 * @param  {'user'|'group'} args.members[].type Member's type
+		 * @param  {String}   [args.members[].name] Member's name.
+		 * @param  {Boolean}  args.loadNames        Whether to load or not the member names from the backend.
+		 */
+		vmboxRenderMembers: function(args) {
+			var self = this,
+				$template = args.template,
+				$membersContainer = $template.find('.vmbox-members'),
+				members = args.members,
+				loadNames = !!args.loadNames;
+
+			// Empty the members container
+			$membersContainer.empty();
+
+			// If there are no members, do nothing
+			if (_.isEmpty(members)) {
+				return;
+			}
+
+			// Else, load the member names if necessary, and render the list
+			monster.waterfall([
+				function loadUsers(next) {
+					if (!loadNames) {
+						return next(null, null);
+					}
+
+					return self.vmboxUserList(function(users) {
+						next(null, users);
+					});
+				},
+				function addUserNames(users, next) {
+					if (!loadNames) {
+						return next(null, members);
+					}
+
+					var usersById = _.keyBy(users, 'id'),
+						updatedMembers = _.chain(members)
+							.filter({ type: 'user' })
+							.map(function(member) {
+								var user = _.get(usersById, member.id),
+									name = user
+										? monster.util.getUserFullName(user)
+										: null;
+
+								return _.assign({
+									name: name
+								}, member);
+							})
+							.filter()
+							.value();
+
+					return next(null, updatedMembers);
+				}
+			], function(err, membersWithNames) {
+				if (err) {
+					return;
+				}
+
+				var $memberListTemplate = $(self.getTemplate({
+					name: 'members',
+					data: {
+						members: membersWithNames
+					},
+					submodule: 'vmbox'
+				}));
+
+				$membersContainer
+					.append($memberListTemplate);
+			});
+		},
+
+		/**
+		 * Binds the event handlers for the voicemail box edit template.
+		 * @param  {Object}   args
+		 * @param  {Object}   args.data      Vmbox data.
+		 * @param  {Object}   args.callbacks Edit callbacks.
+		 * @param  {Function} args.callbacks.save_success   Callback to be invoked when the vmbox data has been successfully saved.
+		 * @param  {Function} args.callbacks.delete_success Callback to be invoked when the vmbox has been successfully deleted.
+		 * @param  {jQuery}   args.template  Vmbox edit template.
+		 */
+		vmboxBindEvents: function(args) {
+			var self = this,
+				data = args.data,
+				callbacks = args.callbacks,
+				vmbox_html = args.template,
+				vmboxForm = vmbox_html.find('#vmbox-form'),
+				shareCheckbox = vmbox_html.find('#shared_vmbox'),
+				vmboxEditMembers = vmbox_html.find('.edit-members'),
+				userMembers = _.chain(data.data)
+					.get('members', [])
+					.filter({ type: 'user' })
+					.value(),
+				validateEmail = function(email) {
+					var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+					return re.test(email);
+				},
+				getRecipients = function() {
+					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/);
+
+					return list.filter(function(email) { return validateEmail(email); });
+				},
+				showMemberSelector = function showMemberSelector(uncheckShareOnCancel) {
+					var selectedUserIds = _.map(userMembers, 'id');
+
+					monster.pub('common.userSelector.renderDialog', {
+						title: _.get(self.i18n.active().callflows, 'vmbox.sharedMembersSelector.title'),
+						selectedUserIds: selectedUserIds,
+						i18n: {
+							okButton: _.get(self.i18n.active().callflows, 'vmbox.sharedMembersSelector.okButton'),
+							columnsTitles: {
+								available: _.get(self.i18n.active().callflows, 'vmbox.sharedMembersSelector.available'),
+								selected: _.get(self.i18n.active().callflows, 'vmbox.sharedMembersSelector.selected')
+							}
+						},
+						okCallback: function(selectedUsers) {
+							userMembers = _.map(selectedUsers, function(user) {
+								return {
+									id: user.key,
+									type: 'user',
+									name: user.value
+								};
+							});
+
+							self.vmboxRenderMembers({
+								template: vmbox_html,
+								members: userMembers,
+								loadNames: false
+							});
+
+							vmboxEditMembers.removeClass('hidden');
+						},
+						cancelCallback: function() {
+							if (uncheckShareOnCancel) {
+								shareCheckbox.prop('checked', false);
+							}
+						}
+					});
+				};
+
+			timezone.populateDropdown($('#timezone', vmbox_html), data.data.timezone || 'inherit', { inherit: self.i18n.active().defaultTimezone });
 
 			monster.ui.validate(vmboxForm, {
 				rules: {
@@ -337,7 +506,6 @@ define(function(require) {
 				} else {
 					$parentDiv
 						.removeClass('disabled');
-
 				}
 
 				$skipInstructions
@@ -347,15 +515,26 @@ define(function(require) {
 					.prop('disabled', isDisabled);
 			});
 
-			var validateEmail = function(email) {
-					var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-					return re.test(email);
-				},
-				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/);
+			$('#shared_vmbox', vmbox_html).on('change', function(ev) {
+				if (this.checked) {
+					showMemberSelector(true);
+					return;
+				}
 
-					return list.filter(function(email) { return validateEmail(email); });
-				};
+				userMembers = [];
+
+				vmboxEditMembers.addClass('hidden');
+
+				self.vmboxRenderMembers({
+					template: vmbox_html,
+					members: userMembers,
+					loadNames: false
+				});
+			});
+
+			$('.edit-members', vmbox_html).on('click', function() {
+				showMemberSelector(false);
+			});
 
 			$('.vmbox-save', vmbox_html).click(function(ev) {
 				ev.preventDefault();
@@ -365,27 +544,32 @@ define(function(require) {
 				if (!$this.hasClass('disabled')) {
 					$this.addClass('disabled');
 
-					if (monster.ui.valid(vmboxForm)) {
-						var form_data = monster.ui.getFormData('vmbox-form'),
-							$skipInstructionsInput = vmbox_html.find('#skip_instructions_input').val();
-
-						form_data.notify_email_addresses = getRecipients();
-
-						if (form_data.announcement_only) {
-							form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;
-						}
-
-						/* self.clean_form_data(form_data); */
-						if ('field_data' in data) {
-							delete data.field_data;
-						}
-
-						self.vmboxSave(form_data, data, callbacks.save_success, function() {
-							$this.removeClass('disabled');
-						});
-					} else {
+					if (!monster.ui.valid(vmboxForm)) {
 						$this.removeClass('disabled');
+						return;
 					}
+
+					var form_data = monster.ui.getFormData('vmbox-form'),
+						$skipInstructionsInput = vmbox_html.find('#skip_instructions_input').val();
+
+					form_data.notify_email_addresses = getRecipients();
+
+					if (form_data.announcement_only) {
+						form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;
+					}
+
+					/* self.clean_form_data(form_data); */
+					if ('field_data' in data) {
+						delete data.field_data;
+					}
+
+					form_data.members = _.map(userMembers, function(userMember) {
+						return _.pick(userMember, ['id', 'type']);
+					});
+
+					self.vmboxSave(form_data, data, callbacks.save_success, function() {
+						$this.removeClass('disabled');
+					});
 				}
 			});
 
@@ -396,15 +580,15 @@ define(function(require) {
 					self.vmboxDelete(data.data.id, callbacks.delete_success);
 				});
 			});
-
-			(target)
-				.empty()
-				.append(vmbox_html);
 		},
 
 		vmboxSave: function(form_data, data, success, error) {
 			var self = this,
-				normalized_data = self.vmboxNormalizeData($.extend(true, {}, data.data, form_data), form_data);
+				mergedData = _.mergeWith({}, data.data, form_data, function(_dest, src) {
+					// Overwrite arrays
+					return _.isArray(src) ? src : undefined;
+				}),
+				normalized_data = self.vmboxNormalizeData(mergedData);
 
 			if (typeof data.data === 'object' && data.data.id) {
 				self.vmboxUpdate(normalized_data, function(_data, status) {
@@ -421,7 +605,7 @@ define(function(require) {
 			}
 		},
 
-		vmboxNormalizeData: function(mergedData, formData) {
+		vmboxNormalizeData: function(mergedData) {
 			if (!mergedData.owner_id) {
 				delete mergedData.owner_id;
 			}
@@ -452,9 +636,14 @@ define(function(require) {
 
 			mergedData.not_configurable = !mergedData.extra.allow_configuration;
 
-			// extend doesn't override arrays...
-			mergedData.notify_email_addresses = formData.notify_email_addresses;
+			// Normalize shared members
+			if (mergedData.shared_vmbox) {
+				mergedData.members = mergedData.members || [];
+			} else if (_.has(mergedData, 'members')) {
+				delete mergedData.members;
+			}
 
+			// Delete extra data
 			delete mergedData.extra;
 
 			return mergedData;

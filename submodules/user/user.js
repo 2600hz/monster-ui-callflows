@@ -359,12 +359,12 @@ define(function(require) {
 						},
 						success: function(_data_classifiers, status) {
 							if ('data' in _data_classifiers) {
-								$.each(_data_classifiers.data, function(k, v) {
-									defaults.field_data.call_restriction[k] = {
-										friendly_name: v.friendly_name
+								_.each(_data_classifiers.data, function(classifier) {
+									defaults.field_data.call_restriction[classifier.name] = {
+										friendly_name: classifier.friendly_name
 									};
 
-									defaults.data.call_restriction[k] = { action: 'inherit' };
+									defaults.data.call_restriction[classifier.name] = { action: 'inherit' };
 								});
 							}
 							callback(null, _data_classifiers);
@@ -648,7 +648,10 @@ define(function(require) {
 					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.asserted.number': { phoneNumber: true },
-					'caller_id.asserted.realm': { realm: true }
+					'caller_id.asserted.realm': { realm: true },
+					'e911.street_address_extended': {
+						maxlength: 32
+					}
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
@@ -1176,6 +1179,40 @@ define(function(require) {
 			}
 		},
 
+		generateUserPassword: function() {
+			var self = this;
+
+			if (_.get(monster, 'config.userPassword.requirements')) {
+				var setRequirements = {
+						lowercase: 'abcdefghijklmnopqrstuvwxyz',
+						uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+						numbers: '1234567890',
+						specialcharacters: '!@#$%^&*()_+~|}{:;,.-'
+					},
+					passwordLength = _.get(monster, 'config.userPassword.minLength', 12),
+					requirements = monster.config.userPassword.requirements,
+					requiredLength = 0,
+					password = '';
+
+				_.forEach(requirements, function(value, key) {
+					var list = key.replace('numOf', '').toLowerCase(),
+						val = value > 0 ? value : 0;
+
+					if (_.isUndefined(setRequirements[list])) {
+						password += '';
+					} else {
+						requiredLength += value;
+						password += monster.util.randomString(val, setRequirements[list]);
+					}
+				});
+				password += monster.util.randomString(passwordLength - requiredLength, 'safe');
+
+				return _.shuffle(password).join('');
+			} else {
+				return monster.util.randomString(8, 'safe');
+			}
+		},
+
 		userNormalizeData: function(data) {
 			var self = this;
 
@@ -1238,7 +1275,7 @@ define(function(require) {
 			}
 
 			if (!_.has(data, 'password') && !_.has(data, 'id')) {
-				data.password = monster.util.randomString(8, 'safe');
+				data.password = self.generateUserPassword();
 			}
 
 			return data;

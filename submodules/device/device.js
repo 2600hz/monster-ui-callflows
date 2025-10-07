@@ -200,14 +200,15 @@ define(function(require) {
 								},
 								success: function(_data_classifiers) {
 									if ('data' in _data_classifiers) {
-										$.each(_data_classifiers.data, function(k, v) {
-											defaults.field_data.call_restriction[k] = {
-												friendly_name: v.friendly_name
+										_.each(_data_classifiers.data, function(classifier) {
+											defaults.field_data.call_restriction[classifier.name] = {
+												friendly_name: classifier.friendly_name
 											};
 
-											defaults.data.call_restriction[k] = { action: 'inherit' };
+											defaults.data.call_restriction[classifier.name] = { action: 'inherit' };
 										});
 									}
+
 									callback(null, _data_classifiers);
 								}
 							});
@@ -501,7 +502,8 @@ define(function(require) {
 					rules: {
 						'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 						'caller_id.asserted.number': { phoneNumber: true },
-						'caller_id.asserted.realm': { realm: true }
+						'caller_id.asserted.realm': { realm: true },
+						'e911.street_address_extended': { maxlength: 32 }
 					},
 					messages: {
 						'caller_id.asserted.name': { regex: i18n.callflows.device.validation.caller_id.name },

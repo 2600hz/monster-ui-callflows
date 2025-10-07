@@ -186,6 +186,11 @@
 			"outbound_calls": "Outbound Calls",
 			"caller_id_name_data_content2": "Define the Caller ID Name of this Device for Outbound Calls (max. 30 chars).",
 			"caller_id_number_data_content2": "Define the Caller ID Number of this Device for Outbound Calls.",
+			"e911": {
+				"extended_address": "Extended Address",
+				"extended_address_placeholder": "Room 123",
+				"extended_address_data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 32 chars)."
+			},
 			"emergency": "Emergency",
 			"caller_id_name_data_content3": "Define the Caller ID Name of this Device for Emergency Calls (max. 30 chars).",
 			"caller_id_number_data_content3": "Define the Caller ID Number of this Device for Emergency Calls.",
@@ -700,6 +705,11 @@
 			"caller_id_name_data_content": "Define the Caller ID Name of this User for In-House Calls (max. 30 chars). If the Caller ID Name of the device and of the user is not set, this Caller ID Name will be used.",
 			"caller_id_number": "Caller ID Number",
 			"caller_id_number_data_content": "Define the Caller ID Number of this User for In-House Calls. If the Caller ID Number of the device and of the user is not set, this Caller ID Number will be used.",
+			"e911": {
+				"extended_address": "Extended Address",
+				"extended_address_placeholder": "Room 123",
+				"extended_address_data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 32 chars)."
+			},
 			"outbound_calls": "Outbound Calls",
 			"caller_id_name_data_content2": "Define the Caller ID Name of this User for Outbound Calls (max. 30 chars). If the Caller ID Name of the device and of the user is not set, this Caller ID Name will be used.",
 			"caller_id_number_data_content2": "Define the Caller ID Number of this User for Outbound Calls. If the Caller ID Number of the device and of the user is not set, this Caller ID Number will be used.",
@@ -891,6 +901,16 @@
 			"emailAsAttachment": {
 				"label": "Attach messages to e-mail",
 				"help": "E-mail not having the message as an attachment"
+			},
+			"share": {
+				"label": "Share Voicemail Box",
+				"help": "Share the Voicemail Box among multiple users or groups. Voicemail boxes can be shared whether they are assigned to specific users or not assigned."
+			},
+			"sharedMembersSelector": {
+				"title": "Shared Voicemail Box Members",
+				"available": "Available Users",
+				"selected": "Selected Members",
+				"okButton": "Confirm members"
 			}
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
@@ -1033,7 +1053,8 @@
 			"language": {
 				"label": "Language",
 				"en": "English",
-				"fr": "French"
+				"fr": "French",
+				"nl-BE": "Dutch (Belgium)"
 			},
 			"text": {
 				"label": "Text"
@@ -1237,6 +1258,10 @@
 			"customData": {
 				"label": "Custom data (optional)",
 				"help": "These properties will be added to the event and will overwrite existing values"
+			},
+			"customRequestHeaders": {
+				"label": "Custom request headers (optional)",
+				"help": "These request headers will be added to the event"
 			}
 		}
 	},

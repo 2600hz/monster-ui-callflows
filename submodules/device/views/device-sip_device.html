@@ -181,6 +181,13 @@
 						</div>
 					{{/if}}
 					</div>
+
+					<div class="clearfix">
+						<label for="e911_street_address_extended">{{ i18n.callflows.device.e911.extended_address }}</label>
+						<div class="input">
+							<input class="span4" id="e911_street_address_extended" name="e911.street_address_extended" type="text" placeholder="{{ i18n.callflows.user.e911.extended_address_placeholder }}" value="{{data.e911.street_address_extended}}" rel="popover" data-content="{{ i18n.callflows.device.e911.extended_address_data_content }}" />
+						</div>
+					</div>
 					<hr />
 
 				{{#if showPAssertedIdentity}}
