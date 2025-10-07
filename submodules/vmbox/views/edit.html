@@ -367,11 +367,11 @@
 								<li>
 									<label class="input-label-left">
 										<span rel="popover" data-content="{{ i18n.callflows.vmbox.share.help }}">
-											<input type="checkbox" id="share" name="extra.share" {{#if data.extra.share}}checked="checked" {{/if}}/>
+											<input type="checkbox" id="shared_vmbox" name="shared_vmbox" {{#if data.shared_vmbox}}checked="checked" {{/if}}/>
 											<span>{{ i18n.callflows.vmbox.share.label }}</span>
 										</span>
 									</label>
-									<a class="edit-members input-label-edit{{#unless data.extra.share}} hidden{{/unless}}" href="javascript:void(0);">
+									<a class="edit-members input-label-edit{{#unless data.shared_vmbox}} hidden{{/unless}}" href="javascript:void(0);">
 										{{ i18n.callflows.vmbox.edit }}
 									</a>
 								</li>
