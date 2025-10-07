@@ -282,9 +282,18 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/);
+					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/),
+						listOfWrongEmails = [];
 
-					return list.filter(function(email) { return validateEmail(email); });
+					var filteredList = list.filter(function(email) {
+						if (!validateEmail(email)) {
+							listOfWrongEmails.push(email);
+						}
+
+						return validateEmail(email);
+					});
+
+					return [filteredList, listOfWrongEmails];
 				},
 				showMemberSelector = function showMemberSelector(uncheckShareOnCancel) {
 					var selectedUserIds = _.map(userMembers, 'id');
@@ -552,7 +561,17 @@ define(function(require) {
 					var form_data = monster.ui.getFormData('vmbox-form'),
 						$skipInstructionsInput = vmbox_html.find('#skip_instructions_input').val();
 
-					form_data.notify_email_addresses = getRecipients();
+					form_data.notify_email_addresses = getRecipients()[0];
+
+					if (getRecipients()[1].length > 0) {
+						monster.ui.toast({
+							type: 'error',
+							message: self.i18n.active().callflows.vmbox.toast.emailError
+						});
+
+						$('.vmbox-save', vmbox_html).removeClass('disabled');
+						return;
+					}
 
 					if (form_data.announcement_only) {
 						form_data.skip_instructions = $skipInstructionsInput === 'true' ? true : false;

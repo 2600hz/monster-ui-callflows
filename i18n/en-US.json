@@ -911,6 +911,9 @@
 				"available": "Available Users",
 				"selected": "Selected Members",
 				"okButton": "Confirm members"
+			},
+			"toast": {
+				"emailError": "One or more Email Recipients are invalid."
 			}
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
