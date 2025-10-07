@@ -282,18 +282,9 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/,\s+/g,",").split(/[\n,\s+]/),
-						listOfWrongEmails = [];
+					var list = $('#recipients_list', vmbox_html).val().trim().replace(/,\s+/g,",").split(/[\n,\s+]/);
 
-					var filteredList = list.filter(function(email) {
-						if (!validateEmail(email)) {
-							listOfWrongEmails.push(email);
-						}
-
-						return validateEmail(email);
-					});
-
-					return [filteredList, listOfWrongEmails];
+					return _.partition(list, validateEmail);
 				},
 				showMemberSelector = function showMemberSelector(uncheckShareOnCancel) {
 					var selectedUserIds = _.map(userMembers, 'id');
