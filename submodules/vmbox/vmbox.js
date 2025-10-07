@@ -135,8 +135,6 @@ define(function(require) {
 
 			data.data.extra.recipients = (data.data.notify_email_addresses || []).toString();
 
-			data.data.extra.share = !_.isNil(data.data.members);
-
 			data.data = _.merge(data.data, {
 				hasTranscribe: _.get(transcription, 'isEnabled', false),
 				transcribe: _.get(data.data, 'transcribe', transcription.defaultValue),
@@ -273,7 +271,7 @@ define(function(require) {
 				callbacks = args.callbacks,
 				vmbox_html = args.template,
 				vmboxForm = vmbox_html.find('#vmbox-form'),
-				shareCheckbox = vmbox_html.find('#share'),
+				shareCheckbox = vmbox_html.find('#shared_vmbox'),
 				vmboxEditMembers = vmbox_html.find('.edit-members'),
 				userMembers = _.chain(data.data)
 					.get('members', [])
@@ -517,7 +515,7 @@ define(function(require) {
 					.prop('disabled', isDisabled);
 			});
 
-			$('#share', vmbox_html).on('change', function(ev) {
+			$('#shared_vmbox', vmbox_html).on('change', function(ev) {
 				if (this.checked) {
 					showMemberSelector(true);
 					return;
@@ -639,12 +637,11 @@ define(function(require) {
 			mergedData.not_configurable = !mergedData.extra.allow_configuration;
 
 			// Normalize shared members
-			if (mergedData.extra.share) {
+			if (mergedData.shared_vmbox) {
 				mergedData.members = mergedData.members || [];
 			} else if (_.has(mergedData, 'members')) {
 				delete mergedData.members;
 			}
-			delete mergedData.extra.share;
 
 			// Delete extra data
 			delete mergedData.extra;
