@@ -1067,11 +1067,11 @@
 			"add_new_mailbox": "Fügen Sie einen neuen Anrufbeantworter hinzu",
 			"options": "Optionen",
 			"voicemail_boxes_label": "Anrufbeantworter",
-            "not_configurable_data_content": " Wenn deaktiviert",
-            "fast_forward_rewind": "Vor- und Zurückspulen aktivieren?",
-            "fast_forward_rewind_data_content": "Wenn diese Option aktiviert ist, kann der Benutzer Voicemail-Nachrichten schnell vor- und zurückspulen",
-            "oldest_message_first": "Sortieren Sie die Voicemail-Box zuerst nach der ältesten Nachricht",
-            "oldest_message_first_data_content": "Wenn diese Option aktiviert ist, werden Voicemails in der Reihenfolge vom ältesten zum neuesten abgespielt",
+			"not_configurable_data_content": " Wenn deaktiviert",
+			"fast_forward_rewind": "Vor- und Zurückspulen aktivieren?",
+			"fast_forward_rewind_data_content": "Wenn diese Option aktiviert ist, kann der Benutzer Voicemail-Nachrichten schnell vor- und zurückspulen",
+			"oldest_message_first": "Sortieren Sie die Voicemail-Box zuerst nach der ältesten Nachricht",
+			"oldest_message_first_data_content": "Wenn diese Option aktiviert ist, werden Voicemails in der Reihenfolge vom ältesten zum neuesten abgespielt",
 			"pin_number": "PIN-Nummer",
 			"edit_mailbox_options": "Optionen des Anrufbeantworters bearbeiten",
 			"__comment": "UI-3040: temporäre Ansage hinzufügen",
@@ -1107,6 +1107,9 @@
 				"available": "Available Users",
 				"selected": "Selected Members",
 				"okButton": "Confirm members"
+			},
+			"toast": {
+				"emailError": "One or more Email Recipients are invalid."
 			}
 		},
 		"ringGroupToggle": {
