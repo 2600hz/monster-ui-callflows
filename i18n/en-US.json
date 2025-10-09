@@ -880,7 +880,6 @@
 			"create_voicemail_box_title": "Create voicemail box",
 			"__comment": "UI-2558: add field for recipients",
 			"__version": "4.0",
-			"recipients": "Email Recipients",
 			"__comment": "UI-2634: add support for wav/mp4/mp3 for voicemail media extensions",
 			"extension": "Media Extension",
 			"mp3": "mp3",
@@ -912,8 +911,12 @@
 				"selected": "Selected Members",
 				"okButton": "Confirm members"
 			},
+			"recipients": {
+				"title": "Email Recipients",
+				"placeholder": "Comma separated"
+			},
 			"toast": {
-				"emailError": "One or more Email Recipients are invalid."
+				"emailsError": "One or more Email Recipients are invalid. Also, verify that emails are comma separated."
 			}
 		},
 		"__comment": "UI-1493: Adding accountSettings to advanced callflows app",
