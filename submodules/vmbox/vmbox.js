@@ -282,7 +282,7 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().trim().replace(/,\s+/g,",").split(/[\n,\s+]/);
+					var list = $('#recipients_list', vmbox_html).val().replace(/\s+/g, '').split(',');
 
 					return _.partition(list, validateEmail);
 				},
@@ -557,7 +557,7 @@ define(function(require) {
 					if (getRecipients()[1].length > 0) {
 						monster.ui.toast({
 							type: 'error',
-							message: self.i18n.active().callflows.vmbox.toast.emailError
+							message: self.i18n.active().callflows.vmbox.toast.emailsError
 						});
 
 						$('.vmbox-save', vmbox_html).removeClass('disabled');
