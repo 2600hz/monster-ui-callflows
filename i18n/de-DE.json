@@ -1067,11 +1067,11 @@
 			"add_new_mailbox": "Fügen Sie einen neuen Anrufbeantworter hinzu",
 			"options": "Optionen",
 			"voicemail_boxes_label": "Anrufbeantworter",
-            "not_configurable_data_content": " Wenn deaktiviert",
-            "fast_forward_rewind": "Vor- und Zurückspulen aktivieren?",
-            "fast_forward_rewind_data_content": "Wenn diese Option aktiviert ist, kann der Benutzer Voicemail-Nachrichten schnell vor- und zurückspulen",
-            "oldest_message_first": "Sortieren Sie die Voicemail-Box zuerst nach der ältesten Nachricht",
-            "oldest_message_first_data_content": "Wenn diese Option aktiviert ist, werden Voicemails in der Reihenfolge vom ältesten zum neuesten abgespielt",
+			"not_configurable_data_content": " Wenn deaktiviert",
+			"fast_forward_rewind": "Vor- und Zurückspulen aktivieren?",
+			"fast_forward_rewind_data_content": "Wenn diese Option aktiviert ist, kann der Benutzer Voicemail-Nachrichten schnell vor- und zurückspulen",
+			"oldest_message_first": "Sortieren Sie die Voicemail-Box zuerst nach der ältesten Nachricht",
+			"oldest_message_first_data_content": "Wenn diese Option aktiviert ist, werden Voicemails in der Reihenfolge vom ältesten zum neuesten abgespielt",
 			"pin_number": "PIN-Nummer",
 			"edit_mailbox_options": "Optionen des Anrufbeantworters bearbeiten",
 			"__comment": "UI-3040: temporäre Ansage hinzufügen",
@@ -1082,7 +1082,6 @@
 			"wav": "wav",
 			"name_data_content": "Anzeigename für diesen Anrufbeantworter",
 			"create_voicemail_box_title": "Anrufbeantworter erstellen",
-			"recipients": "E-Mail-Empfänger",
 			"edit_voicemail_box": "Anrufbeantworter bearbeiten",
 			"basic": "Basic",
 			"no_name": "(kein Name)",
@@ -1098,15 +1097,34 @@
 			"extension": "Medien-Nebenstelle",
 			"require_pin": "PIN erforderlich",
 			"__version": 4,
+			"transcription": {
+				"label": "Nachrichten transkribieren",
+				"help": "Kontrollieren Sie die neuesten Verbesserungen am Voicemail-System"
+			},
+			"announceOnly": {
+				"label": "Nur-Ankündigungsmodus",
+				"help": "Richten Sie eine Voicemail-Box auf den Nur-Ansagen-Modus ein"
+			},
+			"emailAsAttachment": {
+				"label": "Nachrichten an E-Mails anhängen",
+				"help": "E-Mail ohne Nachricht als Anhang"
+			},
 			"share": {
-				"label": "Share Voicemail Box",
-				"help": "Share the Voicemail Box among multiple users or groups. Voicemail boxes can be shared whether they are assigned to specific users or not assigned."
+				"label": "Voicemail-Box teilen",
+				"help": "Teilen Sie die Voicemail-Box mit mehreren Benutzern oder Gruppen. Voicemail-Boxen können gemeinsam genutzt werden, unabhängig davon, ob sie bestimmten Benutzern zugewiesen sind oder nicht."
 			},
 			"sharedMembersSelector": {
-				"title": "Shared Voicemail Box Members",
-				"available": "Available Users",
-				"selected": "Selected Members",
-				"okButton": "Confirm members"
+				"title": "Mitglieder einer gemeinsam genutzten Voicemailbox",
+				"available": "Verfügbare Benutzer",
+				"selected": "Ausgewählte Mitglieder",
+				"okButton": "Mitglieder bestätigen"
+			},
+			"recipients": {
+				"title": "E-Mail-Empfänger",
+				"placeholder": "Komma getrennt"
+			},
+			"toast": {
+				"emailsError": "Mindestens ein E-Mail-Empfänger ist ungültig. Stellen Sie außerdem sicher, dass die E-Mails durch Kommas getrennt sind."
 			}
 		},
 		"ringGroupToggle": {
