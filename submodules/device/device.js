@@ -127,7 +127,8 @@ define(function(require) {
 								'e164': 'E. 164',
 								'1npan': '1npan',
 								'route': 'Route',
-								'contact': 'Contact'
+								'contact': 'Contact',
+								'strip_plus': 'e164 stripped of +'
 							}
 						},
 						media: {
