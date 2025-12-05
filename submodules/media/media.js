@@ -95,63 +95,66 @@ define(function(require) {
 			});
 
 			$('.media-save', media_html).click(function(ev) {
-				ev.preventDefault();
 				var $this = $(this);
 
-				if (!$this.hasClass('disabled')) {
-					$this.addClass('disabled');
+				ev.preventDefault();
 
-					if (monster.ui.valid(mediaForm)) {
-						var form_data = monster.ui.getFormData('media-form');
+				if ($this.hasClass('disabled')) {
+					return;
+				}
 
-						form_data = self.mediaCleanFormData(form_data);
+				$this.addClass('disabled');
 
-						self.mediaSave(form_data, data, function(_data, status) {
-							if (!form_data.tts) {
-								if ($('#upload_div', media_html).is(':visible') && $('#file').val() !== '') {
-									if (file === 'updating') {
-										monster.ui.alert(self.i18n.active().callflows.media.the_file_you_want_to_apply);
+				if (!monster.ui.valid(mediaForm)) {
+					$this.removeClass('disabled');
+					monster.ui.alert(self.i18n.active().callflows.media.there_were_errors_on_the_form);
+					return;
+				}
 
-										$this.removeClass('disabled');
-									} else {
-										self.mediaUpload(file, _data.id, function() {
-											if (typeof callbacks.save_success === 'function') {
-												callbacks.save_success(_data, status);
-											}
-										}, function() {
-											if (data && data.data && data.data.id) {
-												self.mediaSave({}, data, function() {
-													if (typeof callbacks.save_success === 'function') {
-														callbacks.save_success(_data, status);
-													}
-												});
-											} else {
-												self.mediaDelete(_data.id, callbacks.delete_success, callbacks.delete_error);
-											}
+				var form_data = monster.ui.getFormData('media-form');
 
-											$this.removeClass('disabled');
+				form_data = self.mediaCleanFormData(form_data);
 
-											if (typeof callbacks.save_error === 'function') {
-												callbacks.save_error(_data, status);
-											}
-										});
-									}
-								} else {
-									if (typeof callbacks.save_success === 'function') {
-										callbacks.save_success(_data, status);
-									}
-								}
-							} else {
+				self.mediaSave(form_data, data, function(_data, status) {
+					var shouldUpdateMediaFile = !form_data.tts
+						&& $('#upload_div', media_html).is(':visible')
+						&& $('#file').val() !== '';
+
+					if (!shouldUpdateMediaFile) {
+						if (typeof callbacks.save_success === 'function') {
+							callbacks.save_success(_data, status);
+						}
+						return;
+					}
+
+					if (file === 'updating') {
+						monster.ui.alert(self.i18n.active().callflows.media.the_file_you_want_to_apply);
+						$this.removeClass('disabled');
+						return;
+					}
+
+					self.mediaUpload(file, _data.id, function() {
+						if (typeof callbacks.save_success === 'function') {
+							callbacks.save_success(_data, status);
+						}
+					}, function() {
+						if (data && data.data && data.data.id) {
+							self.mediaSave({}, data, function() {
 								if (typeof callbacks.save_success === 'function') {
 									callbacks.save_success(_data, status);
 								}
-							}
-						});
-					} else {
+							});
+						} else {
+							self.mediaDelete(_data.id, callbacks.delete_success, callbacks.delete_error);
+						}
+
 						$this.removeClass('disabled');
-						monster.ui.alert(self.i18n.active().callflows.media.there_were_errors_on_the_form);
-					}
-				}
+
+						if (typeof callbacks.save_error === 'function') {
+							callbacks.save_error(_data, status);
+						}
+					});
+				});
 			});
 
 			$('.media-delete', media_html).click(function(ev) {
