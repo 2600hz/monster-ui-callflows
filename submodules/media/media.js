@@ -111,7 +111,8 @@ define(function(require) {
 					return;
 				}
 
-				var form_data = monster.ui.getFormData('media-form');
+				var form_data = monster.ui.getFormData('media-form'),
+					isNew = !_.get(data, 'data.id');
 
 				form_data = self.mediaCleanFormData(form_data);
 
@@ -133,25 +134,24 @@ define(function(require) {
 						return;
 					}
 
-					self.mediaUpload(file, _data.id, function() {
-						if (typeof callbacks.save_success === 'function') {
-							callbacks.save_success(_data, status);
-						}
-					}, function() {
-						if (data && data.data && data.data.id) {
-							self.mediaSave({}, data, function() {
-								if (typeof callbacks.save_success === 'function') {
-									callbacks.save_success(_data, status);
-								}
-							});
-						} else {
-							self.mediaDelete(_data.id, callbacks.delete_success, callbacks.delete_error);
-						}
+					self.mediaUpload({
+						mediaId: _data.id,
+						data: file,
+						success: function() {
+							if (typeof callbacks.save_success === 'function') {
+								callbacks.save_success(_data, status);
+							}
+						},
+						error: function() {
+							if (isNew) {
+								self.mediaDelete(_data.id, null);
+							}
 
-						$this.removeClass('disabled');
+							$this.removeClass('disabled');
 
-						if (typeof callbacks.save_error === 'function') {
-							callbacks.save_error(_data, status);
+							if (typeof callbacks.save_error === 'function') {
+								callbacks.save_error(_data, status);
+							}
 						}
 					});
 				});
@@ -536,18 +536,29 @@ define(function(require) {
 			});
 		},
 
-		mediaUpload: function(data, mediaId, callback) {
+		/**
+		 * Upload media file
+		 * @param {Object}   args
+		 * @param {String}   args.mediaId  Media ID
+		 * @param {Object}   args.data     Media file encoded as base64
+		 * @param {Function} args.success  Success callback
+		 * @param {Function} args.error    Error callback
+		 */
+		mediaUpload: function(args) {
 			var self = this;
 
 			self.callApi({
 				resource: 'media.upload',
 				data: {
 					accountId: self.accountId,
-					mediaId: mediaId,
-					data: data
+					mediaId: args.mediaId,
+					data: args.data
 				},
 				success: function(data, status) {
-					callback && callback(data, status);
+					args.success && args.success(data, status);
+				},
+				error: function(parsedError) {
+					args.error && args.error(parsedError);
 				}
 			});
 		}
