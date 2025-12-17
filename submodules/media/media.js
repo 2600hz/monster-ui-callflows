@@ -12,12 +12,53 @@ define(function(require) {
 			'callflows.media.edit': '_mediaEdit'
 		},
 
+		appFlags: {
+			media: {
+				supportedMimeTypes: [
+					'audio/mp3',
+					'audio/mpeg',
+					'audio/mpeg3',
+					'audio/x-wav',
+					'audio/wav',
+					'audio/ogg',
+					'video/x-flv',
+					'video/h264',
+					'video/mpeg',
+					'video/quicktime',
+					'video/mp4',
+					'video/webm'
+				],
+				supportedFileExtensions: [
+					// audio/mp3, audio/mpeg, audio/mpeg3
+					'mp3',
+					// audio/mpeg
+					'mp2',
+					'mp1',
+					'm2a',
+					'm3a',
+					'mpga',
+					// audio/x-wav, audio/wav
+					'wav',
+					// audio/ogg
+					'ogg',
+					// video/x-flv
+					'flv',
+					// video/h264, video/mpeg, video/quicktime, video/mp4
+					'mp4',
+					'mov',
+					// video/webm
+					'webm'
+				]
+			}
+		},
+
 		mediaRender: function(data, target, callbacks) {
 			var self = this,
 				media_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
-						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure
+						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure,
+						supportedFileFormats: self.mediaGetSupportedFormatsForFileInput()
 					}, data),
 					submodule: 'media'
 				})),
@@ -28,6 +69,9 @@ define(function(require) {
 				rules: {
 					'name': {
 						required: true
+					},
+					'file': {
+						accept: self.mediaGetSupportedMimeTypesForFileInput()
 					}
 				}
 			});
@@ -62,8 +106,17 @@ define(function(require) {
 			$('#file', media_html).bind('change', function(evt) {
 				var files = evt.target.files;
 
+				$(this).valid();
+
 				if (files.length > 0) {
-					var reader = new FileReader();
+					var reader = new FileReader(),
+						inputFile = files[0],
+						isMimeTypeSupported = _.includes(self.appFlags.media.supportedMimeTypes, inputFile.type);
+
+					if (!isMimeTypeSupported) {
+						file = 'invalid-mime-type';
+						return;
+					}
 
 					file = 'updating';
 					reader.onloadend = function(evt) {
@@ -72,7 +125,7 @@ define(function(require) {
 						file = data;
 					};
 
-					reader.readAsDataURL(files[0]);
+					reader.readAsDataURL(inputFile);
 				}
 			});
 
@@ -443,6 +496,24 @@ define(function(require) {
 					editEntity: 'callflows.media.edit'
 				}
 			});
+		},
+
+		mediaGetSupportedFormatsForFileInput: function() {
+			var self = this;
+
+			return _.chain(self.appFlags.media.supportedFileExtensions)
+				.map(function(ext) {
+					return '.' + ext;
+				})
+				.concat(self.appFlags.media.supportedMimeTypes)
+				.join(',')
+				.value();
+		},
+
+		mediaGetSupportedMimeTypesForFileInput: function() {
+			var self = this;
+
+			return _.join(self.appFlags.media.supportedMimeTypes, ',');
 		},
 
 		mediaList: function(callback) {
