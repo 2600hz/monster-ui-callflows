@@ -45,7 +45,17 @@ define(function(require) {
 			// For now we use that to only load the numbers classifiers the first time we load the app, since it is very unlikely to change often
 			appData: {},
 
-			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin
+			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
+
+			// Race condition protection state flags
+			isLoadingCallflow: false,
+			isSavingCallflow: false,
+			boundCallflowId: null,
+			originalFlowState: null,
+
+			// Entity manager state flags
+			isLoadingEntity: false,
+			originalEntityState: null
 		},
 
 		actions: {},
@@ -127,6 +137,10 @@ define(function(require) {
 
 			// Add Callflow
 			template.find('.list-add').on('click', function() {
+				if (self.appFlags.isLoadingCallflow || self.appFlags.isSavingCallflow) {
+					return;
+				}
+
 				template.find('.callflow-content')
 					.removeClass('listing-mode')
 					.addClass('edition-mode');
@@ -136,6 +150,10 @@ define(function(require) {
 
 			// Edit Callflow
 			callflowList.on('click', '.list-element', function() {
+				if (self.appFlags.isLoadingCallflow || self.appFlags.isSavingCallflow) {
+					return;
+				}
+
 				var $this = $(this),
 					callflowId = $this.data('id');
 
@@ -260,12 +278,22 @@ define(function(require) {
 				template = args.template,
 				actions = args.actions,
 				editEntity = function(type, id) {
+					self.appFlags.isLoadingEntity = true;
+					self.setEntityListState(template, false);
+
+					self.cleanupEntityFormTracking(template.find('.entity-edition .entity-content'));
+
 					monster.pub(actions[type].editEntity, {
 						data: id ? { id: id } : {},
 						parent: template,
 						target: template.find('.entity-edition .entity-content'),
 						callbacks: {
 							after_render: function() {
+								self.appFlags.isLoadingEntity = false;
+								self.setEntityListState(template, true);
+
+								self.initEntityFormTracking(template.find('.entity-edition .entity-content'));
+
 								$(window).trigger('resize');
 								template.find('.entity-edition .callflow-content').animate({ scrollTop: 0 });
 							},
@@ -320,6 +348,10 @@ define(function(require) {
 			});
 
 			template.on('click', '.entity-header .back-button', function() {
+				self.appFlags.isLoadingEntity = false;
+
+				self.cleanupEntityFormTracking(template.find('.entity-edition .entity-content'));
+
 				template.find('.entity-edition .entity-content').empty();
 				template.find('.entity-edition .list-container .list').empty();
 				template.find('.entity-edition .search-query').val('');
@@ -330,11 +362,17 @@ define(function(require) {
 			});
 
 			template.find('.entity-edition .list-add').on('click', function() {
+				if (self.appFlags.isLoadingEntity) {
+					return;
+				}
 				var type = template.find('.entity-edition .list-container .list').data('type');
 				editEntity(type);
 			});
 
 			template.find('.entity-edition .list-container .list').on('click', '.list-element', function() {
+				if (self.appFlags.isLoadingEntity) {
+					return;
+				}
 				var $this = $(this),
 					id = $this.data('id'),
 					type = $this.parents('.list').data('type');
@@ -439,6 +477,134 @@ define(function(require) {
 					additionalInfo: self.i18n.active().callflows.media.mediaSources[entity.media_source]
 				}, entity);
 			});
+		},
+
+		toggleDisabledClass: function($elements, enabled) {
+			if (enabled) {
+				$elements.removeClass('disabled');
+			} else {
+				$elements.addClass('disabled');
+			}
+		},
+
+		setCallflowListState: function(enabled) {
+			var self = this,
+				$container = $('#callflow_container');
+
+			self.toggleDisabledClass(
+				$container.find('.left-bar-container .list, .left-bar-container .list-add'),
+				enabled
+			);
+		},
+
+		setEntityListState: function(template, enabled) {
+			var self = this;
+
+			self.toggleDisabledClass(
+				template.find('.entity-edition .list-container .list, .entity-edition .list-add'),
+				enabled
+			);
+		},
+
+		setSaveButtonState: function(enabled) {
+			this.toggleDisabledClass($('.buttons .save'), enabled);
+		},
+
+		captureOriginalFlowState: function() {
+			var self = this;
+
+			self.appFlags.originalFlowState = self.getFlowStateForComparison();
+			self.setSaveButtonState(false);
+		},
+
+		getFlowStateForComparison: function() {
+			var self = this;
+
+			return JSON.stringify({
+				numbers: self.flow.numbers || [],
+				name: self.flow.name || '',
+				flow: self.flow.root && self.flow.root.children[0]
+					? self.flow.root.children[0].serialize()
+					: {},
+				contact_list: self.flow.contact_list || {}
+			});
+		},
+
+		checkForChanges: function() {
+			var self = this,
+				currentState = self.getFlowStateForComparison(),
+				hasChanges = currentState !== self.appFlags.originalFlowState;
+
+			if (!self.appFlags.isLoadingCallflow && !self.appFlags.isSavingCallflow) {
+				self.setSaveButtonState(hasChanges);
+			}
+
+			return hasChanges;
+		},
+
+		initEntityFormTracking: function($container) {
+			var self = this,
+				$form = $container.find('form').first(),
+				$saveButton = $container.find('[class*="-save"]').first();
+
+			if (!$form.length || !$saveButton.length) {
+				return;
+			}
+
+			self.appFlags.originalEntityState = self.serializeForm($form);
+			$saveButton.addClass('disabled');
+
+			var debouncedCheck = _.debounce(function() {
+				self.checkEntityChanges($form, $saveButton);
+			}, 150);
+
+			$form.on('change.entityTracking input.entityTracking', 'input, select, textarea', debouncedCheck);
+			$container.on('click.entityTracking', '[class*="-delete"], [class*="-add"], .delete-number, #add_number', debouncedCheck);
+		},
+
+		serializeForm: function($form) {
+			var formData = {};
+
+			$form.find('input, select, textarea').each(function() {
+				var $el = $(this),
+					name = $el.attr('name'),
+					type = $el.attr('type');
+
+				if (!name) {
+					return;
+				}
+
+				if (type === 'checkbox') {
+					formData[name] = $el.is(':checked');
+				} else if (type === 'radio') {
+					if ($el.is(':checked')) {
+						formData[name] = $el.val();
+					}
+				} else {
+					formData[name] = $el.val();
+				}
+			});
+
+			return JSON.stringify(formData);
+		},
+
+		checkEntityChanges: function($form, $saveButton) {
+			var self = this,
+				hasChanges = self.serializeForm($form) !== self.appFlags.originalEntityState;
+
+			if (!self.appFlags.isLoadingEntity) {
+				self.toggleDisabledClass($saveButton, hasChanges);
+			}
+
+			return hasChanges;
+		},
+
+		cleanupEntityFormTracking: function($container) {
+			var $form = $container.find('form').first();
+
+			$form.off('.entityTracking');
+			$container.off('.entityTracking');
+			this.appFlags.originalEntityState = null;
 		},
 
 		renderAccountSettings: function(container) {
@@ -986,6 +1152,10 @@ define(function(require) {
 			self.resetFlow();
 
 			if (data && data.id) {
+				self.appFlags.isLoadingCallflow = true;
+				self.appFlags.boundCallflowId = data.id;
+				self.setCallflowListState(false);
+
 				self.callApi({
 					resource: 'callflow.get',
 					data: {
@@ -995,7 +1165,10 @@ define(function(require) {
 					success: function(callflow) {
 						var callflow = callflow.data;
 
-						//self.resetFlow();
+						if (self.appFlags.boundCallflowId !== callflow.id) {
+							return;
+						}
+
 						self.dataCallflow = callflow;
 
 						self.flow.id = callflow.id;
@@ -1009,13 +1182,24 @@ define(function(require) {
 
 						self.flow.numbers = callflow.numbers || [];
 
+						self.appFlags.isLoadingCallflow = false;
+						self.setCallflowListState(true);
+
 						self.repaintFlow();
+						self.captureOriginalFlowState();
+					},
+					error: function() {
+						self.appFlags.boundCallflowId = null;
+						self.appFlags.isLoadingCallflow = false;
+						self.setCallflowListState(true);
 					}
 				});
 			} else {
+				self.appFlags.boundCallflowId = null;
 				self.resetFlow();
 				self.dataCallflow = {};
 				self.repaintFlow();
+				self.captureOriginalFlowState();
 			}
 
 			self.renderButtons();
@@ -1031,6 +1215,9 @@ define(function(require) {
 			$('.buttons').empty();
 
 			$('.save', buttons).click(function() {
+				if ($(this).hasClass('disabled')) {
+					return;
+				}
 				if (self.flow.numbers && self.flow.numbers.length > 0) {
 					self.save();
 				} else {
@@ -1066,6 +1253,8 @@ define(function(require) {
 			});
 
 			$('.buttons').append(buttons);
+
+			self.setSaveButtonState(false);
 		},
 
 		// Callflow JS code
@@ -1526,6 +1715,7 @@ define(function(require) {
 							self.dataCallflow.ui_is_main_number_cf = $('#ui_is_main_number_cf', popup).prop('checked');
 							//self.save_callflow_no_loading();
 							self.repaintFlow();
+							self.checkForChanges();
 							popup.dialog('close');
 						});
 					});
@@ -1646,6 +1836,7 @@ define(function(require) {
 									popup.dialog('close');
 
 									self.repaintFlow();
+									self.checkForChanges();
 								} else {
 									monster.ui.alert(self.i18n.active().oldCallflows.you_didnt_select);
 								}
@@ -1662,6 +1853,7 @@ define(function(require) {
 						}
 
 						self.repaintFlow();
+						self.checkForChanges();
 					});
 				} else {
 					node_html = $(self.getTemplate({
@@ -1706,6 +1898,7 @@ define(function(require) {
 
 							self.actions[node.actionName].edit(node, function() {
 								self.repaintFlow();
+								self.checkForChanges();
 							});
 						});
 					}, 500, {
@@ -1760,16 +1953,19 @@ define(function(require) {
 									self.actions[branch.parent.actionName].key_edit(branch, function() {
 										self.actions[action].edit(branch, function() {
 											self.repaintFlow();
+											self.checkForChanges();
 										});
 									});
 								} else {
 									self.actions[action].edit(branch, function() {
 										self.repaintFlow();
+										self.checkForChanges();
 									});
 								}
 
 								//This is just in case something goes wrong with the dialog
 								self.repaintFlow();
+								self.checkForChanges();
 							}
 						}
 
@@ -1786,6 +1982,7 @@ define(function(require) {
 
 								ui.draggable.remove();
 								self.repaintFlow();
+								self.checkForChanges();
 							}
 						}
 					}
@@ -1826,6 +2023,7 @@ define(function(require) {
 					node.parent.removeChild(node);
 
 					self.repaintFlow();
+					self.checkForChanges();
 				}
 			});
 
@@ -1847,6 +2045,7 @@ define(function(require) {
 				$('.div_option', flow).click(function() {
 					self.actions[branch.parent.actionName].key_edit(branch, function() {
 						self.repaintFlow();
+						self.checkForChanges();
 					});
 				});
 			}
@@ -2039,7 +2238,12 @@ define(function(require) {
 		},
 
 		save: function() {
-			var self = this;
+			var self = this,
+				callflowIdToSave = self.appFlags.boundCallflowId || self.flow.id;
+
+			if (self.appFlags.isSavingCallflow) {
+				return;
+			}
 
 			if (self.flow.numbers && self.flow.numbers.length > 0) {
 				var data_request = {
@@ -2064,17 +2268,27 @@ define(function(require) {
 				data_request = $.extend(true, {}, self.dataCallflow, data_request);
 				delete data_request.metadata;
 
-				if (self.flow.id) {
+				self.appFlags.isSavingCallflow = true;
+				self.setCallflowListState(false);
+				self.setSaveButtonState(false);
+
+				if (callflowIdToSave) {
 					self.callApi({
 						resource: 'callflow.update',
 						data: {
 							accountId: self.accountId,
-							callflowId: self.flow.id,
+							callflowId: callflowIdToSave,
 							data: data_request
 						},
 						success: function(json) {
+							self.appFlags.isSavingCallflow = false;
+							self.setCallflowListState(true);
 							self.repaintList();
 							self.editCallflow({ id: json.data.id });
+						},
+						error: function() {
+							self.appFlags.isSavingCallflow = false;
+							self.setCallflowListState(true);
 						}
 					});
 				} else {
@@ -2085,8 +2299,14 @@ define(function(require) {
 							data: data_request
 						},
 						success: function(json) {
+							self.appFlags.isSavingCallflow = false;
+							self.setCallflowListState(true);
 							self.repaintList();
 							self.editCallflow({ id: json.data.id });
+						},
+						error: function() {
+							self.appFlags.isSavingCallflow = false;
+							self.setCallflowListState(true);
 						}
 					});
 				}
