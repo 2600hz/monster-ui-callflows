@@ -12,12 +12,53 @@ define(function(require) {
 			'callflows.media.edit': '_mediaEdit'
 		},
 
+		appFlags: {
+			media: {
+				supportedMimeTypes: [
+					'audio/mp3',
+					'audio/mpeg',
+					'audio/mpeg3',
+					'audio/x-wav',
+					'audio/wav',
+					'audio/ogg',
+					'video/x-flv',
+					'video/h264',
+					'video/mpeg',
+					'video/quicktime',
+					'video/mp4',
+					'video/webm'
+				],
+				supportedFileExtensions: [
+					// audio/mp3, audio/mpeg, audio/mpeg3
+					'mp3',
+					// audio/mpeg
+					'mp2',
+					'mp1',
+					'm2a',
+					'm3a',
+					'mpga',
+					// audio/x-wav, audio/wav
+					'wav',
+					// audio/ogg
+					'ogg',
+					// video/x-flv
+					'flv',
+					// video/h264, video/mpeg, video/quicktime, video/mp4
+					'mp4',
+					'mov',
+					// video/webm
+					'webm'
+				]
+			}
+		},
+
 		mediaRender: function(data, target, callbacks) {
 			var self = this,
 				media_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
-						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure
+						showMediaUploadDisclosure: monster.config.whitelabel.showMediaUploadDisclosure,
+						supportedFileFormats: self.mediaGetSupportedFormatsForFileInput()
 					}, data),
 					submodule: 'media'
 				})),
@@ -28,6 +69,9 @@ define(function(require) {
 				rules: {
 					'name': {
 						required: true
+					},
+					'file': {
+						accept: self.mediaGetSupportedMimeTypesForFileInput()
 					}
 				}
 			});
@@ -62,8 +106,17 @@ define(function(require) {
 			$('#file', media_html).bind('change', function(evt) {
 				var files = evt.target.files;
 
+				$(this).valid();
+
 				if (files.length > 0) {
-					var reader = new FileReader();
+					var reader = new FileReader(),
+						inputFile = files[0],
+						isMimeTypeSupported = _.includes(self.appFlags.media.supportedMimeTypes, inputFile.type);
+
+					if (!isMimeTypeSupported) {
+						file = 'invalid-mime-type';
+						return;
+					}
 
 					file = 'updating';
 					reader.onloadend = function(evt) {
@@ -72,7 +125,7 @@ define(function(require) {
 						file = data;
 					};
 
-					reader.readAsDataURL(files[0]);
+					reader.readAsDataURL(inputFile);
 				}
 			});
 
@@ -95,63 +148,66 @@ define(function(require) {
 			});
 
 			$('.media-save', media_html).click(function(ev) {
-				ev.preventDefault();
 				var $this = $(this);
 
-				if (!$this.hasClass('disabled')) {
-					$this.addClass('disabled');
+				ev.preventDefault();
 
-					if (monster.ui.valid(mediaForm)) {
-						var form_data = monster.ui.getFormData('media-form');
-
-						form_data = self.mediaCleanFormData(form_data);
-
-						self.mediaSave(form_data, data, function(_data, status) {
-							if (!form_data.tts) {
-								if ($('#upload_div', media_html).is(':visible') && $('#file').val() !== '') {
-									if (file === 'updating') {
-										monster.ui.alert(self.i18n.active().callflows.media.the_file_you_want_to_apply);
-
-										$this.removeClass('disabled');
-									} else {
-										self.mediaUpload(file, _data.id, function() {
-											if (typeof callbacks.save_success === 'function') {
-												callbacks.save_success(_data, status);
-											}
-										}, function() {
-											if (data && data.data && data.data.id) {
-												self.mediaSave({}, data, function() {
-													if (typeof callbacks.save_success === 'function') {
-														callbacks.save_success(_data, status);
-													}
-												});
-											} else {
-												self.mediaDelete(_data.id, callbacks.delete_success, callbacks.delete_error);
-											}
-
-											$this.removeClass('disabled');
-
-											if (typeof callbacks.save_error === 'function') {
-												callbacks.save_error(_data, status);
-											}
-										});
-									}
-								} else {
-									if (typeof callbacks.save_success === 'function') {
-										callbacks.save_success(_data, status);
-									}
-								}
-							} else {
-								if (typeof callbacks.save_success === 'function') {
-									callbacks.save_success(_data, status);
-								}
-							}
-						});
-					} else {
-						$this.removeClass('disabled');
-						monster.ui.alert(self.i18n.active().callflows.media.there_were_errors_on_the_form);
-					}
+				if ($this.hasClass('disabled')) {
+					return;
 				}
+
+				$this.addClass('disabled');
+
+				if (!monster.ui.valid(mediaForm)) {
+					$this.removeClass('disabled');
+					monster.ui.alert(self.i18n.active().callflows.media.there_were_errors_on_the_form);
+					return;
+				}
+
+				var form_data = monster.ui.getFormData('media-form'),
+					isNew = !_.get(data, 'data.id');
+
+				form_data = self.mediaCleanFormData(form_data);
+
+				self.mediaSave(form_data, data, function(_data, status) {
+					var shouldUpdateMediaFile = !form_data.tts
+						&& $('#upload_div', media_html).is(':visible')
+						&& $('#file').val() !== '';
+
+					if (!shouldUpdateMediaFile) {
+						if (typeof callbacks.save_success === 'function') {
+							callbacks.save_success(_data, status);
+						}
+						return;
+					}
+
+					if (file === 'updating') {
+						monster.ui.alert(self.i18n.active().callflows.media.the_file_you_want_to_apply);
+						$this.removeClass('disabled');
+						return;
+					}
+
+					self.mediaUpload({
+						mediaId: _data.id,
+						data: file,
+						success: function() {
+							if (typeof callbacks.save_success === 'function') {
+								callbacks.save_success(_data, status);
+							}
+						},
+						error: function() {
+							if (isNew) {
+								self.mediaDelete(_data.id, null);
+							}
+
+							$this.removeClass('disabled');
+
+							if (typeof callbacks.save_error === 'function') {
+								callbacks.save_error(_data, status);
+							}
+						}
+					});
+				});
 			});
 
 			$('.media-delete', media_html).click(function(ev) {
@@ -442,6 +498,24 @@ define(function(require) {
 			});
 		},
 
+		mediaGetSupportedFormatsForFileInput: function() {
+			var self = this;
+
+			return _.chain(self.appFlags.media.supportedFileExtensions)
+				.map(function(ext) {
+					return '.' + ext;
+				})
+				.concat(self.appFlags.media.supportedMimeTypes)
+				.join(',')
+				.value();
+		},
+
+		mediaGetSupportedMimeTypesForFileInput: function() {
+			var self = this;
+
+			return _.join(self.appFlags.media.supportedMimeTypes, ',');
+		},
+
 		mediaList: function(callback) {
 			var self = this;
 
@@ -533,18 +607,29 @@ define(function(require) {
 			});
 		},
 
-		mediaUpload: function(data, mediaId, callback) {
+		/**
+		 * Upload media file
+		 * @param {Object}   args
+		 * @param {String}   args.mediaId  Media ID
+		 * @param {Object}   args.data     Media file encoded as base64
+		 * @param {Function} args.success  Success callback
+		 * @param {Function} args.error    Error callback
+		 */
+		mediaUpload: function(args) {
 			var self = this;
 
 			self.callApi({
 				resource: 'media.upload',
 				data: {
 					accountId: self.accountId,
-					mediaId: mediaId,
-					data: data
+					mediaId: args.mediaId,
+					data: args.data
 				},
 				success: function(data, status) {
-					callback && callback(data, status);
+					args.success && args.success(data, status);
+				},
+				error: function(parsedError) {
+					args.error && args.error(parsedError);
 				}
 			});
 		}
