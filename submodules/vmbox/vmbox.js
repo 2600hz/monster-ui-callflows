@@ -515,6 +515,16 @@ define(function(require) {
 					.prop('disabled', isDisabled);
 			});
 
+			$('#skip_envelope', vmbox_html).click(function(ev) {
+				console.log('click');
+				var $this = $(this),
+					isChecked = $this.prop('checked'),
+					$envelopeType = vmbox_html.find('#envelope_type');
+
+				$envelopeType
+					.prop('disabled', isChecked);
+			});
+
 			$('#shared_vmbox', vmbox_html).on('change', function(ev) {
 				if (this.checked) {
 					showMemberSelector(true);
