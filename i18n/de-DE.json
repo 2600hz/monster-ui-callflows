@@ -1125,7 +1125,7 @@
 			},
 			"envelopeType": {
 				"label": "Envelope Type",
-				"caller_and_time": "Accounce Caller ID and Time",
+				"caller_and_time": "Announce Caller ID and Time",
 				"default": "Announce Time",
 				"help": "Select envelope type"
 			},
