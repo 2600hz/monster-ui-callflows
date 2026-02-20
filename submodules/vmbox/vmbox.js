@@ -282,7 +282,8 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/\s+/g, '').split(',');
+					var recipients = $('#recipients_list', vmbox_html).val().replace(/\s+/g, ''),
+						list = _.isEmpty(recipients) ? [] : recipients.split(',');
 
 					return _.partition(list, validateEmail);
 				},
