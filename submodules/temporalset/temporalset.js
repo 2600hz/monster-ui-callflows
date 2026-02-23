@@ -21,7 +21,7 @@ define(function(require) {
 				});
 			} else {
 				self.temporalSetCreate(normalized_data, function(_data, status) {
-					success & success(_data, status, 'create');
+					success && success(_data, status, 'create');
 				});
 			}
 		},

@@ -282,7 +282,8 @@ define(function(require) {
 					return re.test(email);
 				},
 				getRecipients = function() {
-					var list = $('#recipients_list', vmbox_html).val().replace(/\s+/g, '').split(',');
+					var recipients = $('#recipients_list', vmbox_html).val().replace(/\s+/g, ''),
+						list = _.isEmpty(recipients) ? [] : recipients.split(',');
 
 					return _.partition(list, validateEmail);
 				},
@@ -513,6 +514,15 @@ define(function(require) {
 
 				$skipInstructions
 					.prop('disabled', isDisabled);
+			});
+
+			$('#skip_envelope', vmbox_html).click(function(ev) {
+				var $this = $(this),
+					isChecked = $this.prop('checked'),
+					$envelopeType = vmbox_html.find('#envelope_type');
+
+				$envelopeType
+					.prop('disabled', isChecked);
 			});
 
 			$('#shared_vmbox', vmbox_html).on('change', function(ev) {
