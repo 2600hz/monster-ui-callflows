@@ -1718,3 +1718,15 @@
 .media-edit-callflow-popup #edit_link.active {
 	display: block;
 }
+
+/* Disabled states for race condition protection */
+#callflow_container .left-bar-container .list.disabled,
+#callflow_container .left-bar-container .list-add.disabled,
+#callflow_container .entity-edition .list-container .list.disabled,
+#callflow_container .entity-edition .list-add.disabled,
+#callflow_container .buttons .save.disabled,
+#callflow_container .entity-edition [class*="-save"].disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
+}
