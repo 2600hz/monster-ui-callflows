@@ -167,10 +167,6 @@ define(function(require) {
 			(target)
 				.empty()
 				.append(groups_html);
-
-			if (typeof callbacks.after_render === 'function') {
-				callbacks.after_render();
-			}
 		},
 
 		// Added for the subscribed event to avoid refactoring mediaEdit

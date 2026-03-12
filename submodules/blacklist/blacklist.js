@@ -73,10 +73,6 @@ define(function(require) {
 					(args.target)
 						.empty()
 						.append(template);
-
-					if (typeof args.callbacks.after_render === 'function') {
-						args.callbacks.after_render();
-					}
 				};
 
 			if (args.data.id) {
