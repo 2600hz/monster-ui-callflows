@@ -147,6 +147,16 @@
 	display: block;
 }
 
+.callflows-port #user-form .caller-id-emergency-target {
+	margin-bottom: 10px;
+}
+
+.callflows-port #user-form {
+	.chosen-container, .chosen-drop, #priv_level {
+		width: 224px !important;
+	}
+}
+
 /* Hotdesk devices */
 .callflows-port #user-form #hotdesk_devices {
 	/*width: 400px;*/
