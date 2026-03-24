@@ -526,7 +526,8 @@ define(function(require) {
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
 						data: {
-							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
+							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true),
+							additional_information: _.get(data, 'additional_information')
 						}
 					}, _.pick(data.extra, [
 						'phoneNumbers'
