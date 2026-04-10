@@ -266,7 +266,7 @@
 			"additional_information": {
 				"title": "Extended Address",
 				"placeholder": "Room 123",
-				"data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 32 chars)."
+				"data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 20 chars)."
 			},
 			"keep_caller_id_data_content": "Wenn aktiviert, wird die Caller-ID des Anrufers verwendet.",
 			"email": "E-Mail",
@@ -443,7 +443,7 @@
 			"additional_information": {
 				"title": "Extended Address",
 				"placeholder": "Room 123",
-				"data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 32 chars)."
+				"data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 20 chars)."
 			},
 			"seconds": "Sekunden",
 			"__comment": "UI-2135: Eine leere Option für SIP-Gerätemarken hinzufügen",
