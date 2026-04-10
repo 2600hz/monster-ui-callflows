@@ -650,7 +650,7 @@ define(function(require) {
 					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.asserted.number': { phoneNumber: true },
 					'caller_id.asserted.realm': { realm: true },
-					additional_information: { maxlength: 32 }
+					additional_information: { maxlength: 20 }
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
