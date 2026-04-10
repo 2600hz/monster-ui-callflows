@@ -189,7 +189,7 @@
 			"additional_information": {
 				"title": "Extended Address",
 				"placeholder": "Room 123",
-				"data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 32 chars)."
+				"data_content": "Define the Caller ID Extended Address of this Device for Emergency Calls (max. 20 chars)."
 			},
 			"emergency": "Emergency",
 			"caller_id_name_data_content3": "Define the Caller ID Name of this Device for Emergency Calls (max. 30 chars).",
@@ -708,7 +708,7 @@
 			"additional_information": {
 				"title": "Extended Address",
 				"placeholder": "Room 123",
-				"data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 32 chars)."
+				"data_content": "Define the Caller ID Extended Address of this User for Emergency Calls (max. 20 chars)."
 			},
 			"outbound_calls": "Outbound Calls",
 			"caller_id_name_data_content2": "Define the Caller ID Name of this User for Outbound Calls (max. 30 chars). If the Caller ID Name of the device and of the user is not set, this Caller ID Name will be used.",
