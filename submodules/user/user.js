@@ -1143,6 +1143,10 @@ define(function(require) {
 				form_data.password = form_data.pwd_mngt_pwd1;
 			}
 
+			if (form_data.additional_information) {
+				form_data.additional_information = form_data.additional_information.replace(/['"<>&]/g, '');
+			}
+
 			delete form_data.pwd_mngt_pwd1;
 			delete form_data.pwd_mngt_pwd2;
 			delete form_data.was_password_updated;
