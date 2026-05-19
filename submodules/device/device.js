@@ -1108,10 +1108,6 @@ define(function(require) {
 				}
 			}
 
-			if (form_data.additional_information) {
-				form_data.additional_information = form_data.additional_information.replace(/['"<>&]/g, '');
-			}
-
 			if ('media' in form_data && 'audio' in form_data.media) {
 				form_data.media.audio.codecs = $.map(form_data.media.audio.codecs, function(val) { return (val) ? val : null; });
 			}
