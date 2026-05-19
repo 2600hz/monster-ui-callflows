@@ -266,13 +266,14 @@
 			"caller_id_realm": "Caller ID Realm",
 			"caller_id_realm_placeholder": "Realm",
 			"caller_id_realm_data_content4": "Define the Caller ID Realm of this Device, to be used for P-Asserted-Identity header.",
-			"validation": {
-				"caller_id": {
-					"name": "Please only enter alphanumeric characters, space or comma",
-					"number": "Please enter a valid phone number",
-					"realm": "Please enter a valid realm"
-				}
-			}
+		"validation": {
+			"caller_id": {
+				"name": "Please only enter alphanumeric characters, space or comma",
+				"number": "Please enter a valid phone number",
+				"realm": "Please enter a valid realm"
+			},
+			"additional_information": "Please only enter alphanumeric characters and space"
+		}
 		},
 		"disa": {
 			"title": "DISA",
