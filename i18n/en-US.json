@@ -805,7 +805,8 @@
 					"name": "Please only enter alphanumeric characters, space or comma",
 					"number": "Please enter a valid phone number",
 					"realm": "Please enter a valid realm"
-				}
+				},
+				"additional_information": "Please only enter alphanumeric characters and space"
 			},
 			"__version": "4.0",
 			"__comment": "UI-2475: add a failover option to callforward",
