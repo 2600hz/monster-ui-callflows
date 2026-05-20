@@ -502,12 +502,13 @@ define(function(require) {
 						'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 						'caller_id.asserted.number': { phoneNumber: true },
 						'caller_id.asserted.realm': { realm: true },
-						'e911.street_address_extended': { maxlength: 32 }
+						'additional_information': { maxlength: 20, regex: /^[0-9A-Za-z ]{0,30}$/ }
 					},
 					messages: {
 						'caller_id.asserted.name': { regex: i18n.callflows.device.validation.caller_id.name },
 						'caller_id.asserted.number': { regex: i18n.callflows.device.validation.caller_id.number },
-						'caller_id.asserted.realm': { regex: i18n.callflows.device.validation.caller_id.realm }
+						'caller_id.asserted.realm': { regex: i18n.callflows.device.validation.caller_id.realm },
+						'additional_information': { regex: i18n.callflows.device.validation.additional_information }
 					}
 				});
 			}
