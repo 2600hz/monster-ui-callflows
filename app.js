@@ -2140,7 +2140,24 @@ define(function(require) {
 				ev.preventDefault();
 
 				var $this = $(this),
-					link = $this.find('a').attr('href');
+					link = $this.find('a').attr('href'),
+					$activePane = template.find('.pill-content > .active');
+
+				if ($activePane.is('[data-form-validate]')) {
+					var $form = $activePane.closest('form'),
+						validator = $form.validate(),
+						isValid = true;
+
+					$activePane.find('input, select, textarea').each(function() {
+						if (!validator.element($(this))) {
+							isValid = false;
+						}
+					});
+
+					if (!isValid) {
+						return;
+					}
+				}
 
 				tabs.find('li').removeClass('active');
 				template.find('.pill-content >').removeClass('active');
