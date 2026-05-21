@@ -526,7 +526,8 @@ define(function(require) {
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
 						data: {
-							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true)
+							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true),
+							additional_information: _.get(data, 'additional_information')
 						}
 					}, _.pick(data.extra, [
 						'phoneNumbers'
@@ -648,7 +649,8 @@ define(function(require) {
 					'caller_id.external.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.emergency.number': { regex: /^[+]?[0-9\s\-.()]*$/ },
 					'caller_id.asserted.number': { phoneNumber: true },
-					'caller_id.asserted.realm': { realm: true }
+					'caller_id.asserted.realm': { realm: true },
+					additional_information: { maxlength: 20, regex: /^[0-9A-Za-z ]{0,30}$/ }
 				},
 				messages: {
 					username: { regex: self.i18n.active().callflows.user.validation.username },
@@ -664,7 +666,8 @@ define(function(require) {
 					'caller_id.external.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
 					'caller_id.emergency.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
 					'caller_id.asserted.number': { regex: self.i18n.active().callflows.user.validation.caller_id.number },
-					'caller_id.asserted.realm': { regex: self.i18n.active().callflows.user.validation.caller_id.realm }
+					'caller_id.asserted.realm': { regex: self.i18n.active().callflows.user.validation.caller_id.realm },
+					additional_information: { regex: self.i18n.active().callflows.user.validation.additional_information }
 				}
 			});
 

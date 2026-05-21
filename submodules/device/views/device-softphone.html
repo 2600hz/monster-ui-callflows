@@ -92,7 +92,7 @@
 					<input type="hidden" value="{{ data.device_type }}" name="device_type"/>
 				</div>
 
-				<div id="caller_id">
+				<div id="caller_id" data-form-validate>
 					<div class="clearfix">
 						<label for="name">{{ i18n.callflows.device.presence_id }}</label>
 						<div class="input">
@@ -153,6 +153,13 @@
 							<input class="span4" id="caller_id_number_emergency" name="caller_id.emergency.number" type="text" placeholder="+15555555555" value="{{ data.caller_id.emergency.number }}" rel="popover" data-content="{{ i18n.callflows.device.caller_id_number_data_content3 }}" data-mask="phoneNumber" />
 						</div>
 					{{/if}}
+					</div>
+
+					<div class="clearfix">
+						<label for="additional_information">{{ i18n.callflows.device.additional_information.title }}</label>
+						<div class="input">
+							<input class="span4" id="additional_information" name="additional_information" type="text" placeholder="{{ i18n.callflows.device.additional_information.placeholder }}" value="{{ data.additional_information }}" rel="popover" data-content="{{ i18n.callflows.device.additional_information.data_content }}" />
+						</div>
 					</div>
 					<hr />
 
