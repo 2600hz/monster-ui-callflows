@@ -1084,7 +1084,11 @@
 
 .callflows-port input[type="file"] {
 	background-color:transparent;
-	padding-top:5px;
+}
+
+.callflows-port input.input-file {
+	color: #e6e6e6;
+	background-color:transparent;
 }
 
 .callflows-port input {
@@ -1302,6 +1306,10 @@
 	position: relative;
 	color: orange;
 	margin-top: -10px;
+}
+
+.callflows-port #upload_div label.monster-invalid {
+	margin-top: 0px;
 }
 
 .callflows-port form .input {

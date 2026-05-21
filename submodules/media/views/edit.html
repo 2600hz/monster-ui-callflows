@@ -42,7 +42,7 @@
 					<div class="clearfix file">
 						<label for="fileInput">{{ i18n.callflows.media.file_input }}</label>
 						<div id="upload_div" class="input">
-							<input class="input-file" id="file" name="upload_media" type="file">
+							<input class="input-file" id="file" name="upload_media" type="file" accept="{{supportedFileFormats}}">
 						</div>
 						{{#if data.id }}
 							<div class="input player_file">
