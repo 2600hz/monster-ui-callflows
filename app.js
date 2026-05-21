@@ -1054,6 +1054,7 @@ define(function(require) {
 				}, !self.appFlags.showAllCallflows && {
 					filters: {
 						filter_not_numbers: 'no_match',
+						filter_not_name: 'US Emergency Dispatcher',
 						'filter_not_ui_metadata.origin': [
 							'voip',
 							'callqueues',
