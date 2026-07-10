@@ -75,7 +75,7 @@
 											{{#each this.families}}
 												<optgroup data-family="{{ @key }}" label="{{ this.name }}">
 													{{#each this.models}}
-														<option id="{{ @key }}" value="{{@../key}}.{{ @key }}">{{ this.name }}</option>
+													<option id="{{ @key }}" value="{{@../key}}.{{ @key }}" data-template-id={{ this.template_id }}>{{ this.name }}</option>
 													{{/each}}
 												</optgroup>
 											{{/each}}
