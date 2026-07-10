@@ -731,13 +731,16 @@ define(function(require) {
 									self.deviceCleanFormData(form_data);
 
 									if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
-										var modelArray = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val().split('.'),
+										var selectedOption = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"] option:selected', device_html),
+											modelArray = selectedOption.val().split('.'),
+											templateId = selectedOption.data('template-id'),
 											endpoint_family = modelArray[0],
 											endpoint_model = modelArray[1];
 
 										// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
 										form_data.provision.endpoint_model = endpoint_model;
 										form_data.provision.endpoint_family = endpoint_family;
+										form_data.provision.id = templateId;
 									}
 
 									self.deviceSave(form_data, data, callbacks.save_success);
