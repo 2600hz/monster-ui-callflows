@@ -536,7 +536,8 @@ define(function(require) {
 					name: 'device-' + data.data.device_type,
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
-						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false)
 					}, _.pick(data.extra, [
 						'phoneNumbers'
 					]), data),
