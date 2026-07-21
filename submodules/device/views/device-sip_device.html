@@ -182,12 +182,14 @@
 					{{/if}}
 					</div>
 
+					{{#if enable911ExtAddress}}
 					<div class="clearfix">
 						<label for="additional_information">{{ i18n.callflows.device.additional_information.title }}</label>
 						<div class="input">
 							<input class="span4" id="additional_information" name="additional_information" type="text" placeholder="{{ i18n.callflows.device.additional_information.placeholder }}" value="{{ data.additional_information }}" rel="popover" data-content="{{ i18n.callflows.device.additional_information.data_content }}" />
 						</div>
 					</div>
+					{{/if}}
 					<hr />
 
 				{{#if showPAssertedIdentity}}
