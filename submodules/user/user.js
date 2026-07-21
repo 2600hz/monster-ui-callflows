@@ -525,6 +525,7 @@ define(function(require) {
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false),
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true),
 							additional_information: _.get(data, 'additional_information')
