@@ -144,6 +144,7 @@ define(function(require) {
 									return enrollments;
 								}, {});
 
+							self.appFlags.availableEnrollments = enrollmentsKeys;
 							self.appFlags.accountTiersEnrollments = enrollmentsList;
 							callback && callback(results.userList);
 						});
@@ -1178,7 +1179,8 @@ define(function(require) {
 		userSave: function(form_data, data, success, error) {
 			var self = this,
 				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data)),
-				accountTiersEnrollments = self.appFlags.accountTiersEnrollments;
+				accountTiersEnrollments = self.appFlags.accountTiersEnrollments,
+				availableEnrollments = self.appFlags.availableEnrollments;
 
 			if (typeof data.data === 'object' && data.data.id) {
 				monster.parallel({
@@ -1203,14 +1205,31 @@ define(function(require) {
 							data: {
 								id: normalized_data.id,
 								enrollments: {
-									capabilities: _.get(accountTiersEnrollments, normalized_data.bundle_type, []),
-									enroll: true
+									capabilities: availableEnrollments,
+									enroll: false
 								}
 							},
 							success: function(entitlements) {
-								callback(null, entitlements);
+								self.userUpdateEnrollment({
+									data: {
+										id: normalized_data.id,
+										enrollments: {
+											capabilities: _.get(accountTiersEnrollments, normalized_data.bundle_type, []),
+											enroll: true
+										}
+									},
+									success: function(entitlements) {
+										callback(null, entitlements);
+									},
+									error: function(err) {
+										callback(null, err);
+									}
+								});
+							},
+							error: function(err) {
+								callback(null, err);
 							}
-						})
+						});
 					}
 				}, function(err, results) {
 					var status = _.get(results, 'userData.status'),
