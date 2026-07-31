@@ -13,6 +13,8 @@ define(function(require) {
 			'callflows.user.edit': 'userEdit'
 		},
 
+		appFlags: {},
+
 		random_id: false,
 
 		userDefineActions: function(args) {
@@ -115,17 +117,35 @@ define(function(require) {
 						});
 					},
 					listEntities: function(callback) {
-						self.callApi({
-							resource: 'user.list',
-							data: {
-								accountId: self.accountId,
-								filters: {
-									paginate: false
-								}
+						monster.parallel({
+							userList: function(callback) {
+								self.userList(function(usersData) {
+									callback(null, usersData);
+								});
 							},
-							success: function(data, status) {
-								callback && callback(data.data);
+							accountCapabilitiesEnrollments: function(callback) {
+								self.accountCapabilitiesEnrollments(function(enrollments) {
+									callback(null, enrollments);
+								});
 							}
+						}, function(err, results) {
+							var enrollments = results.accountCapabilitiesEnrollments,
+								enrollmentsKeys = Object.keys(enrollments).filter(function(key) {
+									return enrollments[key].enabled === true;
+								}).sort(),
+								enrollmentsList = enrollmentsKeys.reduce(function(enrollments, key) {
+									const prefix = key.split(':')[0];
+
+									if (!enrollments[prefix]) {
+										enrollments[prefix] = [];
+									}
+									enrollments[prefix].push(key);
+
+									return enrollments;
+								}, {});
+
+							self.appFlags.accountTiersEnrollments = enrollmentsList;
+							callback && callback(results.userList);
 						});
 					},
 					editEntity: 'callflows.user.edit'
@@ -526,6 +546,8 @@ define(function(require) {
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
 						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false),
+						hasServiceTiers: !_.isEmpty(self.appFlags.accountTiersEnrollments),
+						serviceTiers: self.appFlags.accountTiersEnrollments,
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true),
 							additional_information: _.get(data, 'additional_information')
@@ -1155,27 +1177,92 @@ define(function(require) {
 
 		userSave: function(form_data, data, success, error) {
 			var self = this,
-				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data));
+				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data)),
+				accountTiersEnrollments = self.appFlags.accountTiersEnrollments;
 
 			if (typeof data.data === 'object' && data.data.id) {
-				self.userUpdate(normalized_data, function(_data, status) {
-					if (typeof success === 'function') {
-						success(_data, status, 'update');
+				monster.parallel({
+					userData: function(callback) {
+						self.userUpdate({
+							data: normalized_data,
+							success: function(userData) {
+								callback(null, userData);
+							},
+							error: function(err) {
+								callback(null, err);
+							}
+						});
+					},
+					userEnrollments: function(callback) {
+						if (_.isEmpty(accountTiersEnrollments)) {
+							callback(null);
+							return;
+						}
+
+						self.userUpdateEnrollment({
+							data: {
+								id: normalized_data.id,
+								enrollments: {
+									capabilities: _.get(accountTiersEnrollments, normalized_data.bundle_type, []),
+									enroll: true
+								}
+							},
+							success: function(entitlements) {
+								callback(null, entitlements);
+							}
+						})
 					}
-				}, function(_data, status) {
-					if (typeof error === 'function') {
-						error(_data, status, 'update');
-					}
+				}, function(err, results) {
+					var status = _.get(results, 'userData.status'),
+						data = _.get(results, 'userData.data');
+
+					(status === 'success' ? success : error)(data, status, 'update');
 				});
 			} else {
-				self.userCreate(normalized_data, function(_data, status) {
-					if (typeof success === 'function') {
-						success(_data, status, 'create');
+				monster.waterfall([
+					function(callback) {
+						self.userCreate({
+							data: normalized_data,
+							success: function(userData) {
+								callback(null, userData);
+							},
+							error: function(err) {
+								callback(null, err);
+							}
+						});
+					},
+					function(userData, callback) {
+						if (_.isEmpty(accountTiersEnrollments)) {
+							callback(null);
+							return;
+						}
+
+						self.userUpdateEnrollment({
+							data: {
+								id: _.get(userData, 'data.id'),
+								enrollments: {
+									capabilities: _.get(accountTiersEnrollments, normalized_data.bundle_type, []),
+									enroll: true
+								}
+							},
+							success: function(entitlements) {
+								callback(null, userData);
+							},
+							error: function(error) {
+								callback(null, userData);
+							},
+							onChargesCancelled: function() {
+								// Allow to complete without errors, although the device won't be created
+								callback(null);
+							}
+						});
 					}
-				}, function(_data, status) {
-					if (typeof error === 'function') {
-						error(_data, status, 'create');
-					}
+				],
+				function(err, results) {
+					var status = _.get(results, 'status'),
+						data = _.get(results, 'data');
+
+					(status === 'success' ? success : error)(data, status, 'create');
 				});
 			}
 		},
@@ -1299,6 +1386,20 @@ define(function(require) {
 			});
 		},
 
+		accountCapabilitiesEnrollments: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'entitlements.get',
+				data: {
+					accountId: self.accountId
+				},
+				success: function(data, status) {
+					callback && callback(_.get(data, 'data.enrollments', {}));
+				}
+			});
+		},
+
 		userGet: function(userId, callback) {
 			var self = this;
 
@@ -1314,39 +1415,58 @@ define(function(require) {
 			});
 		},
 
-		userCreate: function(data, callback, error) {
+		userCreate: function(args) {
 			var self = this;
 
 			self.callApi({
 				resource: 'user.create',
 				data: {
 					accountId: self.accountId,
-					data: data
+					data: args.data
 				},
 				success: function(data) {
-					callback && callback(data.data);
+					args.hasOwnProperty('success') && args.success(data);
 				},
 				error: function(data) {
-					error && error(data.data);
+					args.hasOwnProperty('error') && args.error(data);
 				}
 			});
 		},
 
-		userUpdate: function(data, callback, error) {
+		userUpdate: function(args) {
 			var self = this;
 
 			self.callApi({
 				resource: 'user.update',
 				data: {
 					accountId: self.accountId,
-					userId: data.id,
-					data: data
+					userId: args.data.id,
+					data: args.data
 				},
 				success: function(data) {
-					callback && callback(data.data);
+					args.hasOwnProperty('success') && args.success(data);
 				},
 				error: function(data) {
-					error && error(data.data);
+					args.hasOwnProperty('error') && args.error(data);
+				}
+			});
+		},
+
+		userUpdateEnrollment: function(args) {
+			var self = this;
+
+			self.callApi({
+				resource: 'entitlements.enrollUser',
+				data: {
+					accountId: self.accountId,
+					userId: args.data.id,
+					data: args.data.enrollments
+				},
+				success: function(data) {
+					args.hasOwnProperty('success') && args.success(data.data);
+				},
+				error: function(data) {
+					args.hasOwnProperty('error') && args.error();
 				}
 			});
 		},
