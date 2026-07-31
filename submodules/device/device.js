@@ -74,7 +74,8 @@ define(function(require) {
 					},
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -545,11 +546,19 @@ define(function(require) {
 				}));
 
 				if (device_html.find('#media_audio_codecs')) {
-					var audioSelector = monster.ui.codecSelector('audio', device_html.find('#media_audio_codecs'), data.data.media.audio.codecs);
+					var audioSelector = monster.ui.codecSelector('audio', device_html.find('#media_audio_codecs'), data.data.media.audio.codecs, {
+						onChange: function() {
+							callbacks.markEntityDirty && callbacks.markEntityDirty();
+						}
+					});
 				};
 
 				if (device_html.find('#media_video_codecs')) {
-					var videoSelector = monster.ui.codecSelector('video', device_html.find('#media_video_codecs'), data.data.media.video.codecs);
+					var videoSelector = monster.ui.codecSelector('video', device_html.find('#media_video_codecs'), data.data.media.video.codecs, {
+						onChange: function() {
+							callbacks.markEntityDirty && callbacks.markEntityDirty();
+						}
+					});
 				};
 
 				if (device_html.find('#caller_id').length && hasExternalCallerId) {
