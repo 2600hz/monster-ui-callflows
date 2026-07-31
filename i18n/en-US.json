@@ -696,6 +696,8 @@
 			"email_data_content": "Email Address like: user@company.com",
 			"user_privilege_level": "User privilege level",
 			"user_privilege_level_data_content": "The user privilege level",
+			"user_type": "User Type",
+			"user_type_data_conteddnt": "User types",
 			"administrator": "Administrator",
 			"email_notifications": "Email Notifications",
 			"voicemail": "Voicemail",
