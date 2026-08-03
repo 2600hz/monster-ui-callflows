@@ -31,7 +31,10 @@ define(function(require) {
 			self.winkstartTabs(groups_html);
 
 			$('#tab_users > .rows', groups_html).sortable({
-				handle: '.column.first'
+				handle: '.column.first',
+				update: function() {
+					callbacks.markEntityDirty && callbacks.markEntityDirty();
+				}
 			});
 
 			self.groupsRenderEndpointList(data, groups_html);
@@ -98,6 +101,8 @@ define(function(require) {
 
 								self.groupsRenderEndpointList(data, groups_html);
 								$user.val('empty_option_user');
+
+								callbacks.markEntityDirty && callbacks.markEntityDirty();
 							}
 						});
 					}
@@ -125,6 +130,8 @@ define(function(require) {
 								self.groupsRenderEndpointList(data, groups_html);
 
 								$device.val('empty_option_device');
+
+								callbacks.markEntityDirty && callbacks.markEntityDirty();
 							}
 						});
 					}
@@ -162,6 +169,8 @@ define(function(require) {
 				});
 
 				data.data.endpoints = new_list;
+
+				callbacks.markEntityDirty && callbacks.markEntityDirty();
 			});
 
 			(target)
@@ -188,7 +197,8 @@ define(function(require) {
 					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {

@@ -134,6 +134,8 @@ define(function(require) {
 							submodule: 'directory'
 						})));
 				}
+
+				callbacks.debouncedCheck && callbacks.debouncedCheck();
 			});
 
 			(target)
@@ -201,7 +203,8 @@ define(function(require) {
 					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					debouncedCheck: _callbacks.debouncedCheck
 				},
 				defaults = {
 					data: $.extend(true, {
