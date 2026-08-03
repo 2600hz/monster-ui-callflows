@@ -1180,7 +1180,9 @@ define(function(require) {
 			var self = this,
 				normalized_data = self.userNormalizeData($.extend(true, {}, data.data, form_data)),
 				accountTiersEnrollments = self.appFlags.accountTiersEnrollments,
-				availableEnrollments = self.appFlags.availableEnrollments;
+				availableEnrollments = self.appFlags.availableEnrollments,
+				oldUserType = _.get(data, 'data.bundle_type'),
+				newUserType = _.get(form_data, 'bundle_type');
 
 			if (typeof data.data === 'object' && data.data.id) {
 				monster.parallel({
@@ -1196,7 +1198,7 @@ define(function(require) {
 						});
 					},
 					userEnrollments: function(callback) {
-						if (_.isEmpty(accountTiersEnrollments)) {
+						if (_.isEmpty(accountTiersEnrollments) || oldUserType === newUserType) {
 							callback(null);
 							return;
 						}
