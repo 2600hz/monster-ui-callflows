@@ -75,7 +75,8 @@ define(function(require) {
 					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -183,7 +184,10 @@ define(function(require) {
 						selected: self.i18n.active().callflows.temporalset.selectedTOD
 					}
 				},
-				containerClasses: 'skinny'
+				containerClasses: 'skinny',
+				onChange: function() {
+					callbacks.markEntityDirty && callbacks.markEntityDirty();
+				}
 			});
 
 			monster.ui.validate(temporalsetForm);

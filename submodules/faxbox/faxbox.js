@@ -170,7 +170,8 @@ define(function(require) {
 						self.faxboxRenderList(parent);
 					},
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					rebindTracking: _callbacks.rebindTracking
 				};
 
 			monster.parallel({
@@ -302,11 +303,15 @@ define(function(require) {
 							data.faxbox = self.faxboxGetDefaultSettings(_data);
 							$('#edit_link', faxbox_html).show();
 							self.faxboxRender(data, target, callbacks);
+
+							callbacks.rebindTracking && callbacks.rebindTracking();
 						});
 					} else {
 						data.faxbox = self.faxboxGetDefaultSettings();
 						$('#edit_link', faxbox_html).hide();
 						self.faxboxRender(data, target, callbacks);
+
+						callbacks.rebindTracking && callbacks.rebindTracking();
 					}
 				});
 			} else {
@@ -337,6 +342,8 @@ define(function(require) {
 
 							$('#edit_link', faxbox_html).hide();
 							self.faxboxRender(data, target, callbacks);
+
+							callbacks.rebindTracking && callbacks.rebindTracking();
 						});
 					} else {
 						$('[id$="bound_notification_email"]', faxbox_html).each(function(idx, el) {
