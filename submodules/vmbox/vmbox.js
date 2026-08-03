@@ -59,7 +59,8 @@ define(function(require) {
 					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -316,6 +317,8 @@ define(function(require) {
 							});
 
 							vmboxEditMembers.removeClass('hidden');
+
+							callbacks.markEntityDirty && callbacks.markEntityDirty();
 						},
 						cancelCallback: function() {
 							if (uncheckShareOnCancel) {
