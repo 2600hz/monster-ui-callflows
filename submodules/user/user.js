@@ -130,10 +130,10 @@ define(function(require) {
 							}
 						}, function(err, results) {
 							var enrollments = results.accountCapabilitiesEnrollments,
-								enrollmentsKeys = Object.keys(enrollments).filter(function(key) {
+								enrollmentsKeys = _.chain(enrollments).keys().filter(function(key) {
 									return enrollments[key].enabled === true;
-								}).sort(),
-								enrollmentsList = enrollmentsKeys.reduce(function(enrollments, key) {
+								}).sortBy().value(),
+								enrollmentsList = _.reduce(enrollmentsKeys, function(enrollments, key) {
 									const prefix = key.split(':')[0];
 
 									if (!enrollments[prefix]) {
@@ -1203,15 +1203,25 @@ define(function(require) {
 							return;
 						}
 
-						self.userUpdateEnrollment({
-							data: {
-								id: normalized_data.id,
-								enrollments: {
-									capabilities: availableEnrollments,
-									enroll: false
-								}
+						monster.waterfall([
+							function(callback) {
+								self.userUpdateEnrollment({
+									data: {
+										id: normalized_data.id,
+										enrollments: {
+											capabilities: availableEnrollments,
+											enroll: false
+										}
+									},
+									success: function(removedEnrollments) {
+										callback(null, removedEnrollments);
+									},
+									error: function(err) {
+										callback(null, err);
+									}
+								});
 							},
-							success: function(entitlements) {
+							function(removedEnrollments, callback) {
 								self.userUpdateEnrollment({
 									data: {
 										id: normalized_data.id,
@@ -1220,17 +1230,17 @@ define(function(require) {
 											enroll: true
 										}
 									},
-									success: function(entitlements) {
-										callback(null, entitlements);
+									success: function(addedEnrollments) {
+										callback(null, addedEnrollments);
 									},
 									error: function(err) {
 										callback(null, err);
 									}
 								});
-							},
-							error: function(err) {
-								callback(null, err);
 							}
+						],
+						function(err, results) {
+							callback(null, results.enrollments)
 						});
 					}
 				}, function(err, results) {
