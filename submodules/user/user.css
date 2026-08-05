@@ -139,10 +139,6 @@
 	font-weight: bold;
 }
 
-.callflows-port #user-form .user-type {
-	text-transform: capitalize;
-}
-
 .callflows-port #user-form .shoutcast-div {
 	display: none;
 }
