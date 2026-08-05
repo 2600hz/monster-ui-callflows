@@ -77,7 +77,7 @@
 						<select id="bundle_type" name="bundle_type" class="medium user-type" rel="popover" data-content="{{ i18n.callflows.user.user_type_data_content }}">
 						{{#select data.bundle_type}}
 							{{#each serviceTiers}}
-							<option value="{{@key}}" class="user-type">{{ @key }}</option>
+							<option value="{{@key}}" class="user-type">{{ tryI18n @root.i18n.user.user_types @key }}</option>
 							{{/each}}
 						{{/select}}
 						</select>

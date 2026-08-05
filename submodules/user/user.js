@@ -1263,7 +1263,7 @@ define(function(require) {
 						});
 					},
 					function(userData, callback) {
-						if (_.isEmpty(accountTiersEnrollments)) {
+						if (_.isEmpty(accountTiersEnrollments) || _.get(userData, 'status') !== 'success') {
 							callback(null);
 							return;
 						}
