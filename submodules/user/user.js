@@ -129,23 +129,6 @@ define(function(require) {
 								});
 							}
 						}, function(err, results) {
-							var enrollments = results.accountCapabilitiesEnrollments,
-								enrollmentsKeys = _.chain(enrollments).keys().filter(function(key) {
-									return enrollments[key].enabled === true;
-								}).sortBy().value(),
-								enrollmentsList = _.reduce(enrollmentsKeys, function(enrollments, key) {
-									const prefix = key.split(':')[0];
-
-									if (!enrollments[prefix]) {
-										enrollments[prefix] = [];
-									}
-									enrollments[prefix].push(key);
-
-									return enrollments;
-								}, {});
-
-							self.appFlags.availableEnrollments = enrollmentsKeys;
-							self.appFlags.accountTiersEnrollments = enrollmentsList;
 							callback && callback(results.userList);
 						});
 					},
@@ -469,6 +452,16 @@ define(function(require) {
 					} else {
 						callback(null, defaults);
 					}
+				},
+				account_capability_enrollments: function(callback) {
+					if (self.appFlags.hasOwnProperty('accountTiersEnrollments')) {
+						callback(null);
+						return;
+					}
+
+					self.accountCapabilitiesEnrollments(function(enrollments) {
+						callback(null, enrollments);
+					});
 				}
 			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 				cidNumbers: function(next) {
@@ -1281,10 +1274,6 @@ define(function(require) {
 							},
 							error: function(error) {
 								callback(null, userData);
-							},
-							onChargesCancelled: function() {
-								// Allow to complete without errors, although the device won't be created
-								callback(null);
 							}
 						});
 					}
@@ -1426,6 +1415,23 @@ define(function(require) {
 					accountId: self.accountId
 				},
 				success: function(data, status) {
+					var enrollments = _.get(data, 'data.enrollments'),
+						enrollmentsKeys = _.chain(enrollments).keys().filter(function(key) {
+							return enrollments[key].enabled === true;
+						}).sortBy().value(),
+						enrollmentsList = _.reduce(enrollmentsKeys, function(enrollments, key) {
+							var prefix = key.split(':')[0];
+
+							if (!enrollments[prefix]) {
+								enrollments[prefix] = [];
+							}
+							enrollments[prefix].push(key);
+
+							return enrollments;
+						}, {});
+
+					self.appFlags.availableEnrollments = enrollmentsKeys;
+					self.appFlags.accountTiersEnrollments = enrollmentsList;
 					callback && callback(_.get(data, 'data.enrollments', {}));
 				}
 			});

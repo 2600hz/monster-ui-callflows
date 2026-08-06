@@ -152,7 +152,7 @@
 }
 
 .callflows-port #user-form {
-	.chosen-container, .chosen-drop, #priv_level {
+	.chosen-container, .chosen-drop, #priv_level, #bundle_type {
 		width: 224px !important;
 	}
 }
