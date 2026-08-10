@@ -70,6 +70,21 @@
 					</div>
 				</div>
 
+				{{#if hasServiceTiers}}
+				<div class="clearfix">
+					<label for="bundle_type">{{ i18n.callflows.user.user_type }}</label>
+					<div class="input">
+						<select id="bundle_type" name="bundle_type" class="medium" rel="popover" data-content="{{ i18n.callflows.user.user_type_data_content }}">
+						{{#select data.bundle_type}}
+							{{#each serviceTiers}}
+							<option value="{{@key}}">{{ tryI18n @root.i18n.callflows.user.user_types @key }}</option>
+							{{/each}}
+						{{/select}}
+						</select>
+					</div>
+				</div>
+				{{/if}}
+
 				<div class="clearfix">
 					<label for="vm_to_email_enabled">{{ i18n.callflows.user.email_notifications }}</label>
 					<div class="input">
