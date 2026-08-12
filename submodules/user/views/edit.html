@@ -70,6 +70,21 @@
 					</div>
 				</div>
 
+				{{#if hasServiceTiers}}
+				<div class="clearfix">
+					<label for="bundle_type">{{ i18n.callflows.user.user_type }}</label>
+					<div class="input">
+						<select id="bundle_type" name="bundle_type" class="medium" rel="popover" data-content="{{ i18n.callflows.user.user_type_data_content }}">
+						{{#select data.bundle_type}}
+							{{#each serviceTiers}}
+							<option value="{{@key}}">{{ tryI18n @root.i18n.callflows.user.user_types @key }}</option>
+							{{/each}}
+						{{/select}}
+						</select>
+					</div>
+				</div>
+				{{/if}}
+
 				<div class="clearfix">
 					<label for="vm_to_email_enabled">{{ i18n.callflows.user.email_notifications }}</label>
 					<div class="input">
@@ -152,7 +167,7 @@
 				</div>
 			</div>
 
-			<div id="caller_id">
+			<div id="caller_id" data-form-validate>
 				<div class="clearfix">
 					<label for="name">{{ i18n.callflows.user.presence_id }}</label>
 					<div class="input">
@@ -214,12 +229,14 @@
 				{{/if}}
 				</div>
 
+				{{#if enable911ExtAddress}}
 				<div class="clearfix">
 					<label for="additional_information">{{ i18n.callflows.user.additional_information.title }}</label>
 					<div class="input">
 						<input class="span4" id="additional_information" name="additional_information" type="text" placeholder="{{ i18n.callflows.user.additional_information.placeholder }}" value="{{ data.additional_information }}" rel="popover" data-content="{{ i18n.callflows.user.additional_information.data_content }}" />
 					</div>
 				</div>
+				{{/if}}
 				<hr />
 
 			{{#if showPAssertedIdentity}}

@@ -74,7 +74,8 @@ define(function(require) {
 					},
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -503,12 +504,13 @@ define(function(require) {
 						'caller_id.asserted.name': { regex: /^[0-9A-Za-z ,]{0,30}$/ },
 						'caller_id.asserted.number': { phoneNumber: true },
 						'caller_id.asserted.realm': { realm: true },
-						'additional_information': { maxlength: 20 }
+						'additional_information': { maxlength: 20, regex: /^[0-9A-Za-z ]{0,30}$/ }
 					},
 					messages: {
 						'caller_id.asserted.name': { regex: i18n.callflows.device.validation.caller_id.name },
 						'caller_id.asserted.number': { regex: i18n.callflows.device.validation.caller_id.number },
-						'caller_id.asserted.realm': { regex: i18n.callflows.device.validation.caller_id.realm }
+						'caller_id.asserted.realm': { regex: i18n.callflows.device.validation.caller_id.realm },
+						'additional_information': { regex: i18n.callflows.device.validation.additional_information }
 					}
 				});
 			}
@@ -535,7 +537,8 @@ define(function(require) {
 					name: 'device-' + data.data.device_type,
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
-						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity
+						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false)
 					}, _.pick(data.extra, [
 						'phoneNumbers'
 					]), data),
@@ -543,11 +546,19 @@ define(function(require) {
 				}));
 
 				if (device_html.find('#media_audio_codecs')) {
-					var audioSelector = monster.ui.codecSelector('audio', device_html.find('#media_audio_codecs'), data.data.media.audio.codecs);
+					var audioSelector = monster.ui.codecSelector('audio', device_html.find('#media_audio_codecs'), data.data.media.audio.codecs, {
+						onChange: function() {
+							callbacks.markEntityDirty && callbacks.markEntityDirty();
+						}
+					});
 				};
 
 				if (device_html.find('#media_video_codecs')) {
-					var videoSelector = monster.ui.codecSelector('video', device_html.find('#media_video_codecs'), data.data.media.video.codecs);
+					var videoSelector = monster.ui.codecSelector('video', device_html.find('#media_video_codecs'), data.data.media.video.codecs, {
+						onChange: function() {
+							callbacks.markEntityDirty && callbacks.markEntityDirty();
+						}
+					});
 				};
 
 				if (device_html.find('#caller_id').length && hasExternalCallerId) {
@@ -731,13 +742,16 @@ define(function(require) {
 									self.deviceCleanFormData(form_data);
 
 									if (form_data.hasOwnProperty('provision') && form_data.provision.hasOwnProperty('endpoint_brand') && form_data.provision.endpoint_brand !== 'none') {
-										var modelArray = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"]', device_html).val().split('.'),
+										var selectedOption = $('.dropdown_family[data-brand="' + form_data.provision.endpoint_brand + '"] option:selected', device_html),
+											modelArray = selectedOption.val().split('.'),
+											templateId = selectedOption.data('template-id'),
 											endpoint_family = modelArray[0],
 											endpoint_model = modelArray[1];
 
 										// We have to set this manually since we have 3 dropdown with the same name we don't know which selected one is the correct one..
 										form_data.provision.endpoint_model = endpoint_model;
 										form_data.provision.endpoint_family = endpoint_family;
+										form_data.provision.id = templateId;
 									}
 
 									self.deviceSave(form_data, data, callbacks.save_success);

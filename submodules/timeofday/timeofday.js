@@ -76,7 +76,8 @@ define(function(require) {
 					save_error: _callbacks.save_error,
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
-					after_render: _callbacks.after_render
+					after_render: _callbacks.after_render,
+					markEntityDirty: _callbacks.markEntityDirty
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -284,6 +285,8 @@ define(function(require) {
 				} else {
 					selectedWdays -= 1;
 				}
+
+				callbacks.markEntityDirty && callbacks.markEntityDirty();
 			});
 
 			$('#ordinal', timeofday_html).change(function() {

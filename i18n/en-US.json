@@ -266,13 +266,14 @@
 			"caller_id_realm": "Caller ID Realm",
 			"caller_id_realm_placeholder": "Realm",
 			"caller_id_realm_data_content4": "Define the Caller ID Realm of this Device, to be used for P-Asserted-Identity header.",
-			"validation": {
-				"caller_id": {
-					"name": "Please only enter alphanumeric characters, space or comma",
-					"number": "Please enter a valid phone number",
-					"realm": "Please enter a valid realm"
-				}
-			}
+		"validation": {
+			"caller_id": {
+				"name": "Please only enter alphanumeric characters, space or comma",
+				"number": "Please enter a valid phone number",
+				"realm": "Please enter a valid realm"
+			},
+			"additional_information": "Please only enter alphanumeric characters and space"
+		}
 		},
 		"disa": {
 			"title": "DISA",
@@ -695,6 +696,14 @@
 			"email_data_content": "Email Address like: user@company.com",
 			"user_privilege_level": "User privilege level",
 			"user_privilege_level_data_content": "The user privilege level",
+			"user_type": "User Type",
+			"user_types": {
+				"advanced": "Advanced",
+				"basic": "Basic",
+				"courtesy": "Courtesy",
+				"essential": "Essential"
+			},
+			"user_type_data_content": "User types",
 			"administrator": "Administrator",
 			"email_notifications": "Email Notifications",
 			"voicemail": "Voicemail",
@@ -804,7 +813,8 @@
 					"name": "Please only enter alphanumeric characters, space or comma",
 					"number": "Please enter a valid phone number",
 					"realm": "Please enter a valid realm"
-				}
+				},
+				"additional_information": "Please only enter alphanumeric characters and space"
 			},
 			"__version": "4.0",
 			"__comment": "UI-2475: add a failover option to callforward",

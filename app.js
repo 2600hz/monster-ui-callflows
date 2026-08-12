@@ -55,7 +55,10 @@ define(function(require) {
 
 			// Entity manager state flags
 			isLoadingEntity: false,
-			originalEntityState: null
+			originalEntityState: null,
+			debouncedEntityCheck: null,
+			extraEntityDirty: false,
+			markEntityDirty: null
 		},
 
 		actions: {},
@@ -312,6 +315,35 @@ define(function(require) {
 									entityType: type
 								});
 								template.find('.entity-edition .entity-content').empty();
+							},
+							/**
+							 * Re-runs the compare-based dirty check (serializeForm vs. the
+							 * captured baseline) - use it only when the interaction added,
+							 * removed, or changed a named <input>/<select>/<textarea> at the DOM.
+							 */
+							debouncedCheck: function() {
+								self.appFlags.debouncedEntityCheck && self.appFlags.debouncedEntityCheck();
+							},
+							/**
+							 * Unconditionally flags the entity dirty - use it for widget or
+							 * plain-DOM state that serializeForm cannot see (drag-drop lists, div
+							 * toggles, closure-held member lists). When in doubt, use
+							 * markEntityDirty.
+							 */
+							markEntityDirty: function() {
+								self.appFlags.markEntityDirty && self.appFlags.markEntityDirty();
+							},
+							/**
+							 * Invoked when a submodule tears down and rebuilds its own form DOM
+							 * (see faxbox.js) - it re-establishes both mechanisms against the new
+							 * DOM and immediately marks the entity dirty.
+							 */
+							rebindTracking: function() {
+								var $content = template.find('.entity-edition .entity-content');
+
+								self.cleanupEntityFormTracking($content);
+								self.initEntityFormTracking($content);
+								self.appFlags.markEntityDirty && self.appFlags.markEntityDirty();
 							}
 						}
 					});
@@ -552,18 +584,31 @@ define(function(require) {
 			}
 
 			self.appFlags.originalEntityState = self.serializeForm($form);
+			self.appFlags.extraEntityDirty = false;
 			$saveButton.addClass('disabled');
 
-			var debouncedCheck = _.debounce(function() {
+			self.appFlags.debouncedEntityCheck = _.debounce(function() {
 				self.checkEntityChanges($form, $saveButton);
 			}, 150);
 
-			$form.on('change.entityTracking input.entityTracking', 'input, select, textarea', debouncedCheck);
-			$container.on('click.entityTracking', '[class*="-delete"], [class*="-add"], .delete-number, #add_number', debouncedCheck);
+			self.appFlags.markEntityDirty = function() {
+				self.appFlags.extraEntityDirty = true;
+				self.checkEntityChanges($form, $saveButton);
+			};
+
+			$form.on('change.entityTracking input.entityTracking', 'input, select, textarea', self.appFlags.debouncedEntityCheck);
+			$container.on('click.entityTracking', '[class*="-delete"], [class*="-add"], .delete-number, #add_number', self.appFlags.debouncedEntityCheck);
 		},
 
+		/**
+		 * Some forms render multiple elements sharing the same `name` (eg. one
+		 * <select> per provisioner brand, only one of which is visible at a
+		 * time). An array of [name, value] pairs is used instead of a
+		 * name-keyed object so those elements don't silently overwrite each
+		 * other, which would hide changes made to a non-last element.
+		 */
 		serializeForm: function($form) {
-			var formData = {};
+			var formData = [];
 
 			$form.find('input, select, textarea').each(function() {
 				var $el = $(this),
@@ -575,13 +620,13 @@ define(function(require) {
 				}
 
 				if (type === 'checkbox') {
-					formData[name] = $el.is(':checked');
+					formData.push([name, $el.is(':checked')]);
 				} else if (type === 'radio') {
 					if ($el.is(':checked')) {
-						formData[name] = $el.val();
+						formData.push([name, $el.val()]);
 					}
 				} else {
-					formData[name] = $el.val();
+					formData.push([name, $el.val()]);
 				}
 			});
 
@@ -590,7 +635,8 @@ define(function(require) {
 
 		checkEntityChanges: function($form, $saveButton) {
 			var self = this,
-				hasChanges = self.serializeForm($form) !== self.appFlags.originalEntityState;
+				// extraEntityDirty is set by markEntityDirty for interactions serializeForm can't see (see editEntity's callbacks above)
+				hasChanges = self.appFlags.extraEntityDirty || self.serializeForm($form) !== self.appFlags.originalEntityState;
 
 			if (!self.appFlags.isLoadingEntity) {
 				self.toggleDisabledClass($saveButton, hasChanges);
@@ -604,7 +650,11 @@ define(function(require) {
 
 			$form.off('.entityTracking');
 			$container.off('.entityTracking');
+			this.appFlags.debouncedEntityCheck && this.appFlags.debouncedEntityCheck.cancel();
 			this.appFlags.originalEntityState = null;
+			this.appFlags.debouncedEntityCheck = null;
+			this.appFlags.extraEntityDirty = false;
+			this.appFlags.markEntityDirty = null;
 		},
 
 		renderAccountSettings: function(container) {
@@ -1054,6 +1104,7 @@ define(function(require) {
 				}, !self.appFlags.showAllCallflows && {
 					filters: {
 						filter_not_numbers: 'no_match',
+						filter_not_name: 'US Emergency Dispatcher',
 						'filter_not_ui_metadata.origin': [
 							'voip',
 							'callqueues',
@@ -2360,7 +2411,24 @@ define(function(require) {
 				ev.preventDefault();
 
 				var $this = $(this),
-					link = $this.find('a').attr('href');
+					link = $this.find('a').attr('href'),
+					$activePane = template.find('.pill-content > .active');
+
+				if ($activePane.is('[data-form-validate]')) {
+					var $form = $activePane.closest('form'),
+						validator = $form.validate(),
+						isValid = true;
+
+					$activePane.find('input, select, textarea').each(function() {
+						if (!validator.element($(this))) {
+							isValid = false;
+						}
+					});
+
+					if (!isValid) {
+						return;
+					}
+				}
 
 				tabs.find('li').removeClass('active');
 				template.find('.pill-content >').removeClass('active');
