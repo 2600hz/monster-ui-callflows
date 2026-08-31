@@ -127,6 +127,11 @@ define(function(require) {
 								self.accountCapabilitiesEnrollments(function(enrollments) {
 									callback(null, enrollments);
 								});
+							},
+							userGetNoMatchCallflow: function(callback) {
+								self.getNoMatchCallflow(function(callflow) {
+									callback(null, callflow);
+								});
 							}
 						}, function(err, results) {
 							callback && callback(results.userList);
@@ -534,12 +539,13 @@ define(function(require) {
 				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
 				selectorsWithReflectedValue = _.spread(_.intersection)(_.map(cidSelectorsPerTab)),
 				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				carrierType = self.appFlags.carrierType,
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
-						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false),
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false) && carrierType === 'useBlended',
 						hasServiceTiers: !_.isEmpty(self.appFlags.accountTiersEnrollments),
 						serviceTiers: self.appFlags.accountTiersEnrollments,
 						data: {
@@ -1233,7 +1239,7 @@ define(function(require) {
 							}
 						],
 						function(err, results) {
-							callback(null, results.enrollments)
+							callback(null, results.enrollments);
 						});
 					}
 				}, function(err, results) {
