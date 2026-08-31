@@ -45,7 +45,8 @@ define(function(require) {
 			// For now we use that to only load the numbers classifiers the first time we load the app, since it is very unlikely to change often
 			appData: {},
 
-			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin
+			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
+			carrierType: undefined
 		},
 
 		actions: {},
@@ -2275,9 +2276,6 @@ define(function(require) {
 									} else {
 										type = 'useBlended';
 									}
-								// otherwise it means this accounts will setup their own carriers
-								} else {
-									type = 'byoc';
 								}
 							}
 

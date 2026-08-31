@@ -310,9 +310,7 @@ define(function(require) {
 							}
 						},
 						deviceGetNoMatchCallflow: function(callback) {
-							self.getNoMatchCallflow(function(callflow) {
-								callback(null, callflow);
-							});
+							self.getNoMatchCallflow(callback);
 						}
 					}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 						cidNumbers: function(callback) {
