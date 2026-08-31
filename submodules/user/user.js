@@ -125,6 +125,8 @@ define(function(require) {
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
+									callback(null, enrollments);
+								});
 							}
 						});
 					},
@@ -448,6 +450,9 @@ define(function(require) {
 					} else {
 						callback(null, defaults);
 					}
+				},
+				userGetNoMatchCallflow: function(callback) {
+					self.getNoMatchCallflow(callback);
 				}
 			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 				cidNumbers: function(next) {
@@ -520,12 +525,13 @@ define(function(require) {
 				tabsWithCidSelectors = _.keys(cidSelectorsPerTab),
 				selectorsWithReflectedValue = _.spread(_.intersection)(_.map(cidSelectorsPerTab)),
 				hasExternalCallerId = monster.util.getCapability('caller_id.external_numbers').isEnabled,
+				carrierType = self.appFlags.carrierType,
 				user_html = $(self.getTemplate({
 					name: 'edit',
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
-						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false),
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false) && carrierType === 'useBlended',
 						data: {
 							vm_to_email_enabled: _.get(data, 'data.vm_to_email_enabled', true),
 							additional_information: _.get(data, 'additional_information')

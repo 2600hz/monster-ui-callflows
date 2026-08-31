@@ -45,7 +45,8 @@ define(function(require) {
 			// For now we use that to only load the numbers classifiers the first time we load the app, since it is very unlikely to change often
 			appData: {},
 
-			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin
+			showAllCallflows: (monster.config.hasOwnProperty('developerFlags') && monster.config.developerFlags.showAllCallflows) || monster.apps.auth.originalAccount.superduper_admin,
+			carrierType: undefined
 		},
 
 		actions: {},
@@ -2222,6 +2223,68 @@ define(function(require) {
 					_.unset(obj, key);
 				}
 			});
+		},
+
+		getNoMatchCallflow: function(callback) {
+			var self = this;
+
+			monster.waterfall([
+				function getNoMatchCallflowId(callback) {
+					self.callApi({
+						resource: 'callflow.list',
+						data: {
+							accountId: self.accountId,
+							filters: {
+								filter_numbers: 'no_match'
+							}
+						},
+						success: _.flow(
+							_.partial(_.get, _, 'data'),
+							_.head,
+							_.partial(_.get, _, 'id'),
+							_.partial(callback, null)
+						)
+					});
+				},
+				function getCallflow(callflowId, callback) {
+					if (_.isUndefined(callflowId)) {
+						return callback(null);
+					}
+					self.callApi({
+						resource: 'callflow.get',
+						data: {
+							accountId: self.accountId,
+							callflowId: callflowId
+						},
+						success: function(callflowData) {
+							var noMatch = callflowData.data,
+								resellerId = monster.apps.auth.currentAccount.reseller_id,
+								type;
+
+							if (noMatch.flow.module === 'offnet') {
+								type = 'useBlended';
+							} else if (noMatch.flow.module === 'resources') {
+								// if hunt_account_id is defined
+								if (noMatch.flow.data.hasOwnProperty('hunt_account_id')) {
+									// check if hunt_account_id = this account id which means he brings his own carrier
+									if (noMatch.flow.data.hunt_account_id === self.accountId) {
+										type = 'byoc';
+									// else check if it's = to his resellerId, which means he uses his reseller carriers
+									} else if (noMatch.flow.data.hunt_account_id === resellerId) {
+										type = 'useReseller';
+									// else it's using an accountId we don't know, so we show an error
+									} else {
+										type = 'useBlended';
+									}
+								}
+							}
+
+							self.appFlags.carrierType = type;
+							callback && callback(null, callflowData.data);
+						}
+					});
+				}
+			], callback);
 		}
 	};
 
