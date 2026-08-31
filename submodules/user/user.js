@@ -125,8 +125,6 @@ define(function(require) {
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
-									callback(null, enrollments);
-								});
 							}
 						});
 					},
