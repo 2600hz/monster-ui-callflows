@@ -125,10 +125,7 @@ define(function(require) {
 							},
 							success: function(data, status) {
 								callback && callback(data.data);
-							},
-							userGetNoMatchCallflow: function(callback) {
-								self.getNoMatchCallflow(function(callflow) {
-									callback(null, callflow);
+									callback(null, enrollments);
 								});
 							}
 						});
@@ -453,6 +450,11 @@ define(function(require) {
 					} else {
 						callback(null, defaults);
 					}
+				},
+				userGetNoMatchCallflow: function(callback) {
+					self.getNoMatchCallflow(function(callflow) {
+						callback(null, callflow);
+					});
 				}
 			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 				cidNumbers: function(next) {

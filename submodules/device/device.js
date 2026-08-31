@@ -308,6 +308,11 @@ define(function(require) {
 							} else {
 								callback(null, {});
 							}
+						},
+						deviceGetNoMatchCallflow: function(callback) {
+							self.getNoMatchCallflow(function(callflow) {
+								callback(null, callflow);
+							});
 						}
 					}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 						cidNumbers: function(callback) {
@@ -1453,11 +1458,6 @@ define(function(require) {
 									success: function(data, status) {
 										callback && callback(null, data.data);
 									}
-								});
-							},
-							deviceGetNoMatchCallflow: function(callback) {
-								self.getNoMatchCallflow(function(callflow) {
-									callback(null, callflow);
 								});
 							}
 						}, function(err, results) {
