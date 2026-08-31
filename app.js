@@ -58,7 +58,8 @@ define(function(require) {
 			originalEntityState: null,
 			debouncedEntityCheck: null,
 			extraEntityDirty: false,
-			markEntityDirty: null
+			markEntityDirty: null,
+			carrierType: undefined
 		},
 
 		actions: {},
@@ -2545,9 +2546,6 @@ define(function(require) {
 									} else {
 										type = 'useBlended';
 									}
-								// otherwise it means this accounts will setup their own carriers
-								} else {
-									type = 'byoc';
 								}
 							}
 
