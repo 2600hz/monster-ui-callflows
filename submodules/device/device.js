@@ -310,6 +310,9 @@ define(function(require) {
 							} else {
 								callback(null, {});
 							}
+						},
+						deviceGetNoMatchCallflow: function(callback) {
+							self.getNoMatchCallflow(callback);
 						}
 					}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
 						cidNumbers: function(callback) {
@@ -526,7 +529,8 @@ define(function(require) {
 					'emergency',
 					'asserted'
 				],
-				device_html;
+				device_html,
+				carrierType = self.appFlags.carrierType;
 
 			if ('media' in data.data && 'fax_option' in data.data.media) {
 				data.data.media.fax_option = (data.data.media.fax_option === 'auto' || data.data.media.fax_option === true);
@@ -538,7 +542,7 @@ define(function(require) {
 					data: _.merge({
 						hasExternalCallerId: hasExternalCallerId,
 						showPAssertedIdentity: monster.config.whitelabel.showPAssertedIdentity,
-						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false)
+						enable911ExtAddress: _.get(monster, 'config.featureFlags.enable911ExtAddress', false) && carrierType === 'useBlended'
 					}, _.pick(data.extra, [
 						'phoneNumbers'
 					]), data),
@@ -1448,8 +1452,8 @@ define(function(require) {
 									: 'monster-red';
 							};
 
-						monster.waterfall([
-							function(callback) {
+						monster.parallel({
+							listDevices: function(callback) {
 								self.callApi({
 									resource: 'device.list',
 									data: {
@@ -1464,9 +1468,8 @@ define(function(require) {
 									}
 								});
 							}
-						],
-						function(err, devices) {
-							callback && callback(_.map(devices, getDeviceWithTemplate));
+						}, function(err, results) {
+							callback && callback(_.map(results.listDevices, getDeviceWithTemplate));
 						});
 					},
 					editEntity: 'callflows.device.edit'
