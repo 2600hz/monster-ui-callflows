@@ -127,11 +127,6 @@ define(function(require) {
 								self.accountCapabilitiesEnrollments(function(enrollments) {
 									callback(null, enrollments);
 								});
-							},
-							userGetNoMatchCallflow: function(callback) {
-								self.getNoMatchCallflow(function(callflow) {
-									callback(null, callflow);
-								});
 							}
 						}, function(err, results) {
 							callback && callback(results.userList);
@@ -466,6 +461,11 @@ define(function(require) {
 
 					self.accountCapabilitiesEnrollments(function(enrollments) {
 						callback(null, enrollments);
+					});
+				},
+				userGetNoMatchCallflow: function(callback) {
+					self.getNoMatchCallflow(function(callflow) {
+						callback(null, callflow);
 					});
 				}
 			}, monster.util.getCapability('caller_id.external_numbers').isEnabled && {
