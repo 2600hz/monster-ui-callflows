@@ -2527,7 +2527,7 @@ define(function(require) {
 						},
 						success: function(callflowData) {
 							var noMatch = callflowData.data,
-								resellerId = monster.apps.auth.originalAccount.reseller_id,
+								resellerId = monster.apps.auth.currentAccount.reseller_id,
 								type;
 
 							if (noMatch.flow.module === 'offnet') {
@@ -2552,7 +2552,7 @@ define(function(require) {
 							}
 
 							self.appFlags.carrierType = type;
-							callback && callback(callflowData.data);
+							callback && callback(null, callflowData.data);
 						}
 					});
 				}
