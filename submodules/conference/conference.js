@@ -313,7 +313,7 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#owner_id', conference_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.first_name + ' ' + _data.last_name + '</option>');
-							$('#owner_id', conference_html).val(_data.id);
+							$('#owner_id', conference_html).val(_data.id).trigger('change');
 							$('#edit_link', conference_html).show();
 						} else {
 							/* Update */
@@ -322,6 +322,7 @@ define(function(require) {
 							/* Delete */
 							} else {
 								$('#owner_id #' + _id, conference_html).remove();
+								$('#owner_id', conference_html).trigger('change');
 								$('#edit_link', conference_html).hide();
 							}
 						}
