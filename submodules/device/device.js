@@ -75,7 +75,8 @@ define(function(require) {
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
 					after_render: _callbacks.after_render,
-					markEntityDirty: _callbacks.markEntityDirty
+					markEntityDirty: _callbacks.markEntityDirty,
+					rebindTracking: _callbacks.rebindTracking
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -836,6 +837,8 @@ define(function(require) {
 						self.deviceFormatData(data);
 
 						self.deviceRender(data, $('.media_pane', device_html), callbacks);
+
+						callbacks.rebindTracking && callbacks.rebindTracking();
 					}
 				});
 			}
