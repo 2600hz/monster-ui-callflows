@@ -409,6 +409,10 @@ define(function(require) {
 			$('.faxbox-save', faxbox_html).click(function(ev) {
 				ev.preventDefault();
 
+				if ($(this).hasClass('disabled')) {
+					return;
+				}
+
 				var form_html = $('#faxbox_form', faxbox_html),
 					form_data = monster.ui.getFormData('faxbox_form'),
 					word_reg = /^[\w\s'-]+/;
