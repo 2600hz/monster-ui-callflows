@@ -880,7 +880,7 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#music_on_hold_media_id', user_html).append('<option id="' + media.id + '" value="' + media.id + '">' + media.name + '</option>');
-							$('#music_on_hold_media_id', user_html).val(media.id);
+							$('#music_on_hold_media_id', user_html).val(media.id).trigger('change');
 
 							$('#edit_link_media', user_html).show();
 						} else {
@@ -890,6 +890,7 @@ define(function(require) {
 							/* Delete */
 							} else {
 								$('#music_on_hold_media_id #' + _id, user_html).remove();
+								$('#music_on_hold_media_id', user_html).trigger('change');
 								$('#edit_link_media', user_html).hide();
 							}
 						}
