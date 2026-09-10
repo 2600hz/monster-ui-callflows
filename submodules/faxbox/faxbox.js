@@ -171,6 +171,7 @@ define(function(require) {
 					},
 					delete_error: _callbacks.delete_error,
 					after_render: _callbacks.after_render,
+					debouncedCheck: _callbacks.debouncedCheck,
 					rebindTracking: _callbacks.rebindTracking
 				};
 
@@ -367,7 +368,12 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#owner_id', faxbox_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.first_name + ' ' + _data.last_name + '</option>');
+							// no trigger('change') here: this select's own change handler
+							// re-renders the whole form from the user list fetched at load,
+							// which does not contain the user just created
 							$('#owner_id', faxbox_html).val(_data.id);
+
+							callbacks.debouncedCheck && callbacks.debouncedCheck();
 						} else {
 							/* Update */
 							if ('id' in _data) {
@@ -375,6 +381,8 @@ define(function(require) {
 							/* Delete */
 							} else {
 								$('#owner_id #' + _id, faxbox_html).remove();
+
+								callbacks.debouncedCheck && callbacks.debouncedCheck();
 							}
 						}
 					}
@@ -400,6 +408,10 @@ define(function(require) {
 
 			$('.faxbox-save', faxbox_html).click(function(ev) {
 				ev.preventDefault();
+
+				if ($(this).hasClass('disabled')) {
+					return;
+				}
 
 				var form_html = $('#faxbox_form', faxbox_html),
 					form_data = monster.ui.getFormData('faxbox_form'),
