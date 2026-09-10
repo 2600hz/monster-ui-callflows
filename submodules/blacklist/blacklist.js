@@ -181,6 +181,8 @@ define(function(require) {
 							})));
 
 						$('#number_value', template).val('');
+
+						callbacks.markEntityDirty && callbacks.markEntityDirty();
 					}
 				};
 
@@ -207,6 +209,8 @@ define(function(require) {
 
 			$(template).delegate('.delete-number', 'click', function(e) {
 				$(this).parents('.number-wrapper').remove();
+
+				callbacks.markEntityDirty && callbacks.markEntityDirty();
 			});
 
 			$('#cancel_number', template).click(function(e) {
@@ -217,6 +221,10 @@ define(function(require) {
 			});
 
 			$('.blacklist-save', template).click(function() {
+				if ($(this).hasClass('disabled')) {
+					return;
+				}
+
 				var formData = monster.ui.getFormData('blacklist-form'),
 					cleanData = self.blacklistCleanFormData(formData),
 					mapNumbers = {};
