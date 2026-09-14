@@ -75,7 +75,8 @@ define(function(require) {
 					delete_success: _callbacks.delete_success,
 					delete_error: _callbacks.delete_error,
 					after_render: _callbacks.after_render,
-					markEntityDirty: _callbacks.markEntityDirty
+					markEntityDirty: _callbacks.markEntityDirty,
+					rebindTracking: _callbacks.rebindTracking
 				},
 				defaults = {
 					data: $.extend(true, {
@@ -690,15 +691,16 @@ define(function(require) {
 							/* Create */
 							if (!_id) {
 								$('#owner_id', device_html).append('<option id="' + user.id + '" value="' + user.id + '">' + user.first_name + ' ' + user.last_name + '</option>');
-								$('#owner_id', device_html).val(user.id);
+								$('#owner_id', device_html).val(user.id).trigger('change');
 								$('#edit_link', device_html).show();
 							} else {
 								/* Update */
-								if (_data.hasOwnProperty('id')) {
+								if (user.hasOwnProperty('id')) {
 									$('#owner_id #' + user.id, device_html).text(user.first_name + ' ' + user.last_name);
 								/* Delete */
 								} else {
 									$('#owner_id #' + _id, device_html).remove();
+									$('#owner_id', device_html).trigger('change');
 									$('#edit_link', device_html).hide();
 								}
 							}
@@ -804,7 +806,7 @@ define(function(require) {
 							/* Create */
 							if (!_id) {
 								$('#music_on_hold_media_id', device_html).append('<option id="' + media.id + '" value="' + media.id + '">' + media.name + '</option>');
-								$('#music_on_hold_media_id', device_html).val(media.id);
+								$('#music_on_hold_media_id', device_html).val(media.id).trigger('change');
 
 								$('#edit_link_media', device_html).show();
 							} else {
@@ -814,6 +816,7 @@ define(function(require) {
 								/* Delete */
 								} else {
 									$('#music_on_hold_media_id #' + _id, device_html).remove();
+									$('#music_on_hold_media_id', device_html).trigger('change');
 									$('#edit_link_media', device_html).hide();
 								}
 							}
@@ -834,6 +837,8 @@ define(function(require) {
 						self.deviceFormatData(data);
 
 						self.deviceRender(data, $('.media_pane', device_html), callbacks);
+
+						callbacks.rebindTracking && callbacks.rebindTracking();
 					}
 				});
 			}

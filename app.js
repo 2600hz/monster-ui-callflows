@@ -559,7 +559,9 @@ define(function(require) {
 				flow: self.flow.root && self.flow.root.children[0]
 					? self.flow.root.children[0].serialize()
 					: {},
-				contact_list: self.flow.contact_list || {}
+				contact_list: self.flow.contact_list || {},
+				caption_map: self.flow.caption_map || {},
+				ui_is_main_number_cf: (self.dataCallflow && self.dataCallflow.ui_is_main_number_cf) || false
 			});
 		},
 
