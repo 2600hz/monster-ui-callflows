@@ -398,7 +398,7 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#owner_id', vmbox_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.first_name + ' ' + _data.last_name + '</option>');
-							$('#owner_id', vmbox_html).val(_data.id);
+							$('#owner_id', vmbox_html).val(_data.id).trigger('change');
 
 							$('#edit_link', vmbox_html).show();
 							$('#timezone', vmbox_html).val(_data.timezone);
@@ -410,6 +410,7 @@ define(function(require) {
 							} else {
 								/* Delete */
 								$('#owner_id #' + _id, vmbox_html).remove();
+								$('#owner_id', vmbox_html).trigger('change');
 								$('#edit_link', vmbox_html).hide();
 								$('#timezone', vmbox_html).val('America/Los_Angeles');
 							}
@@ -438,7 +439,7 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#media_unavailable', vmbox_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.name + '</option>');
-							$('#media_unavailable', vmbox_html).val(_data.id);
+							$('#media_unavailable', vmbox_html).val(_data.id).trigger('change');
 
 							$('#edit_link_media', vmbox_html).show();
 						} else {
@@ -448,6 +449,7 @@ define(function(require) {
 							} else {
 								/* Delete */
 								$('#media_unavailable #' + _id, vmbox_html).remove();
+								$('#media_unavailable', vmbox_html).trigger('change');
 								$('#edit_link_media', vmbox_html).hide();
 							}
 						}
@@ -475,7 +477,7 @@ define(function(require) {
 						/* Create */
 						if (!_id) {
 							$('#media_temporary_unavailable', vmbox_html).append('<option id="' + _data.id + '" value="' + _data.id + '">' + _data.name + '</option>');
-							$('#media_temporary_unavailable', vmbox_html).val(_data.id);
+							$('#media_temporary_unavailable', vmbox_html).val(_data.id).trigger('change');
 
 							$('#edit_link_temporary_media', vmbox_html).show();
 						} else {
@@ -485,6 +487,7 @@ define(function(require) {
 							} else {
 								/* Delete */
 								$('#media_temporary_unavailable #' + _id, vmbox_html).remove();
+								$('#media_temporary_unavailable', vmbox_html).trigger('change');
 								$('#edit_link_temporary_media', vmbox_html).hide();
 							}
 						}

@@ -115,6 +115,8 @@ define(function(require) {
 
 					$user.val('empty_option_user');
 					$callflow.val('empty_option_callflow');
+
+					callbacks.debouncedCheck && callbacks.debouncedCheck();
 				} else {
 					monster.ui.alert('warning', self.i18n.active().callflows.directory.noDataSelected);
 				}

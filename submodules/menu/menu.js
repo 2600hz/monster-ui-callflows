@@ -190,7 +190,7 @@ define(function(require) {
 
 						if (!_id) {
 							$('#media_greeting', menu_html).append('<option id="' + dataMedia.id + '" value="' + dataMedia.id + '">' + dataMedia.name + '</option>');
-							$('#media_greeting', menu_html).val(dataMedia.id);
+							$('#media_greeting', menu_html).val(dataMedia.id).trigger('change');
 
 							$('#edit_link_media', menu_html).show();
 						} else {
@@ -200,6 +200,7 @@ define(function(require) {
 							/* Delete */
 							} else {
 								$('#media_greeting #' + _id, menu_html).remove();
+								$('#media_greeting', menu_html).trigger('change');
 								$('#edit_link_media', menu_html).hide();
 							}
 						}
