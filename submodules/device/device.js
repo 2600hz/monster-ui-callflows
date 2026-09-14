@@ -695,7 +695,7 @@ define(function(require) {
 								$('#edit_link', device_html).show();
 							} else {
 								/* Update */
-								if (_data.hasOwnProperty('id')) {
+								if (user.hasOwnProperty('id')) {
 									$('#owner_id #' + user.id, device_html).text(user.first_name + ' ' + user.last_name);
 								/* Delete */
 								} else {
