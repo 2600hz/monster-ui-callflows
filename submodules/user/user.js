@@ -1262,7 +1262,7 @@ define(function(require) {
 					},
 					function(userData, callback) {
 						if (_.isEmpty(accountTiersEnrollments) || _.get(userData, 'status') !== 'success') {
-							callback(null);
+							callback(null, userData);
 							return;
 						}
 
