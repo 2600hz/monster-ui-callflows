@@ -1292,40 +1292,6 @@ define(function(require) {
 			}
 		},
 
-		generateUserPassword: function() {
-			var self = this;
-
-			if (_.get(monster, 'config.userPassword.requirements')) {
-				var setRequirements = {
-						lowercase: 'abcdefghijklmnopqrstuvwxyz',
-						uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-						numbers: '1234567890',
-						specialcharacters: '!@#$%^&*()_+~|}{:;,.-'
-					},
-					passwordLength = _.get(monster, 'config.userPassword.minLength', 12),
-					requirements = monster.config.userPassword.requirements,
-					requiredLength = 0,
-					password = '';
-
-				_.forEach(requirements, function(value, key) {
-					var list = key.replace('numOf', '').toLowerCase(),
-						val = value > 0 ? value : 0;
-
-					if (_.isUndefined(setRequirements[list])) {
-						password += '';
-					} else {
-						requiredLength += value;
-						password += monster.util.randomString(val, setRequirements[list]);
-					}
-				});
-				password += monster.util.randomString(passwordLength - requiredLength, 'safe');
-
-				return _.shuffle(password).join('');
-			} else {
-				return monster.util.randomString(8, 'safe');
-			}
-		},
-
 		userNormalizeData: function(data) {
 			var self = this;
 
@@ -1388,7 +1354,7 @@ define(function(require) {
 			}
 
 			if (!_.has(data, 'password') && !_.has(data, 'id')) {
-				data.password = self.generateUserPassword();
+				data.password = monster.util.generateUserPassword();
 			}
 
 			return data;
