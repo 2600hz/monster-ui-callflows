@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 workflows:
   version: 2
   build_branch:
@@ -86,7 +86,7 @@ jobs:
           name: 'Building release'
           command: |
             cd $MONSTER_ROOT
-            gulp build-app --app=${APP}            
+            gulp build-app --app=${APP}
       -
         run:
           name: 'Generating version info'
