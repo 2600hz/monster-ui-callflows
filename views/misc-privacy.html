@@ -1,0 +1,27 @@
+<div class="dialog_popup callflows-port">
+	<h1>{{ i18n.oldCallflows.privacy.title }}</h1>
+	<form name="form" method="post" action="#">
+		<div class="form_content">
+			<div class="popup_field">
+				<label for="privacy_mode">{{ i18n.oldCallflows.privacy.mode }}: </label>
+				<select id="privacy_mode">
+					<option value="full"{{#compare data_privacy.mode "===" "full"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.full }}</option>
+					<option value="name"{{#compare data_privacy.mode "===" "name"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.name }}</option>
+					<option value="number"{{#compare data_privacy.mode "===" "number"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.number }}</option>
+					<option value="none"{{#compare data_privacy.mode "===" "none"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.none }}</option>
+				</select>
+			</div>
+
+			<div class="popup_field">
+				<label for="privacy_endpoint_strategy">{{ i18n.oldCallflows.privacy.endpoint_strategy }}: </label>
+				<select id="privacy_endpoint_strategy">
+					<option value="overwrite"{{#compare data_privacy.endpoint_strategy "===" "overwrite"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.overwrite }}</option>
+					<option value="merge"{{#compare data_privacy.endpoint_strategy "===" "merge"}} selected{{/compare}}>{{ i18n.oldCallflows.privacy.merge }}</option>
+				</select>
+			</div>
+		</div>
+	</form>
+	<div class="buttons-center">
+		<button id="add" class="monster-button monster-button-primary">{{ i18n.save }}</button>
+	</div>
+</div>
