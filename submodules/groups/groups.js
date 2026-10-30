@@ -960,7 +960,9 @@ define(function(require) {
 							endpoints = [];
 
 							$('.right .connect li', popup_html).each(function() {
-								var item_data = $(this).data();
+								// Copy without the sortable's own widget, which jQuery UI keeps in
+								// each item's data. It is circular and breaks JSON.stringify.
+								var item_data = _.omit($(this).data(), 'sortableItem');
 								delete item_data.owner_id;
 								endpoints.push(item_data);
 							});
@@ -1411,7 +1413,9 @@ define(function(require) {
 								}
 
 								$('.right .connect li', popup_html).each(function() {
-									var item_data = $(this).data();
+									// Copy without the sortable's own widget, which jQuery UI keeps in
+									// each item's data. It is circular and breaks JSON.stringify.
+									var item_data = _.omit($(this).data(), 'sortableItem');
 
 									if (strategy === 'single') {
 										delete item_data.delay;
