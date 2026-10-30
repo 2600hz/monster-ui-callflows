@@ -562,6 +562,11 @@ define(function(require) {
 				contact_list: self.flow.contact_list || {},
 				caption_map: self.flow.caption_map || {},
 				ui_is_main_number_cf: (self.dataCallflow && self.dataCallflow.ui_is_main_number_cf) || false
+			}, function(key, value) {
+				// A jQuery UI sortable keeps its circular widget in each item's data under
+				// sortableItem, and this runs inside node popups' beforeClose, so a throw
+				// here leaves the popup stuck open. stringify_obj skips it for the same reason.
+				return key === 'sortableItem' ? undefined : value;
 			});
 		},
 
