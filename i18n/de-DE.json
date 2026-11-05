@@ -1252,6 +1252,10 @@
 			"help": "Mit dieser Funktion können Sie es Benutzern erlauben",
 			"unselectedUsers": "Nicht ausgewählte Benutzer"
 		},
+		"courtesyReadOnlyWarning": "Courtesy users can't edit callflows that have a phone number assigned.",
+		"courtesyDidNotAllowed": "Courtesy users can only assign extensions to callflows, not phone numbers.",
+		"courtesyUserWithDid": "Courtesy users can't be assigned to callflows that have a phone number.",
+		"courtesyNumberWithUser": "Phone numbers can't be assigned to callflows that have a Courtesy user.",
 		"hiddenCallflowWarning": "Anscheinend bearbeiten Sie gerade einen Callflow",
 		"__comment": "UI-2763: DND-Callflow-Aktion verfügbar machen",
 		"buyTollfree": "Gebührenfrei",
