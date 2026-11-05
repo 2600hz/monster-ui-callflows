@@ -523,6 +523,26 @@
 	width: 50%;
 }
 
+#ws_callflow #courtesy_readonly_warning {
+	color: red;
+	display: none;
+	font-style: italic;
+	font-weight: lighter;
+	margin: auto auto 15px;
+	text-align: center;
+	width: 50%;
+}
+
+#ws_callflow.courtesy-readonly #courtesy_readonly_warning {
+	display: block;
+}
+
+#ws_callflow.courtesy-readonly #ws_cf_tools,
+#ws_callflow.courtesy-readonly #ws_cf_flow .node,
+#ws_callflow.courtesy-readonly #ws_cf_flow .root {
+	pointer-events: none;
+}
+
 #ws_callflow #callflow_header,
 .callflow-preview #callflow_header {
 	height: 30px;

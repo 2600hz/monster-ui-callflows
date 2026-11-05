@@ -50,7 +50,7 @@ define(function(require) {
 						return returned_value;
 					},
 					edit: function(node, callback) {
-						self.userList(function(users) {
+						self.listAssignable(self.userList, node, 'id', function(users) {
 							var popup, popup_html;
 
 							$.each(users, function() {
