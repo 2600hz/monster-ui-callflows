@@ -708,7 +708,7 @@ define(function(require) {
 						edit: function(node, callback) {
 							var _this = this;
 
-							self.vmboxList(function(data) {
+							self.listAssignable(self.vmboxList, node, 'owner_id', function(data) {
 								var popup, popup_html;
 
 								popup_html = $(self.getTemplate({
