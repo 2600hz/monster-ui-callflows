@@ -46,7 +46,7 @@ define(function(require) {
 					edit: function(node, callback) {
 						var _this = this;
 
-						self.faxboxList(function(data, status) {
+						self.listAssignable(self.faxboxList, node, 'owner_id', function(data, status) {
 							var popup_html = $(self.getTemplate({
 									name: 'callflowEdit',
 									data: {

@@ -53,6 +53,11 @@ define(function(require) {
 			boundCallflowId: null,
 			originalFlowState: null,
 
+			// Courtesy bundle restrictions
+			courtesyUserIds: null,
+			courtesyChecked: false,
+			savedNumbers: [],
+
 			// Entity manager state flags
 			isLoadingEntity: false,
 			originalEntityState: null,
@@ -540,7 +545,16 @@ define(function(require) {
 		},
 
 		setSaveButtonState: function(enabled) {
-			this.toggleDisabledClass($('.buttons .save'), enabled);
+			this.toggleDisabledClass($('.buttons .save'), enabled && !this.isCallflowReadOnly());
+		},
+
+		applyReadOnlyState: function() {
+			var self = this,
+				isReadOnly = self.isCallflowReadOnly();
+
+			$('#ws_callflow').toggleClass('courtesy-readonly', isReadOnly);
+			self.toggleDisabledClass($('.buttons .delete'), !isReadOnly);
+			self.setSaveButtonState(false);
 		},
 
 		captureOriginalFlowState: function() {
@@ -1154,6 +1168,195 @@ define(function(require) {
 			});
 		},
 
+		/* Courtesy bundle restrictions
+			- A courtesy user can't edit callflows with a DID, nor add DIDs to callflows.
+			- A non-courtesy user can't mix DIDs and courtesy users in the same callflow.
+			A DID is any callflow number starting with '+', the rest are extensions. */
+		isCurrentUserCourtesy: function() {
+			return _.get(monster, 'apps.auth.currentUser.bundle_type') === 'courtesy';
+		},
+
+		isDidNumber: function(number) {
+			return _.startsWith(number, '+');
+		},
+
+		hasDidNumbers: function(numbers) {
+			return _.some(numbers, _.bind(this.isDidNumber, this));
+		},
+
+		// Callflows that already have a DID are read-only for courtesy users
+		isCallflowReadOnly: function() {
+			var self = this;
+
+			return self.isCurrentUserCourtesy() && self.hasDidNumbers(self.appFlags.savedNumbers);
+		},
+
+		// Whether courtesy users must be kept out of the callflow being edited
+		shouldRestrictCourtesyAssignments: function() {
+			var self = this;
+
+			return !self.isCurrentUserCourtesy() && self.hasDidNumbers(self.flow.numbers);
+		},
+
+		getCourtesyUserIds: function(callback) {
+			var self = this;
+
+			if (self.appFlags.courtesyUserIds) {
+				return callback(self.appFlags.courtesyUserIds);
+			}
+
+			self.callApi({
+				resource: 'user.list',
+				data: {
+					accountId: self.accountId,
+					filters: {
+						paginate: false,
+						filter_bundle_type: 'courtesy'
+					}
+				},
+				success: function(data) {
+					self.appFlags.courtesyUserIds = _.map(data.data, 'id');
+
+					callback(self.appFlags.courtesyUserIds);
+				},
+				error: function() {
+					callback([]);
+				}
+			});
+		},
+
+		// Hides, from the items of a selector, those that belong to courtesy users
+		// when the callflow has a DID. The currently selected item is always kept.
+		filterCourtesyAssignable: function(args) {
+			var self = this,
+				items = args.items,
+				ownerKey = args.ownerKey || 'id';
+
+			if (!self.shouldRestrictCourtesyAssignments()) {
+				return args.callback(items);
+			}
+
+			self.getCourtesyUserIds(function(courtesyIds) {
+				args.callback(_.reject(items, function(item) {
+					return item.id !== args.selectedId && !_.includes(args.selectedIds, item.id) && _.includes(courtesyIds, item[ownerKey]);
+				}));
+			});
+		},
+
+		// Same as calling listFunction, but hiding the items of courtesy users when needed
+		listAssignable: function(listFunction, node, ownerKey, callback) {
+			var self = this;
+
+			listFunction.call(self, function(items, status) {
+				self.filterCourtesyAssignable({
+					items: items,
+					ownerKey: ownerKey,
+					selectedId: node.getMetadata('id'),
+					callback: function(filteredItems) {
+						callback(filteredItems, status);
+					}
+				});
+			});
+		},
+
+		// Calls back with true if any element of the flow (users, devices, voicemail boxes,
+		// conferences, faxboxes, ring and page group members) belongs to a courtesy user.
+		flowHasCourtesyUser: function(callback) {
+			var self = this,
+				userIds = [],
+				lookups = [],
+				getOwner = function(resource, idKey, id) {
+					return function(next) {
+						self.callApi({
+							resource: resource,
+							data: _.set({ accountId: self.accountId }, idKey, id),
+							success: function(data) {
+								next(null, _.get(data, 'data.owner_id'));
+							},
+							error: function() {
+								next(null, null);
+							}
+						});
+					};
+				},
+				getGroupMembers = function(groupId) {
+					return function(next) {
+						self.callApi({
+							resource: 'group.get',
+							data: {
+								accountId: self.accountId,
+								groupId: groupId
+							},
+							success: function(data) {
+								next(null, _.get(data, 'data.endpoints', {}));
+							},
+							error: function() {
+								next(null, {});
+							}
+						});
+					};
+				},
+				addEndpoint = function(type, id) {
+					if (type === 'user') {
+						userIds.push(id);
+					} else if (type === 'device') {
+						lookups.push(getOwner('device.get', 'deviceId', id));
+					}
+				},
+				ownerResources = {
+					device: ['device.get', 'deviceId'],
+					voicemail: ['voicemail.get', 'voicemailId'],
+					conference: ['conference.get', 'conferenceId'],
+					faxbox: ['faxbox.get', 'faxboxId']
+				},
+				groupLookups = [];
+
+			self.formatFlow();
+
+			_.each(self.flow.nodes, function(node) {
+				var module = _.get(self.actions, [node.actionName, 'module']),
+					id = node.getMetadata('id');
+
+				if (module === 'user' && id && id !== 'null') {
+					userIds.push(id);
+				} else if (_.has(ownerResources, module) && id && id !== 'null') {
+					lookups.push(getOwner(ownerResources[module][0], ownerResources[module][1], id));
+				} else if (module === 'ring_group' || module === 'page_group') {
+					_.each(node.getMetadata('endpoints'), function(endpoint) {
+						if (endpoint.endpoint_type === 'group') {
+							groupLookups.push(getGroupMembers(endpoint.id));
+						} else {
+							addEndpoint(endpoint.endpoint_type, endpoint.id);
+						}
+					});
+				}
+			});
+
+			if (_.isEmpty(userIds) && _.isEmpty(lookups) && _.isEmpty(groupLookups)) {
+				return callback(false);
+			}
+
+			self.getCourtesyUserIds(function(courtesyIds) {
+				if (_.isEmpty(courtesyIds)) {
+					return callback(false);
+				}
+
+				monster.parallel(groupLookups, function(err, groupsMembers) {
+					_.each(groupsMembers, function(members) {
+						_.each(members, function(member, memberId) {
+							addEndpoint(member.type, memberId);
+						});
+					});
+
+					monster.parallel(lookups, function(err, owners) {
+						callback(_.some(_.concat(userIds, owners), function(id) {
+							return _.includes(courtesyIds, id);
+						}));
+					});
+				});
+			});
+		},
+
 		formatListSpareNumbers: function(numbers) {
 			var self = this,
 				listSpareNumbers = [];
@@ -1206,6 +1409,9 @@ define(function(require) {
 
 			delete self.original_flow; // clear original_flow
 
+			self.appFlags.courtesyUserIds = null;
+			self.appFlags.savedNumbers = [];
+
 			$('#callflow-view .callflow_help').hide();
 
 			self.resetFlow();
@@ -1240,12 +1446,14 @@ define(function(require) {
 						}
 
 						self.flow.numbers = callflow.numbers || [];
+						self.appFlags.savedNumbers = _.clone(self.flow.numbers);
 
 						self.appFlags.isLoadingCallflow = false;
 						self.setCallflowListState(true);
 
 						self.repaintFlow();
 						self.captureOriginalFlowState();
+						self.applyReadOnlyState();
 					},
 					error: function() {
 						self.appFlags.boundCallflowId = null;
@@ -1263,6 +1471,7 @@ define(function(require) {
 
 			self.renderButtons();
 			self.renderTools();
+			self.applyReadOnlyState();
 		},
 
 		renderButtons: function() {
@@ -1285,6 +1494,9 @@ define(function(require) {
 			});
 
 			$('.delete', buttons).click(function() {
+				if ($(this).hasClass('disabled')) {
+					return;
+				}
 				if (self.flow.id) {
 					monster.ui.confirm(self.i18n.active().oldCallflows.are_you_sure, function() {
 						self.callApi({
@@ -1800,6 +2012,8 @@ define(function(require) {
 					}
 
 					$('.number_column.empty', node_html).click(function() {
+						var isCourtesy = self.isCurrentUserCourtesy();
+
 						self.listNumbers(function(phoneNumbers) {
 							var parsedNumbers = [];
 
@@ -1813,16 +2027,19 @@ define(function(require) {
 									name: 'addNumber',
 									data: {
 										phoneNumbers: parsedNumbers,
-										hideBuyNumbers: _.get(monster, 'config.whitelabel.hideBuyNumbers', false)
+										hideBuyNumbers: _.get(monster, 'config.whitelabel.hideBuyNumbers', false),
+										isCourtesy: isCourtesy
 									}
 								})),
 								popup = monster.ui.dialog(popup_html, {
 									title: self.i18n.active().oldCallflows.add_number
 								});
 
-							monster.ui.chosen(popup_html.find('#list_numbers'), {
-								width: '160px'
-							});
+							if (!isCourtesy) {
+								monster.ui.chosen(popup_html.find('#list_numbers'), {
+									width: '160px'
+								});
+							}
 							// Have to do that so that the chosen dropdown isn't hidden.
 							popup_html.parent().css('overflow', 'visible');
 
@@ -1847,7 +2064,11 @@ define(function(require) {
 								});
 							};
 
-							$('.extensions_content', popup).hide();
+							if (isCourtesy) {
+								$('.extensions_content', popup).show();
+							} else {
+								$('.extensions_content', popup).hide();
+							}
 
 							$('input[name="number_type"]', popup).click(function() {
 								if ($(this).val() === 'your_numbers') {
@@ -1890,15 +2111,33 @@ define(function(require) {
 								event.preventDefault();
 								var number = $('input[name="number_type"]:checked', popup).val() === 'your_numbers' ? $('#list_numbers option:selected', popup).val() : $('#add_number_text', popup).val();
 
-								if (number !== 'select_none' && number !== '') {
+								if (number === 'select_none' || number === '') {
+									return monster.ui.alert(self.i18n.active().oldCallflows.you_didnt_select);
+								}
+
+								var addNumber = function() {
 									self.flow.numbers.push(number);
 									popup.dialog('close');
 
 									self.repaintFlow();
 									self.checkForChanges();
-								} else {
-									monster.ui.alert(self.i18n.active().oldCallflows.you_didnt_select);
+								};
+
+								if (!self.isDidNumber(number)) {
+									return addNumber();
 								}
+
+								if (isCourtesy) {
+									return monster.ui.alert(self.i18n.active().callflows.courtesyDidNotAllowed);
+								}
+
+								self.flowHasCourtesyUser(function(hasCourtesyUser) {
+									if (hasCourtesyUser) {
+										monster.ui.alert(self.i18n.active().callflows.courtesyNumberWithUser);
+									} else {
+										addNumber();
+									}
+								});
 							});
 						});
 					});
@@ -2305,6 +2544,22 @@ define(function(require) {
 			}
 
 			if (self.flow.numbers && self.flow.numbers.length > 0) {
+				if (self.isCurrentUserCourtesy()) {
+					if (self.isCallflowReadOnly() || self.hasDidNumbers(self.flow.numbers)) {
+						return monster.ui.alert(self.i18n.active().callflows.courtesyDidNotAllowed);
+					}
+				} else if (self.hasDidNumbers(self.flow.numbers) && !self.appFlags.courtesyChecked) {
+					return self.flowHasCourtesyUser(function(hasCourtesyUser) {
+						if (hasCourtesyUser) {
+							monster.ui.alert(self.i18n.active().callflows.courtesyUserWithDid);
+						} else {
+							self.appFlags.courtesyChecked = true;
+							self.save();
+							self.appFlags.courtesyChecked = false;
+						}
+					});
+				}
+
 				var data_request = {
 					numbers: self.flow.numbers,
 					flow: (self.flow.root.children[0] === undefined) ? {} : self.flow.root.children[0].serialize()
