@@ -755,6 +755,7 @@ define(function(require) {
 			monster.waterfall([
 				function(callback) {
 					self.groupsRequestDeviceList({
+						hideCourtesyFor: node,
 						success: function(data) {
 							callback(null, data);
 						}
@@ -808,6 +809,7 @@ define(function(require) {
 					monster.waterfall([
 						function(callback) {
 							self.groupsRequestUserList({
+								hideCourtesyFor: node,
 								success: function(data) {
 									callback(null, data);
 								}
@@ -1080,6 +1082,7 @@ define(function(require) {
 			monster.waterfall([
 				function(callback) {
 					self.groupsRequestDeviceList({
+						hideCourtesyFor: node,
 						success: function(data) {
 							callback(null, data);
 						}
@@ -1137,6 +1140,7 @@ define(function(require) {
 					monster.waterfall([
 						function(callback) {
 							self.groupsRequestUserList({
+								hideCourtesyFor: node,
 								success: function(data) {
 									callback(null, data);
 								}
@@ -1636,6 +1640,22 @@ define(function(require) {
 			}
 		},
 
+		// When asked for a node, hides courtesy users (or their devices) if the callflow has a DID
+		groupsHideCourtesy: function(args, items, ownerKey, callback) {
+			var self = this;
+
+			if (!args.hideCourtesyFor) {
+				return callback(items);
+			}
+
+			self.filterCourtesyAssignable({
+				items: items,
+				ownerKey: ownerKey,
+				selectedIds: _.map(args.hideCourtesyFor.getMetadata('endpoints'), 'id'),
+				callback: callback
+			});
+		},
+
 		groupsRequestUserList: function(args) {
 			var self = this;
 
@@ -1648,7 +1668,9 @@ define(function(require) {
 					}
 				}, args.data),
 				success: function(data, status) {
-					args.hasOwnProperty('success') && args.success(data.data);
+					self.groupsHideCourtesy(args, data.data, 'id', function(items) {
+						args.hasOwnProperty('success') && args.success(items);
+					});
 				},
 				error: function(parsedError) {
 					args.hasOwnProperty('error') && args.error(parsedError);
@@ -1668,7 +1690,9 @@ define(function(require) {
 					}
 				}, args.data),
 				success: function(data, status) {
-					args.hasOwnProperty('success') && args.success(data.data);
+					self.groupsHideCourtesy(args, data.data, 'owner_id', function(items) {
+						args.hasOwnProperty('success') && args.success(items);
+					});
 				},
 				error: function(parsedError) {
 					args.hasOwnProperty('error') && args.error(parsedError);
