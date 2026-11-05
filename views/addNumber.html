@@ -1,5 +1,6 @@
 <div class="dialog_popup_new add_number_popup">
 	<form class="form-inline">
+		{{#unless isCourtesy}}
 		<div class="popup_field">
 			<input type="radio" id="number_type_1" name="number_type" value="your_numbers" checked="checked"></input>
 			<label for="number_type_1">{{ i18n.oldCallflows.available_numbers }}</label>
@@ -30,8 +31,10 @@
 			</div>
 		</div>
 
+		{{/unless}}
+
 		<div class="popup_field">
-			<input type="radio" id="number_type_2" name="number_type" value="extension"></input>
+			<input type="radio" id="number_type_2" name="number_type" value="extension"{{#if isCourtesy}} checked="checked"{{/if}}></input>
 			<label for="number_type_2">{{ i18n.oldCallflows.extension }}</label>
 
 			<div class="extensions_content">

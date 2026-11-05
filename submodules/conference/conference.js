@@ -45,7 +45,7 @@ define(function(require) {
 						return returned_value;
 					},
 					edit: function(node, callback) {
-						self.conferenceList(function(data, status) {
+						self.listAssignable(self.conferenceList, node, 'owner_id', function(data, status) {
 							var popup_html = $(self.getTemplate({
 									name: 'callflowEdit',
 									data: {

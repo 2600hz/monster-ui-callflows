@@ -1047,6 +1047,10 @@
 				"successUpdate": "You successfully updated settings of the Valet Feature Code"
 			}
 		},
+		"courtesyReadOnlyWarning": "Courtesy users can't edit callflows that have a phone number assigned.",
+		"courtesyDidNotAllowed": "Courtesy users can only assign extensions to callflows, not phone numbers.",
+		"courtesyUserWithDid": "Courtesy users can't be assigned to callflows that have a phone number.",
+		"courtesyNumberWithUser": "Phone numbers can't be assigned to callflows that have a Courtesy user.",
 		"hiddenCallflowWarning": "It looks like you're editing a callflow that wasn't meant to be edited by end-users. Usually we hide those callflows in this app, but since you're a superduper admin, we're showing it to you. Saving changes to this Callflow, could break features in SmartPBX/Mobile or the Migration app, so make sure you know what you're doing!",
 
 		"__comment": "UI-2216: adding blacklists",

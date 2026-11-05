@@ -1356,7 +1356,7 @@ define(function(require) {
 					edit: function(node, callback) {
 						var _this = this;
 
-						self.deviceList(function(devices) {
+						self.listAssignable(self.deviceList, node, 'owner_id', function(devices) {
 							var popup, popup_html;
 
 							popup_html = $(self.getTemplate({
