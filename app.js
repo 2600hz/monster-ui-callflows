@@ -1238,7 +1238,7 @@ define(function(require) {
 
 			self.getCourtesyUserIds(function(courtesyIds) {
 				args.callback(_.reject(items, function(item) {
-					return item.id !== args.selectedId && _.includes(courtesyIds, item[ownerKey]);
+					return item.id !== args.selectedId && !_.includes(args.selectedIds, item.id) && _.includes(courtesyIds, item[ownerKey]);
 				}));
 			});
 		},
